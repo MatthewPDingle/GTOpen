@@ -1,0 +1,45 @@
+{
+  "at": "2026-10-18T08:58:44.712035+00:00",
+  "id": "E081-resource-closure",
+  "status": "closed_compiled_prerequisite_failure",
+  "failed_gates": [
+    "max_threads_not_reduced",
+    "default_128_occupancy_not_reduced"
+  ],
+  "resources": {
+    "registers": [
+      62,
+      68
+    ],
+    "local_bytes": [
+      64,
+      64
+    ],
+    "static_shared": [
+      0,
+      0
+    ],
+    "max_threads": [
+      1024,
+      896
+    ],
+    "default128occupancy": [
+      8,
+      7
+    ]
+  },
+  "source_manifest_sha256": "7d9da23884f1033684148b4c4dd9b76ef3f8d451ca56a4a142556ecde69d9979",
+  "resource_protocol_sha256": "42e4b4e3caf539635c91378e5d481343bfa97348215425c53c25e06efb021c2d",
+  "resource_report_sha256": "be9faa1fe90c205b82cbff882d465789edb1b55ae9055d35dc9a8339d73b6cb6",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "closed_form": "One action node per warp/four nodes per128threadCTA and ceil(count/4)hostgrid. No mapping/width/arity/threshold/helper/source-scope/packing/hostgrid or placement variants/sweeps/retries/resampling rescue.",
+  "accepted_live": "E080",
+  "accepted_cumulative_gain_pct": 14.741418835370924,
+  "scope": "A compiled-resource prerequisite failure only. No numerical or complete-solve speed result exists for E081. Other eight PTX entry bodies and20parameter action ABI exact on120/75; source arithmetic reversal exact, but this does not prove runtime equality.",
+  "root_external_independent_review": false
+}

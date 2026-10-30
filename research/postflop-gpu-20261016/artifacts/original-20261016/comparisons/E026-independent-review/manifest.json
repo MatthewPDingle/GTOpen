@@ -1,0 +1,27 @@
+{
+  "id": "E026-independent-review",
+  "at": "2026-10-16T15:51:15.517435+00:00",
+  "verdict": "CONFIRMED_REJECTED",
+  "primary_decision": "rejected",
+  "artifact_sha256": {
+    "audit-adaptation.patch": "fc298ceebc950d55fd4fc76706525b2f0b4579a9670aa0620696cc1ea723a024",
+    "audit-primary-r2.py": "37189a8a8e693506a70df3d2ec266e5eebb3c48f6389e9d83aabe756084dcf93",
+    "audit-primary.py": "b025519bf74e83067364062940fa06b1eaaf55437435c01cf9e084903bc71092",
+    "audit-r2.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit-r2.stdout.log": "d9c0ec644979ddf67de6641d46840376d8f5b3896b7984dfbb92d0b6f8ab2e79",
+    "audit.stderr.log": "fce7bdcf84cded034a1b80692425fc0e8a07cd996af3825b1796f58cd54a68c7",
+    "audit.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cleanup-supplement.json": "dd5107d0cd20380d7836aecdd2e407c716facb20ee99c1ceb51f5d75ade76627",
+    "reviewer-r2.patch": "6bb22151e00ba01b4bd12d380d7156e7d4cead98024c52e1adc4dccc024cf022",
+    "reviewer-repair.json": "f98c2a419234b8ae65af6147478d0bb6cb45784f663f0079b5c41d410e0395fc",
+    "source-custody.json": "2806f9130d0943d6e95c08315120ee8c4e54627a8181ebfd2e5f4e8ef102e5e2",
+    "summary.md": "c4ce31fcd3cd4f31afdf191081c5474351e867017362e40e5407dce315212a53",
+    "validation.json": "d9ea9dff5592a6ed58842ac191cbee7d85d479f7ae6dc69f1b482170564f7363"
+  },
+  "reviewer_attempts": {
+    "first": "Preserved reviewer-only stale V025-unit selector failure; no native work.",
+    "r2": "Only V025-unit -> V026-unit replacement; file-only audit terminal exit0."
+  },
+  "candidate_accepted": false,
+  "deployed": false
+}

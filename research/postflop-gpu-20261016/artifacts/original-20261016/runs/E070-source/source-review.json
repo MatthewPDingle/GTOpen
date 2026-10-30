@@ -1,0 +1,43 @@
+{
+  "at": "2026-10-17T22:28:43.692779+00:00",
+  "id": "E070",
+  "status": "CUDA_source_transform_and_integer_encoding_review_pass",
+  "report_sha256": "ff2da1281efc7bda8b9eda60cfa931758b543d6118a98290502092e004badd56",
+  "per_function_changes": [
+    {
+      "function": "down_action_impl",
+      "baseline_sha256": "c4ac34befcdd4c53a776d6da6f36269e3f1de984f979103334e2883f57106ca0",
+      "candidate_sha256": "f1cda0b4d1c02e5321b03be50b6fa518fa4dc8d7a44c5317a65fd02e5e2371b7"
+    },
+    {
+      "function": "down_action",
+      "baseline_sha256": "7bdf656c37b1cc5d1d78e15776e75127132f208bc3f15719a8321a148dee034a",
+      "candidate_sha256": "d3839108b8d2a414e696730e00439d2088623646eec9707dbc59fdbf8b7ee030"
+    },
+    {
+      "function": "up_fold",
+      "baseline_sha256": "4ed317f1759e9252ba9eeb30a73740fef33281d1fc414ea2dc33b5b5f7595c0b",
+      "candidate_sha256": "4fde319e2dd0486af17e415a884a521b6c36587bfe929f914feaa74c08efd673"
+    },
+    {
+      "function": "up_action_impl",
+      "baseline_sha256": "f00cea63303a1628b4573d1da0df47be21b4cbf181a7f0eb7c9d99a197c7f6e7",
+      "candidate_sha256": "5f72407b6153bad53b29ae24e36c6c2af1e9101b83449052525dc29f0c803ed9"
+    },
+    {
+      "function": "up_action",
+      "baseline_sha256": "6eced3d26b2a491eaa489994f5e1ead3efb60ba9471e204634e51af4904939ae",
+      "candidate_sha256": "10fd5769e321cca74f65d1388bd51e5c24712def7f07becc176a569ea21da363"
+    },
+    {
+      "function": "up_action_eval",
+      "baseline_sha256": "8de4965e3464051bb718f490a72cacc2d6c783d5bc620d511d4c19c03bb0e91b",
+      "candidate_sha256": "5a03b1e9685eeb3b43ed233ffe2c8a10bb37e58a96c338247a5e07e25a638ca5"
+    }
+  ],
+  "float_source_order_unchanged": "Only metadata pointer parameters, call forwarding and integer field decoding change. All float expressions/reduction order, barriers, spans/launch widths remain source-identical. Actual compiled numerical behavior still requires raw controls.",
+  "resource_risks": "narrow loads and shifts may alter registers/occupancy/instruction scheduling; packing adds CPUwork and temporary2*Nbytes. Default2^8byte source bounds, no truncation/threshold variants.",
+  "not_prior_variants": "Global player/arity encoding differs from old noalias, chance-record AoS, shared showdown index narrowing and work ordering; none are composed/reopened.",
+  "external_independent_review": false,
+  "candidate_accepted": false
+}

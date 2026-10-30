@@ -1,0 +1,107 @@
+{
+  "id": "E084-root-crosscheck",
+  "at": "2026-10-18T09:57:17.388813+00:00",
+  "status": "pass_rejected",
+  "checks": 53,
+  "root_cross_check_only": true,
+  "assessment_sha256": "fea0aaa3ea93cfb6c2b34c67146683bd437979abd0b5bae43673f48c3b447208",
+  "native_terminal_sha256": "724871040251a53ca912ca4857b8e75c9a65e32a4f4561242b0854dba51873dc",
+  "aggregate_gain_pct": -2.2031737913124756,
+  "exact_fixture_results": 18,
+  "exact_checkpoints": 138,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_median_ms": 5639.9544,
+      "candidate_median_ms": 5732.3239,
+      "observed_gain_pct": -1.6377703337459733,
+      "slower_pairs": 3,
+      "fixture_guard_failed": true,
+      "components": {
+        "baseline": {
+          "build_ms": 88.474,
+          "init_ms": 588.2851999999999,
+          "solve_ms": 4592.7696000000005,
+          "readback_ms": 367.6425
+        },
+        "candidate": {
+          "build_ms": 91.14529999999999,
+          "init_ms": 573.5593,
+          "solve_ms": 4689.6737,
+          "readback_ms": 383.7798
+        }
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_median_ms": 3949.3698,
+      "candidate_median_ms": 4070.9735,
+      "observed_gain_pct": -3.0790659309746107,
+      "slower_pairs": 3,
+      "fixture_guard_failed": true,
+      "components": {
+        "baseline": {
+          "build_ms": 441.7931,
+          "init_ms": 442.9332,
+          "solve_ms": 2838.4923,
+          "readback_ms": 272.03729999999996
+        },
+        "candidate": {
+          "build_ms": 389.62649999999996,
+          "init_ms": 473.36850000000004,
+          "solve_ms": 2902.0004,
+          "readback_ms": 289.967
+        }
+      }
+    },
+    {
+      "fixture_id": "river",
+      "baseline_median_ms": 110.5007,
+      "candidate_median_ms": 110.2315,
+      "observed_gain_pct": 0.24361836621849264,
+      "slower_pairs": 1,
+      "fixture_guard_failed": false,
+      "components": {
+        "baseline": {
+          "build_ms": 0.21350000000000002,
+          "init_ms": 93.9366,
+          "solve_ms": 16.7612,
+          "readback_ms": 0.8161
+        },
+        "candidate": {
+          "build_ms": 0.2616,
+          "init_ms": 93.0298,
+          "solve_ms": 16.1177,
+          "readback_ms": 0.9682999999999999
+        }
+      }
+    }
+  ],
+  "preserved_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V084-unit\\report.json": "ea60de4a826cd121a86beab90c4616a8230c582cf7c214bd6c7b8f4397cad099",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V084-unit\\stdout.log": "3bbc6176b6b1469543d37d89b71de4219ee954ac551110ff86f717ff603e2812",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\V084-unit.exit.json": "50901ad1ca8f00474ec343e799607c15f8aed27bd9466e78161cdb5ff4ff83b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B278\\report.json": "87e7c5402bc81e118d6ea8934c8ea7e75850505a8243c8cee2b532357589ef6a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B278\\stdout.log": "b6930ec0858f74967e45a46de1390f11f2e17b230ab957f1c40a540d89eeb30f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\B278.exit.json": "7cd988b63bff980c67486f758233084ed352190484661a598e2a7290ab95ef33",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R1\\report.json": "0ca41bb1276b6cfa230d24e8ee0e9761ca9da6d259c7186c24740e0ad083e613",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R1\\stdout.log": "62b814b5b772c14c9b6a9f08f049b947d8eb6578384faa94191a90e84ba8487c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\E084R1.exit.json": "1187aba98b3ec8a39c5b923248710647037bdb0f0d503914bcd9aa6db00b2bdf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R2\\report.json": "b31dd404a23e0703fe73556a768cc983988ffa65e6517ada5ef9eb36f0c8837c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R2\\stdout.log": "56f5131adfc641fe8c586d63b6dd29e4a81a08f2facd339e8a1dcaacdf7350d4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\E084R2.exit.json": "6cd3cf53d7750683197518c2fe3779424f279ab97f2ecd168171532d7d137987",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B279\\report.json": "fad9b9e755907f9dd56fdff3d94e5fc0200b3fbf76c9b0e3c77114649d3fb14e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B279\\stdout.log": "1a7ccc8e0ee275a6ea9f8e5ec177d64ae5d0bbdc2685a3bd32ab3e04f49586a9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\B279.exit.json": "ae008a41c1dbd10c08f6600672549f3bd2acea1c62c88f9bad8f24912b3dd088",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B280\\report.json": "aa1eee4c38670c9d991fd76045037a586edca0b669c63837452b8671d3e1abee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B280\\stdout.log": "5c8de53e801f1aefbc2cd02832bf1ef4c0077d451e38ac2fadf6d21f0425ecaa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\B280.exit.json": "ae9a1e54e7a5cf748db13584828a09eeaa211d8cfc7c62805fedd334ebb011c2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R3\\report.json": "09ef2a4edd114765b6f1cda0f853afd92de21242018ff7510fb2965dcc92283f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084R3\\stdout.log": "b83fcb9a97f02f8b4289e45edcb10c267735fc82d1fcebe174a37bdd49d35fc5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-native-execution\\E084R3.exit.json": "303854651daf5111c0687ecbe208100036dc218cf68ba450ea4fc0db7042f519"
+  },
+  "accepted162_restored": true,
+  "main_live_ptx_unchanged": true,
+  "candidate_accepted": false,
+  "limits": "Separate stdlib arithmetic from retained raw records by root, not an external independent audit. Initial screen only; component medians are not an additive partition or cause attribution."
+}

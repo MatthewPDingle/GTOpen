@@ -1,0 +1,47 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -515,3 +515,44 @@
+         }
+     }
+ }
++
++// Parent-grouped downward chance fanout. Existing orbit tables identify
++// representative edges with cc_perm == 0; all scalar copy/mask results match
++// the original edge kernel. No barrier or new scratch allocation is needed.
++extern "C" __global__ void down_chance_parent(
++    const u32* __restrict__ nodes, int start, int count,
++    const u32* __restrict__ cc_start, const u32* __restrict__ cc_count,
++    const u32* __restrict__ cc_card, const u32* __restrict__ cc_child,
++    const u32* __restrict__ cc_perm,
++    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
++    const u64* __restrict__ mask0, const u64* __restrict__ mask1,
++    float* reach0, float* reach1, int nh0, int nh1)
++{
++    int b = blockIdx.x;
++    if (b >= count) return;
++    u32 n = nodes[start + b];
++    u32 begin = cc_start[n];
++    u32 end = begin + cc_count[n];
++    const float* parent0 = reach0 + (u64)rsrc0[n] * nh0;
++    const float* parent1 = reach1 + (u64)rsrc1[n] * nh1;
++    for (int i = threadIdx.x; i < nh0; i += blockDim.x) {
++        float value = parent0[i];
++        u64 hm = mask0[i];
++        for (u32 t = begin; t < end; t++) {
++            if (cc_perm[t] != 0) continue;
++            u32 child = cc_child[t];
++            u64 cm = 1ull << cc_card[t];
++            reach0[(u64)rsrc0[child] * nh0 + i] = (hm & cm) ? 0.f : value;
++        }
++    }
++    for (int j = threadIdx.x; j < nh1; j += blockDim.x) {
++        float value = parent1[j];
++        u64 hm = mask1[j];
++        for (u32 t = begin; t < end; t++) {
++            if (cc_perm[t] != 0) continue;
++            u32 child = cc_child[t];
++            u64 cm = 1ull << cc_card[t];
++            reach1[(u64)rsrc1[child] * nh1 + j] = (hm & cm) ? 0.f : value;
++        }
++    }
++}

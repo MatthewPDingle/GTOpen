@@ -1,0 +1,31 @@
+{
+  "id": "D087-ability",
+  "at": "2026-10-17T05:45:22.511599+00:00",
+  "status": "FROZEN_PRE_NATIVE",
+  "output_dir": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\ability-execution",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\ability.exe",
+  "private_dll_dirs": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib"
+  ],
+  "driver_cbid_header": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h",
+  "expected_kernels": 13,
+  "graph_nodes": 3,
+  "graph_replays": 4,
+  "expected_graph_launch_API_records": 4,
+  "expected_kernel_launch_API_records": 4,
+  "correlation_contract": "Every13actual kernel must join its own eager launch or graph replay API by exact CUPTIcorrelationId. All API correlation IDs unique and valid. Two phase markers ordered.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\run-ability.py": "9fa10dd4d3483e64832f0f6c800ade16cae5509b51ce9e4e40d3d840ed7cec3d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\collector.cpp": "1fd93739e96458e18c1fdf5b7a56b98b73ae9158581bf26015966bc739ca3fb9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\ability.rs": "d5aa4bd330dd3c84b46327d92a26a6d6b967d8d43aacd2b643a4857db161210a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\proposal.json": "57e80b36bdb5bd3af52e47f663e7b390c49658b9374adba539d393aed6925c5b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build-plan.json": "54e62ab2352051b6bd41d069b3164b1db50a779d4738085b40fbd71cb8de7226",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\complete.json": "4f9f7cbc4d9b5bc5df75a94be852dce05871e2c669be9b71519e4f51a71ccb99",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.lib": "35a38ae508f0620673305a0a13f4f02afc0a122067823d10dbdbdf6751b4031d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\ability.exe": "3802ab8bbac66d7b2ba38d8a5a8aea0e6c9e73d27d2f808aec520fed5c51a53a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h": "87bda1c526285330d1837fbc08af504e4a69b247242f7dec3446b3e8237d051d"
+  },
+  "optimization_accepted": false
+}

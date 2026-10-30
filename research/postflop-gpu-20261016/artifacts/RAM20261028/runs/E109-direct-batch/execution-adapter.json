@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-29T02:46:27.155443+00:00",
+  "status": "PRE_FIRST_COMPILER_NATIVE_METADATA_CORRECTION",
+  "original_protocol_sha256": "f297e01fc92f8317b6cda58e7e25520a811055917cae13835ce7b9cd69090eb1",
+  "new_executor_sha256": "2db8a808fc80659c3cf888703c2290806f933d218d8d59d523a778d175e59100",
+  "corrections": [
+    "Fold marker is D235_FOLD_UNIT, not D235_RAW; read from actual frozen probe.",
+    "Fold probe requires D235_FOLD_KERNEL_CONTROL_DIR, not argv; set original specified raw directory.",
+    "Chance original auditor writes comparisons/D234-kernel-control/report.json.",
+    "Fold original auditor expects stdout next to raw directory; provide byte-verified copy of terminal native stdout at that path."
+  ],
+  "scientific_inputs_unchanged": true,
+  "original_source_corpus_PTX_compiler_arguments_native_arguments_readers_unchanged": true,
+  "native_or_compiler_executions_before_repair": 0,
+  "scope": "Execution metadata adapters only. All frozen original artifacts and future full numerical gates retained. No data cases or source optimization changes."
+}

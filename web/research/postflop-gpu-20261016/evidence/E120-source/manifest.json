@@ -1,0 +1,38 @@
+{
+  "id": "E120",
+  "at": "2026-10-29T18:20:40.626414+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "1a903aa2a842d1c539db476e9d250c052de223ceb1f5ba7b86d650c3dd6845ee",
+  "edits": [
+    {
+      "old": "    extern __shared__ char shraw[];",
+      "new": "    extern __shared__ char shraw[];\r\n#if __CUDA_ARCH__ == 1200\r\n    __shared__ u32 kept_card_end[52];\r\n#endif"
+    },
+    {
+      "old": "    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];",
+      "new": "#if __CUDA_ARCH__ == 1200\r\n    int unsafe_card_reach = nh_o < 0 || nh_o > 1326;\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {\r\n        float r = ro_g[j];\r\n        ro_sh[j] = r;\r\n        unsafe_card_reach |= __float_as_uint(r) > 0x67800000u;\r\n    }\r\n#else\r\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];\r\n#endif"
+    },
+    {
+      "old": "        card_pos_sh[j] = o_card_pos[card_base + j];\r\n    __syncthreads();",
+      "new": "        card_pos_sh[j] = o_card_pos[card_base + j];\r\n#if __CUDA_ARCH__ == 1200\r\n    bool compact_cards = !__syncthreads_or(unsafe_card_reach);\r\n#else\r\n    __syncthreads();\r\n#endif"
+    },
+    {
+      "old": "    __syncthreads();\r\n    // Blocked inclusive scan:",
+      "new": "    __syncthreads();\r\n#if __CUDA_ARCH__ == 1200\r\n    for (int card = threadIdx.x; card < 52; card += blockDim.x) {\r\n        u32 begin = o_card_off[(u64)slot * 53 + card] - card_base;\r\n        u32 end = o_card_off[(u64)slot * 53 + card + 1] - card_base;\r\n        u32 write = begin;\r\n        if (compact_cards) {\r\n            for (u32 read = begin; read < end; read++) {\r\n                u32 pos = card_pos_sh[read];\r\n                if (__float_as_uint(reach_sh[pos]) != 0u)\r\n                    card_pos_sh[write++] = pos;\r\n            }\r\n        } else {\r\n            write = end;\r\n        }\r\n        kept_card_end[card] = write;\r\n    }\r\n#endif\r\n    // Blocked inclusive scan:"
+    },
+    {
+      "old": "            u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];",
+      "new": "#if __CUDA_ARCH__ == 1200\r\n            u32 c1 = card_base + kept_card_end[cc[x]];\r\n#else\r\n            u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];\r\n#endif"
+    }
+  ],
+  "entire_CRLF_source_inverse_exact": true,
+  "target": "up_show only compute120 stable positivezero card-position compaction",
+  "unchanged": "Allprefixfloatingrecurrences,nonzero correction order,boundarypredicates,fullsame/valid/tied/three-term payout/allwrites. Allhost,ABI27,physicalglobalarrays/launch/block/dynamicshared/quality/stopping/saveunchanged;compute75originaltokens.",
+  "added_costs": "52u32 staticshared endpoints208B, wholeCTA integerguardOR, all52cardinterval scans and sharedrewrites each eligible CTA, fallbackendpublish eachineligibleCTA,code/JIT/register/residency risk. Same5logicalCTAbarriers;firstisOR. No material or speed guarantee.",
+  "history_and_contract_sha256": {
+    "history.json": "2693a361673b7ba2300fdc6ac2c912eeb2791c79a9ad7c021b2464edfb3b398e",
+    "dependency-and-FP-contract.json": "fe47c3c5867cc8f569ede84dd4e58286b873ba0fa444357b013b34a792c7bf95"
+  },
+  "closure": "No source/predicate/bound/cardlist/width/architecture/helper/flags/quality/sample rescue after any genuine failure."
+}

@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-18T03:48:33.140715+00:00",
+  "original_protocol_sha256": "e66837f3fa1a9dd402a9366e85cf14a322f400b3c7142b75ad009278e6fcd330",
+  "original_harness_sha256": "ec37488883f99b256f5074b942a6f5ea26ea8b399cc9c447e1fa3e5e84007259",
+  "completed_harness_sha256": "cde920c4c79c9f7c92a346b312a6bc23e058621fbb09d0cf93fe389c8894434c",
+  "reason": "Source review found the standalone --test harness needs crate-root SpotConfig, parse_sizes, StreetSizing and TreeConfig reexports used by both preexisting plan unit modules. Added only those imports before any compiler/native execution. Original protocol/harness retained. Candidate/source/map/case/order/criteria unchanged.",
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "source_candidate_unchanged": true
+}

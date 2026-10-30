@@ -1,0 +1,70 @@
+--- accepted-evaluator
++++ D212-diagnostic-evaluator
+@@ -14,6 +14,10 @@
+ use std::io::{self, Write};
+ use std::sync::Arc;
+ use std::time::Instant;
++
++#[link(name="D087Collector")] extern "system" {fn D087StartTrace()->u32;fn D087PhaseTrace(marker:u32)->u32;fn D087FlushTrace()->u32;fn D087StopTrace()->u32;}
++struct D212Guard;impl Drop for D212Guard{fn drop(&mut self){unsafe{D087StopTrace();}}}
++
+ 
+ const TARGET_PCT_POT: f64 = 0.3;
+ const CHECK_EVERY: u32 = 20;
+@@ -174,13 +178,15 @@
+         "initialization_note": "fixed fixture order; first GPU initialization includes runtime NVRTC/JIT work; device compiler/module caches may be warm after the first fixture",
+     }));
+ 
++    assert!(filter.is_none() && storage == Storage::Compressed && !profile,"D212 original full suite only");
++    let _d212_guard=D212Guard;
+     let mut completed = 0;
+     for (fixture_index, &(name, board, rake)) in FIXTURES.iter().enumerate() {
+         if filter.as_ref().is_some_and(|filter| filter.as_str() != name) {
+             continue;
+         }
+         let mut config: SpotConfig =
+-            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++            serde_json::from_str(include_str!("bench_spot.json")).unwrap();
+         config.board = board.into();
+         config.tree.rake_pct = rake;
+         config.tree.rake_cap = 3.0;
+@@ -204,12 +210,16 @@
+         }));
+ 
+         let stage_start = Instant::now();
++        if fixture_index==0 {assert_eq!(unsafe{D087StartTrace()},1,"D212 activity start");}
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+1) as u32)},1,"D212 init begin");
+         let mut gpu = GpuSolver::new(&host).expect("benchmark requires CUDA");
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+2) as u32)},1,"D212 init end");
+         let gpu_init_ms = elapsed_ms(stage_start);
+         emit_stage(json!({"stage": "gpu_ready", "fixture_id": name, "init_ms": gpu_init_ms}));
+ 
+         let solve_start = Instant::now();
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+3) as u32)},1,"D212 solve begin");
+         let (exploit, exploit_pct_pot) = loop {
+             for _ in 0..CHECK_EVERY {
+                 gpu.iterate().unwrap();
+@@ -227,11 +237,14 @@
+             }
+         };
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+4) as u32)},1,"D212 solve end");
+         let solve_checks_ms = elapsed_ms(solve_start);
+ 
+         let stage_start = Instant::now();
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+5) as u32)},1,"D212 readback begin");
+         gpu.sync_to_cpu(&mut host).unwrap();
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace((fixture_index*6+6) as u32)},1,"D212 readback end");
+         let full_readback_ms = elapsed_ms(stage_start);
+         let total_ms = elapsed_ms(total_start);
+         assert_eq!(host.iteration, gpu.iteration);
+@@ -268,6 +281,7 @@
+         }));
+         assert!(target_met, "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations");
+ 
++        if fixture_index+1==FIXTURES.len(){assert_eq!(unsafe{D087FlushTrace()},1,"D212 activity flush");assert_eq!(unsafe{D087StopTrace()},1,"D212 activity stop while last context alive");}
+         if profile {
+             let diagnostic = gpu.iterate_profiled().unwrap();
+             emit_stage(json!({

@@ -1,0 +1,16 @@
+# E015: reuse player1 reach inside an ordinary paired iteration
+
+Source-ready only. The builder performed no compilation, GPU execution, benchmark, deployment, or live API mutation. No speed or runtime correctness claim is established here. Root owns subsequent checks and acceptance.
+
+Basis: `../D023-reach-reuse-design/audit.md`, read in full. `base-mod.rs` is the accepted E004 implementation at current HEAD; its SHA256 is `0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b`. `source-checks.json` records current commit, candidate/patch hashes and protected inputs.
+
+The only checkout edit is `crates/solver/src/gpu/mod.rs`. Ordinary iteration eager dispatch, graph capture, and profiled iteration call an explicit private paired helper. The p0 down sweep remains full. Immediately following p1 uses a separate `down_nh1=0` argument only for copy_root, down_action and down_chance. p0 up changes player0 learning state; it cannot change the roots, regrets, locks, or reach slots used to recompute player1 reaches. The generic standalone `sweep` always requests full down, including isolated p1 continuation after root/workspace changes. Real hand counts, all up dispatch, evaluation, constructor, kernels, plans and allocations remain unchanged. Every next p0 refreshes both players after evaluation, lock changes, or warm reconstruction. No cross-iteration cache is introduced.
+
+Two bounded, nonignored internal GPU tests are included for root to execute serially with `LIB.exe gpu::tests::paired_reach_reuse_ --nocapture --test-threads=1`:
+
+- Eight DCFR/CFR+ × F32/compressed × full/compact cases compare raw regret, strategy, and both reach buffers against generic full-sweep reference iterations. Assertions ensure compact/full layouts are actually used. Coverage includes eager first iteration, capture, replay, evaluation interleaving, profiled iteration, both-actor lock updates and recapture, and a new GPU solver from a nonzero CPU image. Menus collectively require action arities 1–5.
+- An independent copy of the original full-down launch sequence compares raw player1 reaches before p0 up, after p0 full sweep/up, and after legacy p1 down. Changed roots and poisoned reach buffers then verify that isolated generic p1 refreshes both players without a p0 predecessor.
+
+Only initialized learning/reach buffers are compared; reused CFV scratch is excluded. Warm reconstruction is not a disk save/load test. Poisoned-buffer coverage is not an execution of the actual paged/storage workspace swap paths; those remain a separate integration check. Source proof establishes unchanged generic continuation dispatch, not runtime qualification of every feature-gated continuation wrapper. Arbitrary signed-zero roots are used solely to test dispatch refresh, not to claim valid isomorphic solving for asymmetric ranges.
+
+Builder verification: syntax-only rustfmt parsing (stdout discarded), `git diff --check`, ten mechanical source checks, and exact unchanged hashes for kernels, plan, arena, Store, continuation capacity, frozen evaluator and bench configuration. The original-down test helper's three launch argument orders were mechanically matched to the baseline. Independent source review passed before root build. No further checkout writes are planned while root freezes/builds.

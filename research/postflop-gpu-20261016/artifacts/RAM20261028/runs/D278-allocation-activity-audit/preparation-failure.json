@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-29T14:55:40.882651+00:00",
+  "preparer_sha256": "c70bfb4c83b1a31d31b3a21e77c07b2587545dfeb4909f8aa94fdf07d15de3c6",
+  "reader_sha256": "d4d26db8f9af57fe6a9737a0b0e3ae378e6f1c28a1debeda2cb878d7fa4e5fa9",
+  "exit": 1,
+  "cause": "FileNotFoundError: extracted libmimalloc-sys-0.1.49/.cargo-checksum.json absent. Original preparation failed before protocol/source review creation or raw-reader execution.",
+  "correction": "Pin Cargo.lock crate SHA and compare every referenced source file directly with complete archived member bytes. Preserve original scripts/failure, new v2 scripts/directory.",
+  "new_compilers_native_GPU_CFR_solver_or_speed_samples": 0
+}

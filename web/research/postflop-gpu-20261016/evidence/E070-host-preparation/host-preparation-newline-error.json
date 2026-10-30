@@ -1,0 +1,8 @@
+{
+  "error": "Staging used text-mode LF serialization for the frozen CUDA source; exact byte hash assertion failed before manifest/patch publication.",
+  "original_script_sha256": "1578d458a4fe4a11d7e2f6dc698ff8e0b59179f20f916a37f2dfa5fe3e781aba",
+  "retained_partial_tree": "host-integration",
+  "repair": "Use a new host-integration-r2 directory; byte-copy all original baselines and the frozen core CUDA candidate. No CUDA token, host logic, scientific case or gate change.",
+  "GPUexecutions": 0,
+  "new_solver_builds": 0
+}

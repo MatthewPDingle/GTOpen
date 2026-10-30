@@ -1,0 +1,148 @@
+{
+  "id": "D065-readback-diagnostic",
+  "at": "2026-10-16T20:29:16.799499+00:00",
+  "status": "DRAFT_NOT_SEALED",
+  "candidate": "D065",
+  "reference": "accepted E020",
+  "order": [
+    "D065B1",
+    "D065P1",
+    "D065P2",
+    "D065B2",
+    "D065B3",
+    "D065P3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D065B1",
+      "candidate": "D065P1"
+    },
+    {
+      "baseline": "D065B2",
+      "candidate": "D065P2"
+    },
+    {
+      "baseline": "D065B3",
+      "candidate": "D065P3"
+    }
+  ],
+  "owned_sources": [
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "candidate_owned_sha256": {},
+  "source_entry_count": 162,
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\source-manifest.json",
+  "source_archive_sha256": null,
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "expected_profile_records_per_run": 3,
+  "profile_order_per_fixture": "Exactly one full_readback record after final convergence_check and before timing_complete",
+  "marker": "LIFECYCLE_PROFILE",
+  "compiled_diagnostic_markers": true,
+  "runtime_flag": "POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE",
+  "storage": "compressed",
+  "profile_eager_path": "disabled",
+  "fixture_filter": "explicitly removed",
+  "RAYON_NUM_THREADS": "16",
+  "exactness": "All18 complete results/configuration/state objects and138 convergence checks exact across6 runs. Exactly3 full_readback records with14 ordered spans each per profiledrun, none in ordinary controls.",
+  "usefulness_guard": {
+    "metric": "absolute percentage change in sum of per-fixture full-cycle medians, instrumented versus ordinary",
+    "maximum_percent": 10.0,
+    "fixture_and_pair_changes": "all reported separately; no exclusions",
+    "failure_status": "inconclusive diagnostic usefulness; retain all evidence and do not infer savings"
+  },
+  "component_aggregation": "For each fixture/stage retain all3 profiled spans and raw ranges, then report median. Sum per-fixture medians only as grouped diagnostic host time, not measured saving.",
+  "exclusions": [],
+  "outcome_triggered_extensions": false,
+  "performance_acceptance": false,
+  "deployment_changed": false,
+  "live_server_mutations": false,
+  "new_cuda_syncs": 0,
+  "extra_device_or_arena_allocations": 0,
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d065-readback",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "restore": "Reverse only exact gpu/mod.rs instrumentation after fixed cohort/audit; verify all162 accepted E020 source hashes. Preserve every log and artifact.",
+  "schema_sha256": null,
+  "stage_names": [
+    "initial_stream_wait",
+    "dtoh_host_call",
+    "dtoh_stream_wait",
+    "encode_scatter_restore_cpu",
+    "publish_iteration_and_symmetry_flag_cpu"
+  ],
+  "expected_identity": [
+    {
+      "fixture_id": "rainbow",
+      "board": "Ks7h2d",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "two-tone",
+      "board": "Ks7s2d",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "river",
+      "board": "Ks7h2dQhTc",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33
+    }
+  ],
+  "component_interpretation": "dtoh_host_call plus dtoh_stream_wait is transfer-related host elapsed, not isolated PCIe time. encode_scatter_restore_cpu includes unchanged conversion/scatter/inactive restoration. No removable fraction or speed acceptance established.",
+  "residual_interpretation": "Trace envelope minus14span sum is timer/bookkeeping overhead; outer readback minus trace includes surrounding existing sync, logging/return/evaluator overhead. Envelopes and grouped components overlap and must not be added as disjoint costs.",
+  "additional_solver_work": 0,
+  "extra_host_census": 0,
+  "runtime_flag_profile": "1",
+  "runtime_flag_ordinary": "0",
+  "expected_spans_per_record": 14,
+  "optimistic_overlap_ceiling": "Per record min(sum(dtoh_host_call+dtoh_stream_wait),sum(encode_scatter_restore_cpu)). This deliberately optimistic measured-span ceiling excludes startup/tail, extra pinned allocation/bandwidth contention, scatter dependencies and implementation overhead. Those costs are unmeasured and must be measured before any candidate; no predicted complete-cycle gain or general bound on cache effects.",
+  "trace_host_allocation": "D009 helper uses one Vec with capacity16 for enabled14 spans; disabled trace capacity0. This observer allocation and timers/logging stay inside measured readback; no extra GPU or arena allocation.",
+  "preexisting_target_artifacts": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-root-decisions\\preparation.json",
+  "root_preparation_sha256": "067bee97303018dd3808f6ec6eeb13a08988b6c16dc3f38c3c4cbf28455b753b",
+  "runtime_flag_evidence": "The unchanged shared runner does not include this flag in report.environment; each frozen cohort invocation records the exact per-child override passed in run_env. Profile records plus fixed source verify enabled behavior."
+}

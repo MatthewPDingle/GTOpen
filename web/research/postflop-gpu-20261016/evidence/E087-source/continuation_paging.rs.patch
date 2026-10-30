@@ -1,0 +1,10 @@
+--- accepted/crates/solver/src/gpu/continuation_paging.rs
++++ E087/crates/solver/src/gpu/continuation_paging.rs
+@@ -81,6 +81,7 @@
+         // No per-board pinned arena image. Transfers below use the retained
+         // F32 host stores and synchronize before their borrow is released.
+         gpu.h_staging = PinnedBuf::new(&gpu._ctx, 1)?;
++        for layout in &mut gpu.arena_layout { layout.discard_bounded(); }
+         workspace.absorb(buffers);
+         Ok(Self { gpu, spot: host.spot.clone(), lengths, poisoned: false, transferred_bytes: 0 })
+     }

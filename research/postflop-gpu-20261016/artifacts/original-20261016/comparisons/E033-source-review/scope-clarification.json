@@ -1,0 +1,7 @@
+{
+  "id": "E033-source-review-scope-clarification",
+  "parent_report_sha256": "5c24836212e5bab1645b5dc47a3cedd2e785ee1e9bc07ffedf4e5b8eea06facd",
+  "clarification": "The report phrase complete device states means the full per-player regret, cumulative strategy and reach arrays checked by assert_reach_reuse_state, plus iteration. Inactive/unwritten CFV scratch is deliberately excluded. Exploitability bits, full CPU F32/q/scales, metadata and separate cleanup data/tail checks are independent controls; no claim that every device allocation is compared.",
+  "source_reference": "candidate/mod.rs:1324-1337",
+  "verdict_unchanged": true
+}

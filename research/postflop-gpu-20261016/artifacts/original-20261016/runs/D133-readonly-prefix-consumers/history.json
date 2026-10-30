@@ -1,0 +1,40 @@
+{
+  "at": "2026-10-18T09:01:58.228492+00:00",
+  "bounded_current_ledger_local_all_ref_search": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "t <=.*threadIdx|t<.*threadIdx|chunk_sum\\[t\\].*base|base.*chunk_sum\\[t\\]",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "-i",
+        "redundant.{0,30}(scan|prefix)|replicat.{0,30}(scan|prefix)|duplicat.{0,30}(scan|prefix)",
+        "research/postflop-gpu-20261016/experiments.md"
+      ],
+      "returncode": 0,
+      "stdout": "896:## E038: remove the redundant unsigned zero-upload scan\n958:Historical E011 never reached implementation because its entire affected-stage ceiling was below2%. Under the user's current1% policy, E041 prepares a distinct minimal zero-restoration hypothesis on accepted E020: for an existing compact inactive positivezero sentinel, fill exactly its owned I16/U16 q range and write positivezero to its own node scale, bypassing the redundant max scan. Every explicit finite/signedzero/nonfinite snapshot still calls the original Store encoder; active nodes, F32, uploads, CUDA, allocation and synchronization stay unchanged. Existing zeros storage is retained. Historical envelopes do not establish an achievable saving or a new threshold pass.\n",
+      "stderr": ""
+    }
+  ],
+  "counterevidence": {
+    "E008_patch_sha256": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+    "E008_fresh16_gain_pct": 0.5171077404,
+    "E008_status": "closed; not remeasured or composed",
+    "difference": "E008 kept the single thread-0 producer, all cumulative chunk_sum writes and both barriers. E082 removes the shared cumulative producer entirely: all threads independently fold immutable raw chunk totals into private base in the identical operand/order recurrence, then apply their own chunk offsets. More arithmetic, no shared cumulative writes, one fewer CTA barrier. No changes to node/thread mapping, CTA width, producer chunk scan, final prefix materialization or host."
+  },
+  "E081_mapping_remains_closed": true,
+  "limits": "Bounded matching/history/source comparison only; no exhaustive remote novelty, dynamic bottleneck attribution or performance result."
+}

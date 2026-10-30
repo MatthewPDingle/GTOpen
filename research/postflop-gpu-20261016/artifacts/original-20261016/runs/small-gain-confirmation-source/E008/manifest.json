@@ -1,0 +1,41 @@
+{
+  "id": "E008",
+  "kind": "Independent fresh-confirmation source archive only",
+  "baseline": "accepted E020",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "3324dd9ec06da76e43bb1103e0fc66d329b237980f74b615cd50dad7be7d2619"
+  },
+  "artifact_sha256": {
+    "candidate.patch": "758813c8a67dc633badf1b4b6fe3a6b9592ada83da55dce596a9be93a9c378b3",
+    "historical.patch": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+    "source-checks.json": "c8fbdc668266a777c2ad761f76aba1437871e3e77ece8734f8dd1ce7757a0421",
+    "source-cost-review.json": "61364f693f6eeb73b9268a0e9c18f30cb37385124d1bd72a4a491d23463f5057",
+    "base/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate/kernels.cu": "3324dd9ec06da76e43bb1103e0fc66d329b237980f74b615cd50dad7be7d2619"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\preparation.json": "8f447dfb8ad7f0598ae6ee886453d3b73dbc89182f20b5dcdfcf988961cb23c6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\applicability.json": "063268a5052840fbf59f83d59f1a835edaf910acae97add659ccfdc0f56cbdea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\accepted-source-map.json": "8e9aeadd572e6dd7365129929b8b786abc5906508f4e39aba534b5a0d965808b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E008.patch": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E008-three-pair-comparison\\report.json": "571d9139d024a9863a08803b75e3febab4303a1bf973b0556b49e98c774a16f8"
+  },
+  "gpu_only_unit_inventory": {
+    "passed": 84,
+    "ignored": 4,
+    "total": 88
+  },
+  "focused_tests": [],
+  "test_marker": null,
+  "auxiliary_sources": [],
+  "fresh_execution": false,
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false
+}

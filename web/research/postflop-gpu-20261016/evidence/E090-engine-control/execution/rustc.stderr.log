@@ -1,0 +1,20 @@
+warning: private item shadows public glob re-export
+ --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\E090-engine-control\probe.rs:3:27
+  |
+3 | use solver::store::{Store,Storage};
+  |                           ^^^^^^^
+  |
+note: the name `Storage` in the type namespace is supposed to be publicly re-exported here
+ --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\E090-engine-control\probe.rs:2:9
+  |
+2 | pub use solver::*;
+  |         ^^^^^^^^^
+note: but the private item here shadows it
+ --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\E090-engine-control\probe.rs:3:27
+  |
+3 | use solver::store::{Store,Storage};
+  |                           ^^^^^^^
+  = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: 1 warning emitted
+

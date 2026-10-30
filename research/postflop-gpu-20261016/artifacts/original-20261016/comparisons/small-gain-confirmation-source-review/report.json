@@ -1,0 +1,127 @@
+{
+  "id": "small-gain-confirmation-source-review",
+  "at": "2026-10-16T22:42:25.553212+00:00",
+  "verdict": "PASS_SOURCE_SCOPE_WITH_COST_QUALIFICATION_PENDING",
+  "independent_source_review_pass": true,
+  "source_manifest_sha256": "d7191141093875416b666335b4e678b89035e60ff3170af17e7f55bcaedb1e52",
+  "all_four_independent_E020_arms": true,
+  "current_accepted_source_entries_verified": 162,
+  "source_artifacts_and_references_verified": 55,
+  "total_unique_pins_verified": 217,
+  "mechanical_assertions": 320,
+  "meaningful_unit_inventory_prospective": {
+    "E007": {
+      "passed": 84,
+      "ignored": 4,
+      "total": 88
+    },
+    "E008": {
+      "passed": 84,
+      "ignored": 4,
+      "total": 88
+    },
+    "E032": {
+      "passed": 85,
+      "ignored": 4,
+      "total": 89
+    },
+    "E036": {
+      "passed": 85,
+      "ignored": 4,
+      "total": 89
+    }
+  },
+  "per_candidate": [
+    {
+      "candidate": "E007",
+      "source_verdict": "PASS_MINIMAL_CURRENT_BASE_SCOPE",
+      "exact_scope": "One launch_bounds(128,9) annotation on up_action; numerical bodies, host source and ABI parameters unchanged.",
+      "source_refs": [
+        "E007/candidate/kernels.cu:410",
+        "E032/base/mod.rs:34",
+        "E032/base/mod.rs:385",
+        "E032/base/mod.rs:965"
+      ],
+      "inventory": "84 passed +4 ignored prospective; no new test. Existing full-state/F32/menu controls remain necessary.",
+      "known_costs": "No new declared buffer/layout. Maximum128-thread launch is a real compatibility restriction; current postflop entry launches at128 and evaluation uses a separate entry.",
+      "unresolved_before_adoption": "Actual current compiler registers/local spill/code allocation and supported architecture behavior. The9-block hint is not a measured occupancy result. No future launch above128 is covered."
+    },
+    {
+      "candidate": "E008",
+      "source_verdict": "PASS_MINIMAL_CURRENT_BASE_SCOPE",
+      "exact_scope": "Only original thread0 running scalar recurrence, same ascending t and operand order chunk_sum[t]+previous_prefix; same+0 start, bounds, writes and barriers. E020 position cache retained.",
+      "source_refs": [
+        "E008/candidate/kernels.cu:253"
+      ],
+      "inventory": "84 passed +4 ignored prospective; no new test. Conditional exact original-kernel/F32/chunk-boundary coverage remains meaningful.",
+      "known_costs": "No declared buffer/shared/ABI/host change; one automatic float scalar replaces prior shared-prefix reads.",
+      "unresolved_before_adoption": "Compiled register/local/instruction changes and native exactness on current E020. Source equivalence does not certify generated floating code or material cost."
+    },
+    {
+      "candidate": "E032",
+      "source_verdict": "PASS_EXACT_ARCHIVED_CURRENT_BASE_SCOPE",
+      "exact_scope": "Exact earlier E020-based host consolidation; both terminal lists consolidate only when both full counts fit signed count and queried grid. Otherwise original terminal/chance/action interleaving remains.",
+      "source_refs": [
+        "E032/candidate/mod.rs:75",
+        "E032/candidate/mod.rs:108",
+        "E032/candidate/mod.rs:242",
+        "E032/candidate/mod.rs:878",
+        "E032/candidate/mod.rs:1313",
+        "accepted gpu/plan.rs:214-240",
+        "accepted gpu/mod.rs:370"
+      ],
+      "inventory": "85 passed +4 ignored prospective, existing geometry/fallback test and modified lifecycle/profile controls. The fallback comparison shares dispatcher code; it is not an independent original implementation.",
+      "known_costs": "No new terminal device storage: E020 already assigns persistent unique terminal CFV rows and identical d_cfv length. Adds one u32 host field, optional early query and ephemeral span/iterator scheduling; no new source heap container. CUDA/evaluation and device layouts remain unchanged.",
+      "unresolved_before_adoption": "Rust struct padding/stack impact, actual graph/executable allocation and capability/fallback behavior, scheduling/locality and broader lifecycle compatibility. Fewer graph nodes does not establish lower memory or cost-free operation."
+    },
+    {
+      "candidate": "E036",
+      "source_verdict": "PASS_EXACT_ARCHIVED_CURRENT_BASE_SCOPE",
+      "exact_scope": "Exact rejected E036, not E037: bitwise whole-row+0 predicate; uniform finite-payoff selection; full logical+0 writes, cross-lane barrier and present-hand original three-term expression; fallback suffix unchanged.",
+      "source_refs": [
+        "E036/candidate/kernels.cu:228-255",
+        "E036/candidate/mod.rs:1159"
+      ],
+      "inventory": "85 passed +4 ignored prospective; preserved original-fragment GPU comparison34pairs/68launches, both orientations/empty/count0/missing/signedzero/nonfinite/fallback guards and immutable-input checks. Fresh run required.",
+      "known_costs": "No new buffers/layout/static shared or production host change. Every row pays bit-OR and collective predicate work; additional scalar state/branches and eligible writes can change codegen cost.",
+      "unresolved_before_adoption": "Actual generated registers/local/instruction costs and broader exactness/compatibility. The finite/direct test scope does not prove all F32 or lifecycle states. E037 positive-output shortcut remains excluded."
+    }
+  ],
+  "actionable_source_findings": [],
+  "no_material_cost_validation": "PENDING; source review is not a no-tradeoffs or adoption verdict. Actual compiled resources, graph/capacity/lifecycle and fresh complete-cycle evidence remain required where applicable.",
+  "scope": "Read-only candidate/source review plus off-tree report. No source activation, compiler, native test, GPU, timing, new harness or test implementation. Historical outcomes remain rejected. User1% confirmation and exactness/zero-threshold fixture guard are separately prospectively frozen.",
+  "historical_raw_tests_used_only_for_inventory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-unit\\stdout.log",
+  "mechanical_checks": [
+    "E008_exact_original_recurrence_replacement",
+    "exact_historical_candidate:E032crates/solver/src/gpu/mod.rs",
+    "exact_historical_patch:E032",
+    "exact_historical_candidate:E036crates/solver/src/gpu/kernels.cu",
+    "exact_historical_candidate:E036crates/solver/src/gpu/mod.rs",
+    "exact_historical_patch:E036",
+    "historical_E020_84_4_inventory",
+    "one_meaningful_unit:E032",
+    "ignored_inventory_unchanged:E032",
+    "one_meaningful_unit:E036",
+    "ignored_inventory_unchanged:E036",
+    "E007_only_production_up_action_site_128",
+    "E007_cfg_at_actual_up_action_launch",
+    "E036_embedded_exact_original_fragment",
+    "E036_reference_is_accepted_complete_up_show",
+    "E036_exact_focused_marker_contract",
+    "E036_not_E037_test_or_variant",
+    "E032_preexisting_persistent_terminal_slots",
+    "E032_same_terminal_device_allocation",
+    "E032_optional_query_before_queued_work",
+    "E032_checked_signed_and_grid_bounds",
+    "E032_test_restores_limit_before_result_unwrap"
+  ],
+  "pinned_archives": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\manifest.json": "d7191141093875416b666335b4e678b89035e60ff3170af17e7f55bcaedb1e52",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E007\\manifest.json": "380815a41de04bfec3c1b69739da6449f1eb86137cdb7d1de3d7d1ed139f8430",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E008\\manifest.json": "58b04f2baa7dcf680a5f0601602926e6c9775085b56387c204915c9e59ec3e7b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E032\\manifest.json": "9abfc556d42c4137a1262cd9c74d81b254022629fd101afc25984797b29c9ec6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E036\\manifest.json": "643b5fda6dbaacef95d1a474afb9e64d587dd115b9c6ef0ffe1f3e7f2c71ed24"
+  },
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false
+}

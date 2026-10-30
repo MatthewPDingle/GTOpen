@@ -1,0 +1,137 @@
+{
+  "id": "E027-primary-plan",
+  "at": "2026-10-16T16:03:29.303681+00:00",
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "candidate": "E027",
+  "reference": "accepted E020",
+  "production_scope": "Eight-float physical reach-row pitch across plan/mod/kernels/game/continuation_capacity; logical hand counts, floating arithmetic/order, launch widths and frozen evaluator unchanged.",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "order": [
+    "V027-unit",
+    "B089",
+    "E027R1",
+    "E027R2",
+    "B090",
+    "B091",
+    "E027R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B089",
+      "candidate": "E027R1"
+    },
+    {
+      "baseline": "B090",
+      "candidate": "E027R2"
+    },
+    {
+      "baseline": "B091",
+      "candidate": "E027R3"
+    }
+  ],
+  "unit_screen": "GPU-only solver library ordinary tests;84 passed and4 ignored. Frozen candidate extends one existing geometry/accounting test and adds no test declarations. No primary timing if this screen fails.",
+  "aggregate_gate": "At least2 percent reduction in the sum of complete-cycle fixture medians across all3 alternating pairs.",
+  "fixture_guard": "Reject if a fixture median is more than3 percent slower and a strict majority (minimum2) of paired repetitions are more than3 percent slower.",
+  "exactness": "All complete non-timing result and configuration fields, full fingerprints, stopping iterations and exploitability bits match. Every raw run remains preserved.",
+  "broader_qualification_if_pass": "Independent primary audit, then immutable-original24 state/24 action-menu/112 resume records;3 full-F32 fixture comparisons; existing6 GPU integration and relevant continuation/paging/stored controls. Additionally require independent old-E020/new-E027 raw logical reach-row equality and padding guards, and actual workspace/plan/budget/board-swap consistency as specified below. Then unchanged prospective wide-turn holdout versus E020 and fresh-original3 alternating cumulative pairs under the original aggregate/fixture/exactness gates. Freeze any conditional harness and all needed builds separately before execution; no adoption from primary alone.",
+  "measurement_boundaries": "Frozen compressed3-fixture native complete cycles include construction/allocation, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo, final fingerprinting/destruction, browser/API latency and disk saving excluded. Warm driver cache disclosed.",
+  "exclusions": [],
+  "builds_before_timing": true,
+  "concurrent_gpu_or_build_work": false,
+  "first_physical_run": "E027R1",
+  "logical_dashboard_row": "E027",
+  "outcome_triggered_extensions": false,
+  "acceptance_from_probe": false,
+  "script_freeze": "Execution scripts and candidate/source identities will be sealed and independently checked before build/native launch; this prospective measurement order and gates must remain unchanged.",
+  "candidate_source_authorization": "Root creates immutable authorization.json after accepted E020/server qualification and independent E027 source/script review. Pin every immutable report/hash and all five candidate sources. No activation script is included.",
+  "owned_sources": [
+    "crates/solver/src/game.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "source_entry_count": 162,
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\README.md",
+  "design_sha256": "715cd6dfe29d1f09fb9509531858366e0ac043230e21539c1e28143d263286d7",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+    "crates/solver/src/gpu/mod.rs": "97bbb476c6d116a45e0243592b9abdc49e21f0055ed2716b4727a9c2994c6243",
+    "crates/solver/src/gpu/kernels.cu": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2",
+    "crates/solver/src/game.rs": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208"
+  },
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\manifest.json",
+  "source_archive_sha256": "68884e160241e8cff078f5709458158a3f05c5376183bedeb1dc57a17c95684a",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-primary-e027",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "wide_turn_holdout_if_pass": {
+    "fixture_id": "wide-turn-full169",
+    "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+    "prior_protocol_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\protocol.json",
+    "prior_protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+    "reference": "accepted E020",
+    "candidate": "E027",
+    "fixed_order": [
+      "B1",
+      "C1",
+      "C2",
+      "B2",
+      "B3",
+      "C3"
+    ],
+    "algorithm": "dcfr",
+    "storage": "compressed",
+    "use_isomorphism": true,
+    "target_pct": 0.3,
+    "check_every": 20,
+    "max_iterations": 400,
+    "guard": "Median slowdown greater than3 percent AND at least2 of3 paired slowdowns greater than3 percent rejects adoption. No2 percent gain requirement on holdout. Failure to reach target by400 is inconclusive/failed qualification, not permission to retune.",
+    "exactness": "All6 complete CPU store files byte-identical; every non-timing field, root vector, stopping iteration and convergence trajectory exact.",
+    "admission": "Unchanged2GiB constructor budget,4GiB device free/30GiB total,16GiB host available,50GiB S reserve plus outputs; hands1128/1128,river max1081/1081,48river cards,node bound11691. Candidate admission must account for padded reach rows. No duplicate planning pass, budget relaxation or rescue.",
+    "harness": "Reuse exact R2 evaluator/resource/raw-codec provenance and numerical body; separately freeze E020/E027 bindings and per-arm unused Cargo targets before build. No R1 shared-target reuse.",
+    "resource": "Both arms retain128 physical up_show threads and reserve21808 dynamic shared bytes on the fixed wide-turn fixture. Resource metadata alone is not a speed measure; normal admission and the native fixed holdout guard apply. No arbitrary register/occupancy nonregression threshold.",
+    "separate_from_primary_score": true
+  },
+  "prerequisites": [
+    "formal immutable E020 acceptance record",
+    "terminal successful E020 server qualification evidence",
+    "independent E027 source review",
+    "independent E027 primary script review"
+  ],
+  "no_live_server_changes": true,
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "cuda_provenance": "Both fresh candidate binaries must embed the complete frozen candidate CUDA and exclude full accepted E020 CUDA. Require unused target, fresh solver/test artifacts, exact five changed source identities and all157 unowned identities. No resource-only performance or arbitrary register-nonregression gate.",
+  "resource_gate": "No arbitrary register, spill or occupancy nonregression threshold. Normal correct device admission and fixed complete-cycle/fixture gates govern qualification.",
+  "conditional_reach_qualification_if_pass": {
+    "status": "Required prospective policy only; do not implement or run a conditional harness until fixed primary qualifies.",
+    "oracle": "Separate immutable E020 and candidate E027 builds on identical registered inputs; compare both players logical reach words by node/row/hand, excluding only declared physical padding. Same-layout candidate-to-candidate equality is insufficient.",
+    "raw_state": "Small bounded direct lifecycle comparison must inspect raw device reach rows before compressed readback; compare the same logical rows at matched sweep/iteration/evaluation checkpoints. Preserve exact old/new words and failures; no approximate or compressed-only oracle.",
+    "padding": "Exercise nonmultiple-of-eight hand counts and already-aligned counts; verify valid logical words and untouched padding/outer guards. Empty/zero work retains guards as appropriate. Preserve true hand bounds and E015 paired-reach reuse behavior.",
+    "workspace_capacity": "Check actual full and compact reach slice lengths against plan reach_pitch/reach_elements and the padded public estimate/admission; exact/tight budget behavior, both players, and required continuation paging/stored board/workspace swaps. A same-layout numerical comparison alone does not satisfy this accounting/lifecycle gate.",
+    "scope_limits": "Existing full-state/F32/lock/resume/continuation controls remain mandatory; a small raw-row check does not replace them. No new timing metric, additional primary samples, exclusions or rescue are authorized.",
+    "on_failure": "Reject qualification and retain all evidence; no silent fallback, budget relaxation, fixture substitution or outcome-triggered extension."
+  }
+}

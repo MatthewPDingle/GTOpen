@@ -1,0 +1,27 @@
+--- E080/continuation_capacity.rs
++++ E112/continuation_capacity.rs
+@@ -39,21 +39,21 @@
+     n+(p.num_nodes*8) as u64+4+12+(4*p.nh_max*4) as u64 // unlocked table, sigma, discounts, eval roots
+ }
+ 
+-/// Actual CUDA slice payloads, excluding the seven borrowed mutable buffers.
++/// Actual CUDA slices plus queried module discount bytes, excluding seven borrowed buffers.
+ pub(super) fn observed_metadata(g: &GpuSolver) -> u64 {
+     macro_rules! sum {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f.len()*size_of::<$t>()) as u64)*};}
+     let mut n=sum!(d_action_nodes:u32,d_chance_parents:u32,d_chance_children:u32,d_chance_cards:u32,d_chance_nodes:u32,
+         d_fold_nodes:u32,d_show_nodes:u32,d_node_player:i32,d_node_na:i32,d_node_data_off:u64,d_node_children_start:u32,
+         d_node_twin:f32,d_node_tlose:f32,d_node_ttie:f32,d_node_cdiv:f32,d_node_river_slot:i32,d_cc_start:u32,
+         d_cc_count:u32,d_cc_card:u32,d_cc_child:u32,d_cc_perm:u32,d_children:u32,d_lock_off:i64,d_lock_sigma:f32,
+-        d_cfv_slot:u32,d_eval_roots:f32,d_disc:f32);
++        d_cfv_slot:u32,d_eval_roots:f32);
+     for q in 0..2 {
+         macro_rules! arr {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f[q].len()*size_of::<$t>()) as u64)*};}
+         n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,
+             d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,
+             d_riv_upper:u32,d_riv_card_off:u32,d_riv_card_pos:u32);
+     }
+-    n
++    n + g.discount_symbol_bytes as u64
+ }
+ 
+ pub fn stored_capacity_plan(s: &Spot) -> Value {

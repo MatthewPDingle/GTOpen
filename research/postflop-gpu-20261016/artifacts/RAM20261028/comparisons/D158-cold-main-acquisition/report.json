@@ -1,0 +1,66 @@
+{
+  "id": "D158",
+  "at": "2026-10-28T12:28:51.226217+00:00",
+  "status": "declined_standalone_cold_acquisition_proxy",
+  "protocol_sha256": "af3419f98ae7cb03d554ea91c2db8e1bfb8a2b3211663f2bf8e6b54db3134e4d",
+  "gates": {
+    "C01:accepted_PTX_exact": true,
+    "C01:valid_actual_clock": true,
+    "C01:original_arch_no_GPU_calls": true,
+    "C02:accepted_PTX_exact": true,
+    "C02:valid_actual_clock": true,
+    "C02:original_arch_no_GPU_calls": true,
+    "C03:accepted_PTX_exact": true,
+    "C03:valid_actual_clock": true,
+    "C03:original_arch_no_GPU_calls": true
+  },
+  "all_emitted_PTX_exact": true,
+  "cold_acquisition_ms": [
+    78.5956,
+    77.8061,
+    78.3508
+  ],
+  "minimum_cold_proxy_ms": 77.8061,
+  "median_cold_ms": 78.3508,
+  "required_proxy_ms": 104.564109,
+  "proxy_admitted": false,
+  "native_records": [
+    {
+      "id": "C01",
+      "PTX_bytes": 232925,
+      "architecture": "compute_120",
+      "cold_acquisition_ns": 78595600,
+      "compile_options": "arch:Some(compute_120),all_other_Default; exact accepted call",
+      "explicit_GPU_context_or_kernel_calls": 0,
+      "scope": "Fresh process first OnceLock acquisition including NVRTC library acquisition/compilation and Ptx clone; output writing outside clock. Standalone CPU observation,no solver/context and no overlap model or speed score.",
+      "PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    },
+    {
+      "id": "C02",
+      "PTX_bytes": 232925,
+      "architecture": "compute_120",
+      "cold_acquisition_ns": 77806100,
+      "compile_options": "arch:Some(compute_120),all_other_Default; exact accepted call",
+      "explicit_GPU_context_or_kernel_calls": 0,
+      "scope": "Fresh process first OnceLock acquisition including NVRTC library acquisition/compilation and Ptx clone; output writing outside clock. Standalone CPU observation,no solver/context and no overlap model or speed score.",
+      "PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    },
+    {
+      "id": "C03",
+      "PTX_bytes": 232925,
+      "architecture": "compute_120",
+      "cold_acquisition_ns": 78350800,
+      "compile_options": "arch:Some(compute_120),all_other_Default; exact accepted call",
+      "explicit_GPU_context_or_kernel_calls": 0,
+      "scope": "Fresh process first OnceLock acquisition including NVRTC library acquisition/compilation and Ptx clone; output writing outside clock. Standalone CPU observation,no solver/context and no overlap model or speed score.",
+      "PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    }
+  ],
+  "solver_or_explicit_GPU_context_kernel_calls": 0,
+  "new_optimization_source_or_E093_created": false,
+  "all_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "performance_qualification_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Three standalone first-process NVRTC acquisitions,not the solver critical path. Minimum raw duration compared prospectively to1% current suite baseline as a conservative effort-selection heuristic,not causal/removable time or rigorous bound. Existing cache remains process-local; concurrent zero scans,context/library scheduling and cache hits may reduce or change any benefit. Identity failure or below-proxy result declines this investigation without source/arch/sample rescue. An admission requires actual overlap evidence before any prebuilt-main candidate."
+}

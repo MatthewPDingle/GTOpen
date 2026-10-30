@@ -1,0 +1,43 @@
+{
+  "id": "D204",
+  "at": "2026-10-28T21:51:02.925999+00:00",
+  "status": "pass_compiled_cooperative_primitive_resources",
+  "protocol_sha256": "fa68cd73c15240f4239dc878905e12bf79bc9ac91f6da13d6bf0a5b61c8dd573",
+  "gates": {
+    "positive_resident_grid": true,
+    "fixed128threads_supported": true,
+    "no_local_spill": true,
+    "fits_default_shared": true,
+    "no_default_stack_growth": true,
+    "compute_120:single_original_primitive_entry": true,
+    "compute_120:six_parameter_ABI": true,
+    "compute_75:single_original_primitive_entry": true,
+    "compute_75:six_parameter_ABI": true
+  },
+  "resources": {
+    "SM_count": 170,
+    "application_kernels": 0,
+    "architecture": "compute_120",
+    "context_stack_after": 1024,
+    "context_stack_before": 1024,
+    "device_shared_limit": 49152,
+    "dynamic_shared_bytes": 0,
+    "fixed_block_threads": 128,
+    "local_bytes_per_thread": 0,
+    "max_cooperative_grid_blocks": 2040,
+    "max_threads": 1024,
+    "registers": 26,
+    "resident_blocks_per_SM": 12,
+    "stage": "resources",
+    "static_shared_bytes": 0
+  },
+  "PTX_sha256": {
+    "compute_120": "5d98f34023f6de61ead5215e0c41579071e597c605d959e5a879c75664bbb599",
+    "compute_75": "823c93d293503f4570ccef75c67983dcdc816231d88410589d883911ebb8de70"
+  },
+  "all_owned_compiler_native_children_terminal": true,
+  "application_kernels": 0,
+  "solver_or_speed_samples": 0,
+  "new_gain_accepted": false,
+  "scope": "Vendorheader/accepted12.9NVRTC actual120 andcompat75 primitivecompile andactual120module/resources only. No primitivebarrier execution,graph capture,equivalence,CFRprototypeorperformanceadmitted. Rawcrossblockvisibility/guards/capture/replaycontrols mandatorybeforeoptimizerdesign."
+}

@@ -1,0 +1,21 @@
+error[E0624]: method `key` is private
+   --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D183-plan-phase-diagnostic\observed-plan.rs:211:48
+    |
+211 |                     river_key[ni] = spot.river.key(&it.dealt);
+    |                                                ^^^ private method
+    |
+   ::: crates\solver\src\game.rs:43:5
+    |
+ 43 |     pub(crate) fn key(&self, dealt: &Dealt) -> usize {
+    |     ------------------------------------------------ private method defined here
+
+error[E0616]: field `entries` of struct `RiverTable` is private
+   --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D183-plan-phase-diagnostic\observed-plan.rs:336:39
+    |
+336 |                 let eval = spot.river.entries[key].as_deref().expect("river eval");
+    |                                       ^^^^^^^ private field
+
+error: aborting due to 2 previous errors
+
+Some errors have detailed explanations: E0616, E0624.
+For more information about an error, try `rustc --explain E0616`.

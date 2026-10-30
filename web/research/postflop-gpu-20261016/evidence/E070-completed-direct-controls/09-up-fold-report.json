@@ -1,0 +1,23 @@
+{
+  "id": "E070-up-fold-root-raw-decoder",
+  "status": "pass_scoped_full_raw_equivalence",
+  "checks": 11051847,
+  "cases": 180,
+  "kernel_launches": 360,
+  "output_words_both_arms": 9512340,
+  "immutable_words_both_arms": 15898260,
+  "guard_words_both_arms": 5969780,
+  "full_raw_files_equal": true,
+  "raw_sha256": {
+    "baseline-inputs.bin": "e8b44d9d1fcc403a35799ce0cebca2c3c69fa5bfd21003474221c92d3cae4fb5",
+    "baseline.bin": "927410bb26d800e9f47cfd72003a57261cd77acd858f2776bc08bb264cb861ad",
+    "candidate-inputs.bin": "e8b44d9d1fcc403a35799ce0cebca2c3c69fa5bfd21003474221c92d3cae4fb5",
+    "candidate.bin": "927410bb26d800e9f47cfd72003a57261cd77acd858f2776bc08bb264cb861ad",
+    "inputs.bin": "fb20761beef175bd9350d570a893812e12599deb306596ffdb05967678f2b600"
+  },
+  "audit_sha256": "06ae77b3d85bdbfc8721b6e458a591ddc53b93dea5177a2907ecec45c6a16aaf",
+  "corpus_sha256": "1fe56ff1533696e99bca511dd75cd92957e7fa3d308a9758199675d7342ae53f",
+  "limits": "Finite declared inputs only. Root replay is not external independent review; no solver accuracy, speed, universal NaN/layout or wide-address proof.",
+  "performance_measured": false,
+  "candidate_accepted": false
+}

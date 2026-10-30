@@ -1,0 +1,68 @@
+{
+  "id": "E030-direct",
+  "prepared_manifest_sha256": "cb0cd4ca8b23c2b35781be5d41e320ccad9914f9b9b1ef92766fcee3bc3bacf9",
+  "input_sha256_before": {
+    "baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate.cu": "5ee2ffbf0daeb7447d69584f2f64bd2c13733c7be028e580cc3fd95c7196f829",
+    "candidate.patch": "d8489fd7ce2516e5f8c0c73ed5aa5be4cbebb7c7017b5617dbf11059ca768dfa",
+    "corpus-summary.json": "237672ff67f188e90259c7f5db8fe7b2d9652aac5118766c34d35d4c62dcae87",
+    "corpus.json": "1d6f9bf094230295226820e6fb981ca30a394f5e5be81849b181a9985a256554",
+    "original-d036-corpus.json": "265f74834e8d0b3506abb0b7229308f732ca8405387958fb0ae79528c9a2a217",
+    "original-d036-probe.rs": "18c89f33d42802b1e9e367bbd0d3252a73bb2b2f34070746bbc48afe63555022",
+    "original-e029-run.py": "9a76a6819364087644fae5359bb9bc49d4e7261cfcaed4ddc457344be9161ab6",
+    "preparation-checks.json": "f4927c8ef6f814201899fcff0a985dcd4d264471c9c3a1f0d1f018d65d10dca1",
+    "prepare_corpus.py": "0b3e5f93c7f3a337201ae1b3d18839da9bfa6f3e90179c1076d4534a165c472e",
+    "preseal-check-failure.json": "6bf69bafbb4d96ce8c079f281c87b021f22b9280045024dcbd18458e7c19bba8",
+    "probe-adaptation.patch": "07f03146f8cacbb22f8ea8493c6575d101e68f58b40592d9f6f355a2192ea847",
+    "probe.rs": "458fec54f581f565a439a1daf53615f89adfd4ccd2f792c161bb9801cf58dc69",
+    "protocol.json": "e9c26671a2b1c752110bde0eae94861d22a2ac6e8fba58aae95a3e7c1aa9eaae",
+    "README.md": "815653e283adeef8a9665f88642d9564fc3baaa533f0bcfc60d8603f531d2b8f",
+    "run.py": "18665d0ab0030df06033cfc252424b506084f9157a67747a28106d6ab14c3196",
+    "runner-adaptation.patch": "98b0a9b47f712b98f937dc611a815dd142c3d94e37f51032ac0137ae7c05284c",
+    "runner-primitives-source.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "source-checks.json": "2c937c55ccfb13691dd2f86616e7a5133a42bfdf041112cf3dba9cc9a0661aaa"
+  },
+  "rustc": {
+    "command": [
+      "rustc",
+      "-Vv"
+    ],
+    "returncode": 0,
+    "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+    "stderr": ""
+  },
+  "compile_command": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "nvrtc_directory": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+  "nvrtc_dll_sha256": {
+    "nvrtc-builtins64_129.dll": "c405226b0b394ed8bdc593bb1419b94a989f93248ed2873e8f2e0e27c1688ca1",
+    "nvrtc64_120_0.alt.dll": "ac56a4d3b5a99f294523abec28b8f648b96324a9277622a450ec20ddb9e2c47d",
+    "nvrtc64_120_0.dll": "0cc63349fedffeec1660b30955e8028b6e4e4c26cf1e41c56dc4569fd5eca82c"
+  },
+  "gpu_device_ordinal": 0,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "expected_architecture": "compute_120",
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "requested_cuda_module_loading": null,
+  "rustc_executable": "C:\\Users\\there\\.cargo\\bin\\rustc.EXE",
+  "rustc_executable_sha256": "6f4bef66261261fcb43131be8720bab817d403a09edec7455c371974b90bdb7e",
+  "source": "Sealed outside-checkout inputs only; accepted E020 source restored"
+}

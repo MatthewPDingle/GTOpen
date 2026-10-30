@@ -1,0 +1,104 @@
+--- crates/solver/src/gpu/arena.rs
++++ crates/solver/src/gpu/arena.rs
+@@ -85,11 +85,11 @@
+         let zero = match store {
+             Store::I16 { q, scale } => {
+                 scale.as_slice().iter().all(|v| v.to_bits() == 0)
+-                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0
++                    && (q.is_unexposed_default() || q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0)
+             }
+             Store::U16 { q, scale } => {
+                 scale.as_slice().iter().all(|v| v.to_bits() == 0)
+-                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0
++                    && (q.is_unexposed_default() || q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0)
+             }
+             Store::F32(_) => false,
+         };
+@@ -293,3 +293,87 @@
+         assert!(!layout.can_upload_zeros(&store, 0));
+     }
+ }
++
++#[cfg(test)]
++mod provenance_predicate_tests {
++    use super::*;
++
++    fn original(layout: &ArenaLayout, store: &Store, which: usize) -> bool {
++        let zero = match store {
++            Store::I16 { q, scale } => scale.as_slice().iter().all(|v| v.to_bits() == 0)
++                && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0,
++            Store::U16 { q, scale } => scale.as_slice().iter().all(|v| v.to_bits() == 0)
++                && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0,
++            Store::F32(_) => false,
++        };
++        zero && layout.initial[which].is_empty()
++            && layout.inactive.iter().all(|b| b.initial[which] == usize::MAX)
++    }
++
++    #[test]
++    fn untouched_and_exposed_predicates_match_original_scan() {
++        let scales = [0, 0x80000000, 1, 0x80000001, 0x3f800000, 0xbf800000,
++            0x7f800000, 0xff800000, 0x7fc00123, 0xffc00123];
++        let mut cases = 0;
++        let mut no_scan_witnesses = 0;
++        for len in [0u64, 1, 3, 64, 4097] {
++            for signed in [false, true] {
++                for access in 0..7 {
++                    for &scale_bits in &scales {
++                        for snapshot in 0..4 {
++                            let mut store = if signed { Store::i16(len, 2) } else { Store::u16(len, 2) };
++                            macro_rules! prepare {
++                                ($q:expr, $s:expr) => {{
++                                    $s.as_mut_slice()[1] = f32::from_bits(scale_bits);
++                                    match access {
++                                        0 => {},
++                                        1 => { let _ = $q.as_slice().as_ptr(); },
++                                        2 => { $q.as_mut_slice().fill(0); },
++                                        3 => { unsafe { $q.slice(0, len as usize).fill(0); } },
++                                        4 if len > 0 => { unsafe { $q.write_at(len as usize - 1, 1); } },
++                                        5 if len > 0 => { unsafe { $q.write_at(0, 1); $q.write_at(0, 0); } },
++                                        6 if len > 0 => { unsafe { let _ = $q.read_at(0); } },
++                                        _ => {},
++                                    }
++                                }};
++                            }
++                            match &mut store {
++                                Store::I16 { q, scale } => prepare!(q, scale),
++                                Store::U16 { q, scale } => prepare!(q, scale),
++                                _ => unreachable!(),
++                            }
++                            let mut layout = ArenaLayout {
++                                compact: true, len: len as usize, active: Vec::new(), copies: Vec::new(),
++                                inactive: vec![InactiveBlock { node: 0, host: 0, len: 0, initial: [usize::MAX; 2] }],
++                                initial: [Vec::new(), Vec::new()], zeros: Vec::new(),
++                            };
++                            if snapshot & 1 != 0 { layout.initial[0].push(-0.0); }
++                            if snapshot & 2 != 0 { layout.inactive[0].initial[0] = 0; }
++                            // Candidate must run first: the reference scan exposes q.
++                            let pristine = match &store {
++                                Store::I16 { q, .. } => q.is_unexposed_default(),
++                                Store::U16 { q, .. } => q.is_unexposed_default(), _ => false,
++                            };
++                            for which in 0..2 {
++                                let got = layout.can_upload_zeros(&store, which);
++                                let still_pristine = match &store {
++                                    Store::I16 { q, .. } => q.is_unexposed_default(),
++                                    Store::U16 { q, .. } => q.is_unexposed_default(), _ => false,
++                                };
++                                if which == 0 && pristine && scale_bits == 0 {
++                                    assert!(still_pristine, "fast-path must not expose q");
++                                    no_scan_witnesses += 1;
++                                }
++                                assert_eq!(got, original(&layout, &store, which));
++                                cases += 1;
++                            }
++                        }
++                    }
++                }
++            }
++        }
++        assert_eq!(cases, 5600);
++        assert!(no_scan_witnesses > 0);
++        println!("E049_PREDICATE cases={cases} no_scan_witnesses={no_scan_witnesses}");
++    }
++}

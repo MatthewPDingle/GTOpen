@@ -1,0 +1,88 @@
+{
+  "id": "D036",
+  "status": "prospective_frozen_before_execution",
+  "source_scope": "standalone only; accepted checkout unchanged",
+  "accepted_base": "E015",
+  "full_kernel_authority": "Complete accepted/candidate up_fold in separate modules, same context/options",
+  "candidate_scope": "Only 128x1x1 fold reduction tail; every other kernel/source byte unchanged",
+  "inputs": "corpus.json IEEE u32 bits, exact serialized mappings/seed/order; never generated during execution",
+  "matrix": {
+    "python_ast_parse": "pass",
+    "rust_parse": "rustfmt --edition 2021 --emit stdout probe.rs passed; no compiler invocation",
+    "input_words_all_finite": true,
+    "card_order_and_same_maps_exact": true,
+    "slot_bounds_and_output_ownership": true,
+    "raw_cases": 224,
+    "finite_domain_raw_cases": 208,
+    "full_scenarios": 17,
+    "ordinary_full_pairs": 170,
+    "additional_zero_count_pairs": 10,
+    "full_case_pairs": 180,
+    "kernel_launches": 370,
+    "all_full_output_words_per_variant": 1771280,
+    "finite_domain_full_output_words_per_variant": 1644760,
+    "max_single_scenario_device_payload_estimate_bytes": 2432112,
+    "builds_executed": 0,
+    "gpu_calls_executed": 0,
+    "production_edits": 0
+  },
+  "blocks": [
+    128,
+    16,
+    32,
+    64,
+    256
+  ],
+  "player_order": [
+    0,
+    1
+  ],
+  "all_fixed_finite_input_cases_must_match_gpu_bits": true,
+  "overflow_mismatch_is_failure": true,
+  "nonfinite_output_bits_and_counts_reported": true,
+  "nan_inf_input_guarantee": false,
+  "finite_output_domain_additional_cpu_raw_total_oracle": true,
+  "corpus_sha256": "265f74834e8d0b3506abb0b7229308f732ca8405387958fb0ae79528c9a2a217",
+  "source_variants": {
+    "baseline": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "fnv1a64": "3f0594b037a1dda3",
+      "bytes": 22624
+    },
+    "candidate": {
+      "sha256": "9eff0e598c69bafcf4dc8a04ad116bd25482b06bd9bde34c143d45688ab5505a",
+      "fnv1a64": "6fa761d5bdd97d79",
+      "bytes": 23306
+    },
+    "raw-baseline": {
+      "sha256": "ac883f651e5def02f4a04ebf339986cd87dd0c2d68abe9f6c6df7ceaa15d84f9",
+      "fnv1a64": "62c1d87d2b4e1a30",
+      "bytes": 837
+    },
+    "raw-candidate": {
+      "sha256": "fd85fefd631678d5381927f1eb77722d13f997e4a8fa41b17751afff89797d41",
+      "fnv1a64": "5549d0fc9adc96b6",
+      "bytes": 1519
+    }
+  },
+  "compile_options": "architecture compute_120 only; all other NVRTC defaults, matching accepted production",
+  "stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "s_free_reserve_gib": 50,
+  "s_output_reservation_gib": 1,
+  "no_gpu_telemetry_poll_during_execution": true,
+  "one_shot_no_retry": true,
+  "expected_stage_counts": {
+    "harness_checks": 1,
+    "resource": 8,
+    "raw_total_exact": 5,
+    "full_fold_exact": 180,
+    "complete": 1
+  },
+  "output_guards_and_all_inputs_checked_after_each_variant": true,
+  "mismatch_self_tests_are_not_cuda_numerical_cases": true,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "root_only_execution_after_independent_review": true,
+  "official_reference": "https://docs.nvidia.com/cuda/archive/12.4.1/cuda-c-programming-guide/index.html#warp-shuffle-functions"
+}

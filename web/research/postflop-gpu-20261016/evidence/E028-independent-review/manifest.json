@@ -1,0 +1,18 @@
+{
+  "id": "E028-independent-review",
+  "at": "2026-10-16T17:02:10.449958+00:00",
+  "frozen": true,
+  "numerical_verdict": "CONFIRMED_REJECTED",
+  "source_custody_verdict": "PASS_SOURCE_BUILD_AUXILIARY_CUSTODY",
+  "artifact_sha256": {
+    "audit-numerical.py": "c54ca3421983b3f407ed5476c1851705ab278201c0d002b66b64373bdda87437",
+    "audit-numerical-preflight-draft.py": "4e9a42dcb9c2c7f0de34c80275e20b9138daf8b7163e125d6efedc12b8e90d84",
+    "audit.stdout.log": "418e9764dfa6a8d0a5c15a934e95ebf2e6eec3b96c53b6059d292ad258e2b60c",
+    "audit.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit-exit.json": "c10956fe041ccc60b9ed9bfed6526237d3d19aacd7aad727ef5642756a23ba23",
+    "validation.json": "360c086fd29c69612cb7ec539d8dd074cfb6121ce8a51d2b40c38a27871e7b46",
+    "summary.md": "465156c5c25a4d4f6b9a4dc06fd4603eef48a727e2bb41c92a58e1fd24c99445",
+    "source-custody.json": "f40f3d9195466146aa1ed6935190cada756041031e877da2c78570cb086e4baa"
+  },
+  "reviewer_preflight_note": "The first audit script draft expected the cache test name and ok on one line. Read-only log inspection showed intervening constructor messages, so the unexecuted draft is preserved and the final parser checks the complete test block. Final file-only audit executed once and exited0; no native rerun."
+}

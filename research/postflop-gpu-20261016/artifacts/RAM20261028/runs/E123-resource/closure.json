@@ -1,0 +1,92 @@
+{
+  "at": "2026-10-29T20:04:31.238018+00:00",
+  "decision": "REJECT_CLOSE_E123_AT_COMPILED_RESOURCE_AND_MECHANISM_GATE",
+  "report_sha256": "6e0f86998ea8e35af46ed9037ec20617036f0bdab0b1730491eb6e98545e5486",
+  "protocol_sha256": "f7aee154ce8e3fefe127d096cace8013a72197c125bcf85274352c95e8f7d252",
+  "candidate_source_sha256": "f69977e537ecd93b659bceb395a119a5aa724feab3fdfe13caf76de62f4e5781",
+  "raw_marker_root_crosscheck": {
+    "baseline": {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    "candidate": {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 896,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          7
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 68,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    "failed_gates_independently_recomputed": [
+      "up_action:no_maxthread_loss",
+      "up_action:strict_actual_register_reduction"
+    ]
+  },
+  "reason": "Actual up_action registers62to68, maximumthreads1024to896 and occupancy16/8/4to14/7/3. Local64to32 is a reduction, but original no-maxthread-loss gate and prospective strictregister-reduction mechanism gate fail. No application kernel, numerical or timed regression was measured.",
+  "actual_child_reload_FP_mechanism_or_accuracy_qualified": false,
+  "new_applicationkernels_numerical_CFR_solver_or_speed_samples": 0,
+  "fixed_plain_source_form_closed_no_volatile_asm_restrict_arity_placement_helper_width_flags_source_quality_sample_rescue": true,
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E123-resource\\execution\\rustc.exit.json",
+      "sha256": "249ba9ab3cd07a83797757ed389dab1adae3c31308a27b68d177f309ce1ae924",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E123-resource\\execution\\probe.exit.json",
+      "sha256": "28c96173d35ca16552cf01ae4129bfa556d468155cb6160317ab0e2c2e465f3c",
+      "returncode": 0
+    }
+  ],
+  "all_owned_compiler_module_children_terminal": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "goal_active": true
+}

@@ -1,0 +1,31 @@
+"""Own exactly one full raw E075 numerical run and byte-decoder replay."""
+from pathlib import Path
+import json,shutil,subprocess,sys,urllib.request
+R=Path(r'S:\GTOpen-research\postflop-gpu-20261016');sys.path.insert(0,str(R/'runs/accepted-E051-live-20261018'));import common_e051_live as old
+H=R/'runs/E075-kernel-control';P=old.read(H/'protocol.json');old.custody();assert not(R/'gpu-run.lock').exists()
+for p,h in P['input_sha256'].items():old.pin(p,h)
+M=R/'runs/E075-direct-manager';M.mkdir();print('E075 full raw protocol',old.sha(H/'protocol.json'),flush=True)
+old.child([sys.executable,'-B',str(H/'execute.py'),old.sha(H/'protocol.json')],M,'direct',old.env(),900)
+old.child([sys.executable,'-B',str(H/'audit.py')],M,'audit',old.env(),300)
+qpath=R/'comparisons/E075-kernel-control-root-check/report.json';q=old.read(qpath);assert q['status']=='pass_scoped_up_action_raw_equivalence'and q['cases']==819 and q['kernel_launches']==1638 and q['checks']==63899 and q['full_raw_files_equal']and q['all_parent_child_cfv_rows_disjoint']
+assert(q['output_words_both_arms'],q['immutable_words_both_arms'],q['guard_words_both_arms'])==(12375858,5199114,10240828)
+for label in ['direct','audit']:
+ e=old.read(M/(label+'.exit.json'));assert e['returncode']==0 and e['error']is e['cleanup']is None
+for p,h in q['raw_file_sha256'].items():old.pin(p,h)
+old.custody();assert not(R/'gpu-run.lock').exists()
+done={'id':'E075','at':old.now(),'status':'pass_scoped_full_up_action_raw_equivalence','cases':819,'application_kernel_launches':1638,'all_owned_children_terminal':True,'source_main_live_PTX_custody_pass':True,'root_raw_report_sha256':old.sha(qpath),'raw_file_sha256':q['raw_file_sha256'],'full_raw_files_equal':True,'actual_device_inputs_retained_both_arms':True,'performance_measurements':0,'solver_executions':0,'source_activated':False,'candidate_accepted':False};old.save(H/'complete.json',done)
+def publish(p,key):
+ dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True)
+ if dst.exists():assert dst.read_bytes()==p.read_bytes()
+ else:shutil.copyfile(p,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+ return {'url':'evidence/'+key,'sha256':old.sha(p)}
+pub=[]
+for folder in [H,H/'execution',M,qpath.parent]:
+ for p in folder.iterdir():
+  if p.is_file()and p.suffix in ['.json','.rs','.py','.ptx','.log']:pub.append(publish(p,folder.name+'/'+p.name if folder!=H/'execution'else H.name+'-execution/'+p.name))
+pub.append(publish(Path(__file__),H.name+'/run-direct.py'));old.save(M/'publication.json',{'at':old.now(),'HTTP_byte_verified_artifacts':pub,'all_owned_children_terminal':True})
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(old.ar.STATUS);e=next(x for x in s['experiments']if x['id']=='E075');e.update(stage='Integrated solver builds next',correctness='819 full raw direct GPU pairs pass',reason='All819pairs/1638launches exact:12,375,858full output words,5,199,114actual immutable words and10,240,828guardwords. Original32/64bit metadata and mutable-range/parent-child disjointness retained. No solver speed result; integrated/build/broad/material qualification next.');e['evidence'].extend([{'label':'Full byte-decoder and device-range replay','url':'evidence/E075-kernel-control-root-check/report.json'},{'label':'Terminal direct-control receipt','url':'evidence/E075-kernel-control/complete.json'}]);s.update(updated_at=old.now(),state='running',goal_status='active',active_experiment='E075',stage='Building the E075 solver trial',activity='E075passed819raw GPU pairs using sealed PTX; all outputs/inputs/guards exact. Fresh isolated builds then84ordinary tests and fixed3pair1%screen next. E051accepted/deployed gain12.44%unchanged.');old.ar.atomic_json(old.ar.STATUS,s)
+ledger=old.REPO/'research/postflop-gpu-20261016/experiments.md';raw=ledger.read_bytes();assert b'### E075 direct action raw controls'not in raw
+entry=f'''\n\n### E075 direct action raw controls\n\nFrozen full raw protocol{old.sha(H/'protocol.json')}reuses exact819case descriptors/order/values from E054/E051, with only corpusID/time and metadatachanged_path_count807corrected for this broader immutable-load scope. One Rustcompiler, one819pair/1638application-launch process, one separate byte-decoder replay, allterminal0. Same sealed resourcePTX, no NVRTC/resource/capture rerun or historical timing sample. Every selected source address remainsCTAconstant even in differenthandloops/threadwidths1/32/64/128/256 andactor/lock/generic roles.\n\nAll12,375,858full mutableoutput words,5,199,114actual immutabledevicewords and10,240,828guards exact; five complete raw files retained onS, full baseline/candidateoutput and actualinput files byte-identical. Root63899checks validates all819descriptors/productiondiscountbits/lengths/ownership/ranges/guards/parent-childdisjointness and actualnative markers. Bothplayers,DCFR/CFR+,own/locked/opponent,arity1..17selected,boundaryhands0..1326,countzero/excessgrid,signedzero/subnormal/quietNaN/infinity/overflowprofiles retained. This is the declared corpus, not universal NaNpayload/illegalalias/wideaddress proof. Root is not external independent audit. ReportSHA{old.sha(qpath)}; primary whole-state/save/resume/continuation/broad/material/performance not yet run.\n\nAll{len(pub)}artifacts HTTPbyteverified; no production sourceactivation,solver/timing sample/adoption. Accepted162/main163/live/protected2PTXexact, no pendingownedchild. CandidateCUDA4c6db67fa7e31e1800f54a5bfd987b391b49decd70f73e773be84da8c5f4dc8funchanged. E051accepted/deployed cumulative12.4372274192%,lastprimaryB237 unchanged,goalactive. Next isolated feature/primary builds and unchanged fixed3pair1%/strictfixture screen; all fresh16/broadF32/state/menu/save/resume/continuation/actualCPU/host+GPUpeak/capacity/holdout/cumulative gates remain before adoption.\n''';nl=b'\r\n'if b'\r\n'in raw else b'\n';ledger.write_bytes(raw+entry.encode().replace(b'\n',nl));old.custody();subprocess.run(['git','commit','--only','-m','research: verify uniform node reads against full GPU state','--','research/postflop-gpu-20261016/experiments.md'],cwd=old.REPO,check=True);old.custody();print(json.dumps(done),flush=True)

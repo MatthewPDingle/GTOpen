@@ -1,0 +1,28 @@
+"""Freeze exact candidate server build, unit inventory and responsiveness controls."""
+from pathlib import Path
+import ast,json,shutil,subprocess,sys,urllib.request
+H=Path(__file__).resolve().parent;R=H.parent.parent;MAIN=Path(r'X:\Dev\GTOpen')
+sys.path.insert(0,str(R/'runs/accepted-E051-live-20261018'));import common_e051_live as old
+old.custody();assert not(R/'gpu-run.lock').exists();old.ar.refuse_active(old.ar.live_status());assert not(H/'protocol.json').exists()
+assert old.read(R/'runs/E080-graph-controls/report.json')['all_checks_pass']
+S=old.read(R/'runs/E080-source/manifest.json');V=old.read(R/'runs/E051-server-final-plan-r2/protocol.json');sources=V['server_source_sha256'];owned={}
+for n,h in sources.items():old.pin(MAIN/n,h);old.pin(old.REPO/n,h)
+for n,x in S['owned'].items():owned[n]={'base':x['base'],'base_sha256':old.BASE[n],'candidate':x['candidate'],'candidate_sha256':S['candidate_owned_sha256'][n]}
+for p in H.glob('*.py'):ast.parse(p.read_text())
+b=old.read(old.REPO/'bench_spot.json');tree=b['tree'];spot={k:b[k]for k in ['board','range_oop','range_ip']};spot.update({k:tree[k]for k in ['starting_pot','effective_stack','rake_pct','rake_cap','add_allin','max_raises']});spot['allin_threshold']=tree['allin_threshold']*100
+for seat in['oop','ip']:
+    spot[seat]=[{key:','.join(str(v['PotPct'])for v in sizes[key])for key in ['bet','raise','donk']}for sizes in tree[seat]]
+old.save(H/'spot-request.json',spot);old.save(H/'solve-request.json',{'max_iterations':400,'target_exploit_pct':0.3,'check_every':20,'algorithm':'dcfr'})
+target=R/'build-server-e080-qualification';assert not target.exists()
+baseline=R/'binaries/E051-gto-server.exe';bm=old.read(baseline.with_suffix('.manifest.json'));old.pin(baseline,bm['binary_sha256']);assert bm['source_sha256']==old.BASE|sources
+paths=[p for p in H.iterdir()if p.is_file()]+[R/'runs/E080-source/manifest.json',R/'runs/E080-graph-controls/report.json',R/'runs/E080-resource-controls/report.json',R/'runs/E051-server-final-plan-r2/protocol.json',baseline,baseline.with_suffix('.manifest.json'),MAIN/'web/index.html',old.REPO/'bench_spot.json']
+for x in owned.values():paths.extend([Path(x['base']),Path(x['candidate'])])
+P={'id':'E080-server-unit-and-responsiveness','at':old.now(),'status':'FROZEN_PRE_COMPILATION_AND_HTTP_OBSERVATIONS','owned':owned,'accepted_source_sha256':old.BASE,'candidate_source_sha256':old.BASE|S['candidate_owned_sha256'],'server_source_sha256':sources,'target':str(target),'output_binary':str(R/'binaries/E080-gto-server.exe'),'output_unit_binary':str(R/'binaries/E080-server-tests.exe'),'baseline_binary':str(baseline),'baseline_binary_sha256':old.sha(baseline),'expected_unit_names':V['expected_unit_names'],'input_sha256':{str(p):old.sha(p)for p in paths},'main':str(MAIN),'port':43736,'poll_interval_ms':50,'request_timeout_seconds':10,'order':[{'id':'SB1','arm':'baseline'},{'id':'SC1','arm':'candidate'},{'id':'SC2','arm':'candidate'},{'id':'SB2','arm':'baseline'},{'id':'SB3','arm':'baseline'},{'id':'SC3','arm':'candidate'}],'poll_endpoints':['/api/status','/api/preflop/status','/api/preflop/capabilities'],'responsiveness_guards':{'p95_relative_ratio':1.10,'p95_additive_allowance_ms':5,'p95_absolute_floor_ms':100,'max_relative_ratio':1.10,'max_additive_allowance_ms':10,'max_absolute_floor_ms':500,'absolute_max_ms':1000,'minimum_build_rounds_each':1,'minimum_solve_rounds_each':10},'rule':'One fresh isolated candidate server build plus typed test build with exact same main server sources, exact two already-qualified host changes only, gpu feature only. Restore accepted source in finally. Exact21unit inventory20pass1ignored. Then exactly6fresh temporary processes BC/CB/BC, one owned listener43736 at a time serving current main UI cwd. Original live43735 remains unchanged and all temporary processes stopped via owned Popen handle. Build the primary rainbow spot, solve identical DCFR .3 target/check20/max400, query root and first action child. All final scientific status except elapsed_secs, trees and query payloads exactly equal across arms; stop200/history10 and GPU true, no fallback/error. Poll all three endpoints during asynchronous tree build and GPU initialization/solve with retained response/latency records. Perphase/perendpoint pooled p95 <=max(100ms,baseline*1.10+5ms), max <=max(500ms,baseline*1.10+10ms), every response <=1000ms, zero HTTP/timeouts, at least1build and10solve rounds perprocess. No speed claim or pooling of server timings into benchmark. No exclusions/extensions/source/helper/thread/threshold variants after actual failure. Unit tests may touch only their already-owned test fixtures as in accepted E051 qualification; no save/load/report mutation HTTP requests.','candidate_adopted':False}
+old.save(H/'protocol.json',P)
+for p in H.iterdir():
+    if not p.is_file():continue
+    key=H.name+'/'+p.name;dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(exist_ok=True,parents=True);assert not dst.exists();shutil.copyfile(p,dst)
+    with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+    s=old.read(old.ar.STATUS);s.update(updated_at=old.now(),stage='E080 application build and responsiveness',activity='Actual graph replay, launch geometry and compiled function resource equivalence passed. Preparing a fresh candidate server and fixed temporary-server responsiveness comparison; E051 stays live.');s['evidence'].append({'label':'E080 frozen application and responsiveness controls','url':'evidence/'+H.name+'/protocol.json'});old.ar.atomic_json(old.ar.STATUS,s)
+print(old.sha(H/'protocol.json'),flush=True)

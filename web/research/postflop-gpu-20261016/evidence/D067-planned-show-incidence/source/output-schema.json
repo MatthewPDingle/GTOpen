@@ -1,0 +1,86 @@
+{
+  "id": "D067",
+  "prefix": "D067_PLANNED_SHOW_INCIDENCE ",
+  "marker_order": [
+    "admission",
+    "fixture_mapping:rainbow",
+    "fixture_mapping:two-tone",
+    "fixture_mapping:river",
+    "complete"
+  ],
+  "test_filter": "gpu::planned_show_incidence::planned_show_incidence_mapping",
+  "expected_test_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 88
+  },
+  "input_env": "D067_CENSUS_DIR",
+  "output_env": "D067_MAPPING_DIR",
+  "fixture_mapping_fields": [
+    "fixture_id",
+    "fixture_index",
+    "nodes",
+    "nh",
+    "reach_blocks",
+    "num_levels",
+    "num_slots",
+    "fold_ctas_per_traverser",
+    "fold_spans",
+    "fold_mapping_exact",
+    "fold_mapping",
+    "show_ctas_per_traverser",
+    "show_spans",
+    "mapping",
+    "planned_source_only",
+    "new_show_upload_validation",
+    "cleanup_complete"
+  ],
+  "mapping": {
+    "name": "<fixture>-planned-show-mapping.u32le",
+    "header_bytes": 0,
+    "record_bytes": 36,
+    "word_type": "little-endian u32",
+    "record": [
+      "node",
+      "slot0",
+      "slot1",
+      "river_slot",
+      "win_bits",
+      "lose_bits",
+      "tie_bits",
+      "m0",
+      "m1"
+    ],
+    "order": "exact finalized plan.show_nodes, no deduplication",
+    "metadata_fields": [
+      "file",
+      "bytes",
+      "fnv1a64",
+      "record"
+    ]
+  },
+  "fold_mapping": {
+    "name": "<fixture>-fold-mapping.u32le",
+    "header_bytes": 0,
+    "record_bytes": 20,
+    "record": [
+      "node",
+      "slot0",
+      "slot1",
+      "amount0bits",
+      "amount1bits"
+    ],
+    "requirement": "byte-for-byte equality and EOF against retained D066 mapping before any fixture output"
+  },
+  "assessment_gate": "All three fold_mapping_exact true, exact marker order and complete required before joining any retained flags. Root script hashes all 15 original census inputs before/after.",
+  "row_flags": {
+    "value0": "all logical words exactly +0 bits",
+    "bit1": "any negative-zero",
+    "bit2": "any finite nonzero",
+    "bit4": "any nonfinite",
+    "independent_flags": true
+  },
+  "join": "Each planned show node once per traverser p; q=1-p; use slot[q]; no unique-row dedup. Whole-row +0 and exponent-finite three selected f32 payout conjunction separate.",
+  "claims": "Historical planned-show incidence only. No new upload observation, raw float retention, kernel equality or timing evidence."
+}

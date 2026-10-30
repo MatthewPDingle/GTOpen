@@ -1,0 +1,69 @@
+{
+  "id": "E067",
+  "at": "2026-10-17T11:36:22.355597+00:00",
+  "original_form": "D049/E043 exact same original source counted once",
+  "decision": "rejected_complete_cycle_screen",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9875.919899999999,
+    "candidate_full_cycle_ms": 9938.5466,
+    "observed_gain_pct": -0.6341353578617088,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.01007279222747911,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -0.594441776856463,
+          -0.3474525069082028,
+          0.26183116444775284
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 1.606117819669788,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          -0.8195285682924422,
+          4.750172050527038,
+          0.009176237157976264
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -0.6395425802102133,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -2.9956367328009526,
+          -3.1948259603952227,
+          5.38514617435862
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "all18payloads_138checkpoints_exact": true,
+  "ordinary_gpu_units_passed": 84,
+  "direct_kernel_pairs": 1196,
+  "direct_kernel_launches": 2392,
+  "direct_full_output_words": 30261968,
+  "actual_immutable_input_words": 13853760,
+  "guard_words": 25889108,
+  "feasibility_and_actual_target_mechanism_passed": true,
+  "known_resource_warnings": "Registers40to48,rounded1280to1536perwarp,theoretical128thread residency12to10;local32andstatic/dynamic0unchanged. Actualno-material-cost qualification pending, not discharged as free.",
+  "pre_numerical_scope_amendment": "Originalextra compute75branchfulbaseline gate failed because baselinealreadybranchless. Preserved failure and explicit amendment BEFOREfirstapplicationkernel retain actualcompute120mechanism and supplementaryABI/unchangedentries/FPcounts; no source or sampling change.",
+  "primary_report_sha256": "b031b3d2fdc1027aecfb427dfed0ad6ac9b52f7c4aa6ada8c16e998a70f46d7f",
+  "root_report_sha256": "99d843019ed2c7018fdec2b649d0a96647cb4e98c18adf678676fb88a81a2d80",
+  "fresh16_broad_material_holdout_cumulative_not_run": true,
+  "no_exclusions_pooling_extensions_or_source_variants": true,
+  "source_restored_E051": true,
+  "main_live_protected_ptx_unchanged": true,
+  "candidate_accepted": false,
+  "goal_active": true,
+  "limits": "Observed initial three-pair registered suite, not universal slowdown, statistically established effect or cause attribution. Primary full-arena equality uses fingerprints plus raw root/EV/stops/checkpoints; directkernels compare complete words. OriginalD049/E043resource rejections stay frozen; E067now first numerical/timing failure closes exact form and aliases."
+}

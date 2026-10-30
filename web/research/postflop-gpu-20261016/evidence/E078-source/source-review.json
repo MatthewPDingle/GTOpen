@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-18T05:31:52.050472+00:00",
+  "original_fold_arithmetic_suffix_copied_byte_exact": "    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)\n        local_reach[j] = global_reach[j];\n    __syncthreads();\n    const float* ro = local_reach;\n    // Card lists preserve opponent hand order; all sums use the existing f32 precision.\n    // Each card has one writer, so no atomic order noise or contention.\n    for (int card = threadIdx.x; card < 52; card += blockDim.x) {\n        float sum = 0.0;\n        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)\n            sum += (float)ro[card_idx[k]];\n        s[card] = sum;\n    }\n    float partial = 0.0;\n    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)\n        partial += (float)ro[j];\n    total_parts[threadIdx.x] = partial;\n    __syncthreads();\n    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {\n        if (threadIdx.x < (u32)step)\n            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];\n        __syncthreads();\n    }\n    float T = total_parts[0];\n    float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];\n    for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {\n        u32 sc = same_p[i];\n        float same_r = sc != SENTINEL ? ro[sc] : 0.f;\n        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;\n        cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;\n    }",
+  "original_action_helper_and_dispatch_calls_exact": true,
+  "CUDA_removal_reverse_exact": true,
+  "host_removal_reverse_exact": true,
+  "original8other_global_source_entries_exact": true,
+  "additional_up_action_arguments": 10,
+  "baseline_arguments": 20,
+  "candidate_arguments": 30,
+  "host_30argument_order": "Original20then node_twin,node_tlose,rsrc_o,reach_o_buf,pc1,pc2,card_off,card_idx,same_p,nh_o",
+  "reduction": "Same per-thread reach load, card-list sums, strided partials and shared256tree; original float expressions/payout/globalfoldrow write unchanged. Static1326hand array replaces original dynamically sized local_reach pointer. Original4? block barriers are preserved exactly from copied suffix; one explicit final CTAbarrier added. No float reassociation intended; compiler/raw NaN/signedzero equivalence remains unproven.",
+  "ownership": "D128full12case unique direct action owner/persistent terminalrow proof. Complete down precedes up; both reach arrays immutable during up. Original fold producer inputs chosen as1-p and originalfold node rsrc, including opponent-action parent case. No terminalrow aliases scratch/show/fold; no otherconsumer before parent. Delayed fold row ends every sweep with same intendedstate.",
+  "continuation": "Projection/transport/copy kernels receive action-node lists only; negative marker lies outside those lists. Same GpuSolver training/eval callers and borrowed workspace slices; actual compiler/raw/broad compatibility still required.",
+  "costs": "All actionCTAs reserve6536staticshared even nofold; extra parentchildmetadata/markerbranch/finalbarrier. May reduceoccupancy/increase registers/spill or slowdown; resourcepolicy and all actualmaterial/fullcycle gates mandatory. No performance claim."
+}

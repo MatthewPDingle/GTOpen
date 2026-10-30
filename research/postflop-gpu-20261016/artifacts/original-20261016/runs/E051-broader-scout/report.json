@@ -1,0 +1,56 @@
+{
+  "id": "E051-broader-source-readiness",
+  "at": "2026-10-17T04:03:09.406860+00:00",
+  "status": "conditional_source_facts_only_confirmation_still_running",
+  "native_executions": 0,
+  "compiler_executions": 0,
+  "production_source_changed": false,
+  "prerequisite": "Require complete fresh16timing pass and root replay before broader execution. If confirmation fails this scout becomes inapplicable; do not rescue E051.",
+  "fixed_control_sources_sha256": {
+    "postflop_state_perf.rs": "7d6f51618d0fe5b0fa431351c31cc0775f4a3bd7e816a2e93ecda9bbafa49d47",
+    "postflop_action_menus.rs": "4a518cbc449668a3221737815507e8ffc1f0434f1c387809736ce31b3cad5cc3",
+    "postflop_resume_state.rs": "eb15af135a357f9ceb8e21d3fe8f2a616a0d562ee9468cc6ada6113ca27617a4",
+    "gpu.rs": "ad04b4fa49edc0e75556761236fb9f3274aeab513131976e9615f31885a58c06",
+    "continuation_paging.rs": "9c93c8bd9b84c40a40d4a8ad2b4b6844bfc2b68bb93b64fe450e4a21c670de2f",
+    "continuation_symmetry.rs": "6135cf31b478d789e4ba454cfc47de3d0b768e04b8ea330b109d3ba9f2c02ec8"
+  },
+  "ordered_snapshot_requirements": {
+    "state": {
+      "records": 12,
+      "snapshots": 24
+    },
+    "menus": {
+      "records": 12,
+      "snapshots": 24
+    },
+    "resume": {
+      "records": 16,
+      "snapshots": 112
+    },
+    "total": 160
+  },
+  "f32": "Reuse fixed complete-cycle evaluator with existing acceptedE020/E051 primary binaries; compare all non-timing states/checkpoints, no F32 speed claim.",
+  "continuation": "Paging160alternating board/player sweeps; unsupported-input rejection; stored720unique full-device/restored/value pass rows. Candidate feature-unit binary exists; matching acceptedE020 unit reference source map verified. Two feature integration binaries still need a fresh serialized build.",
+  "io_boundary": "State/menu/resume use compile-time CARGO_MANIFEST_DIR/target/research-fixtures save paths. Do not run them against protected checkout paths. Compile exact unchanged harness sources with rustc --test, cfg gpu, pinned accepted/candidate solver rlibs and an explicit isolated S: CARGO_MANIFEST_DIR per arm, recording environment. Keep full benchmark/harness source unchanged; no new output under crates/solver/target.",
+  "compiled_libraries": {
+    "accepted_gpu": [
+      [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\build-small-gain-e020-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+        "57dea74ffda8d0b04b900c54762d9ecfae34d940384547b8c6c5009d699c84e6"
+      ]
+    ],
+    "candidate_gpu": [
+      [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+        "c55801469c43d75e329da05b1b56ad1a93865f5cae863ff78c1c7c43d97a5239"
+      ]
+    ],
+    "feature_unit": "E051-feature-solver",
+    "accepted_feature_unit": "E020-continuation-tests"
+  },
+  "manifest_only_not_binary_rehash": "Source maps and recorded paths verified; actual binary/rlib bytes must be rehashed and pinned after timing cohort before reuse. No heavy hash/build/native work was admitted alongside benchmark.",
+  "heldout": "Retain exact existing wide-turn full169 fixture650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2 and fixed0.3pct/check20/max400quality; identical evaluator/raw codec before fresh accepted-vs-candidate holdout. No fixture tuning.",
+  "cumulative": "Separately frozen fresh original-vs-E051complete cycles. Do not add initial/confirmation/previous10.3798454492pct percentages.",
+  "material_costs": "Actual owned buffer/capacity accounting and module/lifetime behavior required; same host/plan/source alone and lower queried registers are not universal no-cost evidence.",
+  "limits": "Root source preparation only; no new qualification result, raw/control/holdout/cumulative run or source adoption."
+}

@@ -1,0 +1,20 @@
+{
+  "at": "2026-10-16T10:45:28Z",
+  "holdout_frozen_before_any_primary_run": true,
+  "primary_ids_absent": [
+    "V020-unit",
+    "B062",
+    "E020R1",
+    "E020R2",
+    "B063",
+    "B064",
+    "E020R3"
+  ],
+  "evidence_sha256": {
+    "runs/E020-wide-turn-holdout-plan/manifest.json": "5396d60a0cf14b51ed91c4f53de574db5d8c9d6d065ed43e34594338f33d823a",
+    "runs/E020-wide-turn-holdout-plan/protocol.json": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+    "comparisons/E020-wide-turn-holdout-review/review.md": "c26bbc1ca84d177ecfd051db11e4440793f7951b60559b79b7a68b206abb59c1",
+    "comparisons/E020-wide-turn-holdout-review/manifest.json": "be6f29da802f23b78b9e922db59f7cdf2b940b96a038c579c7ac0783395ef655"
+  },
+  "scope": "Additional prospective wide-range non-regression check only if fixed primary passes; original primary score and gates unchanged."
+}

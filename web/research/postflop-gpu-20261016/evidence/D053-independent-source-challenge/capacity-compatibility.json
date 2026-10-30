@@ -1,0 +1,52 @@
+{
+  "id": "D053-capacity-compatibility-supplement",
+  "at": "2026-10-16T16:35:49.606495+00:00",
+  "sealed_parent_report_sha256": "cf5a5680d054362e9624157045a7ec242dd3d67c7c350023f9311ceed83fb94d",
+  "scope": "Read-only compatibility advice for a future actor1 sigma cache; no candidate implementation or execution authorized.",
+  "guidance": [
+    "Append cache as published workspace_components_bytes[11], preserving positions0..6 (existing full mutable workspace) and7..10 (compact state workspace). Internal runtime8th cache buffer at index7 is not the same index as the public12-component capacity schema; avoid a naive concatenation that reorders compact components.",
+    "Maintain each component maximum independently across boards. Correct shared capacity is sum_i max_board(component_i); do not merge cache with reach or use max_board(total). Different boards can maximize different components.",
+    "Both active feature-gated host/SSD paging test helpers take/swap seven buffers at lines130\u2013158 and absorb per-buffer maxima at host208\u2013211/SSD220\u2013223. Shared-cache integration must include the8th buffer in signatures, dummy allocation, chains, absorb, swap and workspace-byte totals. It remains transient; parked four learning arrays and disk schemas stay unchanged.",
+    "Current continuation_storage_capacity.rs22,39\u201342 and hu_context_capacity.rs29,50\u201353 need the new12-component accumulator. Add explicit components.len()==work.len() before zip to the first example; HU already has the assertion. Preserve constructor peak as prior shared maxima plus the incoming whole workspace, then update independent maxima. Optional device-mode workspace.bytes() equality remains useful.",
+    "Parked dummy allocation accounting must change coherently from7*4/+28 to8*4/+32 (capacity planner/observed wrapper), separately from the shared cache payload. Do not count the full cache as retained metadata or add it to serialized canonical learning state.",
+    "Leave historical closed reviewers/evidence unchanged. hu_context_capacity_review_20260922.py17,25\u201328 explicitly requires len11 and rejects12. storage_capacity_review_20260920.py36\u201338 recomputes only indices0..10 and asserts totals; this detects a positive omitted cache but can pass a12-element row when the omitted cache is zero. Therefore neither old reviewer is a qualification gate for the new schema; a future narrow new-schema check must require the declared12 components before aggregating. No reinterpretation of old results."
+  ],
+  "sources": [
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_host_paging_tests.rs",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\continuation_host_paging_tests.rs",
+      "sha256": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9"
+    },
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_ssd_paging_tests.rs",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\continuation_ssd_paging_tests.rs",
+      "sha256": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6"
+    },
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\examples\\continuation_storage_capacity.rs",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\continuation_storage_capacity.rs",
+      "sha256": "7bda2f3077f32385e7df2aca224dd1a19a69257104dca2b041629118cf04f490"
+    },
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\examples\\hu_context_capacity.rs",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\hu_context_capacity.rs",
+      "sha256": "b91af213353164de7313c425a692d9c01fb40b1733532dd0213df58400e83512"
+    },
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\research\\storage_capacity_review_20260920.py",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\storage_capacity_review_20260920.py",
+      "sha256": "28aa63c0612337da62ea137029b466574a4bb464f2b721f863cbade2efb6c53a"
+    },
+    {
+      "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\research\\hu_context_capacity_review_20260922.py",
+      "snapshot_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D053-independent-source-challenge\\capacity-consumer-snapshots\\hu_context_capacity_review_20260922.py",
+      "sha256": "8868b6ec377f6ea3638d35091a1c763bfc441e6093dfae04a01d0ac3cc202c3d"
+    }
+  ],
+  "ledger_custody_sha256": "aaa1357a5d30be0ff1a00ee95451a475a5e6c6c030b6a7147043f0889363d41e",
+  "inspected_ledger_sha256": "330442aad57b761a3cdafb988c0b712fac6fca61ccac8ee73120c04c456be4fa",
+  "original_report_and_manifest_unchanged": true,
+  "production_edits": 0,
+  "builds": 0,
+  "native_or_gpu_executions": 0
+}

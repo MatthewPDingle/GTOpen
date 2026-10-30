@@ -1,0 +1,42 @@
+--- accepted/mod.rs
++++ candidate/mod.rs
+@@ -7,6 +7,7 @@
+ 
+ pub mod plan;
+ mod arena;
++mod packet_readback;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+ #[cfg(feature = "preflop-research")]
+@@ -157,6 +158,7 @@
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
+     arena_layout: [ArenaLayout; 2],
++    packet_functions: Option<packet_readback::Functions>,
+ 
+     pub iteration: u32,
+     pub algo: Algorithm,
+@@ -390,6 +392,7 @@
+             d_regrets,
+             d_strat,
+             arena_layout,
++            packet_functions: None,
+             d_reach: [
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+@@ -1024,6 +1027,7 @@
+     /// Works for both f32 and compressed CPU storage (encodes per node).
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
++        if self.try_packet_sync(solver, false, packet_readback::MIN_SOURCE_BYTES)? {return Ok(());}
+         for p in 0..2 {
+             let len = self.d_regrets[p].len();
+             self.stream
+@@ -1050,6 +1054,7 @@
+     /// checks and strategy queries need; half the PCIe traffic.
+     pub fn sync_strategy(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
++        if self.try_packet_sync(solver, true, packet_readback::MIN_SOURCE_BYTES)? {return Ok(());}
+         for p in 0..2 {
+             let len = self.d_strat[p].len();
+             self.stream

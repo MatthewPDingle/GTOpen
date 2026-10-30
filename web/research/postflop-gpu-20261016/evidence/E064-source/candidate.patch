@@ -1,0 +1,49 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -328,6 +328,15 @@
+ 
+ // Up sweep, action nodes: traverser nodes combine children with the current
+ // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
++// Only compile-time common arities use a bounded local32bit element offset.
++// Every global slot/product and the arbitrary-menu specialization stays64bit.
++template<int NA>
++__device__ __forceinline__ u64 action_data_index(u64 base, int action, int hands, int hand)
++{
++    if (NA != 0) return base + (u32)(action * hands + hand);
++    return base + (u64)action * hands + hand;
++}
++
+ template<int NA>
+ __device__ __forceinline__ void up_action_impl(
+     const u32* __restrict__ nodes, int start, int count, int p,
+@@ -372,7 +381,7 @@
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float sum = 0.f;
+             for (int a = 0; a < na; a++) {
+-                float r = regrets_p[doff + (u64)a * nh_p + i];
++                float r = regrets_p[action_data_index<NA>(doff, a, nh_p, i)];
+                 if (small) rc[a] = r;
+                 sum += r > 0.f ? r : 0.f;
+             }
+@@ -380,18 +389,18 @@
+             float reach = rp[i];
+             float out = 0.f;
+             for (int a = 0; a < na; a++) {
+-                float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
++                float r = small ? rc[a] : regrets_p[action_data_index<NA>(doff, a, nh_p, i)];
+                 float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
+                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;
+                 // Independent of the completed node value: use this action's
+                 // original sigma while it is already available.
+-                u64 idx = doff + (u64)a * nh_p + i;
++                u64 idx = action_data_index<NA>(doff, a, nh_p, i);
+                 strat_p[idx] = strat_p[idx] * ds + reach * sig;
+             }
+             for (int a = 0; a < na; a++) {
+-                u64 idx = doff + (u64)a * nh_p + i;
++                u64 idx = action_data_index<NA>(doff, a, nh_p, i);
+                 float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 float r = small ? rc[a] : regrets_p[idx];
+                 float d = r > 0.f ? pos : neg;

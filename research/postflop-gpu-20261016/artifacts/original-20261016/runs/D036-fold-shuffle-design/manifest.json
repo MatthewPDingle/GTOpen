@@ -1,0 +1,28 @@
+{
+  "id": "D036",
+  "created_at": "2026-10-16T09:44:23.135676+00:00",
+  "status": "source-only design; no candidate implementation or execution",
+  "prospective_candidate": "E019",
+  "accepted_base": "E015",
+  "source_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+  },
+  "inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\baseline.ptx": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\results.tsv": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9"
+  },
+  "source_writes": false,
+  "builds": false,
+  "gpu_calls": false,
+  "preferred_boundary": "up_fold128x1x1 reduction tail only; original fallback every other launch shape",
+  "comparison_hypothesis": "up_show shared card-position cache remains separate and unimplemented",
+  "unverified": [
+    "actual candidate resource usage",
+    "raw numerical equivalence",
+    "native kernel-time effect",
+    "complete-cycle performance"
+  ]
+}

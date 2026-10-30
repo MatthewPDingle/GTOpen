@@ -1,0 +1,35 @@
+{
+  "primary_helpers_byte_identical": true,
+  "helper_sha256": "47c45577141e86add41f9606b3ed36b6fd260e4b059b821403e34e5a2fd2b48f",
+  "solve_readback_timing_body_byte_identical": true,
+  "timing_body_sha256": "a3313acf208c2c286a2817cd68049604e7243ea1213d07e092a1b387e47b97e3",
+  "no_profile_or_duplicate_plan": true,
+  "primary_source_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "evaluator_sha256": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+  "syntax_only_rustfmt_pass": true,
+  "python_ast_pass": true,
+  "host_codec_checks": {
+    "status": "pass",
+    "scope": "host parser and exact-file comparator only",
+    "valid_four_store_decode": true,
+    "equal_files_pass": true,
+    "changed_word_rejected_by_full_compare": true,
+    "required_corruptions_rejected": [
+      "bad_magic",
+      "truncated_magic",
+      "truncated_payload",
+      "trailing_byte",
+      "wrong_player",
+      "wrong_kind",
+      "wrong_length",
+      "metadata_mismatch"
+    ],
+    "magic_bytes": 16,
+    "gpu_jobs": 0,
+    "native_solver_runs": 0,
+    "note": "Draft read(15) bug corrected to read(len(magic)) before freeze; no failed/replaced native sample."
+  },
+  "native_runs": 0,
+  "gpu_jobs": 0,
+  "compiler_executions": 0
+}

@@ -1,0 +1,46 @@
+{
+  "id": "E020-qualification-r3-source-review",
+  "at": "2026-10-16T11:13:48.108158+00:00",
+  "verdict": "PASS_NARROW_BINDING_REVISION_SOURCE_ONLY",
+  "prepared_manifest_sha256": "e2e1e7a896f70eb54107bf4d83c6d9334953bbcbfcc20d7ad5db94850121110d",
+  "protocol_sha256": "51f48a84a7dce494eae9d6f06f75a4e78dff654c424a8ac3482d02d551686bb9",
+  "sole_executable_change": "cumulative.py canonical holdout outcome path uses implementation-r2",
+  "ten_unchanged_R2_files": [
+    "assess.py",
+    "authorization.example.json",
+    "build.py",
+    "common.py",
+    "controls.py",
+    "id-observation.json",
+    "input-pins.json",
+    "primary-source.json",
+    "protocol.json",
+    "README.md"
+  ],
+  "verified_artifacts": {
+    "assess.py": "b98d20b7ee0718d0bae6d713d7c570c8103fa5b2af647b46c9487f62503cf978",
+    "authorization.example.json": "0ade31a9265b2e08613a49e9b59ca852886ade9eb018f569d3a8124a68128a99",
+    "build.py": "ae6ec97d4a5db90dcb2a5c12fe3cf33c2e7d519aceb5dd185019c8077bc4f8b0",
+    "common.py": "dcc398dbb4b0fec47162073aad6f1f68eefbfe0d4385ed35038d5a51eb481744",
+    "controls.py": "61125b5b06101e8e417736d276da0105a1f42212cf47c1302b4c20d1e91b7223",
+    "cumulative.py": "7cce9d7016f9577d8ebe3830fbe6f32ea33ad0ec3d1c005335546ab56700715b",
+    "id-observation.json": "cdd933b1b0634e8f21639632bfa5eca237b164cf9407138b85db56e87b9da711",
+    "input-pins.json": "e71c34dcd6e4c5112782da538b2ad637263d2c6f9bbe5528ef8d1ab3bf479370",
+    "primary-source.json": "d659cd8fdd400e556fa8bed145b42256d1d3af72b0bee1b4b061c346832d5bd0",
+    "protocol.json": "51f48a84a7dce494eae9d6f06f75a4e78dff654c424a8ac3482d02d551686bb9",
+    "r2-to-r3.patch": "4024e44920614a965681ea71d80f9bbe72cd2ff847044d2e401332c0c462cec0",
+    "README.md": "c78fdd01808e3dacad0eeaefd3dcff79df14b396750ea868cab09efadf15b4b2",
+    "REVISION-R3.md": "58f83c6fcb7f2062b820cf4f78f991fc1ee56a7ff0ec22ee52aac1226c8fd533"
+  },
+  "prior_invalid_readiness_preserved_sha256": "122ce989d6ffcc6fa83a99b15943e4e89aeac3d04e7dde654f7a970e82894982",
+  "valid_broader_builds_reused": true,
+  "future_authorization_and_readiness": "Fresh records must pin R3 manifest/review and corrected holdout build artifacts. This source verdict is not overall readiness.",
+  "policy": "All numerical inputs, result comparison, score, fixed counts/order, original baseline, non-regression guards and independent-audit requirements byte-identical to reviewed R2.",
+  "review_actions": {
+    "builds": 0,
+    "gpu_jobs": 0,
+    "native_runs": 0,
+    "production_edits": 0,
+    "dashboard_edits": 0
+  }
+}

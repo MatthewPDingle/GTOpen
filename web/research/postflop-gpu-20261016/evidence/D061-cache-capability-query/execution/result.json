@@ -1,0 +1,114 @@
+{
+  "application_device_allocations": 0,
+  "cache_policy_mutations": 0,
+  "calls": [
+    {
+      "api": "cuInit",
+      "return_code": 0
+    },
+    {
+      "api": "cuDriverGetVersion",
+      "purpose": "driver_version",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetCount",
+      "purpose": "device_count",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGet",
+      "purpose": "device_handle",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetName",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetUuid_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "compute_capability_major",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "compute_capability_minor",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "l2_cache_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "max_persisting_l2_cache_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "max_access_policy_window_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxGetCurrent",
+      "return_code": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxRetain",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxSetCurrent",
+      "purpose": "bind owned query context",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxGetLimit",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxSetCurrent",
+      "purpose": "restore original thread binding",
+      "return_code": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxRelease_v2",
+      "purpose": "release owned retained reference",
+      "return_code": 0
+    }
+  ],
+  "context_limit_scope": "This isolated query process's retained primary context; not the live server's context.",
+  "device_ordinal": 0,
+  "dll_path": "C:\\Windows\\System32\\nvcuda.dll",
+  "errors": [],
+  "finished_at": "2026-10-16T19:27:17.518782+00:00",
+  "id": "D061",
+  "kernel_launches": 0,
+  "modules_loaded": 0,
+  "original_thread_context_was_null": true,
+  "performance_measurement": false,
+  "pid": 50752,
+  "solver_launches": 0,
+  "started_at": "2026-10-16T19:27:17.414956+00:00",
+  "status": "complete",
+  "streams_created": 0,
+  "values": {
+    "compute_capability_major": 12,
+    "compute_capability_minor": 0,
+    "current_context_persisting_l2_limit_bytes": 18874368,
+    "device_count": 1,
+    "device_handle": 0,
+    "driver_version": 13030,
+    "l2_cache_bytes": 100663296,
+    "max_access_policy_window_bytes": 134217728,
+    "max_persisting_l2_cache_bytes": 62914560,
+    "name": "NVIDIA GeForce RTX 5090",
+    "name_buffer_hex": "4e5649444941204765466f7263652052545820353039300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000",
+    "uuid_hex": "a5459b5a632b3e73d7f1a06e167102ee"
+  }
+}

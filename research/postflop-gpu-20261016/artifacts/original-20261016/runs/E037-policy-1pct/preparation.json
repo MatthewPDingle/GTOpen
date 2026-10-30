@@ -1,0 +1,24 @@
+{
+  "id": "E037-policy-1pct",
+  "at": "2026-10-16T22:26:03.141149+00:00",
+  "checks": [
+    "Four scripts AST-parse with no unexpected C0 controls",
+    "Complete original raw18-result/138-checkpoint block byte-identical",
+    "Helper validation, provenance and publication function ASTs unchanged; only policy/entry/report bindings differ",
+    "Pure arithmetic boundary checks:1% included;below1% excluded;strict-positive median and majority/min2 guard;ties and negative zero are not slowdowns",
+    "All original script/reference pins unchanged; original feature/GPU builds terminal and frozen executable hashes verified",
+    "All seven native run directories and all primary/assessment/policy execution outputs absent before policy seal"
+  ],
+  "pure_arithmetic_cases": 8,
+  "original_source_build_authorization_sha256": "03b36389ca3864e8bfc550c0dcceb724a1b486cf46a9950dc3293a6beaf219dc",
+  "reference_count": 75,
+  "all_seven_native_run_directories_absent": true,
+  "runtime_script_imported": false,
+  "native_compiler_gpu_executed": false,
+  "production_or_status_modified": false,
+  "preparer_warning": {
+    "message": "Python preparer emitted SyntaxWarning: invalid escape sequence '\\G' in its source-generation string.",
+    "effect": "Generated raw Windows path is correct; all emitted scripts AST-parse and contain no unexpected control characters. No runtime script executed; no source correction was needed.",
+    "preserved_in": "Original tool output and this note"
+  }
+}

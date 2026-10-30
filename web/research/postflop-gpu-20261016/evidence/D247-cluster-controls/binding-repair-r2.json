@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-29T04:05:59.190160+00:00",
+  "failure_phase": "Rustcompile beforebinary oranyappkernel/nativecases",
+  "error": "Frozen cudarc0.19.7 CUDA12.x binding exposes cuGraphKernelNodeGetParams_v2 and matchingCUDA_KERNEL_NODE_PARAMS_v2 alias; unversioned symbol onlyenabledforCUDA11features.",
+  "correction": "Exactly one driverquerysymbol toversionedv2 inactualcompiledlibrary. Samegraphparameterstructuretype, function/shape/cluster assertions, CUDA/PTX/corpus/launches/oracles andrawreader unchanged. Alloriginalscript/source/failedlogs preserved.",
+  "old_probe_sha256": "95851ac02513f5a6fe435a57378c5b7ce16a15677ac4a36ec9436ca675611319",
+  "corrected_probe_sha256": "e5ddc7cb34d569d69c6ed9263ff1b443a198fa088be6d511af72033615dd6af6",
+  "completed_native_cases_before_repair": 0
+}

@@ -1,0 +1,56 @@
+{
+  "id": "E087-transfer-control",
+  "at": "2026-10-18T11:37:53.665457+00:00",
+  "status": "pass_raw_GPU_controls",
+  "protocol_sha256": "22a4df48dd0b123374b94c444e57d7592c744ece37b5e872226b88daedf41432",
+  "binary_sha256": "25f20b2c996bfb761a178ead87e317957ac3b62850c7fd63d1b479168f9fee83",
+  "manual_layouts": 96,
+  "manual_arena_phases": 192,
+  "small_trained_engine_cases": 8,
+  "large_constructor_cases": 8,
+  "GPU_training_iterations": 24,
+  "exploitability_checks": 8,
+  "full_file_pairs_exact": 808,
+  "frames": 1600,
+  "fields": 11712,
+  "represented_full_words": 7226413390,
+  "reader_checks": 7174108216,
+  "raw_pair_bytes": 1685791974,
+  "pinned_requests": [
+    {
+      "fixture": "rainbow",
+      "baseline_pinned_request_bytes": 740688652,
+      "candidate_pinned_request_bytes": 67108864
+    },
+    {
+      "fixture": "two-tone",
+      "baseline_pinned_request_bytes": 442981120,
+      "candidate_pinned_request_bytes": 67108864
+    },
+    {
+      "fixture": "river",
+      "baseline_pinned_request_bytes": 17920,
+      "candidate_pinned_request_bytes": 17920
+    },
+    {
+      "fixture": "two-tone-F32",
+      "baseline_pinned_request_bytes": 743010560,
+      "candidate_pinned_request_bytes": 67108864
+    }
+  ],
+  "copy_drain_and_post_ready_unwind_controls": {
+    "actual_words": 16384,
+    "atomic_rollback_claim": false,
+    "original_reported_copy_error_priority_exact": true,
+    "performance_measurement": false,
+    "post_ready_CPU_unwind_caught": true,
+    "queued_valid_DMA_before_reported_error_drained": true,
+    "real_hardware_failure_injected": false,
+    "staging_reuse_after_drain_exact": true
+  },
+  "all_complete_files_compared_in_full": true,
+  "production_source_activated": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "scope": "Raw functional transfers, whole CPU and GPU images, actual complete constructors with bounded allocation request, small trained query/save/load/resume. Allocation request size is not measured memory footprint or speed. No real hardware/allocator failure or atomic rollback claim."
+}

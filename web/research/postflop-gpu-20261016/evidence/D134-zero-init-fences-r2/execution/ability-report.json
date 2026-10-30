@@ -1,0 +1,3602 @@
+{
+  "at": "2026-10-18T09:36:47.778253+00:00",
+  "status": "pass_scoped_fresh_warm_compressed_F32_and_budget",
+  "summary": {
+    "comparisons": 4,
+    "four_budget_rejections_equal": true,
+    "fresh_warm_compressed_F32": true,
+    "injected_nonzero_OR_controls_rejected": 3,
+    "kernel_launches": 0,
+    "performance_score": false,
+    "stage": "ability_complete"
+  },
+  "records": [
+    {
+      "CPU_ms": 187.5,
+      "OS_after": {
+        "cpu_ticks100ns": 1875000,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 47555,
+        "pagefile_bytes": 644878336,
+        "peak_commit_bytes": 644878336,
+        "peak_working_bytes": 164933632,
+        "private_bytes": 644878336,
+        "working_bytes": 164933632
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 0,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 1597,
+        "pagefile_bytes": 4624384,
+        "peak_commit_bytes": 4644864,
+        "peak_working_bytes": 6180864,
+        "private_bytes": 4624384,
+        "working_bytes": 6180864
+      },
+      "all_four_host_stores_positive_zero": true,
+      "arm": "baseline",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 170.83110000000002,
+      "component_only": true,
+      "id": "B-Compressed-fresh",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 0,
+      "stage": "case",
+      "storage": "Compressed",
+      "timed": false
+    },
+    {
+      "CPU_ms": 109.375,
+      "OS_after": {
+        "cpu_ticks100ns": 3125000,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 79799,
+        "pagefile_bytes": 795758592,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 795758592,
+        "working_bytes": 166866944
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 2031250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 47672,
+        "pagefile_bytes": 283725824,
+        "peak_commit_bytes": 645009408,
+        "peak_working_bytes": 165298176,
+        "private_bytes": 283725824,
+        "working_bytes": 64643072
+      },
+      "all_four_host_stores_positive_zero": true,
+      "arm": "candidate",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 101.6257,
+      "component_only": true,
+      "id": "C-Compressed-fresh",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 0,
+      "stage": "case",
+      "storage": "Compressed",
+      "timed": false
+    },
+    {
+      "CPU_ms": 62.5,
+      "OS_after": {
+        "cpu_ticks100ns": 3906250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 109552,
+        "pagefile_bytes": 794251264,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 794251264,
+        "working_bytes": 166658048
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 3281250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 79833,
+        "pagefile_bytes": 283353088,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 283353088,
+        "working_bytes": 65773568
+      },
+      "all_four_host_stores_positive_zero": false,
+      "arm": "baseline",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 71.78869999999999,
+      "component_only": true,
+      "id": "B-Compressed-warm",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 1,
+      "stage": "case",
+      "storage": "Compressed",
+      "timed": false
+    },
+    {
+      "CPU_ms": 62.5,
+      "OS_after": {
+        "cpu_ticks100ns": 4687500,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 139218,
+        "pagefile_bytes": 659623936,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 659623936,
+        "working_bytes": 166817792
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 4062500,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 109568,
+        "pagefile_bytes": 284909568,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 284909568,
+        "working_bytes": 65945600
+      },
+      "all_four_host_stores_positive_zero": false,
+      "arm": "candidate",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 77.4324,
+      "component_only": true,
+      "id": "C-Compressed-warm",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 1,
+      "stage": "case",
+      "storage": "Compressed",
+      "timed": false
+    },
+    {
+      "CPU_ms": 78.125,
+      "OS_after": {
+        "cpu_ticks100ns": 5781250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 169222,
+        "pagefile_bytes": 794042368,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 794042368,
+        "working_bytes": 167890944
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 5000000,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 139500,
+        "pagefile_bytes": 284631040,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 284631040,
+        "working_bytes": 67018752
+      },
+      "all_four_host_stores_positive_zero": true,
+      "arm": "baseline",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 80.38149999999999,
+      "component_only": true,
+      "id": "B-F32-fresh",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 0,
+      "stage": "case",
+      "storage": "F32",
+      "timed": false
+    },
+    {
+      "CPU_ms": 78.125,
+      "OS_after": {
+        "cpu_ticks100ns": 6718750,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 198850,
+        "pagefile_bytes": 726798336,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 726798336,
+        "working_bytes": 167673856
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 5937500,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 169235,
+        "pagefile_bytes": 283459584,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 283459584,
+        "working_bytes": 66916352
+      },
+      "all_four_host_stores_positive_zero": true,
+      "arm": "candidate",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 74.4628,
+      "component_only": true,
+      "id": "C-F32-fresh",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 0,
+      "stage": "case",
+      "storage": "F32",
+      "timed": false
+    },
+    {
+      "CPU_ms": 62.5,
+      "OS_after": {
+        "cpu_ticks100ns": 7656250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 228581,
+        "pagefile_bytes": 794030080,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 794030080,
+        "working_bytes": 167911424
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 7031250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 198874,
+        "pagefile_bytes": 286347264,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 286347264,
+        "working_bytes": 67055616
+      },
+      "all_four_host_stores_positive_zero": false,
+      "arm": "baseline",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 78.3049,
+      "component_only": true,
+      "id": "B-F32-warm",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 1,
+      "stage": "case",
+      "storage": "F32",
+      "timed": false
+    },
+    {
+      "CPU_ms": 78.125,
+      "OS_after": {
+        "cpu_ticks100ns": 8437500,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 258115,
+        "pagefile_bytes": 659554304,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 659554304,
+        "working_bytes": 167518208
+      },
+      "OS_before": {
+        "cpu_ticks100ns": 7656250,
+        "creation_filetime": 134367898062831580,
+        "memory_structure_bytes": 80,
+        "page_faults": 228594,
+        "pagefile_bytes": 283168768,
+        "peak_commit_bytes": 799064064,
+        "peak_working_bytes": 171454464,
+        "private_bytes": 283168768,
+        "working_bytes": 66965504
+      },
+      "all_four_host_stores_positive_zero": false,
+      "arm": "candidate",
+      "board": "Ks7h2dQhTc",
+      "component_ms": 81.1618,
+      "component_only": true,
+      "id": "C-F32-warm",
+      "kernel_launches": 0,
+      "nodes": 21,
+      "proof": {
+        "all_complete_images_exact": true,
+        "fields": 66,
+        "kernel_launches": 0,
+        "metadata_fields": 57,
+        "records": [
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_action_nodes",
+            "words": 8
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_parents",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_children",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_cards",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_chance_nodes",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_nodes",
+            "words": 6
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_show_nodes",
+            "words": 7
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_player",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_na",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_data_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_children_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_twin",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_tlose",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_ttie",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_cdiv",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_node_river_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_start",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_count",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_card",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_child",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cc_perm",
+            "words": 0
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_perm[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[0]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_rsrc[1]",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_children",
+            "words": 20
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_fold_card_idx[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c1[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_c2[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_hand_mask[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_same[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_weights[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_off[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[0]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_cnt[1]",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_idx[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_lower[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[0]",
+            "words": 15
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_upper[1]",
+            "words": 18
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[0]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_off[1]",
+            "words": 53
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[0]",
+            "words": 30
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_riv_card_pos[1]",
+            "words": 36
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_off",
+            "words": 42
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_lock_sigma",
+            "words": 1
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "d_cfv_slot",
+            "words": 21
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-0",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-0-1",
+            "words": 150
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-0",
+            "words": 180
+          },
+          {
+            "encoding": "explicit expected and actual u32 words",
+            "full_exact": true,
+            "name": "arena-1-1",
+            "words": 180
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach0",
+            "words": 165
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "reach1",
+            "words": 198
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "cfv",
+            "words": 306
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "disc",
+            "words": 3
+          },
+          {
+            "all_actual_bits_OR": 0,
+            "encoding": "verified positive-zero run",
+            "full_exact": true,
+            "name": "eval_roots",
+            "words": 72
+          }
+        ]
+      },
+      "solver_iteration": 1,
+      "stage": "case",
+      "storage": "F32",
+      "timed": false
+    }
+  ],
+  "native_processes": 1,
+  "performance_samples": 0,
+  "candidate_accepted": false
+}

@@ -1,0 +1,131 @@
+- generic [active] [ref=f1e1]:
+  - banner [ref=f1e2]:
+    - generic [ref=f1e3]:
+      - link "GTOpen application" [ref=f1e4] [cursor=pointer]:
+        - /url: /
+        - text: GTOpen
+      - generic [ref=f1e5]: Research observatory
+      - generic [ref=f1e6]: RTX 5090 · verification pending
+  - main [ref=f1e12]:
+    - generic [ref=f1e13]:
+      - generic [ref=f1e14]:
+        - paragraph [ref=f1e15]: Autoresearch / Postflop engine
+        - heading "Postflop GPU performance" [level=1] [ref=f1e16]
+        - paragraph [ref=f1e17]: Complete-run gains, checked for correctness. Every experiment stays on record.
+      - generic [ref=f1e18]:
+        - status [ref=f1e19]:
+          - generic [ref=f1e21]: Connecting
+        - generic [ref=f1e22]: Waiting for status.json
+        - button "Refresh now ↻" [disabled] [ref=f1e23] [cursor=pointer]
+    - generic [ref=f1e25]:
+      - generic [ref=f1e26]: New RAM measurement epoch · 28 October 2026
+      - paragraph [ref=f1e27]: Loading the current baseline.
+      - paragraph [ref=f1e28]
+    - region "Accepted performance results" [ref=f1e29]:
+      - article [ref=f1e30]:
+        - generic [ref=f1e31]: Accepted complete-run gain
+        - generic [ref=f1e32]: Pending
+        - paragraph [ref=f1e33]: Awaiting comparable full-cycle measurements.
+      - article [ref=f1e34]:
+        - generic [ref=f1e35]: Baseline complete run
+        - generic [ref=f1e36]: —
+        - paragraph [ref=f1e37]: No baseline measured yet.
+      - article [ref=f1e38]:
+        - generic [ref=f1e39]: Best validated complete run
+        - generic [ref=f1e40]: —
+        - paragraph [ref=f1e41]: No accepted candidate yet.
+      - article [ref=f1e42]:
+        - generic [ref=f1e43]: Correctness validation
+        - generic [ref=f1e44]: Pending
+        - paragraph [ref=f1e45]: Fingerprint and equivalence checks pending.
+    - generic [ref=f1e46]:
+      - generic [ref=f1e47]:
+        - generic [ref=f1e48]:
+          - heading "Current research" [level=2] [ref=f1e49]
+          - generic [ref=f1e50]: Pending
+        - generic [ref=f1e51]:
+          - generic [ref=f1e52]: Active stage
+          - heading "Preparing research" [level=3] [ref=f1e53]
+          - paragraph [ref=f1e54]: Waiting for the first research update.
+          - generic [ref=f1e55]:
+            - generic [ref=f1e56]:
+              - generic [ref=f1e57]:
+                - heading "Validated result" [level=3] [ref=f1e58]
+                - generic [ref=f1e59]: Pending
+              - paragraph [ref=f1e60]: No candidate has passed the required checks yet.
+              - paragraph
+            - generic [ref=f1e61]:
+              - generic [ref=f1e62]:
+                - heading "Application deployment" [level=3] [ref=f1e63]
+                - generic [ref=f1e64]: Not deployed
+              - paragraph [ref=f1e65]: Research activity does not imply an application update.
+              - paragraph
+      - generic [ref=f1e66]:
+        - generic [ref=f1e67]:
+          - heading "Accepted progress" [level=2] [ref=f1e68]
+          - generic [ref=f1e69]: FULL-CYCLE TIME REDUCTION
+        - generic [ref=f1e70]:
+          - generic [ref=f1e72]:
+            - strong [ref=f1e75]: Measurements come first
+            - paragraph [ref=f1e76]: The chart starts with a validated complete-run result.
+          - paragraph [ref=f1e77]: Setup and solve-only gains are reported separately and do not count as complete-run improvements.
+    - generic [ref=f1e78]:
+      - generic [ref=f1e79]:
+        - heading "Benchmark fixtures" [level=2] [ref=f1e80]
+        - generic [ref=f1e81]: 0 FIXTURES
+      - table [ref=f1e83]:
+        - rowgroup [ref=f1e84]:
+          - row [ref=f1e85]:
+            - columnheader "Workload" [ref=f1e86]
+            - columnheader "Baseline complete run" [ref=f1e87]: Baselinecomplete run
+            - columnheader "Best accepted complete run" [ref=f1e88]: Best acceptedcomplete run
+            - columnheader "Full-cycle gain" [ref=f1e89]
+            - columnheader "Solve only baseline → best" [ref=f1e90]: Solve onlybaseline → best
+            - columnheader "Correctness" [ref=f1e91]
+        - rowgroup [ref=f1e92]:
+          - row [ref=f1e93]:
+            - cell [ref=f1e94]:
+              - strong [ref=f1e95]: Baseline collection pending
+              - text: Fixtures appear when the research runner records its workload.
+      - generic [ref=f1e96]:
+        - paragraph [ref=f1e97]: Complete-run timing includes setup, solving, and required result evaluation for the same workload.
+        - paragraph [ref=f1e98]: Timing gains count only after correctness passes. Solve-only timings remain separate.
+    - generic [ref=f1e99]:
+      - generic [ref=f1e100]:
+        - heading "Experiment ledger · 0 runs" [level=2] [ref=f1e101]
+        - generic [ref=f1e102]: Filter experiments
+        - combobox "Filter experiments" [ref=f1e103]:
+          - option "All experiments" [selected]
+          - option "Running"
+          - option "Measured"
+          - option "Accepted"
+          - option "Rejected"
+          - option "Invalid"
+          - option "Queued"
+      - table [ref=f1e105]:
+        - rowgroup [ref=f1e106]:
+          - row [ref=f1e107]:
+            - columnheader "Candidate / experiment" [ref=f1e108]
+            - columnheader "Result" [ref=f1e109]
+            - columnheader "Complete run" [ref=f1e110]
+            - columnheader "Solve only" [ref=f1e111]
+            - columnheader "Validation / decision" [ref=f1e112]
+        - rowgroup [ref=f1e113]:
+          - row [ref=f1e114]:
+            - cell [ref=f1e115]:
+              - strong [ref=f1e116]: No experiments recorded yet
+              - text: Accepted, rejected, and invalid runs will remain visible here.
+    - generic [ref=f1e117]:
+      - generic [ref=f1e118]:
+        - heading "Evidence & reproducibility" [level=2] [ref=f1e119]
+        - generic [ref=f1e120]: FETCHABLE RECORDS
+      - paragraph [ref=f1e123]: Benchmark logs, commands, and validation records will appear as they are recorded.
+    - generic [ref=f1e124]:
+      - generic [ref=f1e125]: postflop-gpu-20261016
+      - generic [ref=f1e126]:
+        - text: Checks for updates every 5 seconds ·
+        - link "Raw status" [ref=f1e127] [cursor=pointer]:
+          - /url: ./status.json
+        - text: ·
+        - link "Status schema" [ref=f1e128] [cursor=pointer]:
+          - /url: ./schema-example.json

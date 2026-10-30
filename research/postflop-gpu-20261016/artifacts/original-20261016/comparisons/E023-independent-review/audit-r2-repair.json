@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-16T13:12:21.554689+00:00",
+  "reason": "Read-only reviewer parser did not handle diagnostic output between test header and result; no native failure, timing or policy change.",
+  "changes": "Two header regexes no longer require same-line result; unchanged86/0/4/0/0 summary and exact88+2 names still mandatory.",
+  "preserved_failure_sha256": {
+    "audit-primary.py": "4ab67cfab55453cee4b5cbbe82772aca12f2c5fc2408944979f4d10254c2087a",
+    "audit-stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit-stderr.log": "8c5c506c387a797b0542e94ae260fcac2f3f84cfe432d1d2acc63ffa189462ac",
+    "audit-exit.json": "94722b6a741172f170fe1a71f2ed8c52bc8c03e583ac2ff6602bab0bb514903c"
+  },
+  "r2_sha256": "6bb08976c8e3dedb12ee05f57eb1c87659d245e3752196635d90c59cb7350f50",
+  "native_reruns": 0
+}

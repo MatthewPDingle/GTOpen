@@ -1,0 +1,56 @@
+{
+  "id": "E080-independent-CPU-commit-ability",
+  "at": "2026-10-18T07:54:10.162693+00:00",
+  "status": "FROZEN_PRE_NATIVE",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-prepare-cpu-commit-ability.py": "8f47380ba511d6c5769cc67c9c9983e1d5fb7e628e05426636d5e1995699f747",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-cpu-commit-ability\\probe.py": "02e55e8c567b19cb63abb20bdb3c51097db8d49ffec78e4e1ad1fa24d509d090",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-cpu-commit-ability\\execute.py": "0b5a73a76db4b1d4741f8cfa45327f3de1b3907c24d2c54fc675abf960f32d12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\win_observer.py": "4e3f56c9fddfee9071cedb5efb5f81be186940a0e83f7a8bef4e3d92621b9e99",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\report.json": "8936418a90dbd8a7fcfd6b039ef4bb31ce0773a3cdd4d2728010469d6b0ee3fd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\calibration-closure.json": "06090eda491c6f99417c07c839945390f668f8daf396d6765c581ea66a0513cd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\execution\\baseline.json": "513f08f04169ee8c57f76de34690a178839c0c6b2eae68175282e33676618671",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\execution\\CPU128.json": "8674cc74198996d5e99e2abab414e781d62256b591390737916a4dff62d63c9b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-memory-observer-ability\\execution\\CPU_free.json": "b6f164e6148821412d08facc464345da2263aefd19ec48de3c2d23660578c37c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718"
+  },
+  "states": [
+    {
+      "stage": "baseline",
+      "bytes": 0
+    },
+    {
+      "stage": "alloc128",
+      "bytes": 134217728
+    },
+    {
+      "stage": "alloc128_free",
+      "bytes": 0
+    },
+    {
+      "stage": "alloc256",
+      "bytes": 268435456
+    },
+    {
+      "stage": "alloc256_free",
+      "bytes": 0
+    },
+    {
+      "stage": "alloc128_repeat",
+      "bytes": 134217728
+    },
+    {
+      "stage": "alloc128_repeat_free",
+      "bytes": 0
+    }
+  ],
+  "samples_per_state": 40,
+  "interval_ms": 50,
+  "plateau_samples": 20,
+  "tolerance_bytes": 4194304,
+  "scope": "One CPU-only process with explicit VirtualAlloc reserve/commit, touch every byte, and VirtualFree release across128/256/repeated128MiB. Prove total private/RSS delta and return to baseline without CUDA or unrelated driver commitment. Same sample timing and4MiB tolerance as original calibration, with more than one payload size and repeat release. No solver workload, primary score, cost measurement, threshold relaxation or original failure reclassification.",
+  "original_combined_form_closed": true,
+  "next": "If APIs calibrate, any actual solver profile must still include all CUDA/driver process commitment. GPU software accounting has separate fixed allocation/release evidence; original combined private-payload expectation remains failed. Freeze actual full-solve resource gates before any new solver observations.",
+  "candidate_accepted": false
+}

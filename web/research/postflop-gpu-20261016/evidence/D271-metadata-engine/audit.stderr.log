@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D271-metadata-engine\audit.py", line 260, in <module>
+    extra_report=d271_extra_reader()
+                 ^^^^^^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D271-metadata-engine\audit.py", line 133, in d271_extra_reader
+    req(len(af)==66 and set(af)==set(bf)and all(eq(af[k],bf[k])for k in af),'all extra actual66 constructor fields')
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D271-metadata-engine\audit.py", line 15, in req
+    assert value, label
+           ^^^^^
+AssertionError: all extra actual66 constructor fields

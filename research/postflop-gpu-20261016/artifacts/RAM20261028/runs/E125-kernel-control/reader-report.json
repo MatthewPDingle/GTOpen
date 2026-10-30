@@ -1,0 +1,57 @@
+{
+  "id": "E125-direct-reader",
+  "at": "2026-10-29T21:48:38.951574+00:00",
+  "status": "all_original1688cases_full_raw_CFVs_12inputs_typed_u16_and_guards_exact",
+  "cases": 1688,
+  "application_kernel_launches": 3376,
+  "original_corpus_sha256": "86609a58fbb637c7c1d6e46f86c7e98a90e8beed3dbfdd2f6eda5763366e7ba5",
+  "case_groups": {
+    "boundary_dims_spans": 640,
+    "each_card_full_canonical": 52,
+    "value_stress": 256,
+    "supplementary_threads": 144,
+    "zero_count": 12,
+    "inverse_stress": 64,
+    "all_blocked": 240,
+    "all_unblocked": 240,
+    "row_stride": 40
+  },
+  "all_original_inputs_and_seeds_independently_regenerated": true,
+  "entire_physical_CFV_words_both_arms": 35904112,
+  "immutable_input_words_both_arms": 9083648,
+  "actual_candidate_u16_words": 2075704,
+  "guard_words_both_arms": 34875264,
+  "read_addresses_prechecked": 10938464,
+  "all_original_cases_order_fields_and_widths_retained": true,
+  "negative_reader_fixtures_rejected": [
+    "immutable_word",
+    "typed_u16_word",
+    "CFV_word",
+    "guard_word"
+  ],
+  "raw_files": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-kernel-control\\execution\\raw\\baseline.bin",
+      "bytes": 90171337,
+      "sha256": "79c94bb27871098b03ca4c0e232a946a115127d1cccb77a41c89af33f4a49693"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-kernel-control\\execution\\raw\\candidate-handperm-u16.bin",
+      "bytes": 4171672,
+      "sha256": "3f80bab4bb92934ce8d7f73a374770177c8d0e34a3e5004348a8c765d5b1eaa4"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-kernel-control\\execution\\raw\\candidate.bin",
+      "bytes": 90171337,
+      "sha256": "79c94bb27871098b03ca4c0e232a946a115127d1cccb77a41c89af33f4a49693"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-kernel-control\\execution\\raw\\inputs.bin",
+      "bytes": 90252360,
+      "sha256": "ec9e26840f480648962428ad2faabcd00e22ec58895eb52112a6b99670d6c93a"
+    }
+  ],
+  "solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Directchancekernel corpusonly. DoesnotprovefullGPUengine/CPUplan/upload/capacity/convergence/wholecycleperformance/broad/material/fresh16/holdout/cumulative/appgates."
+}

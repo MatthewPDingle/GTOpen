@@ -1,0 +1,39 @@
+{
+  "id": "E108-kernel-control",
+  "at": "2026-10-29T01:20:05.446221+00:00",
+  "status": "pass_scoped_full_chunk_division_raw_equivalence",
+  "checks": 443131,
+  "root_cross_check_only": true,
+  "inventory": {
+    "device_input_word_checks": 69930440,
+    "device_input_buffer_checks": 320880,
+    "active_words_compared": 4037200,
+    "output_guard_word_checks": 33406640,
+    "full_output_words_both_arms": 41481040,
+    "comparison_pairs": 7640,
+    "rounding_witness_checks": 2
+  },
+  "kernel_launches": 15280,
+  "tested_block_widths": [
+    1,
+    32,
+    64,
+    128,
+    256,
+    3,
+    48,
+    96,
+    192,
+    255
+  ],
+  "whole_physical_outputs_bitwise_equal": true,
+  "all_actual_inputs_match_exact_expected": true,
+  "all21_input_buffers_identical": true,
+  "raw_sha256": "502358a252b9a2694ed5e78dbad01c69832adb68a5a2ceaf05665485d0580db8",
+  "raw_bytes": 932704783,
+  "protocol_sha256": "84e3fa8152c88e4b3c16c5639d2450c7ab8356c6e3bf05e8719caa055620df65",
+  "source_main_live_PTX_custody_pass": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared7640pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; all21metadata inputs byte-identical and every complete input image checked against the original explicit expected bits. Full solver/state/save/resume/material/speed qualification remains."
+}

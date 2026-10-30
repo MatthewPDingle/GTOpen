@@ -1,0 +1,145 @@
+{
+  "id": "D057-numerical-audit",
+  "created_at": "2026-10-16T18:32:37.769619+00:00",
+  "verdict": "PASS_SCOPED_NUMERICAL_MARKERS_AND_ARITHMETIC",
+  "findings": [],
+  "marker_count": 22,
+  "all10_anchor_bits_both_arms_exact": true,
+  "anchor_source_runs": [
+    "B038",
+    "E015C1",
+    "E020C1"
+  ],
+  "matched_post_evaluation_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "pairwise_raw_f32_locations_compared_by_native_assertions": 2668913816,
+  "logical_root_locations_included": 4624,
+  "discount_words_per_arm_per_checkpoint": 3,
+  "raw_checkpoint_arithmetic": [
+    {
+      "iteration": 140,
+      "pairwise_f32_locations": 667228454,
+      "discount_bits": [
+        1065343094,
+        1056964608,
+        1065116085
+      ]
+    },
+    {
+      "iteration": 160,
+      "pairwise_f32_locations": 667228454,
+      "discount_bits": [
+        1065344930,
+        1056964608,
+        1065145451
+      ]
+    },
+    {
+      "iteration": 180,
+      "pairwise_f32_locations": 667228454,
+      "discount_bits": [
+        1065346272,
+        1056964608,
+        1065168345
+      ]
+    },
+    {
+      "iteration": 200,
+      "pairwise_f32_locations": 667228454,
+      "discount_bits": [
+        1065347286,
+        1056964608,
+        1065186694
+      ]
+    }
+  ],
+  "full_cpu_q_scale_direct_equality_enforced_before_each_checkpoint_marker": true,
+  "full_cpu_bytes_per_arm": 1391071288,
+  "gpu_compact_arena_entries": [
+    93381294,
+    110745280
+  ],
+  "cpu_full_arena_entries": [
+    156627930,
+    185752640
+  ],
+  "full_final_state_object_equals_all_immutable_anchors": true,
+  "final_hash": "9dd12ac305ce542f",
+  "final_root_strategy_bit_words": 516,
+  "recomputed_samples": [
+    {
+      "iteration": 160,
+      "ordinary_host_batch_ms": 282.4531,
+      "instrumented_host_batch_ms": 282.5524,
+      "recomputed_change_pct": 0.035156279042425354,
+      "abs_change_lte_10pct": true,
+      "evaluation_device_envelope_ms": 12.975296020507812
+    },
+    {
+      "iteration": 180,
+      "ordinary_host_batch_ms": 282.68080000000003,
+      "instrumented_host_batch_ms": 283.8502,
+      "recomputed_change_pct": 0.4136821460813511,
+      "abs_change_lte_10pct": true,
+      "evaluation_device_envelope_ms": 12.971199989318848
+    },
+    {
+      "iteration": 200,
+      "ordinary_host_batch_ms": 282.4364,
+      "instrumented_host_batch_ms": 282.11789999999996,
+      "recomputed_change_pct": -0.11276875077009807,
+      "abs_change_lte_10pct": true,
+      "evaluation_device_envelope_ms": 12.977343559265137
+    }
+  ],
+  "all_three_host_usefulness_guards_pass": true,
+  "evaluation_device_envelope_ms": {
+    "samples": [
+      12.975296020507812,
+      12.971199989318848,
+      12.977343559265137
+    ],
+    "median": 12.975296020507812,
+    "min": 12.971199989318848,
+    "max": 12.977343559265137
+  },
+  "graph_metadata_counts": {
+    "CU_GRAPH_NODE_TYPE_KERNEL": 147,
+    "CU_GRAPH_NODE_TYPE_MEMCPY": 4
+  },
+  "admission_arithmetic_checked": true,
+  "native_exit0_and_one_filtered_test_pass": true,
+  "binary_sha256_bound": "608d6436ef39596a10ca2c2e1f2eaa51809f25ec2472bfab82026351ce8eac77",
+  "checked_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-evaluation-envelope-diagnostic\\report.json": "ac6f63332bb3d0c512a7096cb3c1c8fee8de138e6a0c5129c9e90e9c241be350",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-plan\\anchors.json": "b63e5855c82d5418769967aafcaf35e5e3a9b5a5b15dade08e0c6cc599317145",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\r2\\candidate-evaluation_device_events.rs": "09e35e16097b6b68ad85df4b26855bbdc66bc82ceb56db0ea13d69f040056fdb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\r2\\source-manifest.json": "2b761d68451d7e7d92f06fb06034466201f7554549420553f785511bf0eab5cd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\r2\\output-schema.json": "ee9d310e31dd49351bea91845378d513e4f329ce514e82dc57db75e056cefdb7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-build\\candidate-evaluation_device_events.rs": "09e35e16097b6b68ad85df4b26855bbdc66bc82ceb56db0ea13d69f040056fdb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057R1\\report.json": "3b94181dabf9a3a508cd62cd9cdb79f19bbc627c6289c8dc4160e750237ec72d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057R1\\stdout.log": "395cb2bf44c9007f124834a48cc5a4c9ea5f61ea3c4c481287517cbfee7e1e8a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\report.json": "87694ef4d7cef44ee3632f303c3b9250205e6c39ade0ad8f54744270172e9044",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\stdout.log": "c36d80a3792d5beeda5a1eafd32108a906c95c15e5bb2eddc19b355bb06012c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\report.json": "9a1ccb80a329b52fee7123ef5f0795348b0017df673b526569ad5cf10b319e88",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\stdout.log": "0d598d04caa2becf905bfd070677a56057db11db84384eda77c41c0eb8f26559",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\report.json": "551bb9eb039bbbefad0163f2175b64712c7976405e169fff92e1d50429332efd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\stdout.log": "5bc7fe384c71c90c9b1953e59d0e28c2d33b6a9e1a9f90b0555a3aa4ea9daa6a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-independent-review\\numerical-audit.py": "7a9a6b86e2aa75a7446945eaa531aa535831ada1d4e29a37d667844d67434d3e"
+  },
+  "scope_limits": [
+    "Audit recomputes JSON/count/statistical arithmetic and compares complete anchor objects; it does not rerun CUDA.",
+    "Billions of raw device values and full CPU stores were compared directly inside the source-pinned successful native test; those large arrays are not retained for independent byte replay. Logged FNV summaries alone are not treated as proof of raw equality.",
+    "Raw reach/root state is post-evaluation. Unknown CFV scratch is excluded. Compact GPU lengths and full CPU lengths remain distinct.",
+    "Device envelope is event-perturbed evaluation only, not host/check wall time, family/kernel attribution, native full-solve fraction, removable headroom or speedup. The<=10%whole-batch host guard does not bound event-interval bias.",
+    "Full build/provenance/custody/restoration audit belongs to the separate reviewer."
+  ],
+  "compiler_native_gpu_executed_by_auditor": false,
+  "performance_acceptance": false,
+  "candidate_accepted": false,
+  "source_or_status_modified": false
+}

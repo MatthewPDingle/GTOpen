@@ -1,0 +1,724 @@
+{
+  "id": "D261",
+  "at": "2026-10-29T06:30:45.682757+00:00",
+  "status": "pass_scoped_emitted_two_accumulator_metadata_reuse",
+  "resource_protocol_sha256": "16b65be39eefbe62c981d6856306b30552001bef67d155291eae2ec765a20f57",
+  "resource_report_sha256": "c7402f97e21b90cdf80989d643d64fb58cc9385252c758725c87a7692e5b3410",
+  "source_manifest_sha256": "ab5be1f129f73dcce07c1b52d85cb2953326c9bce34d2e4390891d69b783d227",
+  "architectures": {
+    "compute_120": {
+      "instructions": 273,
+      "dataflow_iterations": 3,
+      "scalar_global_load_sites_by_parameter": {
+        "0": 1,
+        "3": 1,
+        "4": 1,
+        "5": 3,
+        "6": 3,
+        "7": 3,
+        "8": 1,
+        "9": 2,
+        "10": 6,
+        "11": 4,
+        "12": 6
+      },
+      "shared_child_slot_groups": [
+        {
+          "child_slot_load": {
+            "line": 106,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r43",
+              "[%rd68]"
+            ],
+            "text": "ld.global.nc.u32 \t%r43, [%rd68];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              24,
+              28,
+              94
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 124,
+              "op": "ld.global.f32",
+              "args": [
+                "%f28",
+                "[%rd77]"
+              ],
+              "text": "ld.global.f32 \t%f28, [%rd77];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                93,
+                94,
+                97,
+                109
+              ]
+            },
+            {
+              "line": 142,
+              "op": "ld.global.f32",
+              "args": [
+                "%f30",
+                "[%rd85]"
+              ],
+              "text": "ld.global.f32 \t%f30, [%rd85];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                93,
+                94,
+                97,
+                125
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 182,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r47",
+              "[%rd98]"
+            ],
+            "text": "ld.global.nc.u32 \t%r47, [%rd98];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              24,
+              28,
+              165
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 199,
+              "op": "ld.global.f32",
+              "args": [
+                "%f31",
+                "[%rd107]"
+              ],
+              "text": "ld.global.f32 \t%f31, [%rd107];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                164,
+                165,
+                168,
+                179
+              ]
+            },
+            {
+              "line": 216,
+              "op": "ld.global.f32",
+              "args": [
+                "%f32",
+                "[%rd115]"
+              ],
+              "text": "ld.global.f32 \t%f32, [%rd115];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                164,
+                165,
+                168,
+                194
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 234,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r50",
+              "[%rd121]"
+            ],
+            "text": "ld.global.nc.u32 \t%r50, [%rd121];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              24,
+              28,
+              213
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 251,
+              "op": "ld.global.f32",
+              "args": [
+                "%f33",
+                "[%rd130]"
+              ],
+              "text": "ld.global.f32 \t%f33, [%rd130];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                212,
+                213,
+                216,
+                227
+              ]
+            },
+            {
+              "line": 268,
+              "op": "ld.global.f32",
+              "args": [
+                "%f34",
+                "[%rd138]"
+              ],
+              "text": "ld.global.f32 \t%f34, [%rd138];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                24,
+                28,
+                212,
+                213,
+                216,
+                242
+              ]
+            }
+          ]
+        }
+      ],
+      "scalar_CFV_load_sites": 6,
+      "one_metadata_set_per_two_CFV_sites": true,
+      "independent_loop_carried_accumulators": [
+        "%f51",
+        "%f52"
+      ],
+      "scalar_FP_op_inventory": {
+        "add.f32": 6,
+        "mul.f32": 2
+      },
+      "all_FADD_sites_have_CFV_plus_self_or_positive_zero": true,
+      "scalar_parent_store_sites": [
+        {
+          "line": 285,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd142]",
+            "%f35"
+          ],
+          "text": "st.global.f32 \t[%rd142], %f35;"
+        },
+        {
+          "line": 292,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd146]",
+            "%f36"
+          ],
+          "text": "st.global.f32 \t[%rd146], %f36;"
+        }
+      ],
+      "no_barrier_or_calls": true,
+      "proof_scope": "Static conservative register ancestry and local source/operand witnesses only. Does not prove dynamic execution counts, full control-flow/FP equivalence, final driver SASS or speed.",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E114-resource\\execution\\candidate-compute_120-up_chance.ptx.txt",
+      "sha256": "317a9f97bc3a9a058709c365575ccec3be680002da598ce74b33d9dd76f08293"
+    },
+    "compute_75": {
+      "instructions": 540,
+      "dataflow_iterations": 3,
+      "scalar_global_load_sites_by_parameter": {
+        "0": 1,
+        "3": 1,
+        "4": 1,
+        "5": 7,
+        "6": 7,
+        "7": 7,
+        "8": 1,
+        "9": 2,
+        "10": 14,
+        "11": 8,
+        "12": 14
+      },
+      "shared_child_slot_groups": [
+        {
+          "child_slot_load": {
+            "line": 134,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r31",
+              "[%rd123]"
+            ],
+            "text": "ld.global.nc.u32 \t%r31, [%rd123];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              109
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 156,
+              "op": "ld.global.f32",
+              "args": [
+                "%f50",
+                "[%rd131]"
+              ],
+              "text": "ld.global.f32 \t%f50, [%rd131];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                107,
+                109,
+                112,
+                125
+              ]
+            },
+            {
+              "line": 179,
+              "op": "ld.global.f32",
+              "args": [
+                "%f52",
+                "[%rd138]"
+              ],
+              "text": "ld.global.f32 \t%f52, [%rd138];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                107,
+                109,
+                112,
+                142
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 204,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r39",
+              "[%rd143]"
+            ],
+            "text": "ld.global.nc.u32 \t%r39, [%rd143];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              165
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 225,
+              "op": "ld.global.f32",
+              "args": [
+                "%f53",
+                "[%rd151]"
+              ],
+              "text": "ld.global.f32 \t%f53, [%rd151];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                163,
+                165,
+                168,
+                180
+              ]
+            },
+            {
+              "line": 247,
+              "op": "ld.global.f32",
+              "args": [
+                "%f54",
+                "[%rd158]"
+              ],
+              "text": "ld.global.f32 \t%f54, [%rd158];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                163,
+                165,
+                168,
+                196
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 273,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r47",
+              "[%rd163]"
+            ],
+            "text": "ld.global.nc.u32 \t%r47, [%rd163];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              220
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 294,
+              "op": "ld.global.f32",
+              "args": [
+                "%f55",
+                "[%rd171]"
+              ],
+              "text": "ld.global.f32 \t%f55, [%rd171];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                218,
+                220,
+                223,
+                235
+              ]
+            },
+            {
+              "line": 317,
+              "op": "ld.global.f32",
+              "args": [
+                "%f56",
+                "[%rd178]"
+              ],
+              "text": "ld.global.f32 \t%f56, [%rd178];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                218,
+                220,
+                223,
+                252
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 350,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r55",
+              "[%rd188]"
+            ],
+            "text": "ld.global.nc.u32 \t%r55, [%rd188];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              282
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 371,
+              "op": "ld.global.f32",
+              "args": [
+                "%f57",
+                "[%rd196]"
+              ],
+              "text": "ld.global.f32 \t%f57, [%rd196];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                279,
+                282,
+                285,
+                297
+              ]
+            },
+            {
+              "line": 393,
+              "op": "ld.global.f32",
+              "args": [
+                "%f58",
+                "[%rd203]"
+              ],
+              "text": "ld.global.f32 \t%f58, [%rd203];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                279,
+                282,
+                285,
+                313
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 424,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r65",
+              "[%rd213]"
+            ],
+            "text": "ld.global.nc.u32 \t%r65, [%rd213];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              343
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 445,
+              "op": "ld.global.f32",
+              "args": [
+                "%f59",
+                "[%rd221]"
+              ],
+              "text": "ld.global.f32 \t%f59, [%rd221];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                340,
+                343,
+                346,
+                358
+              ]
+            },
+            {
+              "line": 467,
+              "op": "ld.global.f32",
+              "args": [
+                "%f60",
+                "[%rd228]"
+              ],
+              "text": "ld.global.f32 \t%f60, [%rd228];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                340,
+                343,
+                346,
+                374
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 498,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r75",
+              "[%rd238]"
+            ],
+            "text": "ld.global.nc.u32 \t%r75, [%rd238];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              404
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 519,
+              "op": "ld.global.f32",
+              "args": [
+                "%f61",
+                "[%rd246]"
+              ],
+              "text": "ld.global.f32 \t%f61, [%rd246];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                401,
+                404,
+                407,
+                419
+              ]
+            },
+            {
+              "line": 541,
+              "op": "ld.global.f32",
+              "args": [
+                "%f62",
+                "[%rd253]"
+              ],
+              "text": "ld.global.f32 \t%f62, [%rd253];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                401,
+                404,
+                407,
+                435
+              ]
+            }
+          ]
+        },
+        {
+          "child_slot_load": {
+            "line": 571,
+            "op": "ld.global.nc.u32",
+            "args": [
+              "%r85",
+              "[%rd263]"
+            ],
+            "text": "ld.global.nc.u32 \t%r85, [%rd263];",
+            "parameter": 11,
+            "address_load_ancestors": [
+              29,
+              34,
+              464
+            ]
+          },
+          "two_CFV_loads": [
+            {
+              "line": 592,
+              "op": "ld.global.f32",
+              "args": [
+                "%f63",
+                "[%rd271]"
+              ],
+              "text": "ld.global.f32 \t%f63, [%rd271];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                461,
+                464,
+                467,
+                479
+              ]
+            },
+            {
+              "line": 614,
+              "op": "ld.global.f32",
+              "args": [
+                "%f64",
+                "[%rd278]"
+              ],
+              "text": "ld.global.f32 \t%f64, [%rd278];",
+              "parameter": 12,
+              "address_load_ancestors": [
+                29,
+                34,
+                461,
+                464,
+                467,
+                495
+              ]
+            }
+          ]
+        }
+      ],
+      "scalar_CFV_load_sites": 14,
+      "one_metadata_set_per_two_CFV_sites": true,
+      "independent_loop_carried_accumulators": [
+        "%f86",
+        "%f87"
+      ],
+      "scalar_FP_op_inventory": {
+        "add.f32": 14,
+        "mul.f32": 3
+      },
+      "all_FADD_sites_have_CFV_plus_self_or_positive_zero": true,
+      "scalar_parent_store_sites": [
+        {
+          "line": 628,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd281]",
+            "%f65"
+          ],
+          "text": "st.global.f32 \t[%rd281], %f65;"
+        },
+        {
+          "line": 636,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd284]",
+            "%f66"
+          ],
+          "text": "st.global.f32 \t[%rd284], %f66;"
+        },
+        {
+          "line": 655,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd106]",
+            "%f2"
+          ],
+          "text": "st.global.f32 \t[%rd106], %f2;"
+        },
+        {
+          "line": 662,
+          "op": "st.global.f32",
+          "args": [
+            "[%rd110]",
+            "%f2"
+          ],
+          "text": "st.global.f32 \t[%rd110], %f2;"
+        }
+      ],
+      "no_barrier_or_calls": true,
+      "proof_scope": "Static conservative register ancestry and local source/operand witnesses only. Does not prove dynamic execution counts, full control-flow/FP equivalence, final driver SASS or speed.",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E114-resource\\execution\\candidate-compute_75-up_chance.ptx.txt",
+      "sha256": "605e00b0a66b4ce67b01501f86471ef781d1ba97ca804a2e1725618e25fa0d46"
+    }
+  },
+  "negative_reader_fixtures": [
+    {
+      "arch": "compute_120",
+      "fixture": "wrong_card_shared_base",
+      "rejected": true
+    },
+    {
+      "arch": "compute_120",
+      "fixture": "cross_accumulator_recurrence",
+      "rejected": true
+    },
+    {
+      "arch": "compute_120",
+      "fixture": "wrong_float_operation",
+      "rejected": true
+    },
+    {
+      "arch": "compute_75",
+      "fixture": "wrong_card_shared_base",
+      "rejected": true
+    },
+    {
+      "arch": "compute_75",
+      "fixture": "cross_accumulator_recurrence",
+      "rejected": true
+    },
+    {
+      "arch": "compute_75",
+      "fixture": "wrong_float_operation",
+      "rejected": true
+    }
+  ],
+  "all_integer_records_replayed": 1358848,
+  "source_and_PTX_unchanged": true,
+  "all_owned_resource_children_terminal": true,
+  "new_compiler_CUDA_or_GPU_processes": 0,
+  "candidate_accepted": false,
+  "limits": "Scoped static ancestry/recurrence and integer ownership replay, same-agent review. Not whole CFG/SASS/FP-equivalence/dynamic-count/cost/speed proof. Actual full raw direct and engine/canonical plus all original adoption gates still required."
+}

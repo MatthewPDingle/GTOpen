@@ -1,0 +1,29 @@
+{
+  "at": "2026-10-18T05:38:18.864776+00:00",
+  "command": [
+    "rustc",
+    "--test",
+    "--edition=2021",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-plan-control\\probe.rs",
+    "--crate-name",
+    "e078_plan_probe",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--extern",
+    "solver=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "serde=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde-47b4d5f55b04d3b5.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "rayon=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\librayon-8ab48cfec9cf00f9.rlib",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-plan-control\\build\\tests.exe"
+  ]
+}

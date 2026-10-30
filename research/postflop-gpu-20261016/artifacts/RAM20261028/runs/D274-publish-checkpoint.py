@@ -1,0 +1,40 @@
+import hashlib,json,shutil,statistics,subprocess,sys,urllib.request
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'epoch'));import common as h
+H=ROOT/'runs/D274-spot-observation';r=h.read(H/'report.json');h.custody();h.ar.refuse_active(h.ar.live_status());assert not(ROOT/'gpu-run.lock').exists()and not(ROOT/'epoch-sequence.lock').exists()
+assert r['status']=='pass_observer_CPU_full_Spot_only'and r['full_Spot_pairs']==9 and r['error_pairs']==24 and not r['source_candidate_created']and r['new_GPU_CFR_solver_or_speed_samples']==0
+P=h.read(H/'protocol.json')
+for p,d in P['input_sha256'].items():h.pin(p,d)
+correction=h.read(H/'reader-correction.json');h.pin(ROOT/'runs/D274-root-observation-v2.py',correction['corrected_reader_sha256'])
+for tag in['compile','P1','P2','P3','reader-v2']:
+    e=h.read(H/'execution'/(tag+'.exit.json'));assert e['returncode']==0 and e['error']is None
+assert h.read(H/'execution/reader.exit.json')['returncode']==1
+events=[]
+for seq in P['sequence']:
+    raw=(H/'execution'/(seq['id']+'.stdout.log')).read_text(encoding='utf-8');events +=[json.loads(x.split('D274_SPOT ',1)[1])for x in raw.splitlines()if'D274_SPOT 'in x]
+assert len(events)==9
+proxy=sum(min(statistics.median(x[k]for x in events if x['fixture']==f['fixture'])for k in['tree_ns','river_ns'])/1e6 for f in P['fixtures'])
+assert proxy==r['idealized_overlap_arithmetic_proxy_ms']and proxy<P['planning_effort_constant_ms']
+h.save(H/'decision.json',{'at':h.now(),'decision':'DECLINE_TREE_RIVER_OVERLAP_BEFORE_PROTOTYPE','reason':'Fresh idealized arithmetic effort proxy is below the prospective effort constant; adding overlap is not justified. This is not an observed parallel speedup or removable-time upper bound. Existing early validation/node-budget error behavior remains serial.','arithmetic_proxy_ms':proxy,'effort_constant_ms':P['planning_effort_constant_ms'],'source_candidate_created':False,'speed_gain_claimed':False,'native_repeated_after_reader_failure':False,'new_GPU_CFR_solver_or_speed_samples':0})
+h.save(H/'execution/complete.json',{'at':h.now(),'root_report_sha256':h.sha(H/'report.json'),'all_owned_compiler_native_CPU_and_reader_children_terminal':True,'original_reader_failed_expected_input_normalization_only':True,'corrected_reader_exit':0,'native_processes_repeated':0,'new_GPU_CFR_solver_or_speed_samples':0,'accepted_main_live_protected_PTX_unchanged':True})
+files=[H/n for n in['report.json','decision.json','reader-correction.json','source-review.json','schema.json','protocol.json']]+[H/'execution'/n for n in['build-manifest.json','restoration.json','complete.json','reader.exit.json','reader.stderr.log','reader-v2.exit.json','reader-v2.stdout.log']]+[H/'execution'/(tag+suffix)for tag in['P1','P2','P3']for suffix in['.stdout.log','.exit.json']]
+verified=[]
+for p in files:
+    relative=p.relative_to(H);dst=h.ar.DASHBOARD/'evidence'/H.name/relative;dst.parent.mkdir(parents=True,exist_ok=True);shutil.copyfile(p,dst);url=h.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+H.name+'/'+relative.as_posix()
+    with urllib.request.urlopen(url,timeout=20)as z:assert z.read()==p.read_bytes()
+    verified.append({'relative':relative.as_posix(),'sha256':h.sha(p),'bytes':p.stat().st_size})
+with h.ar.exclusive_lock(h.ar.STATUS.with_suffix('.lock'),timeout=3):
+    s=h.read(h.ar.STATUS);entry=next(e for e in s['experiments']if e['id']=='D274');entry.update(status='rejected',accepted=False,stage='CPU observer verified; overlap declined before prototype',reason=f'9 full Spot pairs and24 error pairs exact; {r["literal_paired_bytes"]:,} paired bytes literally equal. Idealized overlap effort proxy {proxy:.4f}ms below100.521554ms planning constant. No GPU speed gain, no candidate. Reader null-to-false expectation corrected against retained native outputs; no rerun.',evidence=[{'label':n,'url':'evidence/'+H.name+'/'+n}for n in['report.json','decision.json','reader-correction.json','execution/complete.json']]);s.update(updated_at=h.now(),state='running',goal_status='active',active_experiment='D274',stage='Tree/river overlap declined; next distinct lead search',activity='Fresh CPU stage observations show insufficient overlap effort. E080 remains best live; all solver source restored. No additional GPU performance samples or adopted gain.');h.ar.atomic_json(h.ar.STATUS,s)
+ledger=h.REPO/'research/postflop-gpu-20261016/experiments.md';prefix=ledger.read_bytes();assert b'\n## D274 fresh Spot construction observations'not in prefix;assert not subprocess.check_output(['git','diff','--cached','--name-only'],cwd=h.REPO,text=True).strip()
+entry=f'''
+
+## D274 fresh Spot construction observations - overlap declined before prototype
+
+Current-RAM CPU-only observer: one fresh locked/offline release librarytest build, original Spot::new unchanged plus separate cfg(test) clone/timers/full typed serializer. Three fixed fresh native processes BO/OB/BO, all original canonical3fixtures;9full Spot pairs/24error pairs pass. All17serialized fields, entire trees/actions/children/physical data offsets/float bits/hand+weight+samecombo/river sorted strengths+indices/suit+hand permutations/data-vector capacities literally equal across {r['literal_paired_bytes']:,} paired bytes; {r['raw_retained_bytes']:,} rawbytes retained onX. Independent reader validates typed shapes/endpoints, original config normalization, allriver runouts/permutations/capacities. No GPU features/context/API/Solver/CFR/solve timing samples. Rayon16/defaultaffinity; globalpool initialized beforeclocks, so not cold-pool/fullsolve latency.
+
+Per-fixture observer stage medians (tree/river/symmetry ms): '''+', '.join(f"{m['fixture']} {m['tree_ms']:.4f}/{m['river_ms']:.4f}/{m['symmetry_ms']:.4f}"for m in r['medians'])+f'''. Sum min(median tree,median river)={proxy:.4f}ms is only idealized arithmetic planning effort, NOT measured overlap gain or removable-time bound. It is below the frozen100.521554ms effort constant (1%ofB360-36210052.1554ms); no historical samples pooled. Decline tree/river overlap before candidate/prototype. Do not fix a budget/max_nodes threshold or admit naive join from these timings. Existing serial early error/node-budget behavior preserved, cancellation alone cannot erase speculative work alreadydone.
+
+Original reader failed by expecting input null carry_aggressor_through_checks in actual constructedconfig. Accepted Spot::new_impl explicitly get_or_insert(false). Preserved frozen reader/protocol/failure, additive v2 corrects only expected config against source. Both actual output files still literally compared without normalization; all3 native processes/18successful constructors/48error constructors ran once only. Corrected reader passes; allowned compiler/native/readers terminal. Evidence {H/'report.json'}, {len(verified)}tracker artifacts HTTPbyteverified. Accepted source/main/live/protected2PTX unchanged, locks absent. E080/GPU/compressed/16/defaultaffinity remainslive, no newgainadopted,lastprimaryB362/nextB363. NewbulkX,Sreadonly,noT,priorledgerprefixbyteexact,goalactive.
+'''
+ledger.write_bytes(prefix+entry.encode('utf-8'));assert ledger.read_bytes()[:len(prefix)]==prefix;h.custody();subprocess.run(['git','add','--','research/postflop-gpu-20261016/experiments.md'],cwd=h.REPO,check=True);assert subprocess.check_output(['git','diff','--cached','--name-only'],cwd=h.REPO,text=True).splitlines()==['research/postflop-gpu-20261016/experiments.md'];subprocess.run(['git','-c','gc.auto=0','commit','-m','research: measure Spot setup and decline insufficient overlap'],cwd=h.REPO,check=True)
+h.save(H/'publication.json',{'at':h.now(),'local_commit':subprocess.check_output(['git','rev-parse','HEAD'],cwd=h.REPO,text=True).strip(),'report_sha256':h.sha(H/'report.json'),'decision_sha256':h.sha(H/'decision.json'),'HTTP_byte_verified':verified,'all_owned_children_terminal':True,'source_candidate_created':False,'new_GPU_CFR_solver_or_speed_samples':0,'goal_active':True});h.custody();print('D274 closed before prototype; proxy',proxy,'ms; all exact outputs retained.',flush=True)

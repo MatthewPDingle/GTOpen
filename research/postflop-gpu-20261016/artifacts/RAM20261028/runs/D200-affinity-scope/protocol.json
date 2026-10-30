@@ -1,0 +1,21 @@
+{
+  "id": "D200",
+  "at": "2026-10-28T21:27:23.880191+00:00",
+  "status": "FROZEN_PRE_READONLY_CPU_TOPOLOGY_QUERY",
+  "inputs": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D200-topology.py": "329757e10b7da0af007e61e19484470f6fff5a42eaf9838f7a92133841323a90",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-RAM-thread-config-scope\\scope-review.json": "6e4b5414acaabd93ee3fa6abc1f60817d6d5e4f692a449df1eb248889b0a4afa",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-worker-comparison\\protocol.json": "81f0d073dc40f3928fa0e81216d28d6151ef010a28fa4624e7cfdf46206ff761"
+  },
+  "query": "GetLogicalProcessorInformationEx(RelationProcessorCore=0), GetProcessAffinityMask(currentprocess), retain all returned topology bytes. No setting/priority/power/RAM/clock/CUDA query or compiler/native solver.",
+  "fixed_candidate": "Only if current topology confirms onegroup/16symmetric2waySMTphysicalcores/all32allowed: choose least-significant logical processor bit per physical core, keep all16cores andRAYON16. No alternate bit/CCD/worker/priority/threshold/pinning sweep.",
+  "novelty": "D168/D169 varied worker counts8/32 and explicitly held affinity unchanged; bothfailed configurations remainclosed. New16worker placement uses sameacceptedE080/binary, not a count/flag/source rescue. Bounded currentledger/local scope/protocol search finds no affinity experiment; not exhaustive semantic history.",
+  "risks": "Constrains all threads of researchchild includingCUDA/NVRTC/helper/allocator threads; may hurt startup/parallelwork/otherpathways. No speed forecast, no live/mainsetting or productionadoption. Raw/fullsamequality andfullclock/CPU/lifetime/fresh16/broad/capacity/holdout/application stillrequired.",
+  "previous_goal_turn": "progress: D195/D196 native/raw checks andD197/D198 fullraw evidence completed; originalwrapperfailure closedE102; D199 redundantcompiledmax trialdeclined. Allownedchildren terminal.",
+  "primary_sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/nf-sysinfoapi-getlogicalprocessorinformationex",
+    "https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-processor_relationship",
+    "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-setprocessaffinitymask",
+    "https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-getprocessaffinitymask"
+  ]
+}

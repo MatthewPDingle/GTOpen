@@ -1,0 +1,37 @@
+{
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "activation": "Not implemented; root only after independent source/script review and immutable authorization.",
+  "working_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2",
+  "sequence": [
+    {
+      "stage": "build-only",
+      "command": [
+        "python",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\build.py",
+        "ROOT_FILL_AUTHORIZATION_SHA256"
+      ],
+      "root_observes_terminal_exit_before_next": true
+    },
+    {
+      "stage": "fixed-unit-and-six-primary",
+      "command": [
+        "python",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\primary.py"
+      ],
+      "requires_terminal_build": true
+    },
+    {
+      "stage": "assess-all-six",
+      "command": [
+        "python",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\assess.py"
+      ],
+      "requires_terminal_fixed_cohort": true
+    }
+  ],
+  "candidate_acceptance": false,
+  "deployment": false
+}

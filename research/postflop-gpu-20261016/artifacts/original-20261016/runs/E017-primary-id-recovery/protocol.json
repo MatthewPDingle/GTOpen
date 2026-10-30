@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-16T08:31:01Z",
+  "reason": "Root reserved E017 dashboard row for source work. Runner refused its duplicate ID before creating the run directory or launching the candidate. Parent script exited1.",
+  "failed_original_script": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-primary.py",
+  "failed_original_script_sha256": "a6bf3b5309dd33c01ec3201732f4cf02b0d34feb3f6bf451948a0bc2b29ab7c9",
+  "refusal": "Refused: Experiment ID already appears in dashboard: E017",
+  "completed_unchanged_inputs": {
+    "V017-unit": {
+      "report_sha256": "8bcca079cc63ed2796323080068a381971da19568d38b6c560576ec5f8cc90e6",
+      "stdout_sha256": "66417a1ac5ccd910012870d0d15db27392e1dcee5161bf6a33fc0227a72447cb"
+    },
+    "V017-capacity": {
+      "report_sha256": "b77187b2b7ad2a8fc94020a4705df557a2964f7e99e3ff73bf56b9d683ed3cea",
+      "stdout_sha256": "eb18d9a1508952876a2fd765fcd279d9c0d448217cea86fc99e1de1dd7c0e6e5"
+    },
+    "B053": {
+      "report_sha256": "62b6a756b528eef2ebfe7a402f1d1ef80815c8ac112aeac0ea5df0c6aa429aed",
+      "stdout_sha256": "08ab4babd208eb7eb39d0348151d5eaffc33dc2799cfa90c698cb1a58c3aac42"
+    }
+  },
+  "first_candidate_renamed": "E017R1",
+  "remaining_order": [
+    "E017R1",
+    "E017R2",
+    "B054",
+    "B055",
+    "E017R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B053",
+      "candidate": "E017R1"
+    },
+    {
+      "baseline": "B054",
+      "candidate": "E017R2"
+    },
+    {
+      "baseline": "B055",
+      "candidate": "E017R3"
+    }
+  ],
+  "timing_exclusions": [],
+  "input_or_binary_change": false,
+  "limits": "First pair has an operational pause after its baseline. Retain it and disclose chronology; no score was consulted to choose a replacement and no timing is discarded."
+}

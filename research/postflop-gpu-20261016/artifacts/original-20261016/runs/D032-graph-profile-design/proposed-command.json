@@ -1,0 +1,39 @@
+{
+  "status": "proposed only; requires pinned Windows Nsight Systems installation and authorized elevated execution context",
+  "executable": "<verified path to nsys.exe>",
+  "argv": [
+    "profile",
+    "--trace=cuda",
+    "--cuda-graph-trace=node",
+    "--sample=none",
+    "--cpuctxsw=none",
+    "--force-overwrite=false",
+    "--output=<unique diagnostic directory>/capture",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+    "postflop_complete_cycle",
+    "--exact",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "environment": {
+    "RAYON_NUM_THREADS": "16",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": "rainbow",
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0",
+    "PATH_prepend": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin"
+  },
+  "do_not_use": [
+    "duration-limited capture that terminates the child before final exactness output",
+    "CUDA event or NVTX patches to the frozen evaluator",
+    "same run as a qualification score",
+    "parallel GPU/build jobs",
+    "live server process attachment"
+  ],
+  "followup_after_complete_capture": [
+    "inspect installed-version Diagnostics Summary for trace method/dropped events",
+    "nsys stats --report cuda_gpu_kern_sum,cuda_api_sum --format csv <capture.nsys-rep> (verify installed report names first)",
+    "nsys export --type sqlite --output <unique>/capture.sqlite <capture.nsys-rep> (verify installed schema before SQL)"
+  ]
+}

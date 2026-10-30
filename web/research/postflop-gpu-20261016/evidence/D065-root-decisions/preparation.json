@@ -1,0 +1,28 @@
+{
+  "id": "D065",
+  "at": "2026-10-16T20:27:11Z",
+  "purpose": "Measure accepted E020 full-readback host spans to evaluate whether transfer/unchanged CPU encoding overlap has enough complete-cycle headroom. Not a speed candidate.",
+  "scope": "Off-tree reuse only LifecycleTrace helper and14full-readback spans from D009; no constructor/public-synchronize instrumentation, no changed numerical operations, transfers, synchronizations, arenas or evaluator. Existing D044 build/cohort/assess pattern; no new runner framework.",
+  "prospective_order": [
+    "D065B1",
+    "D065P1",
+    "D065P2",
+    "D065B2",
+    "D065B3",
+    "D065P3"
+  ],
+  "exactness": "18complete results and138checkpoints; fixedstops and work. Exactly3full-readback records per profiledprocess,14orderedspans each,noneincontrols.",
+  "usefulness_guard": "Report all6completecycle times and observer overhead; retain existing D044 absolute10percent aggregate perturbation guard. Diagnostic observations cannot qualify a speedup.",
+  "interpretation": "Copy host-call plus completion-wait is transfer-related host elapsed, not isolatedPCIe time or removable saving. Encoding includes scatter/inactive restore. Report component sums/medians/ranges and an explicitly optimistic overlap ceiling only; include startup/tail/bandwidth/pinned-memory costs as unmeasured, not assumed away.",
+  "review_required": "Independent source/script review and separate root activation/execution decision; all existing accepted-source/live/storage/serialized-GPU rules apply.",
+  "compiler_native_gpu_authorized": false,
+  "source_activation_authorized": false,
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D009.patch": "6ce8ebb7564fe28c9a3ce6d57d1b343002c212fb17d476af39b49d3dcf34376a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\protocol.json": "f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\scripts-manifest.json": "179fa88dc90ee3b551debf76f837aef38b0af2012468f0c41d91e87839642bf8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\base\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E034-three-pair-comparison\\report.json": "9a5b0f590f090fcfffab3931392a9a0ac46880e484dea1713668463ec193eda8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-cleanup\\report.json": "f707af76f79f0964a77eb12aeaf249380aa761bbd6344353c5ea0cf07a36e23f"
+  }
+}

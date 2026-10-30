@@ -1,0 +1,12 @@
+{
+  "id": "E007",
+  "scope": "Source-only cost inventory; no material-cost or compatibility acceptance claim",
+  "mechanism": "One exact historical __launch_bounds__(128,9) annotation on up_action; all numerical body bytes remain E020.",
+  "new_device_or_host_buffers": false,
+  "device_layout_or_serialization_change": false,
+  "host_production_change": false,
+  "compatibility": "The annotation imposes a maximum128 threads on this entry. Accepted production has one up_action launch-builder site, using cfg with BLOCK128; evaluation has a separate up_action_eval. A future external or changed launch above128 is incompatible. No universal hardware or arbitrary launch-shape claim.",
+  "resource_costs_pending": "Fresh NVRTC/JIT registers, local bytes, instruction count and architecture compatibility may differ. minBlocksPerMultiprocessor9 is a compiler constraint, not evidence of achieved occupancy or an execution requirement. Source cannot certify no material cost.",
+  "required_before_adoption": "Fresh exact unit/full-state/F32/menu/continuation controls, supported launch/compiler behavior and actual compiled-resource evidence, plus user1% confirmation/fixture/holdout/cumulative gates.",
+  "compiler_native_gpu_executed": false
+}

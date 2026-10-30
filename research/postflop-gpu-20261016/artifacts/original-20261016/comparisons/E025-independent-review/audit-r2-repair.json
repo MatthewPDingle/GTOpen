@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-16T14:52:18.425325+00:00",
+  "reason": "Reviewer schema correction only: E025 authorization timestamp field is at, not inherited authorized_at. Initial script and failed logs remain untouched; no native execution or timing sample replacement.",
+  "old_script_sha256": "e3ef73489e9077e8e05db6f48988e4488ea54a714e30c14e6fb02053312b7923",
+  "new_script_sha256": "53496e75261c04e5de509964e6ba6d28bb43f51308aa8efe44120303d6b8d033",
+  "exact_replacement": {
+    "old": "dt(A['authorized_at'])",
+    "new": "dt(A['at'])"
+  },
+  "previous_exit_sha256": "c1457d46db28060332541828bfb2f7f4202409e8f29f6b21569bdf3fbc98c2fe"
+}

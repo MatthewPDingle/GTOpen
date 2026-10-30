@@ -1,0 +1,57 @@
+{
+  "id": "E070-seven-entry-control-preparation",
+  "at": "2026-10-17T23:18:34.465025+00:00",
+  "status": "pass_host_compilation_and_preparation_only",
+  "main_kernel_cases": 3833,
+  "continuation_helper_cases": 2120,
+  "combined_declared_cases": 5953,
+  "combined_planned_kernel_launches": 11906,
+  "planned_numerical_processes": 5,
+  "CUDA_entries": 7,
+  "all_numerical_probe_host_compilation_complete": true,
+  "all_GPU_numerical_controls_executed": false,
+  "new_GPU_numerical_executions": 0,
+  "new_NVRTC_executions": 0,
+  "new_timing_samples": 0,
+  "accepted_gain_changed": false,
+  "helper_corpus_sha256": "d50cde98adc72e7782fcae4a2e7b4658f78b1c1df68de50676c2d5a2f4f6be41",
+  "helper_probe_source_sha256": "7ead914ec71301607e6ae2010cc775665432638020844674d272c193abee7622",
+  "helper_probe_binary_sha256": "b94f3493cf0cea685d67c291bab8c94e4c2b04ac93fbf06c919e2244c8c473f8",
+  "helper_compiler_receipt_sha256": "20f3f7d6d4fa5e2537ca7eb0709b718f8ddc07320f753bfb2ee4b1189f55db60",
+  "helper_preparation_sha256": "10825e5cae1606554e5d7add25eaaee64685b916c381147ce12e2a9717b873e4",
+  "helper_root_decoder_sha256": "be9e9ca762dc00c83efc7faf417eb34116fbd50661e655089cc93dc59fcffd24",
+  "helper_resource_probe_binary_sha256": "16e53a37a989ed0307ef318d517882750adcd6c6caa9be881bff0f292bf0c2b9",
+  "source_sha256": {
+    "helper_raw_probe.rs": "7ead914ec71301607e6ae2010cc775665432638020844674d272c193abee7622",
+    "prepare_helper_raw.py": "b99b4198f679967ee3369f496b19a433b508993e64d7d88a440ce4604131ecac",
+    "helper_raw_audit.py": "be9e9ca762dc00c83efc7faf417eb34116fbd50661e655089cc93dc59fcffd24",
+    "helper_resource_probe.rs": "f31931ca89745f925cd596b0b6f7e70b141c0de5bf5ad6f63076e240e18beb6c"
+  },
+  "CPU_oracles": "All owned copy/transport/broadcast words must match the original source bits, including nonfinite payloads. Finite projection reductions must match ordered double accumulation of identity/reversal images followed by division and f32 conversion. Nonfinite reductions require complete baseline/candidate bit equality, with no cross-platform CPU NaN-payload claim.",
+  "coverage_limits": "Declared synthetic layouts and an order2 group only. Full solver, actual deal-group continuation/storage, supported capacity, no-tradeoff and timing qualification remain required.",
+  "raw_storage": {
+    "conservative_bytes": 4041845680,
+    "peak_reservation_bytes": 8589934592,
+    "minimum_S_free_before_admission_bytes": 70866960384,
+    "current_S_free_observed_bytes": 819021844480,
+    "must_recheck_native_admission": true
+  },
+  "source_file_custody": {
+    "main": 157,
+    "research": 162,
+    "live_executable_exact": true,
+    "required_absences": 5,
+    "scope": "Source and live file hashes only; not linked Git/protected PTX/native idle-state revalidation."
+  },
+  "all_owned_new_compiler_handles_terminal": true,
+  "research_or_main_solver_source_activated": false,
+  "remaining_before_any_native_kernel_work": [
+    "Finish/seal the helper resource decoder and bounded native admission/execution scripts.",
+    "Current runtime must actually permit S writes and localhost idle-session checks; no repeat approval notifications.",
+    "Checksum-archive all frozen inputs/binaries to S, recheck source/Git/live/PTX custody and free-space reserve, and acquire the existing serialized GPU lock.",
+    "Run the frozen helper resource process once and require its source/ABI/narrow-load/driver resource gates before sealing generated PTX inputs.",
+    "Run each of the five declared numerical processes once, then replay all complete raw arrays with their frozen root decoders."
+  ],
+  "remaining_before_speed": "Only after all7entry numerical controls pass: integrate complete host ABI, build/check ordinary/equivalence/continuation/state/save/resume/capacity paths, then registered initial3paired complete solves. Acceptance remains unrounded>=1% with no repeatable fixture slowdown or material tradeoff; no rescue or extra timing samples.",
+  "limits": "Host probe compilation/source preparation only. No CUDA numerical result, integrated solver typecheck, no-tradeoff qualification or new performance evidence."
+}

@@ -1,0 +1,42 @@
+import ctypes as c,json,shutil,subprocess,sys,urllib.request,uuid
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];sys.path.insert(0,str(ROOT/'epoch'));import common as h
+H=ROOT/'runs/D245-cluster-capability';args=sys.argv[1:]
+if args==['prepare']:
+ h.custody();h.ar.refuse_active(h.ar.live_status());assert not(ROOT/'gpu-run.lock').exists()and not(ROOT/'epoch-sequence.lock').exists();H.mkdir(exist_ok=False)
+ history=[]
+ for needle in ['cluster_dims|map_shared_rank|cluster_group|this_cluster','CLUSTER_LAUNCH|clusterLaunch']:
+  cmd=['git','log','--all','--format=%H %s','-G',needle,'--','crates/solver/src/gpu'];p=subprocess.run(cmd,cwd=h.REPO,capture_output=True,text=True,encoding='utf-8');assert p.returncode==0 and not p.stderr;history.append({'command':cmd,'stdout':p.stdout,'returncode':p.returncode})
+ assert not any(x['stdout']for x in history)
+ h.save(H/'source-review.json',{'id':'D245','at':h.now(),'previous_goal_turn':'Progress: E110 fullraw/direct/engine/canonical/ordinary tests exact; fixed primary rejected -0.442222089182% andriverguard. Closed,notrescued,E080preserved.','question':'Can actual current GPU support native thread-block clusters/distributed shared memory for a prospective unchanged-128thread scan producer with additional parallel showdown output blocks? No optimizer admitted.','bounded_history':history,'semantic_scope':'Terminal-local cluster withoneoriginalscan producer andpeerread-only output helpers would differ from closedE026256threadscan regrouping andE104whole-traversalpersistentgrid/allphaseglobalbarriers. Exactscan/additionorder mustremain128original, originalgraphlevelorder retained. These distinctions do not establish speed/accuracy or authorize failedformvariants; actualmemory/graph/launch/capacity costs remainprospective.','official_sources':[{'url':'https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__TYPES.html','relevance':'CU_DEVICE_ATTRIBUTE_CLUSTER_LAUNCH=120 reports feature support.'},{'url':'https://docs.nvidia.com/cuda/archive/12.9.0/cuda-c-programming-guide/index.html#thread-block-clusters','relevance':'Cluster blocks co-scheduled onGPC, dimensions/launch constraints; capabilitycheckedratherthaninferredfromname.'},{'url':'https://docs.nvidia.com/cuda/archive/12.9.0/cuda-c-programming-guide/index.html#distributed-shared-memory','relevance':'Remote sharedaccess requires allblocks alive andcluster sync, including completion beforeproducer exits; sharedreservation remains perblock.'}],'decision_gate':'Successfulactualattribute0 closes featurelead herewithoutshader/flags/alternateexecutor rescue. Attribute1 only admits boundedstandalonecluster/DSM/shareddata/lifetime/graph primitive feasibility, never solver/adoption/speed claims. Queryfailure isnotunsupportedhardware.','no_optimizer_compiler_kernel_solver_or_speed_runs':True})
+ files=[Path(__file__),H/'source-review.json',ROOT/'runs/E110-primary-checkpoint/report.json',h.REPO/'crates/solver/src/gpu/kernels.cu',h.REPO/'crates/solver/src/gpu/mod.rs',ROOT/'epoch/common.py',Path(r'C:\Windows\System32\nvcuda.dll')]
+ h.save(H/'protocol.json',{'id':'D245','at':h.now(),'status':'FROZEN_PRE_SERIAL_DRIVER_ATTRIBUTE_QUERY','GPU_uuid':'GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee','input_sha256':{str(p):h.sha(p)for p in files},'attributes':{'COMPUTE_CAPABILITY_MAJOR':75,'COMPUTE_CAPABILITY_MINOR':76,'CLUSTER_LAUNCH':120},'scope':'OnefreshPythonchild directly bindsWindowsSystem32nvcuda read-onlydriver/deviceAPIs. cuInit,driverVersion,devicecount/name/UUID/threeattributes,currentcontextbefore/after. No contextcreate/retain,moduleload,allocation,CUDAcompiler,kernel,counter,solver,APIstatechange orspeed sample. Serialize underGPUlock andrefuselive solves;main/accepted/PTX unchanged.'});print(h.sha(H/'protocol.json'),flush=True);sys.exit(0)
+assert len(args)==2 and args[0]in ['execute','query'];mode,digest=args;P=h.read(H/'protocol.json')
+def verify():
+ h.pin(H/'protocol.json',digest);h.custody()
+ for p,d in P['input_sha256'].items():h.pin(p,d)
+verify()
+if mode=='execute':
+ O=H/'execution';O.mkdir(exist_ok=False)
+ with h.ar.exclusive_lock(ROOT/'gpu-run.lock'):
+  h.ar.refuse_active(h.ar.live_status());h.child([sys.executable,str(Path(__file__)),'query',digest],O,'query',180);verify()
+ q=h.read(H/'report.json');assert q['all_queries_successful']and q['current_context_before_after']==[None,None];h.save(O/'complete.json',{'at':h.now(),'report_sha256':h.sha(H/'report.json'),'all_owned_children_terminal':True,'no_appkernels_or_speed_samples':True})
+ for name in ['source-review.json','protocol.json','report.json']:
+  p=H/name;dst=h.ar.DASHBOARD/'evidence'/H.name/name;dst.parent.mkdir(parents=True,exist_ok=True);assert not dst.exists();shutil.copyfile(p,dst)
+  with urllib.request.urlopen(h.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+H.name+'/'+name,timeout=20)as z:assert z.read()==p.read_bytes()
+ with h.ar.exclusive_lock(h.ar.STATUS.with_suffix('.lock'),timeout=3):
+  s=h.read(h.ar.STATUS);s['experiments'].append({'id':'D245','title':'Thread-block cluster capability','kind':'diagnostic','status':'measured','accepted':False,'measurement_epoch':'RAM20261028','stage':'Standaloneprimitiveadmitted'if q['attributes']['CLUSTER_LAUNCH']==1 else'Featureleadclosed:unsupported','reason':q['decision'],'evidence':[{'label':n,'url':'evidence/'+H.name+'/'+n}for n in ['source-review.json','protocol.json','report.json']]});s.update(updated_at=h.now(),active_experiment='D245',stage='Cluster primitive feasibility'if q['attributes']['CLUSTER_LAUNCH']==1 else'Cluster feature unavailable; research continues',activity=q['decision']+' E080remainslive,nooptimizerornewgain.');h.ar.atomic_json(h.ar.STATUS,s)
+ print(json.dumps(q),flush=True);sys.exit(0)
+driver=c.WinDLL(r'C:\Windows\System32\nvcuda.dll');trace=[]
+class UUID(c.Structure):_fields_=[('bytes',c.c_ubyte*16)]
+bindings={'cuInit':[c.c_uint],'cuDriverGetVersion':[c.POINTER(c.c_int)],'cuDeviceGetCount':[c.POINTER(c.c_int)],'cuDeviceGet':[c.POINTER(c.c_int),c.c_int],'cuDeviceGetName':[c.c_char_p,c.c_int,c.c_int],'cuDeviceGetUuid_v2':[c.POINTER(UUID),c.c_int],'cuDeviceGetAttribute':[c.POINTER(c.c_int),c.c_int,c.c_int],'cuCtxGetCurrent':[c.POINTER(c.c_void_p)]}
+for name,types in bindings.items():fn=getattr(driver,name);fn.argtypes=types;fn.restype=c.c_int
+def call(name,*values):
+ code=getattr(driver,name)(*values);trace.append({'API':name,'returncode':code});assert code==0,(name,code)
+call('cuInit',0);before=c.c_void_p();call('cuCtxGetCurrent',c.byref(before));assert before.value is None
+version=c.c_int();call('cuDriverGetVersion',c.byref(version));count=c.c_int();call('cuDeviceGetCount',c.byref(count));assert count.value>=1;device=c.c_int();call('cuDeviceGet',c.byref(device),0);name=c.create_string_buffer(256);call('cuDeviceGetName',name,256,device.value);ident=UUID();call('cuDeviceGetUuid_v2',c.byref(ident),device.value);uuidstr='GPU-'+str(uuid.UUID(bytes=bytes(ident.bytes)));assert uuidstr==P['GPU_uuid']and name.value.decode()=='NVIDIA GeForce RTX 5090'
+attributes={}
+for label,attribute in P['attributes'].items():value=c.c_int();call('cuDeviceGetAttribute',c.byref(value),attribute,device.value);attributes[label]=value.value
+assert[attributes['COMPUTE_CAPABILITY_MAJOR'],attributes['COMPUTE_CAPABILITY_MINOR']]==[12,0]and attributes['CLUSTER_LAUNCH']in [0,1]
+after=c.c_void_p();call('cuCtxGetCurrent',c.byref(after));assert after.value is None;verify()
+h.save(H/'report.json',{'id':'D245','at':h.now(),'status':'pass_actual_cluster_capability_query','protocol_sha256':digest,'GPU_uuid':uuidstr,'GPU_name':name.value.decode(),'driver_API_version':version.value,'device_count':count.value,'device_ordinal':0,'attributes':attributes,'all_queries_successful':True,'API_trace':trace,'current_context_before_after':[before.value,after.value],'decision':'Cluster launch supported onactualdevice; nextonlystandaloneDSM/lifetime/graph correctness/resource feasibility, no solver optimization orspeedadmitted.'if attributes['CLUSTER_LAUNCH']else'Actualdriver reportsCLUSTER_LAUNCH=0; closeterminalclusterlead before any shader/primitive/solver/timing. No fallback/flag/launch variant rescue.','context_creates_retains_modules_allocations_kernels_compilers_counters_solves_speed_samples':0,'source_main_live_protected_PTX_unchanged':True,'candidate_accepted':False,'limits':'Actualdriverfeaturequery isnotmaximumclustersize/occupancy/remoteFPDSM/kernel/graphcorrectness/latency/speed/materialcost proof.'})

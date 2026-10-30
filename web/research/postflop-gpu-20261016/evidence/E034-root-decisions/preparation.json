@@ -1,0 +1,26 @@
+{
+  "id": "E034",
+  "at": "2026-10-16T20:14:13Z",
+  "scope": "Off-tree minimal test eligibility correction to E033. Production cache implementation, numerical kernels, numerical checks, evaluator, timed cleanup and performance gates unchanged. Require explicit W=0 fallback and supported W>0 enabled assertions. Preserve E033 failure; no performance data existed to guide correction. Independently review source and fresh-target execution plan before separate root activation/build/native authorization. No speed reruns under E033 IDs.",
+  "prospective_order": [
+    "V034-unit",
+    "B107",
+    "E034R1",
+    "E034R2",
+    "B108",
+    "B109",
+    "E034R3"
+  ],
+  "candidate_marker_prefix": "E033_CACHE_POLICY retained exactly because production implementation must remain unchanged",
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\manifest.json": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\mod.rs": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\cache_policy.rs": "e87bd468b383645387019868a81de96fe89a5741f81d675821497df0cc8c9f14",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\stdout.log": "0e1c06d447025e83f2493df795741d6e02318025c0fbebb92269d7e40e93ca84",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\report.json": "74b8726cccad4d6621d91f310d2ca7cb07ffee6412ec934caa0da3c53e0f6f89",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-cleanup\\report.json": "6ba602f0bfa292d1c8dd53b28b93f10cc0b738b4e23b4a23a28dde9544804fea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-primary-plan-r2\\scripts-manifest.json": "09d71fb28ed17f672bf837bfbc16d02bbe31e55cb6057157bdad8034e3f95050"
+  },
+  "source_edits_authorized": false,
+  "compiler_native_gpu_authorized": false
+}

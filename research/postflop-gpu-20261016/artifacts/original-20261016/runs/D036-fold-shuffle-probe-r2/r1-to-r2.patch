@@ -1,0 +1,10 @@
+--- R1/probe.rs
++++ R2/probe.rs
+@@ -236,6 +236,7 @@
+                     "source_bytes":source.len(),"kernel":"up_fold","device":device,"architecture":arch,
+                     "compile_options":"architecture only; all other CompileOptions default, matching accepted production",
+                     "registers":f.num_regs()?,"local_bytes_per_thread":f.local_size_bytes()?,"static_shared_bytes":f.shared_size_bytes()?,
++                    "max_threads_per_block":f.max_threads_per_block()?,
+                     "block_threads":128,"nh_o":nh_o,"dynamic_shared_bytes":nh_o*4,
+                     "occupancy_blocks_per_sm_128":f.occupancy_max_active_blocks_per_multiprocessor(128,(nh_o*4) as usize,None)?,
+                     "scope":"theoretical occupancy/resources only","performance_measurement":false}))?;

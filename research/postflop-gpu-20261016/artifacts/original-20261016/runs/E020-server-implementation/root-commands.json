@@ -1,0 +1,38 @@
+{
+  "build": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-implementation\\build.py",
+    "ROOT_BUILD_AUTHORIZATION_SHA256"
+  ],
+  "unit_inventory": [
+    "powershell.exe",
+    "-NoProfile",
+    "-Command",
+    "& 'S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe' --list --format terse"
+  ],
+  "unit": [
+    "python",
+    "-B",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+    "--id",
+    "V020-server-unit",
+    "--title",
+    "E020 isolated server unit tests",
+    "--kind",
+    "validation",
+    "--binary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe",
+    "--build-manifest",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.manifest.json",
+    "--test",
+    "*",
+    "--not-ignored"
+  ],
+  "smoke": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-server-implementation\\smoke.py",
+    "ROOT_SMOKE_AUTHORIZATION_SHA256"
+  ]
+}

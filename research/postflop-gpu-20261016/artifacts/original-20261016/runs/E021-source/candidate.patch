@@ -1,0 +1,55 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -217,20 +217,16 @@
+     int slot = node_river_slot[n];
+     int m_o = o_cnt[slot];
+     u32 ob = o_off[slot];
+-    float* ro_sh = (float*)shraw; // nh_o entries, original hand order
+-    float* reach_sh = (float*)(shraw + sizeof(float) * nh_o);
+-    float* prefix = (float*)(shraw + sizeof(float) * (nh_o + m_o));
++    float* reach_sh = (float*)shraw;
++    float* prefix = reach_sh + m_o;
+     u32* card_pos_sh = (u32*)(prefix + m_o); // 2*m_o immutable position indices
+     u32 card_base = o_card_off[(u64)slot * 53];
+     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
+ 
+-    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+     for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+         card_pos_sh[j] = o_card_pos[card_base + j];
+-    __syncthreads();
+-    const float* ro = ro_sh;
+     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+-        reach_sh[k] = ro[o_idx[ob + k]];
++        reach_sh[k] = ro_g[o_idx[ob + k]];
+     }
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+@@ -283,7 +279,7 @@
+             }
+         }
+         u32 sc = same_p[i];
+-        float same_r = sc != SENTINEL ? ro[sc] : 0.f;
++        float same_r = sc != SENTINEL ? ro_g[sc] : 0.f;
+         float valid = total - tot_c + same_r;
+         lower -= lower_c;
+         higher -= higher_c;
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -624,7 +624,7 @@
+         let nh_o = self.nh[1 - p];
+         let nh_max = self.nh_max;
+         let pi = p as i32;
+-        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
++        let show_shared = (self.riv_max_cnt[1 - p] * 16) as u32;
+         for l in (0..self.num_levels).rev() {
+             let sp = self.fold_spans[l];
+             if terminals && sp.count > 0 {
+@@ -851,7 +851,7 @@
+         }
+ 
+         let pi = p as i32;
+-        let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
++        let show_shared = (self.riv_max_cnt[1 - p] * 16) as u32;
+         for l in (0..self.num_levels).rev() {
+             let sp = self.fold_spans[l];
+             if sp.count > 0 {

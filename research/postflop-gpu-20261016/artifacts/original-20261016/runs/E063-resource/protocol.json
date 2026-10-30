@@ -1,0 +1,158 @@
+{
+  "changed_entries": [
+    "up_show"
+  ],
+  "shapes": [
+    "rainbow_p0",
+    "rainbow_p1",
+    "two_tone_p0",
+    "two_tone_p1",
+    "river_p0",
+    "river_p1",
+    "wide_turn",
+    "full_hand_upper_bound",
+    "empty_sorted_opponent",
+    "single_sorted_opponent"
+  ],
+  "shape_dimensions": {
+    "rainbow_p0": [
+      319,
+      314
+    ],
+    "rainbow_p1": [
+      257,
+      252
+    ],
+    "two_tone_p0": [
+      320,
+      315
+    ],
+    "two_tone_p1": [
+      258,
+      253
+    ],
+    "river_p0": [
+      280,
+      280
+    ],
+    "river_p1": [
+      233,
+      233
+    ],
+    "wide_turn": [
+      1128,
+      1081
+    ],
+    "full_hand_upper_bound": [
+      1326,
+      1326
+    ],
+    "empty_sorted_opponent": [
+      319,
+      0
+    ],
+    "single_sorted_opponent": [
+      319,
+      1
+    ]
+  },
+  "up_show_parameter_count": 27,
+  "gpu_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "expected_entries": [
+    "copy_root",
+    "down_action",
+    "down_chance",
+    "up_fold",
+    "up_show",
+    "up_chance",
+    "up_action",
+    "copy_span",
+    "up_action_eval"
+  ],
+  "allocation_proof": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D094-resource-materiality\\report.json",
+    "sha256": "86f8062d84a2eba0d5387961abc337b2576072509e1f1d9c0627dce6fc2191f4"
+  },
+  "id": "E063-resource",
+  "at": "2026-10-17T09:52:56.490729+00:00",
+  "status": "FROZEN_PRE_RESOURCE_NATIVE",
+  "source_manifest_sha256": "ed6993a63df50a3e81696df0289d0153ecbd783ad3b09418e0a66940a386f359",
+  "cpu_integer_proof": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r3\\report.json",
+    "sha256": "bfc7e29ca778e55e7d8d7158debd5dd0cdb7865f50752ee310305a28254267ee"
+  },
+  "rustc_command": [
+    "rustc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\probe.exe"
+  ],
+  "fixed_gates": "One fixed E063form. Current unchanged D094allocated warp/block registers, local/shared/dynamic/maxthread/occupancy/fit on all10registered shapes. Exact27parameter ABI and8other entries actual andcompute75; up_showchanged. No application kernel or timing before pass. If any fails close source form without loop/packing/width/placement/block/cap variants. If passes require compiled mechanism review, complete direct-kernel bytes with actual packed metadata, ordinary suites and fixed3whole-cycle pairs;1%/strict-fixture/fresh16/broad/material/holdout/cumulative still mandatory.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\baseline-mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\baseline.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\candidate-mod.rs": "5aa6844be908d8edb2b585dd0f3e066d12644f5651efe210ad97d04ffea95932",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\candidate.cu": "82f6385851a9f6c4750989d7bf2353be433fff83f2b4e2ce7475fc0f85c4f92e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\candidate.patch": "c2a231a53d41b7e8373f2b39d28236f24d35bc52d5048055fdb0dd3d683c273c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\manifest.json": "ed6993a63df50a3e81696df0289d0153ecbd783ad3b09418e0a66940a386f359",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\source-review.json": "3070b751c49806aa90a8352a2068152000b7275fd733ef11355771857632a113",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\baseline.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\candidate.cu": "82f6385851a9f6c4750989d7bf2353be433fff83f2b4e2ce7475fc0f85c4f92e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\execute.py": "be57dd86931bc53bec74fc0a47a0493ea132081865f8468680cd339cd938e387",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\preparation-failure.json": "d991ad217d4e4ab74b011838fe288d53fadfef5d7240497c630c3b6540a8bb8f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\probe.rs": "bc862fe33e1293e4711be1d48d7bfb0a395519c1482403086049b234c0b4dbf5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-prepare-resource-r2.py": "ade692f64cb39ef2b775f366cf03c0f4fd4d70418095c02abfd6d9440673a1f6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r3\\report.json": "bfc7e29ca778e55e7d8d7158debd5dd0cdb7865f50752ee310305a28254267ee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r3\\protocol.json": "46c2b262ea345628e5d95899bb28d4b0876eed91f87417d4f04f064865d23f7f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r3\\helper.rs": "685492f24cc6ec4a1ed1c2d3f0895440425e96e2c4382e35f08d5b2cf8ae42c3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r3\\probe.rs": "072b98d6a6666d0d79dbd3e4b2c045fbfa6c0248fa69048e8f7cd92e2ef3a2db",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs\\protocol.json": "5242d0e503d97332cd0685b8edab881f4f7cf6d74e5904f32a60c0e445cd7f14",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs\\execution\\rustc.exit.json": "5fa48f7aa04a108080a39dfdb0c95ee9405670d1cf8d3e5b9e05d1d4bd121281",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D102-card-cutoffs-r2\\not-executed.json": "9a61c74b6c016eda198600384a2bfe8ca83215e62e3404caa0983e246cc85e23",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D094-resource-materiality\\report.json": "86f8062d84a2eba0d5387961abc337b2576072509e1f1d9c0627dce6fc2191f4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D094-resource-materiality\\test-report.json": "41e6a4d7ad971c09b0a45e14fa56950b61b45d123fd134523a01bf186169e9c2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_resource_admission.py": "4ff9b4e57b6facb5d6b07a6c67b18695e524f7fd54879fbd6ac6b177892cc720",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\resource-admission-policy-20261017.md": "289bafbc20e30832ca3dca5c3d07f39c64271341bbc4027de42563bfcb2974c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\common_e051.py": "5113c6b3c25300fda311a1247254730e43ab7161faba03d4f03ee609b098dd96",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libwindows_link-b52ec09ce44eaf82.rlib": "1edf850d4debee91f4e612ba0a85f79cc4e3a54dd5a809bd5fed06ae133c8573",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libunicode_ident-0252c41d2e9f2d1c.rlib": "0590f88bebe92bc8e1aca05748b8799755cd0e6050ac75167159606cd1ee81fb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libeither-4baf58b0742f8bd6.rlib": "4ef82757c3fe5d6efd6c88c18a38e0753c63a483c97f4831a335c619bd50caa6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libitoa-74a051154152f23d.rlib": "d2633a672f7ec1f86c34dfc1ef08eb09d803c689e00c54a4a31c99163ffdcce6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libshlex-f6524cb5e4bd3a31.rlib": "909159493a963a321926084dde05a3456a865c5b7929f021c738bde4c3168a9d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\liblibloading-8d2068e2bf38a2f1.rlib": "f0ec6e05540ac2927203e498facedafbf2cc9bb4d3cceae3e992fd600863bb1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libzmij-421e3e50aa0a9d3e.rlib": "0de97588e6b6e787650894c7225ea73be63e51bc8df82fcc84a9dd1cd9d9c0c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libmemchr-863cd9a4723da2aa.rlib": "75e2fd3759fc303aa73149097286c98d3964ba6201948fee3e01bd116ce27095",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcrossbeam_utils-f12feddf568a8de6.rlib": "0213e1cbca469f6c77fda43a8dc46733a88c9f76dabd99c757731ed281bf8ee6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcrossbeam_epoch-83f0dcc2dba25447.rlib": "8be3fb3a0fa036b3083b1a2b822437488fab54ffda1390cc0c90ac4346ed82a6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcrossbeam_deque-1a1d6578b74865e7.rlib": "d02166d41f1d7e94dc5645eedaf57de820e18b17572022e0c5a7bee63cd20b51",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libfind_msvc_tools-50bafbacf9e2acf8.rlib": "e8a198265161b5e388d38e996374fccd256b6b914a4015e816a137a99e101af4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libquote-fe2f21b86a966e3a.rlib": "40e648f79c4578ee719cb9a30b578450f54ac8739308b3bd079dab809f5add81",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libproc_macro2-270112166e35f5e1.rlib": "6649f7c16910d0f34543ee996315458613995f68eb8dca728acbc82d51e41cde",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\librayon_core-0787e97421794457.rlib": "3411c2b88e10b4bc416f8140695ba5c7e55683f3f3fcb10e62a7ca710e75c30b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde_core-94e9cc654b950df9.rlib": "9ed8aff96ff01e9693d4ffbc3fca200ffb58318404ca629435c70aa83287da36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\librayon-8ab48cfec9cf00f9.rlib": "2a1339eeec5fa4417ba824dd425f52ae1aebaa4d06e488f3273f2b8769473be9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcc-47cbe2715a82d6dc.rlib": "2177f3eb37d163800753bf8e4bb5cf6a3cd5dd045e168356234ba18f92e6f7da",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsyn-10acf42acce28688.rlib": "f6c7ff103d5ee103160d1b86ba780a30b6e9a1a14242a3bc91a1e9e4e1d1500c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": "a8a2abcdfa1ba994de59513805346e1581884985043f66882d30a61fe2dd4be3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rlib": "0e3166f68ed6597ee6373b4100decbc06f22a199dd8b2d6696b6b54036cec0bc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libmimalloc-d1aa14d2a520d303.rlib": "3fb4e5350de37c8791f50e84864068a1a5da078677e43dd28b3ec8c727763c0c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\serde_derive-1314214cb8b4b16d.dll.lib": "cb8f063fa47f1eaa262b8afbdd9339467bd13d6c8575893350defa4819e77b21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde-47b4d5f55b04d3b5.rlib": "867949efc7349387ea4974214a0278b071f1a2a8c95741e925ce48175eeb1666",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib": "c55801469c43d75e329da05b1b56ad1a93865f5cae863ff78c1c7c43d97a5239"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "started_at": "2026-10-17T00:22:48.558019+00:00",
+  "finished_at": "2026-10-17T00:22:50.575905+00:00",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-I",
+    "-B",
+    "-c",
+    "import os,subprocess,sys;os.chdir(sys.argv[1]);raise SystemExit(subprocess.call([sys.argv[2]],creationflags=subprocess.CREATE_NO_WINDOW))",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\probe.exe"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

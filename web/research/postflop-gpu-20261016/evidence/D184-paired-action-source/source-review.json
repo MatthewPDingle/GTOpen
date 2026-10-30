@@ -1,0 +1,393 @@
+{
+  "id": "D184",
+  "at": "2026-10-28T18:24:26.356214+00:00",
+  "status": "CPU_source_history_alignment_proof_only_not_kernel_admission",
+  "hypothesis": "Adjacent independent hand pairs for common exactly2action training down_action/up_action may use alignedfloat2 loads/stores and share integer/control work. Each component remains original ordered f32 arithmetic; no half precision/reassociation/padding/newbuffer. Register pressure/divergence/compile/JIT/module/host cost may erase any gain. No measured attainable headroom or speed claim.",
+  "bounded_history": {
+    "git_query": [
+      "git",
+      "log",
+      "--all",
+      "--oneline",
+      "-G",
+      "float2|make_float2|ld.global.v2|st.global.v2",
+      "--",
+      "crates/solver/src/gpu/kernels.cu",
+      "crates/solver/src/gpu/mod.rs"
+    ],
+    "git_stdout": "",
+    "retained_CUDA_files_examined": 621,
+    "typed_float2_or_vector_instruction_matches": [],
+    "distinction": "E005/E014directarity partition existing scalar loads; E042pragmaunroll2 uses original strided hand loop; E081 packs4differentnodes/CTA. New proposed pairing uses2adjacenthands at one unchanged node/CTA and typed64bit memory instructions, no partition/width/nodepacking/cachehint. Earlier float2 substring hits were float-to-int quantization intrinsic names, not float2 vectors. Old measured mechanisms remain closed; no such hunks composed."
+  },
+  "static_geometry_cases": 3320,
+  "static_geometry_contract": "Every even hand count0..1326 and widths1/32/64/128/256: i=2*threadIdx; i+=2*blockDim; both i/i+1 inbounds and every hand written exactlyonce. No tail padding or neighbor overread.",
+  "actual_plan_alignment_cases": [
+    {
+      "id": "rainbow-iso-on",
+      "nh": [
+        257,
+        319
+      ],
+      "pairwise_backend_alignment_eligible": false,
+      "action_nodes_by_actor": [
+        274801,
+        248732
+      ],
+      "two_action_nodes_by_actor": [
+        153765,
+        177479
+      ],
+      "two_action_odd_data_offsets": 182526,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "6498f16632e0b3a99cdb7cbfca13f445e887c6fea051ae4584be7ba4525f8079"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "8e49a7c5d321f0366b6ccadabe248b7d05e2264d533ee3a5d93b54c5d4db2865"
+        },
+        "action_nodes": {
+          "bytes": 2094140,
+          "payload_sha256": "6538f90c7c69e972c537f0e5f5d97af2e427a87cf877345c708dd542883c5969"
+        },
+        "node_player": {
+          "bytes": 5387260,
+          "payload_sha256": "ad3510a6395474464cf94d60aae361ed53ffaf47eb30966ff6c6616719976e11"
+        },
+        "node_na": {
+          "bytes": 5387260,
+          "payload_sha256": "c5eb0aa395da7dbeac3164150a633789b8c483d67bedbba654dd683cc4d628d5"
+        },
+        "node_data_off": {
+          "bytes": 10774512,
+          "payload_sha256": "79a21db60a1021020de2c6c10219fac634f56a2db19ed5ebd9eade64df14eb30"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "1a4c5822c7af7ea0236c73b02922683a8b70b60245763d5e6641797f284d662f"
+        },
+        "cfv_slot": {
+          "bytes": 5387260,
+          "payload_sha256": "74733949859152317613bbda4a9478b1092c00a0fbbf27d472476e1fbcbcf8d7"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "c4bbf9f94d82b31c59b50832ad0f6b31919b3cf2c81a43e6d366f1f2936745f0"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 116085554,
+        "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+      }
+    },
+    {
+      "id": "two-tone-iso-on",
+      "nh": [
+        258,
+        320
+      ],
+      "pairwise_backend_alignment_eligible": true,
+      "action_nodes_by_actor": [
+        167213,
+        151349
+      ],
+      "two_action_nodes_by_actor": [
+        93536,
+        107968
+      ],
+      "two_action_odd_data_offsets": 0,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "295d5d3d4784f8b0100b4c74140be3d903c2ac8e97dc1545611c367a87b30163"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "b90c058de56b45d6cb964bb732a18ab25f204171094ca433a731cd9333af0a25"
+        },
+        "action_nodes": {
+          "bytes": 1274256,
+          "payload_sha256": "43cb02a37483a773faa95d12099be1ec86d1026b019ec9741416e69b16109eee"
+        },
+        "node_player": {
+          "bytes": 5387260,
+          "payload_sha256": "ad3510a6395474464cf94d60aae361ed53ffaf47eb30966ff6c6616719976e11"
+        },
+        "node_na": {
+          "bytes": 5387260,
+          "payload_sha256": "c5eb0aa395da7dbeac3164150a633789b8c483d67bedbba654dd683cc4d628d5"
+        },
+        "node_data_off": {
+          "bytes": 10774512,
+          "payload_sha256": "4ae17287c1fb5646be4abf3094bd301fe3d6b7bf837c8037bdc5bcb42109468c"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "abe0b55a7e768cddef7782fad31079c85464b6462fe25afe654b6fc84ec440f2"
+        },
+        "cfv_slot": {
+          "bytes": 5387260,
+          "payload_sha256": "d7f8ffdcf62e819d182e1b8dc346516d5d38da123ad929aa8eb550f3f95ae472"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "8e56574bde16ab06834bd105736236a80dbff25de59b466364f05a9195544d89"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 107872702,
+        "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f"
+      }
+    },
+    {
+      "id": "river-iso-on",
+      "nh": [
+        233,
+        280
+      ],
+      "pairwise_backend_alignment_eligible": false,
+      "action_nodes_by_actor": [
+        6,
+        6
+      ],
+      "two_action_nodes_by_actor": [
+        2,
+        2
+      ],
+      "two_action_odd_data_offsets": 0,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "2c88764338c47984eeffab0f1589dbfd3559b82bac0ec5bafc610c1709a31e30"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "8fbd9582f8a4756ac71f853f1e6d4236de58969f864633825d4773c99d5f9fef"
+        },
+        "action_nodes": {
+          "bytes": 56,
+          "payload_sha256": "61c8c1bb0b257480ede831f55dd0be0dc7dab176a6e93897c6cc4a8d92194f0f"
+        },
+        "node_player": {
+          "bytes": 140,
+          "payload_sha256": "400e35ed9f3a4dff27c2d41fcaea9a6c2681617472719699244ce9e76333ce24"
+        },
+        "node_na": {
+          "bytes": 140,
+          "payload_sha256": "7fe9ace797ba20165d820a0b1f73d5f496ece3464364b519cab5572a10c12a06"
+        },
+        "node_data_off": {
+          "bytes": 272,
+          "payload_sha256": "e6c78b12dfb3ad8d585d328e973c8c8f956757c21882eac5448d6f0d19ac56c2"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "07e444427090d754c487b5db0578100b12ea770c4fddab5be735fe95cbc33d15"
+        },
+        "cfv_slot": {
+          "bytes": 140,
+          "payload_sha256": "85efb83489de2600e4903f897be41564e02a952eb27e35b1db31092a24949836"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "bf5b0e89f1caed18c8d6ff15d17ecc5c6e0c89510b4bc6d7b4b51d4ed30999cb"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 31746,
+        "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+      }
+    },
+    {
+      "id": "rainbow-iso-off",
+      "nh": [
+        257,
+        319
+      ],
+      "pairwise_backend_alignment_eligible": false,
+      "action_nodes_by_actor": [
+        274801,
+        248732
+      ],
+      "two_action_nodes_by_actor": [
+        153765,
+        177479
+      ],
+      "two_action_odd_data_offsets": 182526,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "6498f16632e0b3a99cdb7cbfca13f445e887c6fea051ae4584be7ba4525f8079"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "8e49a7c5d321f0366b6ccadabe248b7d05e2264d533ee3a5d93b54c5d4db2865"
+        },
+        "action_nodes": {
+          "bytes": 2094140,
+          "payload_sha256": "6538f90c7c69e972c537f0e5f5d97af2e427a87cf877345c708dd542883c5969"
+        },
+        "node_player": {
+          "bytes": 5387260,
+          "payload_sha256": "ad3510a6395474464cf94d60aae361ed53ffaf47eb30966ff6c6616719976e11"
+        },
+        "node_na": {
+          "bytes": 5387260,
+          "payload_sha256": "c5eb0aa395da7dbeac3164150a633789b8c483d67bedbba654dd683cc4d628d5"
+        },
+        "node_data_off": {
+          "bytes": 10774512,
+          "payload_sha256": "79a21db60a1021020de2c6c10219fac634f56a2db19ed5ebd9eade64df14eb30"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "1a4c5822c7af7ea0236c73b02922683a8b70b60245763d5e6641797f284d662f"
+        },
+        "cfv_slot": {
+          "bytes": 5387260,
+          "payload_sha256": "74733949859152317613bbda4a9478b1092c00a0fbbf27d472476e1fbcbcf8d7"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "c4bbf9f94d82b31c59b50832ad0f6b31919b3cf2c81a43e6d366f1f2936745f0"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 116085554,
+        "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218"
+      }
+    },
+    {
+      "id": "two-tone-iso-off",
+      "nh": [
+        258,
+        320
+      ],
+      "pairwise_backend_alignment_eligible": true,
+      "action_nodes_by_actor": [
+        274801,
+        248732
+      ],
+      "two_action_nodes_by_actor": [
+        153765,
+        177479
+      ],
+      "two_action_odd_data_offsets": 0,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "295d5d3d4784f8b0100b4c74140be3d903c2ac8e97dc1545611c367a87b30163"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "b90c058de56b45d6cb964bb732a18ab25f204171094ca433a731cd9333af0a25"
+        },
+        "action_nodes": {
+          "bytes": 2094140,
+          "payload_sha256": "6538f90c7c69e972c537f0e5f5d97af2e427a87cf877345c708dd542883c5969"
+        },
+        "node_player": {
+          "bytes": 5387260,
+          "payload_sha256": "ad3510a6395474464cf94d60aae361ed53ffaf47eb30966ff6c6616719976e11"
+        },
+        "node_na": {
+          "bytes": 5387260,
+          "payload_sha256": "c5eb0aa395da7dbeac3164150a633789b8c483d67bedbba654dd683cc4d628d5"
+        },
+        "node_data_off": {
+          "bytes": 10774512,
+          "payload_sha256": "45618ffad01d1b606a2b900be71cd9f5208b293f6fd1848bfd1d4d7534af9e3d"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "f97b92fb0951c1132523277e4e3afaa667a8fd566b5f294aaba44a8c5484c98f"
+        },
+        "cfv_slot": {
+          "bytes": 5387260,
+          "payload_sha256": "74733949859152317613bbda4a9478b1092c00a0fbbf27d472476e1fbcbcf8d7"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "c4bbf9f94d82b31c59b50832ad0f6b31919b3cf2c81a43e6d366f1f2936745f0"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 116139810,
+        "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468"
+      }
+    },
+    {
+      "id": "river-iso-off",
+      "nh": [
+        233,
+        280
+      ],
+      "pairwise_backend_alignment_eligible": false,
+      "action_nodes_by_actor": [
+        6,
+        6
+      ],
+      "two_action_nodes_by_actor": [
+        2,
+        2
+      ],
+      "two_action_odd_data_offsets": 0,
+      "selected_payloads": {
+        "nh": {
+          "bytes": 24,
+          "payload_sha256": "2c88764338c47984eeffab0f1589dbfd3559b82bac0ec5bafc610c1709a31e30"
+        },
+        "nh_max": {
+          "bytes": 8,
+          "payload_sha256": "8fbd9582f8a4756ac71f853f1e6d4236de58969f864633825d4773c99d5f9fef"
+        },
+        "action_nodes": {
+          "bytes": 56,
+          "payload_sha256": "61c8c1bb0b257480ede831f55dd0be0dc7dab176a6e93897c6cc4a8d92194f0f"
+        },
+        "node_player": {
+          "bytes": 140,
+          "payload_sha256": "400e35ed9f3a4dff27c2d41fcaea9a6c2681617472719699244ce9e76333ce24"
+        },
+        "node_na": {
+          "bytes": 140,
+          "payload_sha256": "7fe9ace797ba20165d820a0b1f73d5f496ece3464364b519cab5572a10c12a06"
+        },
+        "node_data_off": {
+          "bytes": 272,
+          "payload_sha256": "e6c78b12dfb3ad8d585d328e973c8c8f956757c21882eac5448d6f0d19ac56c2"
+        },
+        "arena_elements": {
+          "bytes": 24,
+          "payload_sha256": "07e444427090d754c487b5db0578100b12ea770c4fddab5be735fe95cbc33d15"
+        },
+        "cfv_slot": {
+          "bytes": 140,
+          "payload_sha256": "85efb83489de2600e4903f897be41564e02a952eb27e35b1db31092a24949836"
+        },
+        "cfv_blocks": {
+          "bytes": 8,
+          "payload_sha256": "bf5b0e89f1caed18c8d6ff15d17ecc5c6e0c89510b4bc6d7b4b51d4ed30999cb"
+        }
+      },
+      "prior_wholefile_identity": {
+        "bytes": 31746,
+        "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d"
+      }
+    }
+  ],
+  "prospective_single_scope": "Exactly new down_action_pair2 and up_action_pair2 entrypoints, identical18/20argument ABI and128threads/unchangednode-list/graphlaunch/count. Commonna2usesfloat2 helper, na3/4/generic use literal original helpers. Original9entries source preserved/require alphaexact emitted bodies. Constructor selects paired wrappers only when BOTH logical hand counts positive/even; no benchmark IDs, performance thresholds or shape sweep. New wrappers defensively select original paths for odd dimensions/CFVstride/node-data/lock offsets, including bound workspaces whose dimensions change. Final caller audit/integrated binding still PENDING before source implementation/admission.",
+  "alignment_contract": "CUDAallocationbase256aligned; even nh and even unchanged physical node offsets plus even i make float2 addresses8aligned. Actor row/action offset and reachslot*nh, childCFVslot*evenmax, and lock_sigma offset mustall be even. Actual6canonical metadata cases checked; proof extends from original prefixsum physical layouts and lock builder only after every continuation/paging/caller is reviewed. Odd or unsupported metadata uses unchanged scalar path. No arbitrary count/threshold fast path.",
+  "official_primary_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#device-memory-accesses",
+      "paraphrase": "NVIDIA documents naturally aligned1/2/4/8/16byte global accesses, at-least256byte allocation alignment and incorrect results from misaligned8/16byte accesses. Supports alignment requirement, not numerical/speed guarantees."
+    }
+  ],
+  "required_before_GPU": "Audit alltraining/profile/graph/lock/warm/full/compact/continuation/paging callers and data ownership. Then single exact source+host scope, emitted64bit/v2 loads/stores on actual/compat75, original9entries/ABI/barriers, same global/hostpayload/capacity, no spill/dynamic/maxthread regression and allshape/default/stack feasibility. Any actual failure closes vectorform without width/arity/helper/source/threshold/flag/sample rescue. No launch-bound/register-cap tuning.",
+  "required_before_adoption": "Raw original-vs-paired full words/nonfinite/guards/immutableinputs across eligibility+allfallbacks, genericmenus/locks/bothroles/algorithms/count0/bounds, changing-root/allphysical canonicalstate and ordinaryunits. Samequality complete1%/strictfixture/fresh16/broadF32/save/resume/continuation/materialCPU+memory/capacity/graph/holdout/freshoriginal/application gates unchanged.",
+  "source_or_compiler_or_GPU_or_new_speed_runs": 0,
+  "new_gain_accepted": false
+}

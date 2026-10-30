@@ -1,0 +1,33 @@
+--- baseline.cu
++++ candidate.cu
+@@ -174,10 +174,27 @@
+         partial += (float)ro[j];
+     total_parts[threadIdx.x] = partial;
+     __syncthreads();
+-    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
+-        if (threadIdx.x < (u32)step)
+-            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++    if (blockDim.x == 128 && blockDim.y == 1 && blockDim.z == 1) {
++        for (int step = 64; step >= 32; step >>= 1) {
++            if (threadIdx.x < (u32)step)
++                total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++            __syncthreads();
++        }
++        if (threadIdx.x < 32) {
++            float v = total_parts[threadIdx.x];
++            for (int step = 16; step > 0; step >>= 1) {
++                float rhs = __shfl_down_sync(0xffffffffu, v, step);
++                if (threadIdx.x < (u32)step) v = v + rhs;
++            }
++            if (threadIdx.x == 0) total_parts[0] = v;
++        }
+         __syncthreads();
++    } else {
++        for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
++            if (threadIdx.x < (u32)step)
++                total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++            __syncthreads();
++        }
+     }
+     float T = total_parts[0];
+     float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];

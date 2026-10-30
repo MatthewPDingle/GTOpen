@@ -1,0 +1,40 @@
+{
+  "id": "E070-up-action-preparation",
+  "stage": "Unexecuted control source; three other kernel families pending",
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "cases": 819,
+  "input_fields": 13,
+  "guard_metadata": "Unconsumed guards become byte value255 instead of i32 -7; all launched parent player/arity values and floating data are unchanged.",
+  "ABI": "Baseline20arguments; candidate19arguments. Only player/arity pointer pair becomes one packed-u16 pointer.",
+  "GPUexecutions": 0,
+  "raw_output_must_be_on_S": true,
+  "host_integration_implemented": false,
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action\\probe.exe"
+  ],
+  "input_sha256": {
+    "audit.py": "c6cdc78eea3a2f67242cbe4384430ec5bfbe2d599d10b48a5cfbd50332ec3694",
+    "baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate.ptx": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "corpus.json": "4884ed2abc0557641be4a1ad1e5e52d47a42548f159d8c3668ef7d04b85d3ff7",
+    "discounts.rs": "ebd9caba01145065cdf77ac363bc2b0d5fef0334ecc3e75ffc62d64e75f2c94f",
+    "probe.rs": "422b89e3ebc4f4fa1fa31e9248eed6865fbaef2e59a49d8ba65d624c60941e8e"
+  },
+  "scope": "Small source/compiler preparation inside the permitted workspace. No runtime output or off-workspace write is authorized by this file."
+}

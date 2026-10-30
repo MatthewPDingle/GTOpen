@@ -1,0 +1,582 @@
+{
+  "id": "D287-terminal-checkpoint",
+  "at": "2026-10-29T17:39:51.015918+00:00",
+  "status": "DECLINE_AND_CLOSE_FIXED_TERMINAL_FORK_JOIN_ROUTE",
+  "previous_goal_turn": "Progress: D285 all six full plans and D286 actual CUDA fork/join primitive/complete raw bits/graph dependencies passed. This turn advances to actual unchanged terminal kernels and cost/bit/guard evidence.",
+  "protocol_sha256": "15b80a724747d25cc16ff7a123c4e90ec7603bf9cce1c8da2ee3ebc9b8ded7d9",
+  "source_review_sha256": "908407ceae7be39e87b45e7ac7a608d10de9e5b5de5140e571ef620584104d96",
+  "component_report_sha256": "77d28ca48d60bbe26f8445a1bbe0b96d55caaaffeaf34438b367d38fb9f9dc23",
+  "component_pass": false,
+  "reason": "Inclusive terminal-component medians total 2642.4833 to 2617.1155 ms; saving 25.3678 ms against the fixed 95.9728 ms effort gate. Failed gates: rainbow:p1:CPU_clear, two-tone:p0:CPU_clear, minimum_component_effort_saving. The fixed route is closed without source or extra-sample rescue.",
+  "gates": {
+    "rainbow:p0:fixture_clear": true,
+    "rainbow:p0:CPU_clear": true,
+    "rainbow:p0:current_memory_clear": true,
+    "rainbow:p1:fixture_clear": true,
+    "rainbow:p1:CPU_clear": false,
+    "rainbow:p1:current_memory_clear": true,
+    "two-tone:p0:fixture_clear": true,
+    "two-tone:p0:CPU_clear": false,
+    "two-tone:p0:current_memory_clear": true,
+    "two-tone:p1:fixture_clear": true,
+    "two-tone:p1:CPU_clear": true,
+    "two-tone:p1:current_memory_clear": true,
+    "river:p0:fixture_clear": true,
+    "river:p0:CPU_clear": true,
+    "river:p0:current_memory_clear": true,
+    "river:p1:fixture_clear": true,
+    "river:p1:CPU_clear": true,
+    "river:p1:current_memory_clear": true,
+    "rainbow:aggregate_players_guard_clear": true,
+    "two-tone:aggregate_players_guard_clear": true,
+    "river:aggregate_players_guard_clear": true,
+    "minimum_component_effort_saving": false,
+    "all_bit_graph_guard_science_controls": true,
+    "whole_native_memory_admission": true
+  },
+  "cost_and_timing_rows": [
+    {
+      "fixture": "rainbow",
+      "player": 0,
+      "baseline_ms": [
+        813.5655,
+        811.2108,
+        811.4053
+      ],
+      "candidate_ms": [
+        807.0087,
+        807.7191,
+        806.8221
+      ],
+      "baseline_median_ms": 811.4053,
+      "candidate_median_ms": 807.0087,
+      "slower_pairs": 0,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        812.5,
+        828.125,
+        812.5
+      ],
+      "CPU_candidate_ms": [
+        796.875,
+        812.5,
+        796.875
+      ],
+      "CPU_guard_pass": true,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    },
+    {
+      "fixture": "rainbow",
+      "player": 1,
+      "baseline_ms": [
+        823.7128,
+        823.3043,
+        823.2024
+      ],
+      "candidate_ms": [
+        817.0131,
+        819.6311,
+        816.9847
+      ],
+      "baseline_median_ms": 823.3043,
+      "candidate_median_ms": 817.0131,
+      "slower_pairs": 0,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        812.5,
+        812.5,
+        828.125
+      ],
+      "CPU_candidate_ms": [
+        812.5,
+        828.125,
+        843.75
+      ],
+      "CPU_guard_pass": false,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    },
+    {
+      "fixture": "two-tone",
+      "player": 0,
+      "baseline_ms": [
+        505.0575,
+        498.5193,
+        499.7137
+      ],
+      "candidate_ms": [
+        491.9922,
+        491.0353,
+        491.856
+      ],
+      "baseline_median_ms": 499.7137,
+      "candidate_median_ms": 491.856,
+      "slower_pairs": 0,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        484.375,
+        500.0,
+        484.375
+      ],
+      "CPU_candidate_ms": [
+        500.0,
+        484.375,
+        500.0
+      ],
+      "CPU_guard_pass": false,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    },
+    {
+      "fixture": "two-tone",
+      "player": 1,
+      "baseline_ms": [
+        499.6806,
+        499.0036,
+        500.9691
+      ],
+      "candidate_ms": [
+        492.2055,
+        494.3259,
+        492.8658
+      ],
+      "baseline_median_ms": 499.6806,
+      "candidate_median_ms": 492.8658,
+      "slower_pairs": 0,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        484.375,
+        500.0,
+        515.625
+      ],
+      "CPU_candidate_ms": [
+        484.375,
+        484.375,
+        500.0
+      ],
+      "CPU_guard_pass": true,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    },
+    {
+      "fixture": "river",
+      "player": 0,
+      "baseline_ms": [
+        4.0156,
+        4.4156,
+        4.0081
+      ],
+      "candidate_ms": [
+        4.0152,
+        4.0055,
+        4.0079
+      ],
+      "baseline_median_ms": 4.0156,
+      "candidate_median_ms": 4.0079,
+      "slower_pairs": 0,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        0.0,
+        15.625,
+        0.0
+      ],
+      "CPU_candidate_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "CPU_guard_pass": true,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    },
+    {
+      "fixture": "river",
+      "player": 1,
+      "baseline_ms": [
+        4.3634,
+        4.3649,
+        4.3638
+      ],
+      "candidate_ms": [
+        4.3621,
+        4.364,
+        4.3793
+      ],
+      "baseline_median_ms": 4.3638,
+      "candidate_median_ms": 4.364,
+      "slower_pairs": 1,
+      "strict_guard_failed": false,
+      "CPU_baseline_ms": [
+        15.625,
+        15.625,
+        0.0
+      ],
+      "CPU_candidate_ms": [
+        0.0,
+        0.0,
+        15.625
+      ],
+      "CPU_guard_pass": true,
+      "added_current_memory_delta_bytes": {
+        "private_bytes": 0,
+        "working_set_bytes": 0
+      },
+      "current_memory_guard_pass": true
+    }
+  ],
+  "same_actual_accepted_GpuSolver_object_PTX_both_arms": true,
+  "kernel_source_ABI_arithmetic_grid_shared_arrays_quality_unchanged": true,
+  "all_original_solution_inputs_3records23checkpoints_exact": true,
+  "full_native_component_cases": 60,
+  "entire_actual_GPU_frames": 63,
+  "literal_whole69field_pairs": 30,
+  "all_other65device_and3hostfields_unchanged": true,
+  "entire_CPUqscale_pairs": 3,
+  "all_GPU_raw_words_in_complete_frames": 49917420210,
+  "all_GPU_raw_bytes_decoded": 199656692277,
+  "every_CFVscratch_and_padding_guard_word": 3559346410,
+  "reader_checks": 113612,
+  "whole_raw_file_inventory": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-before.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "0ca6a8f5fdd4756f4cf0f73755b8c27d01afb2b9ef4abddd570f0195649621fa"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-before.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "b836ded95173fd46de2a624ed56f8fd2f3c38fd042114b0cd51cf6e7f4f884da"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-before.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "f4b34287ad442eaf3020a8c9d20434be0bc91ed4c0394659ca38b58065e09141"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-W0B.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2745939692e8431687c53f8f0d973b6a1f12f603fdbcbc6218321083ac7cedc7"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-W0C.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2745939692e8431687c53f8f0d973b6a1f12f603fdbcbc6218321083ac7cedc7"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-W1C.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "44a3294c00d111c378a6522421809e46d397b8865004b56dce2c39e3dc90d4a4"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-W1B.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "44a3294c00d111c378a6522421809e46d397b8865004b56dce2c39e3dc90d4a4"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-B1.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "0cb5ec2a3bf2c1e7ff9b08b88a89dbfe3ba25a8449ecff235a053bba81a6f0ad"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-C1.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "0cb5ec2a3bf2c1e7ff9b08b88a89dbfe3ba25a8449ecff235a053bba81a6f0ad"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-C2.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "a7d1f375afc7b6f4b4689982e30ce7fc2712e51187e1e33f48a7f4057621afb8"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-B2.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "a7d1f375afc7b6f4b4689982e30ce7fc2712e51187e1e33f48a7f4057621afb8"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-B3.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2745939692e8431687c53f8f0d973b6a1f12f603fdbcbc6218321083ac7cedc7"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p0-C3.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2745939692e8431687c53f8f0d973b6a1f12f603fdbcbc6218321083ac7cedc7"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-W0B.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "300227b18b76ecab0abcc2f99ceda64609ad8b123854285ba0eab79d7f68e828"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-W0C.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "300227b18b76ecab0abcc2f99ceda64609ad8b123854285ba0eab79d7f68e828"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-W1C.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "d6e78bd06792d95689c8c1d1cf123e574481798bc5c5b0b45332470f64bdb43d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-W1B.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "d6e78bd06792d95689c8c1d1cf123e574481798bc5c5b0b45332470f64bdb43d"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-B1.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2cca40b15b6548245bed672c57f37662f0e0d81fb3123984553af84b90a72528"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-C1.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "2cca40b15b6548245bed672c57f37662f0e0d81fb3123984553af84b90a72528"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-C2.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "3f52efd7d10878ccecbcb5947b2ec4189cf7eff9b4d82a063c0565f920caea9a"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-B2.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "3f52efd7d10878ccecbcb5947b2ec4189cf7eff9b4d82a063c0565f920caea9a"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-B3.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "300227b18b76ecab0abcc2f99ceda64609ad8b123854285ba0eab79d7f68e828"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-p1-C3.gpu.bin": {
+      "bytes": 5900013831,
+      "sha256": "300227b18b76ecab0abcc2f99ceda64609ad8b123854285ba0eab79d7f68e828"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-W0B.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "73974dbb9f86402a224280e1b3b42654ccaea26f9c42f8e0ae2c0918369bb393"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-W0C.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "73974dbb9f86402a224280e1b3b42654ccaea26f9c42f8e0ae2c0918369bb393"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-W1C.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "90b456a177c38065bc6250f2399da9a084f9e6fb767b489c325c235ba4d761d0"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-W1B.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "90b456a177c38065bc6250f2399da9a084f9e6fb767b489c325c235ba4d761d0"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-B1.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "bd45a15e5a57bdc6239e4c8e9cf14707f751508cf178eec54d01ea2f10706687"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-C1.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "bd45a15e5a57bdc6239e4c8e9cf14707f751508cf178eec54d01ea2f10706687"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-C2.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "3e8e6aaf3f5e538262ba872cf6be56d4f31351b714b6ac4b8e4f7a2042dcea88"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-B2.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "3e8e6aaf3f5e538262ba872cf6be56d4f31351b714b6ac4b8e4f7a2042dcea88"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-B3.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "73974dbb9f86402a224280e1b3b42654ccaea26f9c42f8e0ae2c0918369bb393"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p0-C3.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "73974dbb9f86402a224280e1b3b42654ccaea26f9c42f8e0ae2c0918369bb393"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-W0B.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "dce30a7686ee3fc0b0339a18bf41e67368359b2f797a2aac66e6d28c5f2c1af6"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-W0C.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "dce30a7686ee3fc0b0339a18bf41e67368359b2f797a2aac66e6d28c5f2c1af6"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-W1C.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "41edaf00f1ae515738014369c8608092e2507bcdc144ca921181b23f77a7e500"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-W1B.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "41edaf00f1ae515738014369c8608092e2507bcdc144ca921181b23f77a7e500"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-B1.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "a9c96880c8420189c06c9550825b11d185d289c236ad65e4fd2802e324bfa1ad"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-C1.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "a9c96880c8420189c06c9550825b11d185d289c236ad65e4fd2802e324bfa1ad"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-C2.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "e2b5807a42a7e6425085eeeb43de3fba67f7e1cace9db8e103c80008e41e2cde"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-B2.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "e2b5807a42a7e6425085eeeb43de3fba67f7e1cace9db8e103c80008e41e2cde"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-B3.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "dce30a7686ee3fc0b0339a18bf41e67368359b2f797a2aac66e6d28c5f2c1af6"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-p1-C3.gpu.bin": {
+      "bytes": 3607280935,
+      "sha256": "dce30a7686ee3fc0b0339a18bf41e67368359b2f797a2aac66e6d28c5f2c1af6"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-W0B.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "d94511a11ecf58e87851002bdfc4a8a8108109d40a0ecb2bfc79e82868fa646e"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-W0C.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "d94511a11ecf58e87851002bdfc4a8a8108109d40a0ecb2bfc79e82868fa646e"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-W1C.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "5d4075ebd22532077d2a266fe7522a7b915b91a1c1ba6916b7983d3a4a9ffbff"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-W1B.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "5d4075ebd22532077d2a266fe7522a7b915b91a1c1ba6916b7983d3a4a9ffbff"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-B1.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "55f917ca1aa7510e11f6c8d43e8f4981f6239bde74387bba246627a2f9b87d1f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-C1.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "55f917ca1aa7510e11f6c8d43e8f4981f6239bde74387bba246627a2f9b87d1f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-C2.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "112ca90c82240afd6f8a67c505b260e09a05b672e6713dab12c47760c753735f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-B2.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "112ca90c82240afd6f8a67c505b260e09a05b672e6713dab12c47760c753735f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-B3.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "d94511a11ecf58e87851002bdfc4a8a8108109d40a0ecb2bfc79e82868fa646e"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p0-C3.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "d94511a11ecf58e87851002bdfc4a8a8108109d40a0ecb2bfc79e82868fa646e"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-W0B.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "ed966217d93e5ba22dc6349c3b31072004413bfa860afe5cc32db0ecf60df10f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-W0C.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "ed966217d93e5ba22dc6349c3b31072004413bfa860afe5cc32db0ecf60df10f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-W1C.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "7032d5c9ca662387f6f41334e153ce8ffb9a6b7afa86a3651644d4b63c6099d4"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-W1B.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "7032d5c9ca662387f6f41334e153ce8ffb9a6b7afa86a3651644d4b63c6099d4"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-B1.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "88a5ba37b3bc9c1bad75d71010e1c63eae5163d99174163f643741019325e156"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-C1.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "88a5ba37b3bc9c1bad75d71010e1c63eae5163d99174163f643741019325e156"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-C2.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "3ec5b46338a6a44c180aebf17bc1fd352413a45e59e056a0f3bef1d96a1838b0"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-B2.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "3ec5b46338a6a44c180aebf17bc1fd352413a45e59e056a0f3bef1d96a1838b0"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-B3.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "ed966217d93e5ba22dc6349c3b31072004413bfa860afe5cc32db0ecf60df10f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-p1-C3.gpu.bin": {
+      "bytes": 166771,
+      "sha256": "ed966217d93e5ba22dc6349c3b31072004413bfa860afe5cc32db0ecf60df10f"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-before.cpu.bin": {
+      "sha256": "c18f07897a8b5b97098b0b243ba1732b025d2395a526f6536377da500192e5cd",
+      "bytes": 1386321152
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\rainbow-after.cpu.bin": {
+      "sha256": "c18f07897a8b5b97098b0b243ba1732b025d2395a526f6536377da500192e5cd",
+      "bytes": 1386321152
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-before.cpu.bin": {
+      "sha256": "b7f7502898e5882fbea3354dd2beea5d90b6137ccd37aa6a99475ed3b57c2542",
+      "bytes": 1391071400
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\two-tone-after.cpu.bin": {
+      "sha256": "b7f7502898e5882fbea3354dd2beea5d90b6137ccd37aa6a99475ed3b57c2542",
+      "bytes": 1391071400
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-before.cpu.bin": {
+      "sha256": "39e39df6ecb65945dbe2beb9723fb55be03e29c768b00207ef6c4981b01b5b4b",
+      "bytes": 33472
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\component-output\\river-after.cpu.bin": {
+      "sha256": "39e39df6ecb65945dbe2beb9723fb55be03e29c768b00207ef6c4981b01b5b4b",
+      "bytes": 33472
+    }
+  },
+  "raw_files_not_rehashed_after_complete_reader": true,
+  "source_reversal": "Append-only diagnostic methods; original fold/show host bodies reverse byte-exact after only stream receiver, same64bitCFVpointer arg representation and removal of diagnostic perlaunch profiling hooks. Original host/observer prefix andall9CUDAentry source/ABIs unchanged. Wrapper4448bytes, application devicearrays unchanged; drivergraph/stream/event costs stillreal.",
+  "timing_limits": "Actual terminal-only replay batches atfinalaverage-policyreach. Sumof6fixture/player medians, same iterationcount200/200/60. Stream/event/capture/replay/completion/destruction costs included across3nativeintegerwindows; DAGinspection reportedoutsidecomponent butinsidewholemethod/processCPU. This is not fullCFR orcriticalpath gain, no co-residency attribution. No old/observer/primary timingpooling, exclusions/extensions/source variants.",
+  "material_limits": "PerarmGetProcessTimes includeswholemethod/inspection; native currentPrivate/WS andwholeprocessreportedhighwaters guarded. No instantaneousphysical/GPUperarmpeak oruniversalmaterialneutrality proof. Fullproduction layout/responsiveness/capacity/resource accounting required ifadvanced.",
+  "temporary_resources": "One auxiliary nonblocking stream and2events only on prospectively fixed num_nodes>=65536 withbothterminaltypes; perlevel readiness/completionjoin retained. River route serial beforeauxcreation. Newtemporarygraphs drop beforeevents/stream, completesbefore any CFVreadback or nextcase. Normaldrivererrors checked; arbitraryCUDAfailure safety notproved.",
+  "native_resource_summary": {
+    "sample_count": 1477,
+    "reported_peak_working_set_bytes": 7000412160,
+    "reported_peak_commit_bytes": 13458927616,
+    "minimum_observed_available_RAM_bytes": 92709191680,
+    "terminal_process_times": {
+      "creation_FILETIME": 134377682650388567,
+      "exit_FILETIME": 134377686303438935,
+      "kernel_100ns": 1548437500,
+      "user_100ns": 1573593750,
+      "CPU_ms": 312203.125,
+      "lifetime_ms": 365305.0368
+    },
+    "raw_bytes_after": 205211544325
+  },
+  "all_owned_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\execution\\rustc.exit.json",
+      "sha256": "7f0f2dfd41ae010f9eff88c840acb78ebd606cd6d5abfc430f051832f157f37e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\execution\\probe.exit.json",
+      "sha256": "b856226d6b75c64a8c66436827f182c66d2897553288b3545cfe02bc4ecb6771",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\execution\\reader.exit.json",
+      "sha256": "b98cb9a07f9de332689b5c7b5c0225f2024ed0373a583214e760d4ecc5aad2be",
+      "returncode": 0
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "locks_absent": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "optimizer_source_created_or_adopted": false,
+  "remaining_work": "No helper/event/queueorder/priority/threshold/eligibility/scope/source/flag/quality/sample variants for this failed mechanism. Seek a distinct lead.",
+  "best_qualified_config": "E080/GPU/compressed/16workers/defaultaffinity",
+  "hardware_epoch_baseline_ms": 10456.4109,
+  "last_primary_baseline": "B365",
+  "next_unused_baseline": "B366",
+  "all_new_output_X_Sreadonly_noT": true,
+  "new_complete_solve_gain_adopted": false,
+  "goal_active": true
+}

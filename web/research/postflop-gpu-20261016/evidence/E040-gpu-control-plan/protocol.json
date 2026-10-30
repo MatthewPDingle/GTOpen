@@ -1,0 +1,71 @@
+{
+  "id": "E040-gpu-control",
+  "at": "2026-10-17T01:04:13.330012+00:00",
+  "status": "FROZEN_PROSPECTIVE_GPU_CONTROL",
+  "source_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\manifest.json",
+    "sha256": "04b63a1534765a80fb717959d0cdc6294e4f6d2dbb22f355748a9fc82ac7264b"
+  },
+  "build_protocol": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\build-protocol.json",
+    "sha256": "1a97bf03aa2e8002d08a5af95612feccda4883dbeabb3e4bc4254e102ea2bb36"
+  },
+  "native_id": "V040-gpu-readback",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-solver.exe",
+  "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-solver.manifest.json",
+  "test_filter": "gpu::arena::e040_readback_control::exact_readback_overlap_and_drain",
+  "expected_selected": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "filtered": 90
+  },
+  "output_dir": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-gpu-readback-raw",
+  "cases": [
+    "compressed-full",
+    "compressed-compact",
+    "f32-full",
+    "f32-compact"
+  ],
+  "expected_forced_pipelined_arenas": [
+    4,
+    4,
+    0,
+    0
+  ],
+  "expected_default_pipelined_arenas": [
+    0,
+    0,
+    0,
+    0
+  ],
+  "expected_mixed_pipelined_arenas": [
+    2,
+    2,
+    null,
+    null
+  ],
+  "faults_per_compressed_case": [
+    {
+      "ordinal": 1,
+      "panic": false
+    },
+    {
+      "ordinal": 2,
+      "panic": true
+    }
+  ],
+  "required": [
+    "full raw q/scales/F32 and metadata equality against exact accepted serial method",
+    "all-node solved-strategy and save file equality",
+    "materialization followed by repeated exact restore",
+    "full raw GPU learning arrays unchanged",
+    "queued-copy Err/unwind synchronizes before nonblocking stream query",
+    "CPU target untouched before first encoding on injected exits; normal exact reuse",
+    "same pinned pointer/length and device arena lengths",
+    "CUDA cleanup succeeds"
+  ],
+  "timing_measurement": false,
+  "on_failure": "Preserve complete attempt and restore accepted sources. Do not start performance timing. Any repair requires an explicitly new source/control revision, not a retry.",
+  "cutoff_policy": "1% complete-cycle gain and no tradeoffs, only after separate frozen performance schedule and further gates"
+}

@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-28T12:07:03.522275+00:00",
+  "status": "pass_sampler_API_self_calibration",
+  "struct_sizes": {
+    "FILETIME": 8,
+    "PROCESS_MEMORY_COUNTERS_EX": 80,
+    "nvmlMemory_t": 24
+  },
+  "CPU_before": {
+    "creation_FILETIME": 134376628233607970,
+    "exit_FILETIME": null,
+    "kernel_100ns": 781250,
+    "user_100ns": 312500,
+    "CPU_ms": 109.375,
+    "lifetime_ms": null
+  },
+  "CPU_during": {
+    "creation_FILETIME": 134376628233607970,
+    "exit_FILETIME": null,
+    "kernel_100ns": 781250,
+    "user_100ns": 312500,
+    "CPU_ms": 109.375,
+    "lifetime_ms": null
+  },
+  "memory_before": {
+    "cb": 80,
+    "PageFaultCount": 5771,
+    "PeakWorkingSetSize": 23224320,
+    "WorkingSetSize": 23224320,
+    "QuotaPeakPagedPoolUsage": 169832,
+    "QuotaPagedPoolUsage": 169744,
+    "QuotaPeakNonPagedPoolUsage": 14472,
+    "QuotaNonPagedPoolUsage": 13864,
+    "PagefileUsage": 14319616,
+    "PeakPagefileUsage": 14319616,
+    "PrivateUsage": 14319616
+  },
+  "memory_during32MiB_touch": {
+    "cb": 80,
+    "PageFaultCount": 13980,
+    "PeakWorkingSetSize": 56782848,
+    "WorkingSetSize": 56782848,
+    "QuotaPeakPagedPoolUsage": 169832,
+    "QuotaPagedPoolUsage": 169744,
+    "QuotaPeakNonPagedPoolUsage": 14472,
+    "QuotaNonPagedPoolUsage": 14000,
+    "PagefileUsage": 47943680,
+    "PeakPagefileUsage": 47992832,
+    "PrivateUsage": 47943680
+  },
+  "NVML_global_memory": {
+    "total": 34190917632,
+    "free": 31300853760,
+    "used": 2890063872
+  },
+  "NVML_versions": {
+    "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+    "nvmlSystemGetDriverVersion": "610.88",
+    "nvmlSystemGetNVMLVersion": "13.610.88"
+  },
+  "application_solver_processes": 0,
+  "GPU_contexts_or_kernels_started": 0,
+  "sampler_sha256": "0cd4ff305843c96321b6d331997f2b014067df13a61f27b458436873b6cf7d8c",
+  "scope": "Own Python process32MiB touched-allocation checks commit/high-water accounting and monotonic CPU counters. One read-only NVML identity/memory query. Not calibration of missed transient peaks,driver memory accuracy or full sample overhead."
+}

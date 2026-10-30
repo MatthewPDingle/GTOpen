@@ -1,0 +1,55 @@
+{
+  "id": "E070-continuation-helper-resource-preparation",
+  "status": "unexecuted_native_prerequisite",
+  "input_sha256": {
+    "baseline-projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+    "baseline-storage-copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+    "candidate-projection.cu": "3cf76f4ce9dcc56da58642ea8a922a402f555f25fb98b9f8deffff34b68e25d5",
+    "candidate-storage-copy.cu": "61c655562fe407e3239e9c09384225e18c21e79c4e81620e435f62c2ba8dc5da",
+    "probe.rs": "f31931ca89745f925cd596b0b6f7e70b141c0de5bf5ad6f63076e240e18beb6c"
+  },
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-resources\\probe.exe"
+  ],
+  "host_manifest_sha256": "b5c61824e571dcd48db0b94b36747925d692a6aa727c9d52fa78893c697685d0",
+  "kernel_entries": [
+    "continuation_project",
+    "continuation_transport",
+    "continuation_storage_copy"
+  ],
+  "architectures": [
+    "compute_120",
+    "compute_75"
+  ],
+  "planned_NVRTC_compiles": 8,
+  "planned_driver_resource_rows": 6,
+  "planned_application_kernel_launches": 0,
+  "prerequisite_gates": [
+    "Both module/arm/architecture PTX sets compile with architecture-only default options.",
+    "All3entry parameter lists replace only the adjacent player/arity pair with one packed-u16 pointer; retain expected rest of ABI.",
+    "Both metadata decodes remain source-reversible; PTX uses a narrow u8/u16 global load for the metadata.",
+    "No increase in driver local/spill bytes, dynamic shared memory, or loss of maximum supported block threads. Default limits fit and64/128/256thread theoretical residency stays positive.",
+    "Register/residency warnings disclosed under D108; they do not waive measured material/performance gates."
+  ],
+  "native_admission_pending": true,
+  "frozen_core_E070_CUDA_changed": false,
+  "no_rescue": "One frozen helper source pair; failure closes the form, no compiler-option/width/sampling rescue.",
+  "GPUexecutions": 0,
+  "limits": "Rust host compiler preparation only. No NVRTC, driver-resource or GPU numerical result yet."
+}

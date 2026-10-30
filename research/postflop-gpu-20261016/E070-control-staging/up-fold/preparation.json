@@ -1,0 +1,36 @@
+{
+  "id": "E070-up-fold-preparation",
+  "stage": "Unexecuted correctness control source",
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "cases": 180,
+  "ABI": "Both21arguments; only i32 player pointer replaced in-place by packed-u16 metadata pointer. All arithmetic, reduction and shared-memory sizes unchanged.",
+  "GPUexecutions": 0,
+  "raw_output_must_be_on_S": true,
+  "host_integration_implemented": false,
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-fold\\probe.exe"
+  ],
+  "input_sha256": {
+    "baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate.ptx": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "corpus.json": "1fe56ff1533696e99bca511dd75cd92957e7fa3d308a9758199675d7342ae53f",
+    "probe.rs": "2353c2630101e260de462de98bd20b631aaee2f2380df765340201158dba99e6"
+  },
+  "scope": "Small compiler preparation within the writable project root; does not authorize a GPU execution or off-workspace write."
+}

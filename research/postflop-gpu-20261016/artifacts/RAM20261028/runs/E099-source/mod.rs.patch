@@ -1,0 +1,25 @@
+--- E080/mod.rs
++++ E099/mod.rs
+@@ -304,6 +304,7 @@
+ 
+         let n = plan.num_nodes;
+         let nh = plan.nh;
++        let pair2 = nh[0] > 0 && nh[1] > 0 && nh[0] % 2 == 0 && nh[1] % 2 == 0;
+         let staging =
+             plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;
+         println!(
+@@ -329,12 +330,12 @@
+ 
+         Ok(GpuSolver {
+             f_copy_root: func("copy_root")?,
+-            f_down_action: func("down_action")?,
++            f_down_action: func(if pair2 { "down_action_pair2" } else { "down_action" })?,
+             f_down_chance: func("down_chance")?,
+             f_up_fold: func("up_fold")?,
+             f_up_show: func("up_show")?,
+             f_up_chance: func("up_chance")?,
+-            f_up_action: func("up_action")?,
++            f_up_action: func(if pair2 { "up_action_pair2" } else { "up_action" })?,
+             f_up_action_eval: func("up_action_eval")?,
+             num_levels: plan.num_levels,
+             nh: [nh[0] as i32, nh[1] as i32],

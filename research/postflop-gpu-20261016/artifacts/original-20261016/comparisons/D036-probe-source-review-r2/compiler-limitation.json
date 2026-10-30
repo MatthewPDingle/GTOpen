@@ -1,0 +1,73 @@
+{
+  "at": "2026-10-16T10:11:01.531141+00:00",
+  "status": "COMPILER_DISCOVERED_LIMITATION",
+  "scope": "Additive record; prior source-only review remains unchanged and did not establish compilation.",
+  "finding": "The source review missed that the frozen cudarc rlib lacks its optional std::error::Error implementations. Box<dyn Error> question-mark conversion failed for DriverError and CompileError.",
+  "compile_exit": 1,
+  "diagnostic_counts": {
+    "E0277": 62,
+    "DriverError": 61,
+    "CompileError": 1
+  },
+  "execution_limit": "R2 ended in rustc before any probe/kernel/solver launch. Preflight read-only telemetry is separate. No numerical evidence or performance evidence resulted.",
+  "resolution_scope": "New sibling R3 only: explicit local error conversions; preserve CUDA, corpus, schedule, compiler flags and pinned rlibs.",
+  "prior_review": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-probe-source-review-r2\\review.md",
+      "sha256": "28405872f42477098b7e0781768b74b04de1f3852da95327a8e49857df78cccc",
+      "bytes": 2027
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-probe-source-review-r2\\manifest.json",
+      "sha256": "9af356f33816e1a779ab573190c0ec0626cc4c3e8ae351bb7dcd545510d5bff8",
+      "bytes": 5274
+    }
+  ],
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\prepared-manifest.json",
+      "sha256": "c23945d7afbf1364931047f58b41dc2b5460d854d39225fb3cbd86d4e298be18",
+      "bytes": 4014
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\probe.rs",
+      "sha256": "b22c6552a4dd0ff11c427a8199a9a098291086a5ee877a6deac81f0e02727e51",
+      "bytes": 18417
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\failure.json",
+      "sha256": "64cdf8dfebed3d458e9c4340a26f9a90d588e038ca78a2da2b814fd438267332",
+      "bytes": 1164
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.command.json",
+      "sha256": "e15aab2ddac3b9d26073c58d51433898706d72052372ba3c09deb20a847d27ad",
+      "bytes": 848
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.stderr.log",
+      "sha256": "bf8f62bd85f64723ad4247d7bb4e1cdff724ffd7b6b9b80e6120cce2f6c9ec2c",
+      "bytes": 57751
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\execution-manifest.json",
+      "sha256": "b28a1c0a8a72079f79f55c8a369f21cfc28f9f047c4936d17d00cdb913b8e7a5",
+      "bytes": 3469
+    },
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\result.rs",
+      "sha256": "096198a59cf9c551edcca167ebb26292149fae1a39fef6372cf3ebbef65966b2",
+      "bytes": 63721
+    },
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\nvrtc\\safe.rs",
+      "sha256": "299a9510debad8cc9ac832d2449df72c2e989a228baab178b7b6f2ed761dea29",
+      "bytes": 9520
+    }
+  ]
+}

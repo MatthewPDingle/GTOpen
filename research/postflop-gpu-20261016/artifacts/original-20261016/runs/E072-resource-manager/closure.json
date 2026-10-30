@@ -1,0 +1,164 @@
+{
+  "at": "2026-10-18T02:15:44.698202+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "report_sha256": "4c73f0a5bcc1dd69d994d43c8f823f4907585415cd4a310161ac75899915310b",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "source_main_live_PTX_custody_pass": true,
+  "files_http_byte_verified": [
+    {
+      "url": "evidence/E072-resource/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E072-resource/candidate.cu",
+      "sha256": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3"
+    },
+    {
+      "url": "evidence/E072-resource/probe.rs",
+      "sha256": "f06b188c629deeaddc40e9970f17deece6140a8bac2fc3cc19b120c07e6f5e89"
+    },
+    {
+      "url": "evidence/E072-resource/protocol.json",
+      "sha256": "be256cd18733dda93740a865f77db8470a10fe72ecd5bf71c6a49ea0e344d741"
+    },
+    {
+      "url": "evidence/E072-source/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E072-source/candidate.cu",
+      "sha256": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3"
+    },
+    {
+      "url": "evidence/E072-source/candidate.patch",
+      "sha256": "89a1bd71d72241b16b62887b8ddd143e1594def481f4563021c11449fae56dfa"
+    },
+    {
+      "url": "evidence/E072-source/manifest.json",
+      "sha256": "032382e49c312545014e291229eec24e72ce73b41af88b6a80ce4881abfd5129"
+    },
+    {
+      "url": "evidence/E072-source/source-review.json",
+      "sha256": "dd97220306c2fd09d318bc77fe12cc6c58329637aec6c282f69f662db9bebdd1"
+    },
+    {
+      "url": "evidence/D116-fold-index-staging/integer-proof.json",
+      "sha256": "77dc17ceb24464f3b17580eea783c96715b6fc96e10aa181b3dc22c64707e03f"
+    },
+    {
+      "url": "evidence/E072-resource-runners/D116-prepare.py",
+      "sha256": "eea8939abd6b2198b12b7887a5592a0dfb72c199ab6d93d9ed0283a55214c0fa"
+    },
+    {
+      "url": "evidence/E072-resource-runners/E072-resource-execute.py",
+      "sha256": "3f34d07bb03415d121d04ea2a692b98bbcdb62a0c1b6d45c5e9ebc2ebb9a7d69"
+    },
+    {
+      "url": "evidence/E072-resource-runners/E072-run-resource.py",
+      "sha256": "11dfd0153f466b87dd13e1929c5a31480731880ae3bc8623e93c66e9ffd260b2"
+    },
+    {
+      "url": "evidence/E072-resource/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E072-resource/candidate.cu",
+      "sha256": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3"
+    },
+    {
+      "url": "evidence/E072-resource/pre-resource-publication.json",
+      "sha256": "6fc2dbc266fbc2f15a0dda3d0a87e5e2398e9b0cf8dd35b82d0e88c81232f7da"
+    },
+    {
+      "url": "evidence/E072-resource/probe.rs",
+      "sha256": "f06b188c629deeaddc40e9970f17deece6140a8bac2fc3cc19b120c07e6f5e89"
+    },
+    {
+      "url": "evidence/E072-resource/protocol.json",
+      "sha256": "be256cd18733dda93740a865f77db8470a10fe72ecd5bf71c6a49ea0e344d741"
+    },
+    {
+      "url": "evidence/E072-resource/report.json",
+      "sha256": "4c73f0a5bcc1dd69d994d43c8f823f4907585415cd4a310161ac75899915310b"
+    },
+    {
+      "url": "evidence/E072-resource-execution/baseline-compute_120.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    },
+    {
+      "url": "evidence/E072-resource-execution/baseline-compute_75.ptx",
+      "sha256": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70"
+    },
+    {
+      "url": "evidence/E072-resource-execution/before.json",
+      "sha256": "3d55129d47f188dd004f4b998024a092dbca6d67478f364f33a4698dec088d50"
+    },
+    {
+      "url": "evidence/E072-resource-execution/build-complete.json",
+      "sha256": "9b54c2ec3b471e88a8826a656614b19ca40054d4b478e92b6e7123d33c759fc7"
+    },
+    {
+      "url": "evidence/E072-resource-execution/candidate-compute_120.ptx",
+      "sha256": "e2947fb160bb5eb897b989fe89859c2e3a8af170a45bbd4dc5f4c5e576574984"
+    },
+    {
+      "url": "evidence/E072-resource-execution/candidate-compute_75.ptx",
+      "sha256": "33bb5aa7f284f5b1a166e518c338a694cce3f8691d718f1cd45d84daad13ab27"
+    },
+    {
+      "url": "evidence/E072-resource-execution/complete.json",
+      "sha256": "8603069fda82c3edb97caf0134b1625384e1443778c5f1666c61aa20057b11c2"
+    },
+    {
+      "url": "evidence/E072-resource-execution/probe.exit.json",
+      "sha256": "ed120d62f9f1f8ccec7a8c8f3df0e649af4d56b2c7753708fd88cd6e86fd0562"
+    },
+    {
+      "url": "evidence/E072-resource-execution/probe.invocation.json",
+      "sha256": "a7197ecdd2dae10b941fcb442ea1de5a2890378fd807021aea6c23cf6771663d"
+    },
+    {
+      "url": "evidence/E072-resource-execution/probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E072-resource-execution/probe.stdout.log",
+      "sha256": "5d7b3e1af9ee8ddc0295de96b20e33809af59a09765b7f4774edecdf4ea7536f"
+    },
+    {
+      "url": "evidence/E072-resource-execution/rustc.exit.json",
+      "sha256": "d1963661082f0dbb3cd420d99d265151c16ee07cca8a37dcc2cf8bbb09c19fa0"
+    },
+    {
+      "url": "evidence/E072-resource-execution/rustc.invocation.json",
+      "sha256": "d4667c2f3545a923fe6221d269912190700be3755ae3692ad43fe354332d569d"
+    },
+    {
+      "url": "evidence/E072-resource-execution/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E072-resource-execution/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E072-resource-manager/resource.exit.json",
+      "sha256": "d2050c2cf9be2e3edd2db07113a89bce7df72ffa2bba9441de7eb454228142cc"
+    },
+    {
+      "url": "evidence/E072-resource-manager/resource.invocation.json",
+      "sha256": "f417e0e39e056c284fb3a49e060e60e951f4796f7f91de2104c5e382cfe7fab8"
+    },
+    {
+      "url": "evidence/E072-resource-manager/resource.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E072-resource-manager/resource.stdout.log",
+      "sha256": "b3b36d7ba098e3e6a8308f12add0e3aa1a627a0b79991524be262b8f0b32d88d"
+    }
+  ],
+  "no_numerical_or_speed_claim": true,
+  "reason": "Closed at compiler/resource prerequisite: compute_120:FP_opcode_counts_exact. No source/cache-size/threshold or retry variants."
+}

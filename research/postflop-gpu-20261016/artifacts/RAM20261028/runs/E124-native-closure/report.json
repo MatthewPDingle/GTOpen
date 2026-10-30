@@ -1,0 +1,44 @@
+{
+  "id": "E124-native-closure",
+  "at": "2026-10-29T20:43:02.711106+00:00",
+  "status": "REJECT_CLOSE_E124_REQUIRED_NATIVE_WORK_REMOVAL_NOT_ESTABLISHED",
+  "candidate_CUDA_sha256": "85be28573f10f4304fcaa44fc3225db5e7d290cbfc1f740e7565b11d913cc201",
+  "resource_protocol_sha256": "e67c1b4e8601e22d1922391bd65553523165f271ea3c2ddc4c719211fed6b03b",
+  "source_contract": "Fixed n>=2^-63,d<=2^63,n<=d proves normalpositiveinputs and RNoutput underNVIDIAPTXsemantics. Ordinary originaldivision fallback for everyotherinput. Source-only universal range algebra plus1764boundarypairs/2negativecounterexamples, not actualGPUaccuracyproof.",
+  "resources": "downregister40/local32/max1024/occupancy24,12,6 unchanged; upregister62to64 warning,local64/max1024/occupancy16,8,4unchanged. Shared/constant/dynamic0/stack1024unchanged, all9ABIs/7untargetedbodies+resources exact. Two NVRTC12.9targets120/75 only.",
+  "PTX": "Every16down+12up actual120 and23down+23upcompat75 FTZsite has exactnormalguard/sameoriginalRNfallbackandsameoperandexpressions/destination/join.4negativefixturespass. V1actual120passed;75blocklayout/identicalclampaliasesnotrecognized; additivev2localCFG/max/movreaderpreservesall4sections/all74sites/gates. No optimizer/compiler/module/native repeat.",
+  "native": "Oneownedmodulecallbackcapture/one nvdisasm, accepted same-driver baseline reused. Every28actualFTZslowCALLsite retains1RCP/FCHK/5originalrefinementFMAdependency-stages/conditionalexceptionalbranch/CALL, sameworkas original common reference pertarget.4negativefixturespass. No predeclared ordinary division-work-removal evidence established; no positive native gate.",
+  "limits": "Scoped local static dependency/window witnesses; not fullnativeCFG/pointer/registerliveness/IEEEinterpreter, dynamicinstruction/counter/time/accuracy/no-cost/universalno-speedup proof. No applicationkernels/numerical/CFR/solver/speed trial followed admissionfailure.",
+  "fixed_form_closed": "No guard/window/asmconstraint/architecture/kernel-subset/arity/zero-or-one-bypass/helper/flags/width/source/quality/sample rescue. E060sharedrefinement/E101/E116bypass/E108integerquotient remainclosed.",
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\probe.exit.json",
+      "sha256": "10be1c318233d6827e59d5b2f3c1c8a6b4f9f0c1047270e606527eb41dac39f9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E124-resource\\execution\\rustc.exit.json",
+      "sha256": "f74045087f84a7b2ca7b69be52bf91863e160a39cc78f0c7a6629e7d8c8a5fea",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\candidate\\capture.exit.json",
+      "sha256": "0c38797b555f8fc184d2fac26a99dd5578d9575af14a5fc28326b67c5ba222dd",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\candidate\\disassemble.exit.json",
+      "sha256": "0fe3aa601e14d3813686b71da1101e52c1a3df4ab0156261377340b1da1b7e1e",
+      "returncode": 0
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "locks_absent": true,
+  "new_applicationkernels_numerical_solver_or_speed_samples": 0,
+  "candidate_adopted": false,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "last_primary_baseline": "B377",
+  "next_unused_primary_baseline": "B378",
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "goal_active": true
+}

@@ -1,0 +1,7 @@
+{
+  "check": "git apply --check --whitespace=error",
+  "exit": 1,
+  "reason": "Windows write_text introduced CRLF into generated patch/new file; original source uses LF",
+  "repair": "explicit UTF-8 bytes with LF; preserve source text and regenerate patch",
+  "execution": "source-only; no application/build/GPU"
+}

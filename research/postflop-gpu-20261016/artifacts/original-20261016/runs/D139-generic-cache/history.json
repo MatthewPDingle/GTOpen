@@ -1,0 +1,48 @@
+{
+  "at": "2026-10-18T12:00:48.553279+00:00",
+  "bounded_local_history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "bool small = NA|generic.{0,30}(uncach|cache)|register.cache.{0,30}generic",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "-i",
+        "generic.{0,35}(uncach|cache)|cache.{0,35}generic|small.{0,15}NA",
+        "research/postflop-gpu-20261016/experiments.md"
+      ],
+      "returncode": 0,
+      "stdout": "96:[D013](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D013-isolated-summary/report.json) ran three alternating pairs per isolated fixture using unchanged E004/E010 binaries. Two-tone complete-cycle medians were **4252.3019 -> 4347.9435 ms (2.2492% slower)**; its prior full-suite construction advantage disappeared (**79.6395 -> 87.9708 ms** isolated construction), while readback still improved. River medians were **195.8999 -> 209.6415 ms (7.0146% slower)**, a much smaller penalty than the full-suite 79.8807%. Both fixtures were slower in all three pairs. All 12 results retained exact configuration, complete-state fingerprints, exploitability bits and stopping iterations. An independent read-only audit verified preserved binary/manifest/log hashes.\n415:A bounded follow-up source/PTX audit supports one compiler-only D046 probe: change the generic action cache predicate to `NA != 0 && na <= 8`, retaining common2/3/4 caches and every launch. Existing PTX's 64 local bytes correspond to two explicit dynamic arrays, not proven register spilling. No equivalent implementation was found in the scoped closed-candidate history; primary generic action nodes use NA1, only 4,704 of the selected 141,120-node span, so no broad speed inference follows. The prospective compiler prerequisite is zero local bytes, no register increase or theoretical128-thread occupancy decrease, and unchanged other eight PTX entries. Numerical and complete-cycle qualification would remain separate if that prerequisite passes.\n418:## D046 generic action cache - compiler prerequisite passed\n420:One [frozen standalone compiler probe](S:/GTOpen-research/postflop-gpu-20261016/runs/D046-generic-cache-resource/report.json) and [independent terminal/PTX audit](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D046-independent-review/summary.md) passed. The only CUDA edit changes the training-up cache condition from `na <= 8` to `NA != 0 && na <= 8`; common2/3/4 caches and all launches remain intact. Local storage falls **64 to0 bytes**, while **66 registers**, **7 theoretical128-thread blocks/SM** and zero shared memory remain unchanged. Eight other PTX entries are byte-identical and the up_action ABI is unchanged. This is removal of explicit generic arrays, not evidence of register spilling, numerical equality or a speedup.\n427:## E024 generic action cache - rejected and restored\n429:The reviewed one-line candidate retained common 2/3/4 action caches while removing generic temporary arrays. A fresh build proved the complete candidate CUDA source was embedded, and the unchanged fixed unit/three-pair protocol completed. [Primary measurements](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E024-three-pair-comparison/report.json) were **9735.4443 -> 9784.3827 ms (0.5027% slower)**, failing the 2% improvement gate. Each paired suite total was slower. The river median was 0.9200% slower despite two pairs above 3%; because the guard requires both conditions, it did not fail. All samples, including the 21.2266% river pair, remain included.\n1379:Before kernel launch, compare actual compiled attrs and36geometries x64/128/256threads x default/disable-caching-override occupancy flags. Registers38/38,local0/0,static shared1040/1040,maxthreads1024/1024,maxdynamic48112/48112 unchanged. **All216queries have lower theoretical active CTAs per SM under L1preference**, none zero. Smallest dynamic68byte shape at128threads:12to3for both flags; dynamic5208example12to1. Resource gate therefore rejects before raw numerical tests or activity collection. No trace/meta/raw-result file exists, no application kernel launch or solver/timing run. Theoretical scheduler occupancy loss is not measured runtime occupancy or a demonstrated speed regression.\n",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "bool small = NA|small = \\(?NA != 0|generic.{0,30}uncach",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 0,
+      "stdout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\candidate.cu\nS:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-build\\candidate.cu\nS:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-design\\candidate\\kernels.cu\n",
+      "stderr": ""
+    }
+  ],
+  "ledger_sha256": "0bea40bb709e9d5d19d9b5890dbaa256e3626d637aaf1d8c779ba34586444510",
+  "novelty_scope": "Local all-ref and retained CUDA/source ledger only; no semantic/global novelty claim. D058 mode split remains parked; up_action_eval old traced family41.78ms on two-tone does not justify that narrow route. New generic training cache removal is distinct from E074 noinline call: no wrapper/call/dispatch/arity split and no closed hunk composed.",
+  "last_primary_baseline": "B289"
+}

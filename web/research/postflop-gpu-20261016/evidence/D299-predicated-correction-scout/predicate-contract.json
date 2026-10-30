@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-29T19:29:09.836934+00:00",
+  "complete_boolean_truth_table": [
+    {
+      "pos_lt_lb": false,
+      "pos_ge_ub": false,
+      "original": "none",
+      "lower": false,
+      "higher": false
+    },
+    {
+      "pos_lt_lb": false,
+      "pos_ge_ub": true,
+      "original": "higher",
+      "lower": false,
+      "higher": true
+    },
+    {
+      "pos_lt_lb": true,
+      "pos_ge_ub": false,
+      "original": "lower",
+      "lower": true,
+      "higher": false
+    },
+    {
+      "pos_lt_lb": true,
+      "pos_ge_ub": true,
+      "original": "lower",
+      "lower": true,
+      "higher": false
+    }
+  ],
+  "unsigned_boundary_triples": 1000,
+  "source_argument": "p_lo=(u32pos<u32lb),p_not_lo=!p_lo,p_hi=(u32pos>=u32ub)&p_not_lo exactly retains original if/elsepriority for allu32triples, including lb>ub. Only originalselected lower_c+=r or higher_c+=r executes;accumulator readwrite constraints retain oldbits whenfalse. tot_c and all other arithmetic/loops/barriers/payload remain original. add.rn.f32 matches default add.f32 RN/noFTZ precision; this still needs actualcompiler/native/NaN/rawGPU checks.",
+  "constraints": "CUDAinlineasm uses +f(readwrite) outputs for bothaccumulators, commonrinput and originalunsignedpos/lb/ubinputs. Outputs represent distinct live state. Predicates mutuallyexclusive; no input/output vector/memory change. Register/scheduling/CSEloss/volatile costs real.",
+  "native_mechanism_gate": "After resources pass require nativeoriginal30FSEL sites reduced to0 in changedup_show, both rank corrections bound to original r/accumulators with exactpriority andoriginalbarriers. Existingpredicatedadds are not called new. No counts-to-speed/dynamic-frequency inference; no source/flag/mask/helper/width/quality/sample rescue if intendednativeform absent."
+}

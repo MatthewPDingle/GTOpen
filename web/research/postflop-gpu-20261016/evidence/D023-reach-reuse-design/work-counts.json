@@ -1,0 +1,56 @@
+[
+  {
+    "fixture_id": "rainbow",
+    "board": "Ks7h2d",
+    "hands": [
+      257,
+      319
+    ],
+    "action_nodes_by_actor": [
+      274801,
+      248732
+    ],
+    "baseline_down_action_hand_visits_per_iteration": 299938730,
+    "second_sweep_player1_action_hand_visits_avoided": 79345508,
+    "down_action_hand_visit_fraction_avoided": 0.26453905435953534,
+    "down_chance_hand_visit_fraction_avoided": 0.2769097222222222,
+    "chance_scope": "Per edge: nh1 avoided of 2*(nh0+nh1); no absolute edge count measured here",
+    "limits": "Hand visits only: not weighted by action count, memory bytes, or elapsed time. Kernel launches and actor1 metadata dispatch remain."
+  },
+  {
+    "fixture_id": "two-tone",
+    "board": "Ks7s2d",
+    "hands": [
+      258,
+      320
+    ],
+    "action_nodes_by_actor": [
+      167213,
+      151349
+    ],
+    "baseline_down_action_hand_visits_per_iteration": 183145268,
+    "second_sweep_player1_action_hand_visits_avoided": 48431680,
+    "down_action_hand_visit_fraction_avoided": 0.26444406961145184,
+    "down_chance_hand_visit_fraction_avoided": 0.2768166089965398,
+    "chance_scope": "Per edge: nh1 avoided of 2*(nh0+nh1); no absolute edge count measured here",
+    "limits": "Hand visits only: not weighted by action count, memory bytes, or elapsed time. Kernel launches and actor1 metadata dispatch remain."
+  },
+  {
+    "fixture_id": "river",
+    "board": "Ks7h2dQhTc",
+    "hands": [
+      233,
+      280
+    ],
+    "action_nodes_by_actor": [
+      6,
+      6
+    ],
+    "baseline_down_action_hand_visits_per_iteration": 6156,
+    "second_sweep_player1_action_hand_visits_avoided": 1680,
+    "down_action_hand_visit_fraction_avoided": 0.2729044834307992,
+    "down_chance_hand_visit_fraction_avoided": null,
+    "chance_scope": "No chance work in river fixture",
+    "limits": "Hand visits only: not weighted by action count, memory bytes, or elapsed time. Kernel launches and actor1 metadata dispatch remain."
+  }
+]

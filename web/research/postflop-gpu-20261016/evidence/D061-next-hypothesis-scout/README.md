@@ -1,0 +1,9 @@
+D061 recommends one separately authorized getter-only capability query, not a production cache policy. Installed cudarc 0.19.7 exposes the required driver attributes/limit; all 162 accepted E020 source hashes were verified. The ledger snapshot includes E032's final rejection.
+
+The plausible target is an existing immutable metadata allocation such as d_children. Its complete flop length remains a recorded gap; active action-edge counts must not substitute for the full allocation. The neighboring d_cfv_slot has source-derived payloads of 5,387,252 bytes for each archived flop and 132 bytes for river. No buffer is selected as a measured winner.
+
+The main blocker to implementation is ownership: multiple GpuSolver objects retain the same device primary context in one process. A per-solver save/set/restore/reset sequence is not isolated. Captured training/evaluation graphs also require explicit policy verification; cudarc end_capture immediately instantiates, so changing a launch stream or graph afterward cannot be presumed sufficient.
+
+Read NVIDIA's [L2 policy documentation](https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/l2-cache-control.html), [context limit/reset contract](https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__CTX.html), and [stream attribute contract](https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html). Official-source notes and exact installed enum references are in report.json and official-sources.json.
+
+The next query can obtain identity, driver/CC, L2 size, maximum persisting/window sizes and the query process's current context limit, then release its retained context. It needs no stream, allocation, module, compiler or kernel. It cannot inspect the live server's context setting or establish cache misses, graph inheritance, numerical equivalence or speed. No query or implementation was performed by this scout.

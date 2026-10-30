@@ -1,0 +1,170 @@
+{
+  "scope": "Host integer index geometry only; no CUDA/compiler/numerical or performance test",
+  "status": "pass",
+  "m_range_inclusive": [
+    0,
+    1326
+  ],
+  "block_range_inclusive": [
+    1,
+    256
+  ],
+  "cases": 339712,
+  "active_chunk_is_initial_contiguous_prefix": true,
+  "all_consumed_base_dependencies_preserved": true,
+  "empty_input_avoids_division": true,
+  "examples": [
+    {
+      "m_o": 0,
+      "block": 128,
+      "chunk": 0,
+      "nonempty_chunks": 0,
+      "new_additions": 0,
+      "original_additions": 128,
+      "removed_additions": 128
+    },
+    {
+      "m_o": 1,
+      "block": 128,
+      "chunk": 1,
+      "nonempty_chunks": 1,
+      "new_additions": 0,
+      "original_additions": 128,
+      "removed_additions": 128
+    },
+    {
+      "m_o": 127,
+      "block": 128,
+      "chunk": 1,
+      "nonempty_chunks": 127,
+      "new_additions": 126,
+      "original_additions": 128,
+      "removed_additions": 2
+    },
+    {
+      "m_o": 128,
+      "block": 128,
+      "chunk": 1,
+      "nonempty_chunks": 128,
+      "new_additions": 127,
+      "original_additions": 128,
+      "removed_additions": 1
+    },
+    {
+      "m_o": 129,
+      "block": 128,
+      "chunk": 2,
+      "nonempty_chunks": 65,
+      "new_additions": 64,
+      "original_additions": 128,
+      "removed_additions": 64
+    },
+    {
+      "m_o": 219,
+      "block": 128,
+      "chunk": 2,
+      "nonempty_chunks": 110,
+      "new_additions": 109,
+      "original_additions": 128,
+      "removed_additions": 19
+    },
+    {
+      "m_o": 236,
+      "block": 128,
+      "chunk": 2,
+      "nonempty_chunks": 118,
+      "new_additions": 117,
+      "original_additions": 128,
+      "removed_additions": 11
+    },
+    {
+      "m_o": 252,
+      "block": 128,
+      "chunk": 2,
+      "nonempty_chunks": 126,
+      "new_additions": 125,
+      "original_additions": 128,
+      "removed_additions": 3
+    },
+    {
+      "m_o": 256,
+      "block": 128,
+      "chunk": 2,
+      "nonempty_chunks": 128,
+      "new_additions": 127,
+      "original_additions": 128,
+      "removed_additions": 1
+    },
+    {
+      "m_o": 257,
+      "block": 128,
+      "chunk": 3,
+      "nonempty_chunks": 86,
+      "new_additions": 85,
+      "original_additions": 128,
+      "removed_additions": 43
+    },
+    {
+      "m_o": 294,
+      "block": 128,
+      "chunk": 3,
+      "nonempty_chunks": 98,
+      "new_additions": 97,
+      "original_additions": 128,
+      "removed_additions": 31
+    },
+    {
+      "m_o": 314,
+      "block": 128,
+      "chunk": 3,
+      "nonempty_chunks": 105,
+      "new_additions": 104,
+      "original_additions": 128,
+      "removed_additions": 24
+    },
+    {
+      "m_o": 319,
+      "block": 128,
+      "chunk": 3,
+      "nonempty_chunks": 107,
+      "new_additions": 106,
+      "original_additions": 128,
+      "removed_additions": 22
+    },
+    {
+      "m_o": 1081,
+      "block": 128,
+      "chunk": 9,
+      "nonempty_chunks": 121,
+      "new_additions": 120,
+      "original_additions": 128,
+      "removed_additions": 8
+    },
+    {
+      "m_o": 1326,
+      "block": 128,
+      "chunk": 11,
+      "nonempty_chunks": 121,
+      "new_additions": 120,
+      "original_additions": 128,
+      "removed_additions": 8
+    }
+  ],
+  "unweighted_rainbow_census": [
+    {
+      "p": 0,
+      "rows": 1176,
+      "removed_additions_min": 1,
+      "median": 31.0,
+      "max": 43
+    },
+    {
+      "p": 1,
+      "rows": 1176,
+      "removed_additions_min": 3,
+      "median": 11.0,
+      "max": 19
+    }
+  ],
+  "census_scope": "2352 player/runout rows from1176 unordered runouts; not canonical GpuPlan visitation, weighted work or measured timing"
+}

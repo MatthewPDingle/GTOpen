@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T00:23:34.654177+00:00",
+  "stage": "resource-marker-capture",
+  "expected_marker_count": 4,
+  "observed_marker_count": 0,
+  "rustc_returncode": 0,
+  "launcher_returncode": 0,
+  "ptx_outputs_retained": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\baseline.ptx": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\candidate.ptx": "4f252468aa03ed12000fc8d2c564ec4ada6aed9e2aff7e47567924efb89fda28"
+  },
+  "cause": "Nested Windows Python subprocess did not propagate redirected stdout/stderr handles to the Rust probe. Probe produced both PTX files, but its resource markers were not captured.",
+  "repair": "Execute the exact same probe binary with explicit stdout/stderr file handles and a fresh output cwd. No source, compiler options or resource gates change.",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurement": false
+}

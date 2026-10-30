@@ -1,0 +1,35 @@
+{
+  "id": "D081-showdown-async-staging-source",
+  "at": "2026-10-17T03:39:21.396320+00:00",
+  "root_source_review_only": true,
+  "proposal": "One fixed4-byte cp.async.ca global-to-shared staging on sm80+, overlapping the existing full output zero fill, wait_all plus original CTA barrier before any shared read. Original old-architecture path retained.",
+  "scope": "up_show only, same ABI/shape/shared byte count/arrays/float expressions and exact reduction and correction order. No host/plan/evaluator change.",
+  "safety": [
+    "Global f32/u32 buffers and all offsets are4byte aligned. Dynamic shared base explicitly aligned4, all offsets multiples4.",
+    "Thread-strided j destinations are unique within each array. Reach and card-position arrays occupy disjoint ranges. No shared source is read before per-thread wait_all and original block barrier.",
+    "Full CFV clear moves before the first barrier only onsm80+. Terminal CFV rows are owned separately by the existing planner; up_show reads no CFV data. Present outputs are written after existing later CTA barriers.",
+    "Zero/empty and tail cases issue no out-of-bounds loads. Each thread waits its own copies; uniform CTA barrier publishes all completed results.",
+    "Inline asm volatile memory clobbers prevent unmodelled hidden-memory optimization across copy/wait boundaries. No extra atomic/event/buffer or floating reassociation."
+  ],
+  "evidence_limits": [
+    "Prior up_show host/device traces are perturbed family envelopes, not a removable-work bound or performance prediction.",
+    "Actual compiled attributes, old-architecture fallback PTX, raw poisoned-input/full-output controls and complete-cycle timings remain prerequisites.",
+    "No variant/width/cache-qualifier sweep after resource or timing outcome."
+  ],
+  "references": [
+    {
+      "title": "NVIDIA PTX8.8 non-bulk cp.async and completion",
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.1/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-cp-async"
+    },
+    {
+      "title": "NVIDIA CUDA12.9 inline assembly memory clobbers",
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.1/inline-ptx-assembly/index.html#incorrect-optimization"
+    }
+  ],
+  "novelty": "No cp.async/pipeline_memcpy/shared async staging hit in scoped retained postflop patches/reviews/README/ledger. Distinct from E031 extra shared card-offset cache and E008 scan recurrence rewrite; neither is composed here.",
+  "source_sha256": {
+    "baseline": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate": "a9f20efe596b88508abd099c8bb62ffe1bbac1368a5240fcc9e32a8e4fb6a39a"
+  },
+  "candidate_accepted": false
+}

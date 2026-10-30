@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-17T02:16:40.462831+00:00",
+  "status": "test_only_compile_correction",
+  "failed_terminal_sha256": "12b91342fe23fba781b6c70bb2c9eca63a2f1a396c9bfba498cd20bd506b6e9d",
+  "prior_source_manifest_sha256": "de0dc2de71bafb39c168b35949252c354309f73d23262a9f11f37ab40d6d5fae",
+  "change": "Two test Store constructors require u64; cast bounded test n (maximum3*2^20+17) from usize. Production bytes unchanged.",
+  "production_sha256": "fa3cbf368cc4a853865c9723f8908feb2a98d49b0161140ef599806495cc1baf",
+  "native_or_timing_runs": 0
+}

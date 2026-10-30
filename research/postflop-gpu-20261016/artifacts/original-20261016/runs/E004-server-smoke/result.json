@@ -1,0 +1,108 @@
+{
+  "started_at": "2026-10-16T04:30:45.278159+00:00",
+  "passed": true,
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\deployment-build\\release\\gto-server.exe",
+  "binary_sha256": "a8a81bc414195330df79f58721ef9a8747bae494f5e7602cd695d31a96468037",
+  "port": 43736,
+  "working_directory": "X:\\Dev\\GTOpen",
+  "source_commit": "f3741e87dc76f1622164c78bf4df7b9455066d89",
+  "scope": "Isolated API correctness smoke; not a performance qualification",
+  "owned_pid": 45300,
+  "listener_owner_verified": true,
+  "root_checks": {
+    "acting_hands_checked": 27,
+    "max_strategy_sum_error": 5.060000007883758e-08,
+    "actions": [
+      "Check",
+      "Bet 10 (50%)"
+    ],
+    "player": 0
+  },
+  "child_checks": {
+    "acting_hands_checked": 27,
+    "max_strategy_sum_error": 2.422000000557034e-08,
+    "actions": [
+      "Check",
+      "Bet 10 (50%)"
+    ],
+    "player": 1
+  },
+  "live_api_unchanged": true,
+  "final_status": {
+    "state": "done",
+    "gpu": true,
+    "gpu_note": "",
+    "iteration": 100,
+    "exploit_chips": 0.006867003561270346,
+    "exploit_pct": 0.03433501780635173,
+    "elapsed_secs": 0.0143243,
+    "history": [
+      {
+        "iteration": 100,
+        "exploit_pct": 0.03433501780635173
+      }
+    ],
+    "tree": {
+      "nodes": 21,
+      "action_nodes": 8,
+      "arena_mb": 0.002496,
+      "vram_mb": 536.879876,
+      "gpu_cap_mb": 31984,
+      "gpu_available": true,
+      "hands_oop": 27,
+      "hands_ip": 27,
+      "board": "Ks7h2dQhTc"
+    },
+    "spot_request": {
+      "board": "Ks7h2dQhTc",
+      "range_oop": "AA,KK,QQ,JJ,TT,AKs,AQs",
+      "range_ip": "AA,QQ,JJ,99,AJs,KQs",
+      "starting_pot": 20.0,
+      "effective_stack": 100.0,
+      "rake_pct": 0.0,
+      "rake_cap": 0.0,
+      "allin_threshold": 85.0,
+      "add_allin": false,
+      "max_raises": 2,
+      "oop": [
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        },
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        },
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        }
+      ],
+      "ip": [
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        },
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        },
+        {
+          "bet": "50",
+          "raise": "2.5x",
+          "donk": ""
+        }
+      ]
+    },
+    "error": ""
+  },
+  "owned_process_exit_code": 1,
+  "owned_process_stopped": true,
+  "test_port_released": true,
+  "finished_at": "2026-10-16T04:30:48.458079+00:00"
+}

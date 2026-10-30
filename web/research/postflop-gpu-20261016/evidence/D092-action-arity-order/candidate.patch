@@ -1,0 +1,13 @@
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -272,6 +272,10 @@
+             }
+             (flat, spans)
+         };
++        // Group independent blocks by action count within each existing level.
++        for nodes in &mut action_by_level {
++            nodes.sort_unstable_by_key(|&n| spot.tree.nodes[n as usize].num_children);
++        }
+         let (action_nodes, action_spans) = flatten_nodes(action_by_level);
+         let (fold_nodes, fold_spans) = flatten_nodes(fold_by_level);
+         let (show_nodes, show_spans) = flatten_nodes(show_by_level);

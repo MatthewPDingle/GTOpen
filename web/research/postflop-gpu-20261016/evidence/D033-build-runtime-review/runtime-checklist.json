@@ -1,0 +1,152 @@
+{
+  "id": "D033R1-prospective-runtime-audit",
+  "protocol_sha256": "3c0187465cbcf7faa347a11fe2f769dfafd5e29ec027eb5754e60f10c20745e2",
+  "actual_run_id": "D033R1",
+  "logical_id": "D033",
+  "marker_prefix": "D033_EVENT_DIAGNOSTIC ",
+  "expected": {
+    "warm_check_iterations": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140
+    ],
+    "raw_exact_iterations": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "explicit_checkpoint_exact_iterations": [
+      160,
+      180,
+      200
+    ],
+    "implicit_compressed_checkpoint140": "compare_cpu mandatory after warm_check140 before first graph marker",
+    "sample_iterations": [
+      160,
+      180,
+      200
+    ],
+    "batch_indices": [
+      0,
+      1,
+      2
+    ],
+    "batch_length": 20,
+    "arm_order": [
+      [
+        "native",
+        "instrumented"
+      ],
+      [
+        "instrumented",
+        "native"
+      ],
+      [
+        "native",
+        "instrumented"
+      ]
+    ],
+    "graph_indices": [
+      0,
+      1
+    ],
+    "final_anchor_count": 1,
+    "complete_count": 1,
+    "test_pass_count": 1,
+    "final_fingerprint": "65fb2853a11f3acc",
+    "final_exploit_bits": 4595130701932466176,
+    "exploit_bits_by_iteration": {
+      "20": 4622293349835068352,
+      "40": 4615910349596779108,
+      "60": 4611592466607110480,
+      "80": 4607812973746629388,
+      "100": 4604651510606006304,
+      "120": 4602400871342019424,
+      "140": 4600062402970321824,
+      "160": 4598526937924752800,
+      "180": 4596673615736125952,
+      "200": 4595130701932466176
+    },
+    "raw_arrays_per_checkpoint": [
+      {
+        "array": "regrets",
+        "player": 0
+      },
+      {
+        "array": "strategy",
+        "player": 0
+      },
+      {
+        "array": "reach",
+        "player": 0
+      },
+      {
+        "array": "weights",
+        "player": 0
+      },
+      {
+        "array": "regrets",
+        "player": 1
+      },
+      {
+        "array": "strategy",
+        "player": 1
+      },
+      {
+        "array": "reach",
+        "player": 1
+      },
+      {
+        "array": "weights",
+        "player": 1
+      }
+    ],
+    "raw_chunk_floats": 1048576,
+    "raw_pair_max_bytes": 8388608,
+    "cpu_arena_bytes_per_arm": 1386321040
+  },
+  "checks": [
+    {
+      "id": "custody",
+      "requirement": "Hash actual binary/build manifest/logs/patch/source archive/protocol/oracles; verify build ended before exactly one native launch; invocation+runner report agree; source matches frozen build before/after. Preserve any refusal/failure and do not replace samples."
+    },
+    {
+      "id": "workload",
+      "requirement": "Full compiled config equals sealed original/E015 rainbow config including Ks7h2d, rake0/cap3, pot60, stack970 and range/menu values; Dcfr, compressed, iso true, ordinary checks20 through200. Other fixture/F32 catalog entries do not expand the run."
+    },
+    {
+      "id": "admission",
+      "requirement": "Admission precedes GPU arms and reports complete per-arm payload, two CPU stores, pinned staging, shared tree, host/device reserve/free figures and bounded compare scratch. Verify sufficient headroom and no fallback/reduced workload; actual comparison lengths must match both arms."
+    },
+    {
+      "id": "exactness",
+      "requirement": "All four raw_exact records pass direct f32 bit comparisons of both players learning/reach arrays plus weights, discounts and iteration BEFORE evaluation. Full q/scales direct equality executes at all four checkpoints; no CFV scratch equality claim. Check all10 exploit anchors; final complete state_fingerprint object equals original B038 and accepted E015C1 including arena hashes/entries/scale counts and root strategy bits, not hash alone."
+    },
+    {
+      "id": "graph_identity",
+      "requirement": "Two original kernel-only nonempty chains; pergraph N kernels, N-1 original edges, N+1 timing events, 2N added edges,2N+1 totalnodes,3N-1 edges. Stable kernel ordinal/function name/grid/block/shared data preserved; original mapping and clone parameter identity protected by source; no setters or extra replay. Function pointers are run-local only."
+    },
+    {
+      "id": "schedule",
+      "requirement": "Warm140 and exactly three20-iteration batches ending160/180/200 with fixed alternating arm order; no overlap/reset/uncounted learning iteration/profile path. Native+clone uploads and waits outside brackets. Extract final-replay events before next overwrite; retain all samples."
+    },
+    {
+      "id": "timing_integrity",
+      "requirement": "Per-node intervals, family sums, pergraph envelopes/intergraph gap, native/instrumented20-iteration device envelopes and hostwall present and finite/nonnegative. Recompute family aggregates; report sums-vs-envelope differences with timer precision, without inventing exact equality or post-hoc sample rejection. Near-resolution zeros retained as unresolved. Compute descriptive three-sample median/min/max and outer ratios; copy_root separate."
+    },
+    {
+      "id": "completion",
+      "requirement": "Exactly one complete+final_anchor_exact, native1pass0fail, return0; no invalid marker, panic, CUDA error, D033_CLEANUP_ERROR or D033_SOLVER_CLEANUP_ERROR anywhere through process exit. Complete marker alone is insufficient because final ordinary solver drop happens afterward."
+    },
+    {
+      "id": "interpretation",
+      "requirement": "Dense event insertion perturbs scheduling. Last-replay node intervals are not20-replay means or uninstrumented native kernel shares. Outer ratios quantify perturbation only. No correction by subtracting guessed event cost, no speedup/acceptance/deployment claim, no adaptive rerun or replacement. Large perturbation limits ranking usefulness even if exactness passes."
+    }
+  ],
+  "native_source_review_boundary": "Frozen source control flow supplies facts not independently serialized in each marker, especially mandatory compressed compare140, direct comparisons, clone preservation and upload exclusion."
+}

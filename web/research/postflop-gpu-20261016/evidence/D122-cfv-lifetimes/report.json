@@ -1,0 +1,1864 @@
+{
+  "id": "D122",
+  "at": "2026-10-18T03:45:42.284258+00:00",
+  "status": "pass_retained_lifetime_model_admit_one_Rust_prototype",
+  "checks": 35917780,
+  "cases": [
+    {
+      "case": 0,
+      "board": "Ks7h2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21008064,
+      "nh_max": 319,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "3f36f5f327ff75dc0094c5b1723321b543a11999bc6fc0e704e2c1a717edb91e",
+      "proposed_map_sha256": "cfca13f1b650c423016b36a321b384ed52101c9a9596e49213cab42b2f0b9bc1",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 1,
+      "board": "Ks7h2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21008064,
+      "nh_max": 319,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "58c6656b26e710bbacc539be70d9689150bd4fe686bae1ab30a5e0f56fff62df",
+      "proposed_map_sha256": "4e1ca29bfc00e8738bf4c1f0dc786efb00fc86cefdc819bdd072ff30a1dd5ac6",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 2,
+      "board": "Ks7h2d",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21008064,
+      "nh_max": 319,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "4a9cd844d354cae4c0882d3c0516edf6f1eac551c531d3e99b46ff8bdd6b3612",
+      "proposed_map_sha256": "d99b75f50ed5b892e40983d93cbeef0346804b91d8640941d86cdf31af7d18fa",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 3,
+      "board": "Ks7h2d",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21008064,
+      "nh_max": 319,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "9198d6ae50b943f209d918042b11baccf629d5f7a490eb14d424102e873641b6",
+      "proposed_map_sha256": "ffd38c18e17e5e43256c057c6401dc9de247834732dce0eddc05f4ac37ba7226",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 4,
+      "board": "Ks7s2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21073920,
+      "nh_max": 320,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "f09e70b3e73a5bd8b82a00b5474c525934a45030e123d0bf2ec647c9e9561596",
+      "proposed_map_sha256": "ada9f2efecbd827b26d7d68def822939f5428394139f6957d710a5244b1c2914",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 5,
+      "board": "Ks7s2d",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 37926,
+      "single_action_child_kind_counts": {
+        "0": 37926
+      },
+      "action_child_arity_counts": {
+        "2": 37926
+      },
+      "disjoint_share_pairs": 37926,
+      "naive_early_write_analysis": {
+        "potential_cross_CTA_read_write_conflict": 28101,
+        "no_other_action_input_at_original_target": 9777,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 294545,
+          "child_CTA": 294546,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 297549,
+          "child_CTA": 297550,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 674212,
+          "child_CTA": 674213,
+          "parent_level": 4,
+          "old_target_slot": 149,
+          "other_reader_CTA": 7634,
+          "other_input_node": 8225,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1145855,
+          "child_CTA": 1145856,
+          "parent_level": 4,
+          "old_target_slot": 298,
+          "other_reader_CTA": 16799,
+          "other_input_node": 16801,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1147827,
+          "child_CTA": 1147828,
+          "parent_level": 4,
+          "old_target_slot": 299,
+          "other_reader_CTA": 16799,
+          "other_input_node": 17243,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 5096,
+          "other_reader_CTA": 79041,
+          "other_input_node": 79043,
+          "other_input_level": 8
+        },
+        {
+          "parent": 592725,
+          "child_CTA": 592726,
+          "parent_level": 6,
+          "old_target_slot": 5097,
+          "other_reader_CTA": 79058,
+          "other_input_node": 79061,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 5098,
+          "other_reader_CTA": 79074,
+          "other_input_node": 79076,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 269549,
+      "new_scratch_rows": 253085,
+      "old_CFV_rows": 1062286,
+      "new_CFV_rows": 1045822,
+      "CFV_payload_bytes_saved": 21073920,
+      "nh_max": 320,
+      "maximum_live_group_count": 253085,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "e14e71188e221642c8d82bc07b91e051547a132532fbdc83e7b93d2e4cf5c152",
+      "proposed_map_sha256": "080ad491ce25e8a40c2bc78fe7a8b27800cc7ca7f404d051008da00aa578a6b4",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 30576,
+          "retired_groups": 0,
+          "live_groups": 30576
+        },
+        {
+          "stage": 11,
+          "born_groups": 103488,
+          "retired_groups": 0,
+          "live_groups": 134064
+        },
+        {
+          "stage": 10,
+          "born_groups": 136710,
+          "retired_groups": 30576,
+          "live_groups": 240198
+        },
+        {
+          "stage": 9,
+          "born_groups": 111671,
+          "retired_groups": 98784,
+          "live_groups": 253085
+        },
+        {
+          "stage": 8,
+          "born_groups": 67571,
+          "retired_groups": 124950,
+          "live_groups": 195706
+        },
+        {
+          "stage": 7,
+          "born_groups": 27442,
+          "retired_groups": 121079,
+          "live_groups": 102069
+        },
+        {
+          "stage": 6,
+          "born_groups": 10393,
+          "retired_groups": 65219,
+          "live_groups": 47243
+        },
+        {
+          "stage": 5,
+          "born_groups": 692,
+          "retired_groups": 36703,
+          "live_groups": 11232
+        },
+        {
+          "stage": 4,
+          "born_groups": 202,
+          "retired_groups": 10540,
+          "live_groups": 894
+        },
+        {
+          "stage": 3,
+          "born_groups": 104,
+          "retired_groups": 545,
+          "live_groups": 453
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 349,
+          "live_groups": 109
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 104,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 6,
+      "board": "Ks7s2d",
+      "iso_requested": true,
+      "iso_active": true,
+      "full_arenas": false,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 23080,
+      "single_action_child_kind_counts": {
+        "0": 23080
+      },
+      "action_child_arity_counts": {
+        "2": 23080
+      },
+      "disjoint_share_pairs": 23080,
+      "naive_early_write_analysis": {
+        "no_other_action_input_at_original_target": 5886,
+        "potential_cross_CTA_read_write_conflict": 17146,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 399685,
+          "child_CTA": 399686,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 405693,
+          "child_CTA": 405694,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 741260,
+          "child_CTA": 741261,
+          "parent_level": 4,
+          "old_target_slot": 135,
+          "other_reader_CTA": 13645,
+          "other_input_node": 13647,
+          "other_input_level": 6
+        },
+        {
+          "parent": 743232,
+          "child_CTA": 743233,
+          "parent_level": 4,
+          "old_target_slot": 136,
+          "other_reader_CTA": 13645,
+          "other_input_node": 14236,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1151771,
+          "child_CTA": 1151772,
+          "parent_level": 4,
+          "old_target_slot": 222,
+          "other_reader_CTA": 19656,
+          "other_input_node": 19658,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1153743,
+          "child_CTA": 1153744,
+          "parent_level": 4,
+          "old_target_slot": 223,
+          "other_reader_CTA": 19656,
+          "other_input_node": 20247,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 3146,
+          "other_reader_CTA": 76364,
+          "other_input_node": 76366,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 3147,
+          "other_reader_CTA": 76375,
+          "other_input_node": 76378,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 163950,
+      "new_scratch_rows": 153947,
+      "old_CFV_rows": 645909,
+      "new_CFV_rows": 635906,
+      "CFV_payload_bytes_saved": 12803840,
+      "nh_max": 320,
+      "maximum_live_group_count": 153947,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "3dbdb5985d4a598f5b878ec6b092181c2e967c5ced06170d638d3797bf05ee24",
+      "proposed_map_sha256": "b5c6c6722b9f378d6ba68f8463b320ff30487ad879d1016d32bf29cdb90636fb",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 18577,
+          "retired_groups": 0,
+          "live_groups": 18577
+        },
+        {
+          "stage": 11,
+          "born_groups": 62876,
+          "retired_groups": 0,
+          "live_groups": 81453
+        },
+        {
+          "stage": 10,
+          "born_groups": 83098,
+          "retired_groups": 18577,
+          "live_groups": 145974
+        },
+        {
+          "stage": 9,
+          "born_groups": 67991,
+          "retired_groups": 60018,
+          "live_groups": 153947
+        },
+        {
+          "stage": 8,
+          "born_groups": 41272,
+          "retired_groups": 75953,
+          "live_groups": 119266
+        },
+        {
+          "stage": 7,
+          "born_groups": 16873,
+          "retired_groups": 73707,
+          "live_groups": 62432
+        },
+        {
+          "stage": 6,
+          "born_groups": 6441,
+          "retired_groups": 39843,
+          "live_groups": 29030
+        },
+        {
+          "stage": 5,
+          "born_groups": 510,
+          "retired_groups": 22481,
+          "live_groups": 7059
+        },
+        {
+          "stage": 4,
+          "born_groups": 150,
+          "retired_groups": 6549,
+          "live_groups": 660
+        },
+        {
+          "stage": 3,
+          "born_groups": 78,
+          "retired_groups": 402,
+          "live_groups": 336
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 258,
+          "live_groups": 83
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 78,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 7,
+      "board": "Ks7s2d",
+      "iso_requested": true,
+      "iso_active": true,
+      "full_arenas": true,
+      "nodes": 1346813,
+      "levels": 14,
+      "single_action_nodes": 23080,
+      "single_action_child_kind_counts": {
+        "0": 23080
+      },
+      "action_child_arity_counts": {
+        "2": 23080
+      },
+      "disjoint_share_pairs": 23080,
+      "naive_early_write_analysis": {
+        "no_other_action_input_at_original_target": 5886,
+        "potential_cross_CTA_read_write_conflict": 17146,
+        "same_child_CTA_only": 48
+      },
+      "naive_cross_CTA_witnesses": [
+        {
+          "parent": 399685,
+          "child_CTA": 399686,
+          "parent_level": 4,
+          "old_target_slot": 98,
+          "other_reader_CTA": 4777,
+          "other_input_node": 4779,
+          "other_input_level": 6
+        },
+        {
+          "parent": 405693,
+          "child_CTA": 405694,
+          "parent_level": 4,
+          "old_target_slot": 99,
+          "other_reader_CTA": 4777,
+          "other_input_node": 5221,
+          "other_input_level": 6
+        },
+        {
+          "parent": 741260,
+          "child_CTA": 741261,
+          "parent_level": 4,
+          "old_target_slot": 135,
+          "other_reader_CTA": 13645,
+          "other_input_node": 13647,
+          "other_input_level": 6
+        },
+        {
+          "parent": 743232,
+          "child_CTA": 743233,
+          "parent_level": 4,
+          "old_target_slot": 136,
+          "other_reader_CTA": 13645,
+          "other_input_node": 14236,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1151771,
+          "child_CTA": 1151772,
+          "parent_level": 4,
+          "old_target_slot": 222,
+          "other_reader_CTA": 19656,
+          "other_input_node": 19658,
+          "other_input_level": 6
+        },
+        {
+          "parent": 1153743,
+          "child_CTA": 1153744,
+          "parent_level": 4,
+          "old_target_slot": 223,
+          "other_reader_CTA": 19656,
+          "other_input_node": 20247,
+          "other_input_level": 6
+        },
+        {
+          "parent": 591638,
+          "child_CTA": 591639,
+          "parent_level": 6,
+          "old_target_slot": 3146,
+          "other_reader_CTA": 76364,
+          "other_input_node": 76366,
+          "other_input_level": 8
+        },
+        {
+          "parent": 593812,
+          "child_CTA": 593813,
+          "parent_level": 6,
+          "old_target_slot": 3147,
+          "other_reader_CTA": 76375,
+          "other_input_node": 76378,
+          "other_input_level": 8
+        }
+      ],
+      "old_scratch_rows": 163950,
+      "new_scratch_rows": 153947,
+      "old_CFV_rows": 645909,
+      "new_CFV_rows": 635906,
+      "CFV_payload_bytes_saved": 12803840,
+      "nh_max": 320,
+      "maximum_live_group_count": 153947,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+      "proposed_map_sha256": "dc920e67cbb8938cef928744522af1acec6a32627810fcae4abf9bdd29698f5e",
+      "proposed_map_bytes": 5387312,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 13,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 12,
+          "born_groups": 18577,
+          "retired_groups": 0,
+          "live_groups": 18577
+        },
+        {
+          "stage": 11,
+          "born_groups": 62876,
+          "retired_groups": 0,
+          "live_groups": 81453
+        },
+        {
+          "stage": 10,
+          "born_groups": 83098,
+          "retired_groups": 18577,
+          "live_groups": 145974
+        },
+        {
+          "stage": 9,
+          "born_groups": 67991,
+          "retired_groups": 60018,
+          "live_groups": 153947
+        },
+        {
+          "stage": 8,
+          "born_groups": 41272,
+          "retired_groups": 75953,
+          "live_groups": 119266
+        },
+        {
+          "stage": 7,
+          "born_groups": 16873,
+          "retired_groups": 73707,
+          "live_groups": 62432
+        },
+        {
+          "stage": 6,
+          "born_groups": 6441,
+          "retired_groups": 39843,
+          "live_groups": 29030
+        },
+        {
+          "stage": 5,
+          "born_groups": 510,
+          "retired_groups": 22481,
+          "live_groups": 7059
+        },
+        {
+          "stage": 4,
+          "born_groups": 150,
+          "retired_groups": 6549,
+          "live_groups": 660
+        },
+        {
+          "stage": 3,
+          "born_groups": 78,
+          "retired_groups": 402,
+          "live_groups": 336
+        },
+        {
+          "stage": 2,
+          "born_groups": 5,
+          "retired_groups": 258,
+          "live_groups": 83
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 78,
+          "live_groups": 7
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 5,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 8,
+      "board": "Ks7h2dQhTc",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 33,
+      "levels": 8,
+      "single_action_nodes": 0,
+      "single_action_child_kind_counts": {},
+      "action_child_arity_counts": {},
+      "disjoint_share_pairs": 0,
+      "naive_early_write_analysis": {},
+      "naive_cross_CTA_witnesses": [],
+      "old_scratch_rows": 4,
+      "new_scratch_rows": 4,
+      "old_CFV_rows": 25,
+      "new_CFV_rows": 25,
+      "CFV_payload_bytes_saved": 0,
+      "nh_max": 280,
+      "maximum_live_group_count": 4,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "126eecf0d8e031771626d244616c97cdde41c05f687f23ba7b9c65baa90f077c",
+      "proposed_map_sha256": "d7628bf350013a9777b5c6dbc5c7111bfa4186ef98ded0582b1dac130823bdce",
+      "proposed_map_bytes": 192,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 7,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 6,
+          "born_groups": 1,
+          "retired_groups": 0,
+          "live_groups": 1
+        },
+        {
+          "stage": 5,
+          "born_groups": 2,
+          "retired_groups": 0,
+          "live_groups": 3
+        },
+        {
+          "stage": 4,
+          "born_groups": 2,
+          "retired_groups": 1,
+          "live_groups": 4
+        },
+        {
+          "stage": 3,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 2,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 2,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 9,
+      "board": "Ks7h2dQhTc",
+      "iso_requested": false,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 33,
+      "levels": 8,
+      "single_action_nodes": 0,
+      "single_action_child_kind_counts": {},
+      "action_child_arity_counts": {},
+      "disjoint_share_pairs": 0,
+      "naive_early_write_analysis": {},
+      "naive_cross_CTA_witnesses": [],
+      "old_scratch_rows": 4,
+      "new_scratch_rows": 4,
+      "old_CFV_rows": 25,
+      "new_CFV_rows": 25,
+      "CFV_payload_bytes_saved": 0,
+      "nh_max": 280,
+      "maximum_live_group_count": 4,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "890881dda9f6b9d6a5e1915b14e55baa1bb02026e4b0b55e538d4b96e99c0b58",
+      "proposed_map_sha256": "89a83d7dfd77ccf161aecf8abe1a9ae10a1589afca14f2cb38fa7d8f2d8422c1",
+      "proposed_map_bytes": 192,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 7,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 6,
+          "born_groups": 1,
+          "retired_groups": 0,
+          "live_groups": 1
+        },
+        {
+          "stage": 5,
+          "born_groups": 2,
+          "retired_groups": 0,
+          "live_groups": 3
+        },
+        {
+          "stage": 4,
+          "born_groups": 2,
+          "retired_groups": 1,
+          "live_groups": 4
+        },
+        {
+          "stage": 3,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 2,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 2,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 10,
+      "board": "Ks7h2dQhTc",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": false,
+      "nodes": 33,
+      "levels": 8,
+      "single_action_nodes": 0,
+      "single_action_child_kind_counts": {},
+      "action_child_arity_counts": {},
+      "disjoint_share_pairs": 0,
+      "naive_early_write_analysis": {},
+      "naive_cross_CTA_witnesses": [],
+      "old_scratch_rows": 4,
+      "new_scratch_rows": 4,
+      "old_CFV_rows": 25,
+      "new_CFV_rows": 25,
+      "CFV_payload_bytes_saved": 0,
+      "nh_max": 280,
+      "maximum_live_group_count": 4,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "112186ed3885def03978d1524bd0c9b52e5a14a01c43fc34d6f20d26fc258cbf",
+      "proposed_map_sha256": "5fb1818218fae648cd66a9b8290b0053a507a77db3f2180ef20ffcf2c15395bf",
+      "proposed_map_bytes": 192,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 7,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 6,
+          "born_groups": 1,
+          "retired_groups": 0,
+          "live_groups": 1
+        },
+        {
+          "stage": 5,
+          "born_groups": 2,
+          "retired_groups": 0,
+          "live_groups": 3
+        },
+        {
+          "stage": 4,
+          "born_groups": 2,
+          "retired_groups": 1,
+          "live_groups": 4
+        },
+        {
+          "stage": 3,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 2,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 2,
+          "live_groups": 3
+        }
+      ]
+    },
+    {
+      "case": 11,
+      "board": "Ks7h2dQhTc",
+      "iso_requested": true,
+      "iso_active": false,
+      "full_arenas": true,
+      "nodes": 33,
+      "levels": 8,
+      "single_action_nodes": 0,
+      "single_action_child_kind_counts": {},
+      "action_child_arity_counts": {},
+      "disjoint_share_pairs": 0,
+      "naive_early_write_analysis": {},
+      "naive_cross_CTA_witnesses": [],
+      "old_scratch_rows": 4,
+      "new_scratch_rows": 4,
+      "old_CFV_rows": 25,
+      "new_CFV_rows": 25,
+      "CFV_payload_bytes_saved": 0,
+      "nh_max": 280,
+      "maximum_live_group_count": 4,
+      "all_graph_and_lifetime_invariants_pass": true,
+      "original_raw_sha256": "0dbf07d2007db5e9c5c0505b7806318cd7c202e9865a4deb18c43c67325fe61e",
+      "proposed_map_sha256": "a648246309482d47f6b2e84f44d1435bdb4e661a692798741df2b8cb44ffb130",
+      "proposed_map_bytes": 192,
+      "stage_lifetime_inventory": [
+        {
+          "stage": 7,
+          "born_groups": 0,
+          "retired_groups": 0,
+          "live_groups": 0
+        },
+        {
+          "stage": 6,
+          "born_groups": 1,
+          "retired_groups": 0,
+          "live_groups": 1
+        },
+        {
+          "stage": 5,
+          "born_groups": 2,
+          "retired_groups": 0,
+          "live_groups": 3
+        },
+        {
+          "stage": 4,
+          "born_groups": 2,
+          "retired_groups": 1,
+          "live_groups": 4
+        },
+        {
+          "stage": 3,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 2,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 1,
+          "born_groups": 2,
+          "retired_groups": 2,
+          "live_groups": 4
+        },
+        {
+          "stage": 0,
+          "born_groups": 1,
+          "retired_groups": 2,
+          "live_groups": 3
+        }
+      ]
+    }
+  ],
+  "all12cases_completed": true,
+  "admit_Rust_prototype_only": true,
+  "compiler_or_GPU_or_solver_executions": 0,
+  "new_performance_measurements": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "source_main_live_PTX_custody_pass": true,
+  "limits": "Exact retained integer graph/layout feasibility and source reasoning only; no newly compiled Rustplan, GPU numeric/state/FP/sign-zero/NaN/alias proof, actual CPU/peak/capacity, cache traffic or complete-cycle performance gain. Model stage-loop time not measured/scored. Naive fusion witnesses are potential unsynchronized read/write hazards, not observed GPU failures. Proposed model retains the original kernel schedule; no fusion implemented."
+}

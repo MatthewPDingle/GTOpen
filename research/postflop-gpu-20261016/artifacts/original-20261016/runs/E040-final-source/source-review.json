@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-17T01:03:08.720945+00:00",
+  "id": "E040-root-source-review",
+  "root_review_only": true,
+  "checks": {
+    "accepted_serial_reference_transform_reversible": true,
+    "production_mod_exact_r2": true,
+    "production_arena_prefix_exact_r2": true,
+    "test_only_attachment": true,
+    "cutoff_unchanged": 1.0
+  },
+  "design": "Complete-node chunking in existing pinned buffer; same encoders and inactive snapshots; guard synchronizes pending DMA before unwinding. Test-only serial reference exact accepted body.",
+  "scope": "No CUDA/plan/store/struct/constructor/sync_strategy changes. No new device, pinned, stream, module or kernel allocation in production readback. Only bounded chunk vectors and transient Arc ownership. Compiled compatibility/runtime safety and performance still unverified.",
+  "open_gates": [
+    "compile GPU and preflop-research feature compatibility",
+    "four-case actual GPU equivalence/lifetime control",
+    "ordinary test suite",
+    "fresh frozen complete-cycle screen",
+    "separate confirmation/broader/resource/holdout gates if screen advances"
+  ]
+}

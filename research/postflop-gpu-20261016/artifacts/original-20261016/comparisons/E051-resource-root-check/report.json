@@ -1,0 +1,53 @@
+{
+  "id": "E051-resource-root-check",
+  "at": "2026-10-17T03:46:22.859382+00:00",
+  "status": "pass_resource_feasibility_only",
+  "root_cross_check_only": true,
+  "resource_report_sha256": "fff2b59de6b9162142efe8abfefc5e9c0f52238cd2e1788ab55d6537711bff4e",
+  "terminal_sha256": "0e4bb52dce21b77a91d47662262a8d0833f59fd46c7aa0d36c10c9484e71ae4a",
+  "registers_before_after": [
+    66,
+    62
+  ],
+  "local_bytes_per_thread": 64,
+  "shared_bytes": 0,
+  "occupancy_before": [
+    [
+      64,
+      14
+    ],
+    [
+      128,
+      7
+    ],
+    [
+      256,
+      3
+    ]
+  ],
+  "occupancy_after": [
+    [
+      64,
+      16
+    ],
+    [
+      128,
+      8
+    ],
+    [
+      256,
+      4
+    ]
+  ],
+  "max_threads_before_after": [
+    896,
+    1024
+  ],
+  "exact_abi_other8_entries": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Root raw PTX/resource/receipt replay; no numerical or performance proof and no external independent audit."
+}

@@ -1,0 +1,775 @@
+{
+  "id": "E028-independent-numerical-review",
+  "at": "2026-10-16T17:01:46.262460+00:00",
+  "verdict": "CONFIRMED_REJECTED",
+  "numerical_audit_pass": true,
+  "primary": {
+    "baseline_sum_fixture_medians_ms": 9581.688499999998,
+    "candidate_sum_fixture_medians_ms": 9747.688499999998,
+    "gain_pct": -1.7324712653724865,
+    "minimum_pct": 2,
+    "aggregate_gate_met": false,
+    "fixture_guard_failed": false
+  },
+  "all18_complete_non_timing_results_exact": true,
+  "all138_convergence_checkpoints_exact": true,
+  "all_complete_normalized_stage_trajectories_exact": true,
+  "trajectories": [
+    {
+      "run": "B092",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B092",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B092",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E028R1",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E028R1",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E028R1",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E028R2",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E028R2",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E028R2",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "B093",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B093",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B093",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "B094",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B094",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B094",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E028R3",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E028R3",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E028R3",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    }
+  ],
+  "unit_inventory": {
+    "passed": 85,
+    "failed": 0,
+    "ignored": 4,
+    "measured": 0,
+    "filtered": 0,
+    "matches_E020_plus_cache_lifecycle": true,
+    "cache_lifecycle_test_passed": true
+  },
+  "chronology_including_unit": [
+    {
+      "id": "V028-unit",
+      "started_at": "2026-10-16T16:57:06Z",
+      "finished_at": "2026-10-16T16:57:22Z"
+    },
+    {
+      "id": "B092",
+      "started_at": "2026-10-16T16:57:22Z",
+      "finished_at": "2026-10-16T16:57:36Z"
+    },
+    {
+      "id": "E028R1",
+      "started_at": "2026-10-16T16:57:36Z",
+      "finished_at": "2026-10-16T16:57:50Z"
+    },
+    {
+      "id": "E028R2",
+      "started_at": "2026-10-16T16:57:50Z",
+      "finished_at": "2026-10-16T16:58:04Z"
+    },
+    {
+      "id": "B093",
+      "started_at": "2026-10-16T16:58:04Z",
+      "finished_at": "2026-10-16T16:58:17Z"
+    },
+    {
+      "id": "B094",
+      "started_at": "2026-10-16T16:58:18Z",
+      "finished_at": "2026-10-16T16:58:31Z"
+    },
+    {
+      "id": "E028R3",
+      "started_at": "2026-10-16T16:58:32Z",
+      "finished_at": "2026-10-16T16:58:45Z"
+    }
+  ],
+  "components": [
+    {
+      "fixture_id": "rainbow",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            77.584,
+            77.5843,
+            86.54939999999999
+          ],
+          "candidate_raw_ms": [
+            78.38340000000001,
+            78.18650000000001,
+            80.7142
+          ],
+          "baseline_median_ms": 77.5843,
+          "candidate_median_ms": 78.38340000000001,
+          "candidate_minus_baseline_median_ms": 0.7991000000000099,
+          "gain_pct": -1.0299764256428297,
+          "paired_candidate_minus_baseline_ms": [
+            0.7994000000000057,
+            0.6022000000000105,
+            -5.835199999999986
+          ],
+          "median_paired_candidate_minus_baseline_ms": 0.6022000000000105
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            647.2823,
+            608.2543000000001,
+            660.4883
+          ],
+          "candidate_raw_ms": [
+            618.2189,
+            615.9693000000001,
+            641.0038999999999
+          ],
+          "baseline_median_ms": 647.2823,
+          "candidate_median_ms": 618.2189,
+          "candidate_minus_baseline_median_ms": -29.0634,
+          "gain_pct": 4.4900656174284395,
+          "paired_candidate_minus_baseline_ms": [
+            -29.0634,
+            7.715000000000032,
+            -19.48440000000005
+          ],
+          "median_paired_candidate_minus_baseline_ms": -19.48440000000005
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            4614.0607,
+            4601.3687,
+            4602.5792
+          ],
+          "candidate_raw_ms": [
+            4795.921,
+            4800.7910999999995,
+            4800.717
+          ],
+          "baseline_median_ms": 4602.5792,
+          "candidate_median_ms": 4800.717,
+          "candidate_minus_baseline_median_ms": 198.13779999999952,
+          "gain_pct": -4.304929722882324,
+          "paired_candidate_minus_baseline_ms": [
+            181.86030000000028,
+            199.42239999999947,
+            198.13779999999952
+          ],
+          "median_paired_candidate_minus_baseline_ms": 198.13779999999952
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            343.2846,
+            340.2905,
+            318.47180000000003
+          ],
+          "candidate_raw_ms": [
+            336.6937,
+            340.9522,
+            317.85799999999995
+          ],
+          "baseline_median_ms": 340.2905,
+          "candidate_median_ms": 336.6937,
+          "candidate_minus_baseline_median_ms": -3.59680000000003,
+          "gain_pct": 1.0569792574285883,
+          "paired_candidate_minus_baseline_ms": [
+            -6.590900000000033,
+            0.6616999999999962,
+            -0.613800000000083
+          ],
+          "median_paired_candidate_minus_baseline_ms": -0.613800000000083
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            5682.259,
+            5627.5445,
+            5668.1352
+          ],
+          "candidate_raw_ms": [
+            5829.284900000001,
+            5835.9567,
+            5840.3624
+          ],
+          "baseline_median_ms": 5668.1352,
+          "candidate_median_ms": 5835.9567,
+          "candidate_minus_baseline_median_ms": 167.82150000000001,
+          "gain_pct": -2.960788585282864,
+          "paired_candidate_minus_baseline_ms": [
+            147.02590000000055,
+            208.41219999999976,
+            172.22720000000027
+          ],
+          "median_paired_candidate_minus_baseline_ms": 172.22720000000027
+        }
+      },
+      "guard": {
+        "median_regression_pct": 2.960788585282864,
+        "paired_regression_pct": [
+          2.587455094883928,
+          3.7034305104117746,
+          3.038516089030485
+        ],
+        "repeats_above3": 2,
+        "failed": false
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            342.455,
+            343.7153,
+            406.03499999999997
+          ],
+          "candidate_raw_ms": [
+            262.3934,
+            261.4148,
+            301.0144
+          ],
+          "baseline_median_ms": 343.7153,
+          "candidate_median_ms": 262.3934,
+          "candidate_minus_baseline_median_ms": -81.32190000000003,
+          "gain_pct": 23.659668335974576,
+          "paired_candidate_minus_baseline_ms": [
+            -80.0616,
+            -82.3005,
+            -105.02059999999994
+          ],
+          "median_paired_candidate_minus_baseline_ms": -82.3005
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            413.9232,
+            404.942,
+            346.9529
+          ],
+          "candidate_raw_ms": [
+            398.3388,
+            400.3317,
+            346.53499999999997
+          ],
+          "baseline_median_ms": 404.942,
+          "candidate_median_ms": 398.3388,
+          "candidate_minus_baseline_median_ms": -6.603200000000015,
+          "gain_pct": 1.6306532787411567,
+          "paired_candidate_minus_baseline_ms": [
+            -15.584400000000016,
+            -4.610299999999995,
+            -0.41790000000003147
+          ],
+          "median_paired_candidate_minus_baseline_ms": -4.610299999999995
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            2830.2548,
+            2827.683,
+            2834.0733
+          ],
+          "candidate_raw_ms": [
+            2923.7108000000003,
+            2925.6963,
+            2926.3021999999996
+          ],
+          "baseline_median_ms": 2830.2548,
+          "candidate_median_ms": 2925.6963,
+          "candidate_minus_baseline_median_ms": 95.4414999999999,
+          "gain_pct": -3.3721875500396608,
+          "paired_candidate_minus_baseline_ms": [
+            93.45600000000013,
+            98.01330000000007,
+            92.22889999999961
+          ],
+          "median_paired_candidate_minus_baseline_ms": 93.45600000000013
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            235.63490000000002,
+            237.6343,
+            238.3696
+          ],
+          "candidate_raw_ms": [
+            233.7602,
+            237.5737,
+            234.5124
+          ],
+          "baseline_median_ms": 237.6343,
+          "candidate_median_ms": 234.5124,
+          "candidate_minus_baseline_median_ms": -3.1218999999999824,
+          "gain_pct": 1.313741324379512,
+          "paired_candidate_minus_baseline_ms": [
+            -1.8747000000000185,
+            -0.06059999999999377,
+            -3.8571999999999775
+          ],
+          "median_paired_candidate_minus_baseline_ms": -1.8747000000000185
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            3822.3194,
+            3814.0244000000002,
+            3825.4757
+          ],
+          "candidate_raw_ms": [
+            3818.2523,
+            3825.0642,
+            3808.4202
+          ],
+          "baseline_median_ms": 3822.3194,
+          "candidate_median_ms": 3818.2523,
+          "candidate_minus_baseline_median_ms": -4.067099999999755,
+          "gain_pct": 0.10640398078715649,
+          "paired_candidate_minus_baseline_ms": [
+            -4.067099999999755,
+            11.039799999999559,
+            -17.055499999999938
+          ],
+          "median_paired_candidate_minus_baseline_ms": -4.067099999999755
+        }
+      },
+      "guard": {
+        "median_regression_pct": -0.10640398078715649,
+        "paired_regression_pct": [
+          -0.10640398078715649,
+          0.28945278902776705,
+          -0.4458399774961304
+        ],
+        "repeats_above3": 0,
+        "failed": false
+      }
+    },
+    {
+      "fixture_id": "river",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            0.1633,
+            0.1728,
+            0.1595
+          ],
+          "candidate_raw_ms": [
+            0.1596,
+            0.1627,
+            0.1589
+          ],
+          "baseline_median_ms": 0.1633,
+          "candidate_median_ms": 0.1596,
+          "candidate_minus_baseline_median_ms": -0.003700000000000009,
+          "gain_pct": 2.265768524188615,
+          "paired_candidate_minus_baseline_ms": [
+            -0.003700000000000009,
+            -0.010099999999999998,
+            -0.0005999999999999894
+          ],
+          "median_paired_candidate_minus_baseline_ms": -0.003700000000000009
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            72.26920000000001,
+            74.98249999999999,
+            80.74430000000001
+          ],
+          "candidate_raw_ms": [
+            73.55799999999999,
+            78.47500000000001,
+            77.2109
+          ],
+          "baseline_median_ms": 74.98249999999999,
+          "candidate_median_ms": 77.2109,
+          "candidate_minus_baseline_median_ms": 2.2284000000000077,
+          "gain_pct": -2.9718934418030982,
+          "paired_candidate_minus_baseline_ms": [
+            1.2887999999999806,
+            3.492500000000021,
+            -3.5334000000000145
+          ],
+          "median_paired_candidate_minus_baseline_ms": 1.2887999999999806
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            15.5145,
+            15.3664,
+            16.4604
+          ],
+          "candidate_raw_ms": [
+            15.9949,
+            17.002,
+            15.4442
+          ],
+          "baseline_median_ms": 15.5145,
+          "candidate_median_ms": 15.9949,
+          "candidate_minus_baseline_median_ms": 0.4803999999999995,
+          "gain_pct": -3.0964581520513037,
+          "paired_candidate_minus_baseline_ms": [
+            0.4803999999999995,
+            1.6355999999999984,
+            -1.0161999999999995
+          ],
+          "median_paired_candidate_minus_baseline_ms": 0.4803999999999995
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            1.0578,
+            0.6895,
+            1.6236
+          ],
+          "candidate_raw_ms": [
+            0.6589,
+            0.6272,
+            0.6478999999999999
+          ],
+          "baseline_median_ms": 1.0578,
+          "candidate_median_ms": 0.6478999999999999,
+          "candidate_minus_baseline_median_ms": -0.40990000000000015,
+          "gain_pct": 38.75023633957271,
+          "paired_candidate_minus_baseline_ms": [
+            -0.39890000000000003,
+            -0.06230000000000002,
+            -0.9757
+          ],
+          "median_paired_candidate_minus_baseline_ms": -0.39890000000000003
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            89.02369999999999,
+            91.2339,
+            99.00670000000001
+          ],
+          "candidate_raw_ms": [
+            90.39659999999999,
+            96.2855,
+            93.47949999999999
+          ],
+          "baseline_median_ms": 91.2339,
+          "candidate_median_ms": 93.47949999999999,
+          "candidate_minus_baseline_median_ms": 2.245599999999982,
+          "gain_pct": -2.461365786182528,
+          "paired_candidate_minus_baseline_ms": [
+            1.3729000000000013,
+            5.051599999999993,
+            -5.527200000000022
+          ],
+          "median_paired_candidate_minus_baseline_ms": 1.3729000000000013
+        }
+      },
+      "guard": {
+        "median_regression_pct": 2.461365786182528,
+        "paired_regression_pct": [
+          1.542173600962442,
+          5.536976935108543,
+          -5.582652487154931
+        ],
+        "repeats_above3": 1,
+        "failed": false
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "baseline": "B092",
+      "candidate": "E028R1",
+      "baseline_sum_ms": 9593.6021,
+      "candidate_sum_ms": 9737.9338,
+      "gain_pct": -1.504457851133941,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": -79.26589999999999,
+        "init_ms": -43.35900000000015,
+        "solve_ms": 275.7967000000008,
+        "readback_ms": -8.864500000000021,
+        "full_cycle_ms": 144.33170000000064
+      },
+      "process_wall_ms": {
+        "baseline": 12531.999999999243,
+        "candidate": 12718.000000000757
+      },
+      "whole_test_seconds": {
+        "baseline": 12.13,
+        "candidate": 12.31
+      }
+    },
+    {
+      "baseline": "B093",
+      "candidate": "E028R2",
+      "baseline_sum_ms": 9532.8028,
+      "candidate_sum_ms": 9757.3064,
+      "gain_pct": -2.3550639272638683,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": -81.70839999999998,
+        "init_ms": 6.59719999999993,
+        "solve_ms": 299.0712999999996,
+        "readback_ms": 0.5388000000000375,
+        "full_cycle_ms": 224.5036
+      },
+      "process_wall_ms": {
+        "baseline": 12469.000000004598,
+        "candidate": 12688.00000000192
+      },
+      "whole_test_seconds": {
+        "baseline": 12.07,
+        "candidate": 12.3
+      }
+    },
+    {
+      "baseline": "B094",
+      "candidate": "E028R3",
+      "baseline_sum_ms": 9592.6176,
+      "candidate_sum_ms": 9742.2621,
+      "gain_pct": -1.559996512317976,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": -110.8563999999999,
+        "init_ms": -23.435700000000224,
+        "solve_ms": 289.35049999999956,
+        "readback_ms": -5.446700000000078,
+        "full_cycle_ms": 149.64450000000033
+      },
+      "process_wall_ms": {
+        "baseline": 12500.0,
+        "candidate": 12703.000000001339
+      },
+      "whole_test_seconds": {
+        "baseline": 12.14,
+        "candidate": 12.29
+      }
+    }
+  ],
+  "checks": {
+    "artifact_hash": 29,
+    "fixed_seven_run_order": 1,
+    "fixed_pairing": 1,
+    "frozen_unit_counts": 1,
+    "terminal_build_stage_results": 1,
+    "separate_compile_before_primary_build": 1,
+    "fixed_primary_invocation_completion": 1,
+    "successful_physical_run": 7,
+    "runtime_binary_manifest_link": 7,
+    "right_binary_for_run": 7,
+    "wrapper_terminal_order": 7,
+    "fixed_primary_environment": 7,
+    "fixed_workload_environment": 7,
+    "live_server_not_solving": 14,
+    "disk_reserve": 7,
+    "gpu_identity_read": 7,
+    "same_GPU_driver": 7,
+    "raw_json_exact_report": 7,
+    "full_native_test_summary": 7,
+    "reported_pass_count": 7,
+    "fixed_native_invocation": 6,
+    "fixed_fixture_order": 6,
+    "full_three_fixture23_check_completeness": 6,
+    "complete_full_primary_suite": 6,
+    "fixed_quality_settings": 18,
+    "fixed_boundary_flags": 18,
+    "finite_positive_timing": 108,
+    "raw_stage_final_result_agreement": 216,
+    "serialized_chronology": 6,
+    "build_terminal_before_unit_and_primary": 1,
+    "same_88_test_inventory_plus_cache_test": 1,
+    "complete_non_timing_result_exact": 18,
+    "complete_non_timing_stage_trajectory_exact": 6,
+    "convergence_check_cadence": 18,
+    "same_stopping_check": 18,
+    "comparison_fixture_order": 15,
+    "comparison_raw_components": 15,
+    "comparison_baseline_component_median": 15,
+    "comparison_candidate_component_median": 15,
+    "guard_median": 3,
+    "guard_repeat_rule": 3,
+    "primary_baseline_score": 1,
+    "primary_candidate_score": 1,
+    "primary_gain": 1,
+    "independent_registered_gates": 1,
+    "correct_provisional_decision_no_exclusions": 1,
+    "honest_unrun_broader_scope": 1,
+    "pair_baseline_sum": 3,
+    "pair_candidate_sum": 3,
+    "pair_gain": 3,
+    "published_chronology": 1,
+    "full_89_unit_inventory": 1,
+    "specific_cache_lifecycle_passed": 1,
+    "all138_checkpoints_and18_records": 1,
+    "all_three_samples_retained": 2,
+    "assessment_terminal_and_protocol": 1,
+    "assessment_after_all_runs": 1,
+    "rejection_no_significance_claim": 1,
+    "rejected_only_aggregate_gate": 1
+  },
+  "assertions": 676,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-plan\\protocol.json": "d9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-plan\\scripts-manifest.json": "eff861ea7be802dbbfc07e2982a976757c9b4dbe2d60aa9c5dfaa90afdac48ac",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E028-three-pair-comparison\\report.json": "ca89cc29c95126502d986ae3df0cecbd1f993f639c8b2c6a5d57bd2e96274609",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E028-postflop_autoresearch.manifest.json": "7c383b39a2fa5a5025867a3e963f55a3c7474f820d13626ec9671348c7a847fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E028-solver.manifest.json": "f99b87ecea17b801efd62f774645dbbefe74d10820125bd55cd460d99387a7f2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-build\\exit.json": "23a5ec4ae3c6bff3c9e9ed6109f4eaf82342a0d83b915489e705cd322242e4d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-compile-check\\complete.json": "61aa104f979b47043f9d66e3aeafd2dd4608aeefd7a66f3fee022f1756b36e01",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\invocation.json": "d8d521d01cb2a62ce90afe5cf562c9f559b7ef92fbab521e8d23b73f3425c444",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\complete.json": "e4b093f04d2a1fb3ca056011e2732e5e96735001ba0cc0745745aa20c41aaa6a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V028-unit\\report.json": "fddd977c538e6a1136394c7a4005c0a78fab3e9ef51a5b125f730b42a040008f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V028-unit\\stdout.log": "bf5240ea021b76588d688b5050961097f52aeeb7162ae8a0a6fda3f2500c6c66",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E028-solver.exe": "99c52f75a407128fef8fb3ddd7f08e77701a6aa11c03f2e62d1f0b31848e4f83",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\V028-unit.invocation.json": "bbbc467cd608077f0c82a39dc112226113270f2e605218dd5e9683590b1e6137",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\V028-unit.exit.json": "37cd78f5795fb78b4528c24bb40091695c25a2a1b3c7d20d660fe858f56240ea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B092\\report.json": "c3b894fbeab3c5f6ca7b9a32ad105f92e5ed2519d5c2330665bdbb465535ecd5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B092\\stdout.log": "b0d1bb789a3825ec2a2bf60a2a4e6ee99252e81e583375fc9b1cc17b5737081d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.exe": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B092.invocation.json": "ecc4fbde2e0296917be17729a18f996b5a0d61cc9ed05696da06932b91209bed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B092.exit.json": "d51a0ebbc5d1c02e3ff560ac88caaa515f89940c3fdb0fd8528e4d930a211c9d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R1\\report.json": "32766e506d56979d484dbb477ddd4672bfeb7a343e15634dc83b5e401ca6124a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R1\\stdout.log": "510a4ad6e322e41be6e1c07f37a0d4666b8a58c20b13cf3a3ad92a28736c9482",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E028-postflop_autoresearch.exe": "73c9f18ef7e25e0139e5d470febb35e06713188721ee1d08df97877e52ba6622",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R1.invocation.json": "81acfe476a4af5c651af6f301b2aa5639f98cfad20ecbfe47a60658381be062d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R1.exit.json": "dd1654b3dc03385bbb782f6cd6800fae19792e9f185364b99cdbc44f616359fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R2\\report.json": "bcfd7219afdca4bf0b6d83d75dda7b6bf44d543c1a6449c7a325040e8c87aaa7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R2\\stdout.log": "1a759ce4157720b0f219b534b0124e0098d5547fe4c1abb336b423a0715aa0dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R2.invocation.json": "debb809bc6d1c00a0ad3fa6ed9fc5570e3b52c05d9ec07fdd08a046361b9ce8e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R2.exit.json": "4234d0702612b9d06538d80926f55bb2cd23b50dd0a136dca212fc1c75906fb1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B093\\report.json": "9bdc6ac8198dabb1ac1216a7fa40b909003ec8380e5ec18add1dfa160aa360a5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B093\\stdout.log": "e6601c7a999ffac671784a49e2ad095c3a306bddf16d296b0494365addee9947",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B093.invocation.json": "717a18e57bc806c66e7e2427b7260e74df217f797266f867e76dba9f945e0d77",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B093.exit.json": "21553c5656bc2f019e7897035e4b93c5faeb721b4551d19c65d5314c8e311aa5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B094\\report.json": "3a01f99b44fe48c160c52d7e64b77f966f457e743a504c76ef97761387a02585",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B094\\stdout.log": "328a5c6124db40509eb64314c0132f3f923906853f915eb5621ff096a52ee0b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B094.invocation.json": "752fe25c3b622d8932ff8868ac27f73b30674d72c6c370f4adda9d77fd8b12f9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\B094.exit.json": "f2096e81b9ab4760ae776d942402972292ebc0f59d446b318f7f0444aead14e7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R3\\report.json": "d0da1c3fced997c725430d0dca384271e6f35ed75b8707857b9827691ec4b425",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028R3\\stdout.log": "ca81ee30e90d95d741754c1fa6b394b2d953f6e5860d1e33f3d695f4f92209ae",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R3.invocation.json": "4c0ef8cf10ac0843bcb911f09e81e902115f54f64b13d24dcabf0e88debb941d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-primary-execution\\E028R3.exit.json": "a74125524ef166d4f084287c3303469c8d44076a4e5adb0b74585fe8225e5c2b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-assessment\\invocation.json": "5bf2b030c7cb72ef75e7d5f602fb5783694044e5619674f1bb9542edf326ce93",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-assessment\\exit.json": "d945c4514e80fc93c800265c372467e8b2a60e39e33e3a9efdce7f043decfaaa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-unit\\stdout.log": "a3c0c0e74c9565a57b31d4412ea629de149c496373227009dfa4173d1d6c8293",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E028-independent-review\\audit-numerical.py": "c54ca3421983b3f407ed5476c1851705ab278201c0d002b66b64373bdda87437"
+  },
+  "scope": "File-only numerical/order/gate audit. Build/source/auxiliary custody and restoration are independently audited in source-custody.json; this report does not substitute for that audit.",
+  "broader_qualification": "Not run; inapplicable after aggregate rejection. No extra timing, extension, fallback or rescue.",
+  "limits": [
+    "Compressed full-state and convergence equality does not establish every possible raw F32/cache state.",
+    "Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.",
+    "Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.",
+    "No statistical significance, speedup, acceptance or deployment claim."
+  ],
+  "reviewer_preparation_note": "An exploratory read incorrectly sought runs/B092/invocation.json and stopped with FileNotFoundError before this audit script or numerical outputs existed. Correct wrapper records are runs/E028-primary-execution/B092.invocation.json. Prior parser adapted only for numerical scope, E028 IDs and85/4 inventory; no native rerun.",
+  "native_or_gpu_executed_by_reviewer": false,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

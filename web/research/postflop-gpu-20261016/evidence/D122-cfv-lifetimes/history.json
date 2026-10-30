@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-18T03:45:06.291471+00:00",
+  "query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "unary|alias_child|alias_parent|linear.scan|cfv.*interval|interval.*cfv|singleton",
+    "--",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "local_all_ref_matches": [],
+  "scope": "Bounded local all-ref CFVplanner/ledger search, not exhaustive remote novelty.",
+  "distinct_from_closed_forms": "Not E025row padding, E027reach pitch, E047arity dispatch, E054early-store scheduling or E075uniform loads. No prior source/timing composed or rescued."
+}

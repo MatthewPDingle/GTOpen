@@ -1,0 +1,63 @@
+{
+  "id": "E020-holdout-codec-review",
+  "at": "2026-10-16T11:05:44.627879+00:00",
+  "verdict": "PASS_FROZEN_CODEC_SOURCE_ONLY",
+  "prepared_manifest_sha256": "cac3399c20ce42c85fd0f2074f41cbb93d790ebe345673808857f46892f43340",
+  "artifact_sha256": {
+    "evaluator.rs": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+    "run.py": "c635188a2e4eb7bb17f6d7082047e9204d98871bd2fa0919465da42ef47c789a",
+    "codec_selftest.py": "ce96030ea00dacd2c0eaa9fe009fd043bed1ecbaf158ee1c7aa6e4a2bcf7493d",
+    "codec-selftest/report.json": "d2717c8db355bd25f883e907c7cf0de05f193bf6008ea818f4df8194cc9f33a4",
+    "mechanical-checks.json": "5256b9b2957c793fa54471517941e93c53b3e9973bc31a35629612cc7fbed937",
+    "plan-frozen-primary.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "plan-protocol.json": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+    "codec-selftest/bad_magic.bin": "8f64ffb9aa17ccb960b00f64cd5046aba94347f70473e985547ee37ffc18cd75",
+    "codec-selftest/changed_word.bin": "bc27791070ba11d3d382565dfee590e2b930f8add016f8a62b47ac3276dd14e1",
+    "codec-selftest/same.bin": "28f6282e56518beb870f613d3517d67f65bf87092bbcd062707f34fadbd23e17",
+    "codec-selftest/trailing_byte.bin": "3ad7fb9ca71fe36a14ffc1d69b2de4463ad1798d100b635c1a5c537e6fd8cbf4",
+    "codec-selftest/truncated_magic.bin": "d818b712fc50f061aca3de92f04a9e8cf6402d22ca994eaade5b3abd94378be1",
+    "codec-selftest/truncated_payload.bin": "b1f09e4c71c8da8f9c1f6e62214d1ef91f691e680fa4c8c347c1b0b316922fcd",
+    "codec-selftest/valid.bin": "28f6282e56518beb870f613d3517d67f65bf87092bbcd062707f34fadbd23e17",
+    "codec-selftest/wrong_kind.bin": "190985674abb58d5533ddc69772b512c849a061c8553af0e32349520522dc642",
+    "codec-selftest/wrong_length.bin": "7d0227fcbd0c47b485be6a357c008eeef06e9e2f926425074c6d0a1632445c89",
+    "codec-selftest/wrong_player.bin": "4a532311ff39bd51e0c38b0ee91bb4b9f20a8d965d15776101d1a098b2b8ce60"
+  },
+  "primary_helper_exact": true,
+  "primary_solve_readback_body_exact": true,
+  "host_codec_evidence": {
+    "status": "pass",
+    "scope": "host parser and exact-file comparator only",
+    "valid_four_store_decode": true,
+    "equal_files_pass": true,
+    "changed_word_rejected_by_full_compare": true,
+    "required_corruptions_rejected": [
+      "bad_magic",
+      "truncated_magic",
+      "truncated_payload",
+      "trailing_byte",
+      "wrong_player",
+      "wrong_kind",
+      "wrong_length",
+      "metadata_mismatch"
+    ],
+    "magic_bytes": 16,
+    "gpu_jobs": 0,
+    "native_solver_runs": 0,
+    "note": "Draft read(15) bug corrected to read(len(magic)) before freeze; no failed/replaced native sample."
+  },
+  "resolved_draft_issue": "Parser initially read15 bytes for16-byte magic; corrected before freeze to read(len(magic)). This reviewer initially missed that draft defect, then independently verified correction and preserved CPU-only corruption evidence. No native sample ran or was replaced.",
+  "scope": "Complete4 compressed CPU stores exported after timed readback and fingerprints; exact stream comparison across6 planned runs. Metadata/framing/counts/EOF bound to full result; root strategy compared in unchanged result JSON, not raw file. No new float encoding or dequantization.",
+  "limits": [
+    "Source plus preserved host decoder tests do not establish native Rust export correctness, CUDA equivalence or performance.",
+    "Full build/workspace/resource/lifecycle runner review delegated separately to menu critic.",
+    "Actual outcomes remain future six-run evidence; any process/export/parse/exact mismatch stops qualification."
+  ],
+  "review_actions": {
+    "builds": 0,
+    "gpu_jobs": 0,
+    "native_runs": 0,
+    "test_reruns": 0,
+    "production_edits": 0,
+    "dashboard_edits": 0
+  }
+}

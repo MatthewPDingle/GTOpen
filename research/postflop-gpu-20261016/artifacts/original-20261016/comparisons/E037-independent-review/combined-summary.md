@@ -1,0 +1,9 @@
+# E037 independent terminal audit
+
+Confirmed rejected under the user-authorized policy frozen before timing: the sum of fixture medians was 10,377.9961 ms for E020 and 10,275.1830 ms for E037, an observed 0.9906835482430102% gain, below 1%. No fixture failed the conjunctive positive-median/majority-positive-slowdown guard. These three pairs establish neither a speedup nor statistical significance.
+
+All 18 complete non-timing results and 138 convergence checkpoints match exactly. Units passed 85 with 4 ignored; the focused original-kernel comparison reported 34 exact pairs / 68 launches at 128 threads. The independent numerical audit passed 729 checks.
+
+The custody audit passed 641 checks: original source/build and separate pre-timing policy authorizations, fresh feature and GPU-only builds, source and binary identity, the fixed seven terminal native invocations, and cleanup agree. The initial additive assessment failed on timestamp precision before result processing. Its evidence remains preserved; the independently reviewed isolated repair changed only interval-compatible chronology, not measurements or gates, and required no native rerun. Whole-second timestamps alone cannot establish intra-second order; the pinned wrapper writes the receipt after checking all seven run directories absent and before invoking the unchanged runner.
+
+Both candidate files remain archived. All 162 accepted E020 sources, the two preexisting PTX artifacts, main HEAD and exact live desktop-runtime executable match their pins. No broader qualification, 16-pair confirmation, extra sample, adoption or deployment followed rejection. Review work was file-only; focused unit raw arrays were not retained, so their equality rests on the pinned native assertions and marker. Original audits, preparer/reviewer notes, assessment failure and all additive repairs are retained.

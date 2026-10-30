@@ -1,0 +1,17 @@
+{
+  "id": "D161",
+  "at": "2026-10-28T13:38:39.749439+00:00",
+  "status": "invalid_private_builtin_dependency_setup",
+  "original_protocol_sha256": "9c9d67655963248b6528d70968af8f2c3ae9c333e06f16d5cf95eaf0400b72bb",
+  "baseline_exit": 0,
+  "baseline_PTX_byte_exact": true,
+  "candidate_exit": 1,
+  "candidate_log": "nvrtc: error: failed to open nvrtc-builtins64_130.dll.\n  Make sure that nvrtc-builtins64_130.dll is installed correctly.",
+  "candidate_PTX_generated": false,
+  "Rust_resource_compilers_or_driver_module_processes": 0,
+  "application_kernel_or_solver_executions": 0,
+  "performance_samples": 0,
+  "source_or_math_failure_observed": false,
+  "all_owned_children_terminal": true,
+  "scope": "Preserved failed API adapter setup. Source-bound trace reached compiler log retrieval and clean destroy,reporting unavailable builtins before any PTX. No baseline repeat,no successful candidate program/module/numerical/timing observation exists. Original compilation-failure gate does not pass and original status is never relabeled. Distinct mechanical dependency binding repair requires frozen explicit DLL identity and same original source/options/ABI/resource/mechanism gates."
+}

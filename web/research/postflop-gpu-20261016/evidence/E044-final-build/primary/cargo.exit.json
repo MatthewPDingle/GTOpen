@@ -1,0 +1,23 @@
+{
+  "started_at": "2026-10-17T02:01:54.514069+00:00",
+  "finished_at": "2026-10-17T02:03:15.899262+00:00",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "solver",
+    "--features",
+    "gpu",
+    "--lib",
+    "--test",
+    "postflop_autoresearch",
+    "--no-run",
+    "--message-format=json"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

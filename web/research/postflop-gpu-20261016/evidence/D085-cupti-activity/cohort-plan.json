@@ -1,0 +1,76 @@
+{
+  "id": "D085-cohort",
+  "at": "2026-10-17T05:20:31.122252+00:00",
+  "status": "FROZEN_BEFORE_FULL_SOLVES",
+  "order": [
+    "D085B1",
+    "D085T1",
+    "D085T2",
+    "D085B2",
+    "D085B3",
+    "D085T3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D085B1",
+      "trace": "D085T1"
+    },
+    {
+      "baseline": "D085B2",
+      "trace": "D085T2"
+    },
+    {
+      "baseline": "D085B3",
+      "trace": "D085T3"
+    }
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+      "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+    },
+    "trace": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build\\postflop-trace.exe",
+      "sha256": "143e9dd4df0e4508e180800acfb23f24ef96eae5555d6324b7480b46ba0889ab",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build\\postflop-trace.manifest.json",
+      "manifest_sha256": "f0774ab5d646e48be2f110968714cadf3a920bb3c5704e2d05220cea73e6100e"
+    }
+  },
+  "private_dll_dirs": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib"
+  ],
+  "fixture": "rainbow",
+  "storage": "compressed",
+  "profile_after_timing": "0",
+  "expected_stop": 200,
+  "expected_checkpoints_each": 10,
+  "expected_graph_kernel_node_repeat_counts": [
+    9,
+    199,
+    199
+  ],
+  "observer_usefulness_rule": "Absolute full-cycle,native-process,and complete runner wall change <=10%in every fixed pair; no confidence or unbiased per-family timing claim. No extension/exclusion/pooling.",
+  "trace_quality_rule": "Same full non-timing payload/checkpoints as accepted rainbow. No collector errors/drops/bad timestamps/outstanding buffers. Exactly3kernel graph groups with all node repeats9,199,199; identical kernel-family invocation counts across3traces. No unexpected application kernel names.",
+  "sampling_rule": "Fixed3pairs BC/CB/BC, six processes. All data retained. No optimization acceptance or1%performance claim from diagnostic.",
+  "scope": "Largest registered fixture only, to locate work inside captured graphs. Primary performance qualification remains unchanged all3fixtures/fresh16/broader/holdout/cumulative.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\run-cohort.py": "d42e835913cb2930aebdb32c1590625ba25d39ac0fb0f269715753dc094ad3c5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\ability-report.json": "cd0fcccf16e40df143cd3fd783eefc2a6fa0c801ad6bf96c29d22fa21febbd36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\evaluator.rs": "1004372f015078197c3ea4b5ad687944ced44c4be289a8bc47af5f70e5e3d96d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\evaluator.patch": "fac84372bdc45f2ccb960691ad55d1c7581c6295fc8e2b9387f87118d6ca7508",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build-plan.json": "973e9b9097e4df0862000124b200927542eeca98f38989d62c9400e842b36f3d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build\\complete.json": "036e250c63b40c081b07ff51eb26eadbeed0cc58584ec2ab692e9b2385c748af",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\D085Collector.dll": "2c41e5954016b8562de7603f8bc30b65af4e04e1c25ea95c7a29dec476c132fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\D085Collector.lib": "bff6b087c6c9725e1b851b78cab532ade00ab4e8ad03b29ca95c2356b473a24b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\collector.cpp": "91673f32d1aab8fc22acbacf2fc84924f3195a198296dcbe94094f5cbb2be87f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build\\postflop-trace.exe": "143e9dd4df0e4508e180800acfb23f24ef96eae5555d6324b7480b46ba0889ab",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\diagnostic-build\\postflop-trace.manifest.json": "f0774ab5d646e48be2f110968714cadf3a920bb3c5704e2d05220cea73e6100e"
+  },
+  "accepted_source": "E051",
+  "candidate_accepted": false
+}

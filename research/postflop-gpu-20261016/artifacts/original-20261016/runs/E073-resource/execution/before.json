@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-18T02:44:15.805492+00:00",
+  "GPU": {
+    "command": [
+      "nvidia-smi",
+      "--query-gpu=name,uuid,driver_version,memory.total",
+      "--format=csv,noheader"
+    ],
+    "returncode": 0,
+    "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607 MiB",
+    "stderr": ""
+  },
+  "application_kernel_launches": 0
+}

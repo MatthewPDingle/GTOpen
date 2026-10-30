@@ -1,0 +1,14 @@
+{
+  "reviewer_findings": [
+    "Inherited D045 raw device arena count equaled full CPU store count; two-tone uses compact GPU arenas, so bind raw lengths to actual admission plan.arena_elements and retain independent full CPU-store exactness.",
+    "Match native f32 near-resolution threshold exactly rather than Python binary64 literal."
+  ],
+  "executed": false,
+  "native_workload_changed": false,
+  "draft_sha256": {
+    "assess.py": "7d20f9f1a0d806b75fe6f2f9db82fc5107018c3db9c0ba2acb30c9207675bd45",
+    "build.py": "210aa7696a2ff73c63dba1015f437ef4641d7492b58c789e7ff3dabb7a4b006a",
+    "protocol.json": "bf7696fa20d761819b4196eff480e83f0e2911a2f23666b093a08777ef4193da",
+    "run.py": "44b1b33d637b6134f27c8e4f0eae2ef48a155ee59d2c8935b499ea84711c06f6"
+  }
+}

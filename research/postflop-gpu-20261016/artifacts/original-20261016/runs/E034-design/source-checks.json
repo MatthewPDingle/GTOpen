@@ -1,0 +1,24 @@
+{
+  "id": "E034",
+  "at": "2026-10-16T20:15:49.853601+00:00",
+  "parent_manifest_sha256": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+  "sole_parent_delta": "Replace one eligibility assertion inside shared_evaluation_matches_independent_sweeps; all other parent mod.rs bytes exactly recovered by reversal.",
+  "exact_parent_reverse": true,
+  "cache_policy_module_unchanged": true,
+  "cleanup_cuda_unchanged": true,
+  "marker_schema_unchanged": true,
+  "numerical_workload_and_assertions_unchanged": true,
+  "test_declarations_unchanged": true,
+  "accepted_source_entries_verified": 162,
+  "accepted_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "production_implementation_exact_E033": true,
+  "read_only_patch_check_exit": 0,
+  "gpu_only_unit_inventory": {
+    "passed": 87,
+    "ignored": 4,
+    "total": 91
+  },
+  "feature_only_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback",
+  "E034_compiler_native_gpu_executed": false,
+  "new_native_pass_claim": false
+}

@@ -1,0 +1,16 @@
+{
+  "at": "2026-10-29T02:07:41.549003+00:00",
+  "status": "mechanical_scalar_read_cardinality_assumption",
+  "original_protocol_sha256": "f5227864435cdb78f884309060e7f9373f497e5d82eab17a0ee42558e08f6674",
+  "original_report_sha256": "88e6b002d36c6b76a8cceb1a6809ff68f7e239b225b6428244bf13db52d9e439",
+  "original_script_sha256": "d1ca98f9cdaf67f8d925d154cbda4e90a192221cbf8e1afc283fb74c5bbb7b06",
+  "controller_returncode": 1,
+  "actual_compile_or_source_failure": false,
+  "failed_gates": [
+    "compute_120:up_action:one_original_scalar32_parameter_binding",
+    "compute_75:up_show:one_original_scalar32_parameter_binding"
+  ],
+  "evidence": "Original120up_action has12 loads of the same parameter19,candidate1. Both75up_show entries have2 loads of sameparameter26. The ABI has one strideargument, but generatedcode can reload it on separate paths. All scalar signextension-removal and wideproduct gates passed,allfloatarithmetic inventories equal.",
+  "repair": "Require at least1 read of the exactsame last32bitparameter, retain every read/register and def/use trace. Exact9ABIheaders unchanged; no parameter count/ordinal/value or source/PTX/resource/math gate changes. Add actual positive duplicate-read and wrong-ordinal negative parser fixtures. No application kernel or numericalcase has executed, no new compiler.",
+  "new_CUDA_compilers_applicationkernels_solves_or_speed_samples": 0
+}

@@ -1,0 +1,203 @@
+{
+  "id": "D290",
+  "at": "2026-10-29T18:02:42.095293+00:00",
+  "status": "pass_scoped_native_default128_static_fold_ladder",
+  "protocol_sha256": "73fd7466eb35df514ddd8d1b539fb4d58f93239b38e2c64abcc78440542f603b",
+  "witness": {
+    "uniform_width_guard_and_fast_PC": "0x11f0LDCU/0x1210NE128/0x1230uniform!NEbranch ->0x1330",
+    "fast_native_instructions": [
+      {
+        "pc": "0x1330",
+        "op": "ISETP.GT.U32.AND P1, PT, R0.reuse, 0x3f, PT"
+      },
+      {
+        "pc": "0x1340",
+        "op": "ISETP.GT.U32.AND P0, PT, R0, 0x1f, PT"
+      },
+      {
+        "pc": "0x1350",
+        "op": "@!P1 LDS R3, [R2+0x100]"
+      },
+      {
+        "pc": "0x1360",
+        "op": "@!P1 LDS R6, [R2]"
+      },
+      {
+        "pc": "0x1370",
+        "op": "@!P1 FADD R3, R3, R6"
+      },
+      {
+        "pc": "0x1380",
+        "op": "@!P1 STS [R2], R3"
+      },
+      {
+        "pc": "0x1390",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x13a0",
+        "op": "ISETP.GT.U32.AND P1, PT, R0, 0xf, PT"
+      },
+      {
+        "pc": "0x13b0",
+        "op": "@!P0 LDS R5, [R2+0x80]"
+      },
+      {
+        "pc": "0x13c0",
+        "op": "@!P0 LDS R6, [R2]"
+      },
+      {
+        "pc": "0x13d0",
+        "op": "@!P0 FADD R5, R5, R6"
+      },
+      {
+        "pc": "0x13e0",
+        "op": "@!P0 STS [R2], R5"
+      },
+      {
+        "pc": "0x13f0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x1400",
+        "op": "ISETP.GT.U32.AND P0, PT, R0, 0x7, PT"
+      },
+      {
+        "pc": "0x1410",
+        "op": "@!P1 LDS R6, [R2+0x40]"
+      },
+      {
+        "pc": "0x1420",
+        "op": "@!P1 LDS R7, [R2]"
+      },
+      {
+        "pc": "0x1430",
+        "op": "@!P1 FADD R7, R6, R7"
+      },
+      {
+        "pc": "0x1440",
+        "op": "@!P1 STS [R2], R7"
+      },
+      {
+        "pc": "0x1450",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x1460",
+        "op": "ISETP.GT.U32.AND P1, PT, R0, 0x3, PT"
+      },
+      {
+        "pc": "0x1470",
+        "op": "@!P0 LDS R3, [R2+0x20]"
+      },
+      {
+        "pc": "0x1480",
+        "op": "@!P0 LDS R6, [R2]"
+      },
+      {
+        "pc": "0x1490",
+        "op": "@!P0 FADD R3, R3, R6"
+      },
+      {
+        "pc": "0x14a0",
+        "op": "@!P0 STS [R2], R3"
+      },
+      {
+        "pc": "0x14b0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x14c0",
+        "op": "ISETP.GT.U32.AND P0, PT, R0, 0x1, PT"
+      },
+      {
+        "pc": "0x14d0",
+        "op": "@!P1 LDS R5, [R2+0x10]"
+      },
+      {
+        "pc": "0x14e0",
+        "op": "@!P1 LDS R6, [R2]"
+      },
+      {
+        "pc": "0x14f0",
+        "op": "@!P1 FADD R5, R5, R6"
+      },
+      {
+        "pc": "0x1500",
+        "op": "@!P1 STS [R2], R5"
+      },
+      {
+        "pc": "0x1510",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x1520",
+        "op": "ISETP.NE.AND P1, PT, R0, RZ, PT"
+      },
+      {
+        "pc": "0x1530",
+        "op": "@!P0 LDS R6, [R2+0x8]"
+      },
+      {
+        "pc": "0x1540",
+        "op": "@!P0 LDS R7, [R2]"
+      },
+      {
+        "pc": "0x1550",
+        "op": "@!P0 FADD R7, R6, R7"
+      },
+      {
+        "pc": "0x1560",
+        "op": "@!P1 LEA R6, R11, R9, 0x18"
+      },
+      {
+        "pc": "0x1570",
+        "op": "@!P0 STS [R2], R7"
+      },
+      {
+        "pc": "0x1580",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "pc": "0x1590",
+        "op": "@!P1 LDS.64 R8, [R6+0xd0]"
+      },
+      {
+        "pc": "0x15a0",
+        "op": "@!P1 FADD R3, R9, R8"
+      },
+      {
+        "pc": "0x15b0",
+        "op": "@!P1 STS [R6+0xd0], R3"
+      },
+      {
+        "pc": "0x15c0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      }
+    ],
+    "fast_CTA_barriers": 7,
+    "fast_FP_adds": 7,
+    "fast_shared_stores": 7,
+    "dynamic_shift_or_branch_in_fast_ladder": false,
+    "six_fixed_relative_offsets": [
+      256,
+      128,
+      64,
+      32,
+      16,
+      8
+    ],
+    "final_phase": "PredicatedLDS.64 paired2words/FADD/STSatshared0xd0; D289PTXbinds originalstep1operands. ThisboundedreaderdoesnotfullysymbolicallyproveR6addressancestry. FulloriginalrawGPUcorpusmustresolveactualbits/guards.",
+    "generic_native_shift_barrier_backedge_retained": true,
+    "limits": "Fixed-driver localinstruction/control witness plusD289PTX; not universalSASSinterpreter,completeFP/addressproof,dynamiccounter,latency orspeed proof."
+  },
+  "negative_reader_fixtures": [
+    "wrong_width",
+    "wrong_offset",
+    "removed_barrier",
+    "wrong_fallback_backedge"
+  ],
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_application_kernel_solver_or_speed_samples": 0,
+  "candidate_accepted": false
+}

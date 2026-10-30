@@ -1,0 +1,28 @@
+{
+  "id": "D185-reader-r2",
+  "at": "2026-10-28T19:02:26.097447+00:00",
+  "status": "FROZEN_READ_ONLY_REPLAY_NO_NATIVE",
+  "original_protocol_sha256": "00db1928f196e3d3407cdcf82028ad1c491404f925dcc546495939b4d614e8f3",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-prepare-reader-r2.py": "6d977653c3f35d85eecae2a5677b7dc95718a2e4de985334aebb3256297a566e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-reader-r2-execute.py": "2e8b691f5fd99e58a4ecfaaa75287ff0a55eac5a6273b00ed13763bbe85576bc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\protocol.json": "00db1928f196e3d3407cdcf82028ad1c491404f925dcc546495939b4d614e8f3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\audit.py": "8db8170fe56aa1c282288c3ca3bb87147126d97b7b603185ce768a2ab9856961",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\audit-r2.py": "3f4a30c997d5780a29a88281538f5f7799900d48fd9318faebc519a1a5c8c9ae",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\source-review.json": "f1a32e83863a2b34e625746f989646fcc8f27586804516bacd6ef1096b9e12c5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\source-review.json": "ee817c203331fc894ec53e80694e6d36e149405e4ff5c1e3b9bb41c639686b36",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\reader-r2-raw-extents.json": "68bc48677ab67c89b875c0d1ceef569d69cb6167a8c4adcf39d7eb4abd219e23",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\output\\metadata.json": "acdfba433e9407522dcacb6892f8fb84c458b4c41fe29fa04eeadc4d05501072",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\execution\\rustc.exit.json": "845ef8fe4c01cb6f930d5e4783c40f9551fd0e6fe409ae0fca315cde25e1d8ac",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\execution\\probe.exit.json": "4590f261f80ad1b30f076a4688e3be43e9f7308dac1b75653ce44d00272fb098",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\execution\\probe.stdout.log": "ec7fadb9b07bfa48402301c884c99fee741979c40a869f6c6c99e2284aa4ea08",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\execution\\audit.exit.json": "6aa03e52dcbe5070317b77e3434722e97ddbaa12389182b55ff228c6648adcbd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\execution\\audit.stderr.log": "880d263246e1852e6002d6f2ec635c567c4fd19a80de15020a3e5dee699f59cd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "correction": "Original native68case fullstate process terminal0. Original reader failed before frames: new source-review omitted inherited device_field_inventory. Bind the unchanged66field inventory from already pinned original D176source-review; actualD185GPUfield declarations/captures unchanged. Only functional change is metadata locator. Also correct report wording: all module entry execution not asserted. Same bytes/fields/cases/phases/poison/float/count/gates, no exceptions or waived checks. Original failed reader/source/protocol/log retained.",
+  "all_output_extents_bound": 6953,
+  "CUDA_or_solver_or_compiler_or_timing_or_repeat_runs": 0,
+  "original_engine_runs_reused": 1,
+  "candidate_accepted": false
+}

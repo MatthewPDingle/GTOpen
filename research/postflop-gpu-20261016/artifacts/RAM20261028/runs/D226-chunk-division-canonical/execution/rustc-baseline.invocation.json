@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-29T01:21:10.512961+00:00",
+  "command": [
+    "rustc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-probe.rs",
+    "--edition=2021",
+    "--test",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+    "--extern",
+    "solver=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "cudarc=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "rayon=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline.exe"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016"
+}

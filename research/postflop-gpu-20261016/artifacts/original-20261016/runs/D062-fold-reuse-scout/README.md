@@ -1,0 +1,7 @@
+D062 closes the within-sweep identical-opponent-owner fold-statistic cache idea for current TreeBuilder-produced trees. No implementation or census is recommended.
+
+For a fixed opponent q, a q-fold creates its own fresh owner. A p-fold inherits q's owner, but the next p decision requires an intervening q action or chance edge, both of which replace that owner. Each decision offers at most one fold. Representative filtering only removes nodes, and dense reach slots preserve distinct owner identity. Therefore the reachable fold list is injective in reach_slot[q]; this key offers zero duplicate reductions to remove.
+
+A hypothetically safe cache key must also include opponent, plan/workspace and reach-generation identity. It would hold T plus52 card sums (212 bytes), preserving the original128-thread floating-point order and per-terminal output arithmetic. This scout implements none of it. Equal row contents, unusual externally constructed Trees and cross-iteration reuse are outside the proof. E015's paired reach reuse does not make the two players' fold passes read the same opponent row; evaluation already reuses full terminal CFVs between modes.
+
+The report provides exact source ranges, lifetime constraints and immutable source snapshots. All162 accepted E020 identities were verified. No CPU solver/plan census, compiler, GPU query, kernel or benchmark was executed. Prior E019/E030/E032 rejections remain closed.

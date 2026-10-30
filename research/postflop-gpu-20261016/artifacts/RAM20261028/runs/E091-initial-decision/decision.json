@@ -1,0 +1,54 @@
+{
+  "id": "E091",
+  "at": "2026-10-28T09:22:11.510806+00:00",
+  "measurement_epoch": "RAM20261028",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 10181.2674,
+    "candidate_full_cycle_ms": 10233.5462,
+    "observed_gain_pct": -0.5134802765321737,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": 0.5934506875729736,
+        "slower_pairs": 3,
+        "failed": true
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 0.2844509672723045,
+        "slower_pairs": 2,
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 4.714554056308771,
+        "slower_pairs": 2,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "exact_scientific_records": 18,
+  "exact_checkpoints": 138,
+  "direct_raw_pairs": 1530,
+  "direct_launches": 3060,
+  "direct_reader_checks": 9933133,
+  "resource_report_sha256": "0510a07c1c31ed207df0fef0a9c72cfec15655a03b7baf4a74f9f4e7f18d7b9b",
+  "incidence_report_sha256": "6b99cb9158c6b44bc64a002a8ed0238e8ece34ebb3f29ddd2f39bb420d9e31bd",
+  "assessment_sha256": "7da71b0c9c8a718db5e19154d8c5fa7c2edfb449bebae5922b1711cd2d8aeb15",
+  "root_replay_sha256": "0ba83882ac60b8c1ac186da8be16c644de5c2b3b20342d41a9875d7283c1400d",
+  "primary_whole_arena_fingerprints_exact": true,
+  "primary_raw_arena_bytes_independently_compared": false,
+  "all_samples_retained": true,
+  "extension_runs": 0,
+  "historical_or_RAM_baseline_timing_samples_scored": 0,
+  "source_adopted": false,
+  "live_source": "E080",
+  "reason": "The fixed complete-solve screen measured -0.513480% aggregate improvement. All 18 scientific records, 138 convergence checkpoints, 86 ordinary tests and 1,530 raw GPU comparisons passed. Rejected: below the unrounded 1% cutoff; repeatable fixture slowdown: rainbow, two-tone, river. The exact zero-reach normalization shortcut is closed; no source, predicate, width, action-menu, fixture or extra-sample rescue."
+}

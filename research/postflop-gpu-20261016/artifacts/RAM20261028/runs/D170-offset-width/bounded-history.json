@@ -1,0 +1,35 @@
+{
+  "at": "2026-10-28T15:38:40.535885+00:00",
+  "queries": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "const (u32|unsigned int).*node_data_off",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "const (u32|unsigned int).*node_data_off",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "ledger_sha256": "bba9fbd16351315586b54195609522e33c5967d0281f4cac6c5b42b1f79ce2d1",
+  "scope": "Exact matching pointer-width form in current local all-ref kernel history and retained old-epoch CU sources; bounded evidence, not exhaustive proof of novelty."
+}

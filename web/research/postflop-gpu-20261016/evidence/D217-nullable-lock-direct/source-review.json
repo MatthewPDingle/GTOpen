@@ -1,0 +1,116 @@
+{
+  "id": "D217",
+  "at": "2026-10-28T23:56:14.523177+00:00",
+  "previous_goal_turn": "progress: E106 exact host/layout/compiler-resource/nullable-load mechanism and original36case/752phase raw engine/lock lifecycle comparisons passed; no speed/adoption.",
+  "up_cases": 4095,
+  "down_cases": 4302,
+  "original_up_prefix": 819,
+  "original_down_prefix": 1530,
+  "scope": "Original full arithmetic generators/seeds/guards preserved for first819up/1530down cases. Additional null-unlocked variants and both evaluation modes for full original up corpus; fixed down p1reuse-zero matrix. Three actual changed kernel entries tested. All nonnull cases keep original CudaSlice argument delegate; null candidate uses exact frozen E106LockArg code, baseline alwaysnonnull. Original source/math/discount/value/role/menu/tail generators intact. Actual seeded inputs and post-kernel immutable snapshots, whole mutable output arrays and every unowned guard retained.",
+  "source_relationship": "Copied exact sealed resource PTX, no runtime NVRTC or host/shader optimization edits. Only standalone harness case loader/argument wrapper/extra kernel mode/descriptor labels and guard ownership extension. Helper source bytes copied from frozen candidate. Historical magic labels replaced with new explicit formats. Native per-case checks plus independent whole retained reader required.",
+  "up_harness_changes": [
+    {
+      "old": "type Out=BufWriter<File>;",
+      "new": "use cudarc::driver::sys;\ninclude!(\"lock_arg.rs\");\ntype Out=BufWriter<File>;",
+      "count": 1
+    },
+    {
+      "old": "struct Case {nh:",
+      "new": "struct Case {kernel_kind:u32,nullable:bool,nh:",
+      "count": 1
+    },
+    {
+      "old": " let mut cases=Vec::new();\n for na in [1,2,3,4,5,8,9,16,17] {for role in 0..3 {for p in 0..2 {for algo in 0..2 {\n  for (nh,t) in [(1,1),(129,20),(257,200)] {cases.push(Case{nh,na,block:128,p,role,algo,t,mode:0,count:1});}\n }}}}\n for na in [1,2,8,9,17] {for role in 0..3 {for nh in [0,31,32,33,63,64,65,127,128,255,256,511,512,513,1023,1024,1326] {\n  cases.push(Case{nh,na,block:128,p:1,role,algo:0,t:200,mode:0,count:1});\n }}}\n for na in [1,2,9,17] {for role in 0..3 {for block in [1,32,64,256] {for nh in [7,129,513] {\n  cases.push(Case{nh,na,block,p:0,role,algo:1,t:20,mode:0,count:1});\n }}}}\n for na in [1,2,3,4,8,9,17] {for role in 0..3 {for mode in 1..=4 {\n  cases.push(Case{nh:257,na,block:128,p:1,role,algo:mode%2,t:200,mode,count:1});\n }}}\n for na in [1,2,9,17] {for role in 0..3 {cases.push(Case{nh:129,na,block:128,p:0,role,algo:0,t:20,mode:0,count:0});}}\n assert_eq!(cases.len(),819);\n",
+      "new": " let declared:serde_json::Value=serde_json::from_str(include_str!(\"corpus.json\")).unwrap();\n let cases:Vec<Case>=declared[\"cases\"].as_array().unwrap().iter().map(|c|{let n=|k:&str|c[k].as_u64().unwrap();Case{kernel_kind:n(\"kernel_kind\") as u32,nullable:c[\"nullable\"].as_bool().unwrap(),nh:n(\"hands\") as usize,na:n(\"actions\") as usize,block:n(\"threads\") as u32,p:n(\"p\") as i32,role:n(\"role\") as u32,algo:n(\"algorithm\") as u32,t:n(\"iteration\") as u32,mode:n(\"value_mode\") as u32,count:n(\"count\") as i32}}).collect();assert_eq!(cases.len(),4095);\n",
+      "count": 1
+    },
+    {
+      "old": "let Case{nh,na,block,p,role,algo,t,mode,count}=*c;",
+      "new": "let Case{kernel_kind,nullable,nh,na,block,p,role,algo,t,mode,count}=*c;",
+      "count": 1
+    },
+    {
+      "old": " let bf=bm.load_function(\"up_action\").unwrap();let cf=cm.load_function(\"up_action\").unwrap();",
+      "new": " let bf=bm.load_function(\"up_action\").unwrap();let cf=cm.load_function(\"up_action\").unwrap();let be=bm.load_function(\"up_action_eval\").unwrap();let ce=cm.load_function(\"up_action_eval\").unwrap();",
+      "count": 1
+    },
+    {
+      "old": "  let mut sigma=vec!",
+      "new": "  assert!(!nullable || lock.iter().all(|x|*x<0),\"null only for globally unlocked table\");\n  let mut sigma=vec!",
+      "count": 1
+    },
+    {
+      "old": "off as u32,loff as u32]);",
+      "new": "off as u32,loff as u32,kernel_kind,nullable as u32]);",
+      "count": 1
+    },
+    {
+      "old": "  for (label,f) in [(\"baseline\",&bf),(\"candidate\",&cf)] {",
+      "new": "  let(base_function,candidate_function)=if kernel_kind==0{(&bf,&cf)}else{(&be,&ce)};\n  for (label,f) in [(\"baseline\",base_function),(\"candidate\",candidate_function)] {",
+      "count": 1
+    },
+    {
+      "old": ".arg(&dl).arg(&dls)",
+      "new": ".arg(E106LockArg(&dl,label==\"candidate\" && nullable)).arg(&dls)",
+      "count": 1
+    },
+    {
+      "old": "   unsafe{stream.launch_builder(f).arg(&dn)",
+      "new": "   if kernel_kind==0 {unsafe{stream.launch_builder(f).arg(&dn)",
+      "count": 1
+    },
+    {
+      "old": ".launch(LaunchConfig{grid_dim:(3,1,1),block_dim:(block,1,1),shared_mem_bytes:0}).unwrap();}",
+      "new": ".launch(LaunchConfig{grid_dim:(3,1,1),block_dim:(block,1,1),shared_mem_bytes:0}).unwrap();}} else {let evaluation_mode=(kernel_kind-1) as i32;unsafe{stream.launch_builder(f).arg(&dn).arg(&start).arg(&count).arg(&p).arg(&evaluation_mode).arg(&dp).arg(&da).arg(&doff).arg(&dcs).arg(&dc).arg(&ds).arg(E106LockArg(&dl,label==\"candidate\" && nullable)).arg(&dls).arg(&dslot).arg(&mut dv).arg(&nharg).arg(&maxarg).launch(LaunchConfig{grid_dim:(3,1,1),block_dim:(block,1,1),shared_mem_bytes:0}).unwrap();}}\n",
+      "count": 1
+    },
+    {
+      "old": "role==0 && i>=off",
+      "new": "kernel_kind==0 && role==0 && i>=off",
+      "count": 1
+    },
+    {
+      "old": "\"stage\":\"case\",\"id\":index,",
+      "new": "\"stage\":\"case\",\"id\":index,\"kernel_kind\":kernel_kind,\"nullable\":nullable,",
+      "count": 1
+    },
+    {
+      "old": "drop(bf);drop(cf);drop(bm);",
+      "new": "drop(bf);drop(cf);drop(be);drop(ce);drop(bm);",
+      "count": 1
+    }
+  ],
+  "down_harness_changes": [
+    {
+      "old": "type Out=BufWriter<File>;",
+      "new": "use cudarc::driver::sys;\ninclude!(\"lock_arg.rs\");\ntype Out=BufWriter<File>;",
+      "count": 1
+    },
+    {
+      "old": "let other=if nh==0{5}else{nh+5};let nhs=if actor==0{[nh,other]}else{[other,nh]};",
+      "new": "let nullable=c[\"nullable\"].as_bool().unwrap();let reuse=c[\"reuse_zero\"].as_bool().unwrap();let other=if nh==0{5}else{nh+5};let mut nhs=if actor==0{[nh,other]}else{[other,nh]};if reuse{nhs[1]=0;}let active_nh=nhs[actor];",
+      "count": 1
+    },
+    {
+      "old": "  let mut sigma=vec!",
+      "new": "  assert!(!nullable || lock.iter().all(|x|*x<0),\"null only for globally unlocked table\");\n  let mut sigma=vec!",
+      "count": 1
+    },
+    {
+      "old": "rows as u32]);",
+      "new": "rows as u32,nullable as u32,reuse as u32]);",
+      "count": 1
+    },
+    {
+      "old": ".arg(&dl).arg(&dls)",
+      "new": ".arg(E106LockArg(&dl,label==\"candidate\" && nullable)).arg(&dls)",
+      "count": 1
+    },
+    {
+      "old": "p==actor&&nh>0&&i/nh>=5&&i/nh<5+na",
+      "new": "p==actor&&active_nh>0&&i/active_nh>=5&&i/active_nh<5+na",
+      "count": 1
+    }
+  ],
+  "remaining_limits": "Direct finite corpus is not universal NaN/alias/address proof, graph/fullcanonical/empty-lock constructor/error/paging/material/capacity/complete speed qualification. Genuine numerical/guard failure closes exactE106 form without rescue; no completed case reruns for mechanical observer/reader repair."
+}

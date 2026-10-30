@@ -1,0 +1,901 @@
+{
+  "at": "2026-10-17T12:23:48.516976+00:00",
+  "status": "observer_gate_failed_diagnostic_only",
+  "protocol_sha256": "54967c3efeadca4657145e3e0967ca5b99ddea782eba8b6d8e07f95c9488fdc3",
+  "cases": [
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 109.6103,
+      "baseline_samples_ms": [
+        121.6839,
+        108.21419999999999,
+        109.6103
+      ],
+      "baseline_words": 27673609,
+      "board": "Ks7h2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 0,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 0,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 125.75639999999999,
+      "profile_samples_ms": [
+        125.75639999999999,
+        139.1389,
+        123.6585
+      ],
+      "stage_spans_ms": [
+        [
+          60.1104,
+          10.724900000000005,
+          11.606899999999996,
+          20.610600000000005,
+          17.770899999999997,
+          0.013199999999997658,
+          4.912099999999995,
+          0.007399999999989859
+        ],
+        [
+          71.01559999999999,
+          13.044600000000003,
+          11.467600000000004,
+          19.250200000000007,
+          19.620099999999994,
+          0.013299999999986767,
+          4.722100000000012,
+          0.005400000000008731
+        ],
+        [
+          51.9043,
+          9.518799999999999,
+          9.419400000000003,
+          24.41839999999999,
+          21.158400000000015,
+          0.011799999999993815,
+          7.221600000000009,
+          0.005799999999993588
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 16.14609999999999,
+      "observer_tolerance_ms": 10.961030000000001,
+      "observer_pass": false,
+      "raw_sha256": "657a9479f1b95c7c0c3b1f5e04902780c2b6d2a29ac406c734465a642048f051",
+      "raw_bytes": 464407988
+    },
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 114.2744,
+      "baseline_samples_ms": [
+        114.2744,
+        131.48770000000002,
+        110.5082
+      ],
+      "baseline_words": 27673609,
+      "board": "Ks7h2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 0,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 1,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 115.4889,
+      "profile_samples_ms": [
+        113.5862,
+        115.4889,
+        123.3876
+      ],
+      "stage_spans_ms": [
+        [
+          51.068799999999996,
+          8.945300000000003,
+          9.415199999999999,
+          18.661,
+          17.701000000000008,
+          0.014199999999988222,
+          3.8710999999999984,
+          3.9096000000000117
+        ],
+        [
+          50.1158,
+          9.8472,
+          10.177900000000001,
+          18.944199999999995,
+          17.745100000000008,
+          0.013299999999986767,
+          3.8226000000000084,
+          4.822800000000001
+        ],
+        [
+          51.2815,
+          9.479399999999998,
+          9.422900000000006,
+          19.133899999999997,
+          20.515500000000003,
+          0.01459999999998729,
+          7.333500000000015,
+          6.206299999999999
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 1.214500000000001,
+      "observer_tolerance_ms": 11.42744,
+      "observer_pass": true,
+      "raw_sha256": "22284be46218d1cf12d52bd7bbd50aa64e25e2bc09215e778e2dabf106f91786",
+      "raw_bytes": 464407988
+    },
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 107.6328,
+      "baseline_samples_ms": [
+        106.071,
+        109.2968,
+        107.6328
+      ],
+      "baseline_words": 27673609,
+      "board": "Ks7h2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 0,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 2,
+      "iso_active": false,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 106.1426,
+      "profile_samples_ms": [
+        110.33510000000001,
+        103.6142,
+        106.1426
+      ],
+      "stage_spans_ms": [
+        [
+          52.417,
+          9.6205,
+          8.770599999999995,
+          18.773700000000005,
+          16.773299999999992,
+          0.012700000000009481,
+          3.9617999999999967,
+          0.005500000000012051
+        ],
+        [
+          46.2068,
+          8.683299999999996,
+          8.721699999999998,
+          18.721700000000006,
+          17.169700000000006,
+          0.01279999999998438,
+          4.093100000000007,
+          0.005099999999998772
+        ],
+        [
+          48.266799999999996,
+          8.910500000000006,
+          9.1447,
+          18.7059,
+          16.90509999999999,
+          0.02410000000000423,
+          4.179600000000008,
+          0.005899999999996908
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": -1.4902000000000015,
+      "observer_tolerance_ms": 10.763280000000002,
+      "observer_pass": true,
+      "raw_sha256": "e4ddf47a1e118e226a0c62f0ec5135390b6b3b766bc6e644e1dd397501949ef7",
+      "raw_bytes": 464407988
+    },
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 108.0562,
+      "baseline_samples_ms": [
+        108.0562,
+        108.75559999999999,
+        108.0072
+      ],
+      "baseline_words": 27673609,
+      "board": "Ks7h2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 0,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 3,
+      "iso_active": false,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 114.4957,
+      "profile_samples_ms": [
+        110.5454,
+        114.4957,
+        117.0987
+      ],
+      "stage_spans_ms": [
+        [
+          47.614700000000006,
+          9.150999999999996,
+          9.244999999999997,
+          18.884100000000004,
+          17.075799999999987,
+          0.011700000000004707,
+          4.507400000000018,
+          4.055699999999987
+        ],
+        [
+          51.2773,
+          9.619500000000002,
+          10.053700000000006,
+          18.55959999999999,
+          16.32350000000001,
+          0.012199999999992883,
+          4.963399999999993,
+          3.6865000000000094
+        ],
+        [
+          52.758199999999995,
+          9.596000000000004,
+          9.832699999999996,
+          19.559600000000003,
+          16.81540000000001,
+          0.011999999999986244,
+          4.4950000000000045,
+          4.0297999999999945
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 6.439499999999995,
+      "observer_tolerance_ms": 10.805620000000001,
+      "observer_pass": true,
+      "raw_sha256": "27df59488219c6d492e1c604b4a4c2c9bc3fb05efedbe7b567caf63f864b9d5b",
+      "raw_bytes": 464407988
+    },
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 109.0491,
+      "baseline_samples_ms": [
+        107.58760000000001,
+        110.19,
+        109.0491
+      ],
+      "baseline_words": 27687171,
+      "board": "Ks7s2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 1,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 4,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 109.1485,
+      "profile_samples_ms": [
+        109.1485,
+        108.0369,
+        109.2009
+      ],
+      "stage_spans_ms": [
+        [
+          51.6012,
+          9.101199999999999,
+          8.988799999999998,
+          18.988500000000002,
+          16.37020000000001,
+          0.0146000000000015,
+          4.078399999999988,
+          0.00560000000000116
+        ],
+        [
+          48.1934,
+          9.772300000000008,
+          9.594399999999986,
+          18.708500000000015,
+          17.600799999999992,
+          0.015399999999999636,
+          4.146000000000001,
+          0.006100000000003547
+        ],
+        [
+          51.2442,
+          9.311999999999998,
+          9.027700000000003,
+          19.18820000000001,
+          16.370699999999985,
+          0.01480000000000814,
+          4.036699999999996,
+          0.0066000000000059345
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 0.09940000000000282,
+      "observer_tolerance_ms": 10.904910000000001,
+      "observer_pass": true,
+      "raw_sha256": "a15870169f7ed3b1d3450a0fed3d4b546fd3d75ceadf45438213d8ae7404562e",
+      "raw_bytes": 464624980
+    },
+    {
+      "action_nodes": 523533,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 110.8703,
+      "baseline_samples_ms": [
+        107.4924,
+        110.8703,
+        113.5318
+      ],
+      "baseline_words": 27687171,
+      "board": "Ks7s2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 1,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 5,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 112.3082,
+      "profile_samples_ms": [
+        111.6601,
+        112.45570000000001,
+        112.3082
+      ],
+      "stage_spans_ms": [
+        [
+          50.3069,
+          8.885800000000003,
+          9.378799999999998,
+          18.480900000000005,
+          16.692099999999996,
+          0.015000000000000568,
+          3.9917000000000087,
+          3.9088999999999885
+        ],
+        [
+          51.15,
+          9.308999999999997,
+          9.120200000000004,
+          18.438100000000006,
+          16.301500000000004,
+          0.014399999999994861,
+          4.062300000000008,
+          4.060199999999995
+        ],
+        [
+          47.792300000000004,
+          9.967099999999995,
+          9.373499999999993,
+          18.342500000000015,
+          17.90379999999999,
+          0.020700000000005048,
+          4.2438999999999965,
+          4.6644000000000005
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 1.437899999999999,
+      "observer_tolerance_ms": 11.08703,
+      "observer_pass": true,
+      "raw_sha256": "c52ccff323a1c5c90af18bd4b7bebb04982d78832f2b29563a0d320a3902631a",
+      "raw_bytes": 464624980
+    },
+    {
+      "action_nodes": 318562,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 76.7354,
+      "baseline_samples_ms": [
+        107.07419999999999,
+        76.7354,
+        75.8741
+      ],
+      "baseline_words": 25620394,
+      "board": "Ks7s2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 1,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 6,
+      "iso_active": true,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 78.7542,
+      "profile_samples_ms": [
+        79.2529,
+        78.2683,
+        78.7542
+      ],
+      "stage_spans_ms": [
+        [
+          36.2318,
+          8.150399999999998,
+          6.783700000000003,
+          12.598200000000006,
+          11.711299999999987,
+          0.014200000000016644,
+          3.7578999999999922,
+          0.00539999999999452
+        ],
+        [
+          35.5159,
+          7.596599999999995,
+          6.866000000000007,
+          12.446099999999994,
+          12.11030000000001,
+          0.013199999999997658,
+          3.7139999999999986,
+          0.006199999999992656
+        ],
+        [
+          36.1679,
+          7.6144999999999925,
+          6.893200000000007,
+          12.565099999999994,
+          11.733000000000011,
+          0.013699999999985835,
+          3.7620000000000005,
+          0.004800000000003024
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 2.018799999999999,
+      "observer_tolerance_ms": 7.67354,
+      "observer_pass": true,
+      "raw_sha256": "34969c7da16654dd65c685b4e69f1646e704ac2e7e149697dccefe3fa9a60498",
+      "raw_bytes": 431556548
+    },
+    {
+      "action_nodes": 318562,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 84.91,
+      "baseline_samples_ms": [
+        84.91,
+        79.9736,
+        89.0631
+      ],
+      "baseline_words": 25620394,
+      "board": "Ks7s2d",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 1,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 7,
+      "iso_active": true,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 1346813,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 83.2031,
+      "profile_samples_ms": [
+        83.2031,
+        84.56760000000001,
+        79.7054
+      ],
+      "stage_spans_ms": [
+        [
+          35.098699999999994,
+          7.589000000000006,
+          6.9421000000000035,
+          12.732,
+          11.544799999999995,
+          0.013800000000003365,
+          3.963400000000007,
+          5.319299999999998
+        ],
+        [
+          35.1164,
+          8.676200000000001,
+          7.152300000000004,
+          12.881699999999995,
+          11.487099999999998,
+          0.013200000000011869,
+          3.7202999999999946,
+          5.520400000000009
+        ],
+        [
+          32.3107,
+          8.180200000000006,
+          6.978299999999997,
+          13.642200000000003,
+          10.7975,
+          0.00909999999998945,
+          3.7464000000000084,
+          4.040999999999997
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": -1.7068999999999903,
+      "observer_tolerance_ms": 8.491,
+      "observer_pass": true,
+      "raw_sha256": "d67c26f4099f36a243ac07ed822150f9ce2975b889ca76d1b29eff3ebdff704d",
+      "raw_bytes": 431556548
+    },
+    {
+      "action_nodes": 12,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 0.0157,
+      "baseline_samples_ms": [
+        0.0191,
+        0.0157,
+        0.0146
+      ],
+      "baseline_words": 7000,
+      "board": "Ks7h2dQhTc",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 2,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 8,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 33,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 0.0159,
+      "profile_samples_ms": [
+        0.0194,
+        0.0159,
+        0.0147
+      ],
+      "stage_spans_ms": [
+        [
+          0.0005,
+          0.0002999999999999999,
+          0.003,
+          0.0128,
+          0.00030000000000000165,
+          0.0019999999999999983,
+          0.0001999999999999988,
+          0.00030000000000000165
+        ],
+        [
+          0.0006,
+          0.00010000000000000005,
+          0.0013,
+          0.0112,
+          0.00020000000000000052,
+          0.0020999999999999994,
+          0.0001999999999999988,
+          0.00020000000000000226
+        ],
+        [
+          0.0005,
+          0.00019999999999999998,
+          0.0007,
+          0.0108,
+          0.0001999999999999988,
+          0.0019000000000000006,
+          0.00020000000000000052,
+          0.0001999999999999988
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": 0.00020000000000000226,
+      "observer_tolerance_ms": 0.05,
+      "observer_pass": true,
+      "raw_sha256": "d0de15bbdb10f8f1c04daa73186b71963d64c39d9f7539ae0d6e820f97cfdb71",
+      "raw_bytes": 115764
+    },
+    {
+      "action_nodes": 12,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 0.0157,
+      "baseline_samples_ms": [
+        0.0194,
+        0.0157,
+        0.0148
+      ],
+      "baseline_words": 7000,
+      "board": "Ks7h2dQhTc",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 2,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 9,
+      "iso_active": false,
+      "iso_requested": false,
+      "measured_pairs": 3,
+      "nodes": 33,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 0.0155,
+      "profile_samples_ms": [
+        0.019700000000000002,
+        0.0155,
+        0.0147
+      ],
+      "stage_spans_ms": [
+        [
+          0.0006,
+          0.00019999999999999998,
+          0.0032999999999999995,
+          0.012800000000000002,
+          0.0002999999999999982,
+          0.002100000000000001,
+          0.0001999999999999988,
+          0.00020000000000000226
+        ],
+        [
+          0.0006,
+          0.00019999999999999998,
+          0.0009000000000000002,
+          0.0112,
+          0.00020000000000000052,
+          0.0019999999999999983,
+          0.00010000000000000113,
+          0.0002999999999999999
+        ],
+        [
+          0.0005,
+          9.999999999999994e-05,
+          0.0007,
+          0.010700000000000001,
+          0.00020000000000000052,
+          0.0019999999999999983,
+          0.00010000000000000113,
+          0.0003999999999999993
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": -0.0001999999999999988,
+      "observer_tolerance_ms": 0.05,
+      "observer_pass": true,
+      "raw_sha256": "384c9c3fa536fe8e848e5df65488ca53aef4193ac17bef74ba9713bc380f5c8e",
+      "raw_bytes": 115764
+    },
+    {
+      "action_nodes": 12,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 0.0196,
+      "baseline_samples_ms": [
+        0.0237,
+        0.0196,
+        0.017900000000000003
+      ],
+      "baseline_words": 7000,
+      "board": "Ks7h2dQhTc",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 2,
+      "full_arenas": false,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 10,
+      "iso_active": false,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 33,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 0.019,
+      "profile_samples_ms": [
+        0.024,
+        0.019,
+        0.0178
+      ],
+      "stage_spans_ms": [
+        [
+          0.0007,
+          0.00030000000000000003,
+          0.0035000000000000005,
+          0.0157,
+          0.00030000000000000165,
+          0.0029,
+          0.0002999999999999982,
+          0.00030000000000000165
+        ],
+        [
+          0.0006,
+          0.00010000000000000005,
+          0.0012000000000000001,
+          0.013500000000000002,
+          0.00029999999999999645,
+          0.002700000000000001,
+          0.00020000000000000226,
+          0.0003999999999999976
+        ],
+        [
+          0.0005,
+          0.00019999999999999998,
+          0.0008999999999999999,
+          0.0127,
+          0.00020000000000000052,
+          0.0026999999999999993,
+          0.0001999999999999988,
+          0.00040000000000000105
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": -0.0005999999999999998,
+      "observer_tolerance_ms": 0.05,
+      "observer_pass": true,
+      "raw_sha256": "ef567b4e7dd29709ec4b425878d2ff1b7adc95ada4431e1ebc3e15e9c71fea07",
+      "raw_bytes": 115764
+    },
+    {
+      "action_nodes": 12,
+      "all53fields_bitwise_equal": true,
+      "all_vec_capacities_equal": true,
+      "baseline_plan_ms": 0.0162,
+      "baseline_samples_ms": [
+        0.0198,
+        0.0162,
+        0.015099999999999999
+      ],
+      "baseline_words": 7000,
+      "board": "Ks7h2dQhTc",
+      "fields": 53,
+      "first": "baseline",
+      "fixture_index": 2,
+      "full_arenas": true,
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "id": 11,
+      "iso_active": false,
+      "iso_requested": true,
+      "measured_pairs": 3,
+      "nodes": 33,
+      "pair_orders": [
+        "BC",
+        "CB",
+        "BC"
+      ],
+      "profile_plan_ms": 0.0158,
+      "profile_samples_ms": [
+        0.020999999999999998,
+        0.0158,
+        0.015000000000000001
+      ],
+      "stage_spans_ms": [
+        [
+          0.0006,
+          0.00019999999999999998,
+          0.004,
+          0.0133,
+          0.00020000000000000226,
+          0.002100000000000001,
+          0.0002999999999999982,
+          0.0002999999999999982
+        ],
+        [
+          0.0006,
+          0.00019999999999999998,
+          0.0009000000000000002,
+          0.0115,
+          0.00020000000000000052,
+          0.0020000000000000018,
+          9.999999999999766e-05,
+          0.00030000000000000165
+        ],
+        [
+          0.0005,
+          0.00019999999999999998,
+          0.0007,
+          0.011,
+          0.00020000000000000052,
+          0.002,
+          9.99999999999994e-05,
+          0.00030000000000000165
+        ]
+      ],
+      "struct_size_equal": true,
+      "warmup_pairs": 1,
+      "observer_difference_ms": -0.0003999999999999976,
+      "observer_tolerance_ms": 0.05,
+      "observer_pass": true,
+      "raw_sha256": "d1b02a552080f1c24c7eb972691c46258f0816ecb74ce6e576ab75ac5ddc98f1",
+      "raw_bytes": 115764
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "native_processes": 12,
+  "gpu_executions": 0,
+  "new_optimizer": false,
+  "speedup_accepted": false,
+  "source_activated": false
+}

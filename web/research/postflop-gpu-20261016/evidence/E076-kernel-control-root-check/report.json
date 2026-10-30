@@ -1,0 +1,27 @@
+{
+  "id": "E076-kernel-control",
+  "at": "2026-10-18T03:51:52.513255+00:00",
+  "status": "pass_scoped_in_place_CFV_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 87634,
+  "cases": 819,
+  "alias_cases": 138,
+  "kernel_launches": 1638,
+  "output_words_both_arms": 12375858,
+  "immutable_words_both_arms": 5199114,
+  "guard_words_both_arms": 10240828,
+  "logical_parent_and_full_regret_strategy_outputs_exact": true,
+  "full_physical_images_and_actual_inputs_match_own_expected": true,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\evidence\\baseline-inputs.bin": "c0ad1105ce4f10ea6fa9f6a1933726e85307e2c7eb04569d82148f2419871b73",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\evidence\\baseline.bin": "84c108153e9266a41c4c2b6633896343ca6c5558245b609df4944495416beac1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\evidence\\candidate-inputs.bin": "e746873730627ce483cbe4ac22fcc77807594c43f6b670d27223d8ee8ff2e35b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\evidence\\candidate.bin": "1742c738ec1b7711c7d750da732d15b334c98106c2026afe6287d43909a84161",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\evidence\\inputs.bin": "6fd4199fe0a8efe71f8ae2d1434c23a9b71e280dd8d039a33f0ba4bdec189d81"
+  },
+  "protocol_sha256": "700f2aa9700a533e4ccd912abca2c0ff81444f1cd51fffad2f532d58b7f878c4",
+  "source_main_live_PTX_custody_pass": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Fixed corpus and root decoder only. Physical layouts intentionally differ; complete expected per-arm buffers are validated. Not universal NaN/alias proof or external independent audit. Integrated whole solver/state/graph/material and all performance gates remain."
+}

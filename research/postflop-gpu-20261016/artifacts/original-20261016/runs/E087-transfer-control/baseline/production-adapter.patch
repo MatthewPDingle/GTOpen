@@ -1,0 +1,25 @@
+--- production
++++ public-plan-adapter
+@@ -5,7 +5,12 @@
+ //! storage mode. GPU arithmetic remains f32. Queries and saves use a CPU
+ //! `Solver`; call `sync_to_cpu` to download its arenas.
+ 
+-pub mod plan;
++pub mod plan { pub use solver::gpu::plan::*; pub fn full_arena_adapter(plan: &mut GpuPlan, spot: &solver::Spot) {
++        plan.arena_elements = [spot.tree.data_size[0] as usize, spot.tree.data_size[1] as usize];
++        for (i, node) in spot.tree.nodes.iter().enumerate() {
++            plan.node_data_off[i] = node.data_offset;
++        }
++    } }
+ mod arena;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+@@ -223,7 +228,7 @@
+             + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+             + 512 * 1024 * 1024;
+         if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+-            plan.use_full_action_arenas(&solver.spot);
++            plan::full_arena_adapter(&mut plan, &solver.spot);
+         }
+         let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+         let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;

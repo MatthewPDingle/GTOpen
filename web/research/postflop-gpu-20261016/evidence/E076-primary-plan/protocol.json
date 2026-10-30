@@ -1,0 +1,94 @@
+{
+  "id": "E076-primary",
+  "at": "2026-10-18T03:56:10.882036+00:00",
+  "status": "FROZEN_PRE_PRIMARY_NATIVE",
+  "baseline": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json",
+    "sha256": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028"
+  },
+  "baseline_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+    "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359"
+  },
+  "build_protocol_sha256": "e4c57159e81f919698c8727aa7b6f69544ee2829451c1cd9ccd34b877204ba77",
+  "control_ids": [
+    "V076-unit"
+  ],
+  "measurement_order": [
+    "B241",
+    "E076R1",
+    "E076R2",
+    "B242",
+    "B243",
+    "E076R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B241",
+      "candidate": "E076R1"
+    },
+    {
+      "baseline": "B242",
+      "candidate": "E076R2"
+    },
+    {
+      "baseline": "B243",
+      "candidate": "E076R3"
+    }
+  ],
+  "policy": {
+    "minimum_complete_cycle_gain_pct": 1.0,
+    "fixture_guard": "Unrounded positive median slowdown and at least2/3 positive paired slowdowns rejects; no epsilon.",
+    "exactness": "All18 full non-timing result payloads and138 checkpoints match accepted E020C1.",
+    "sampling": "Fixed three pairs, no historical timing pooling/exclusions/extensions/rescue samples.",
+    "scope": "Initial primary screen only; no automatic acceptance or statistical-confidence claim."
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-freeze-run-publish.py": "d6c5c1b9dc1834a527c944baa7d660ba50ebcc6cf7c6e3b83e387f8aa825bb9b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-final-build\\complete.json": "7251acd4fae30b56eaf259860643871fe39a1dd4936ba14e3e6cf1f40f04dc6e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\complete.json": "cb52598bea171cf1749379c1d6bc8ad05744c86d38ce1ee5c7dae3f94890b841",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E076-kernel-control-root-check\\report.json": "1dfde78844dfb4c7d30f34c66240e36085986e234e7e216a6cbd99af638713e0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D122-cfv-lifetimes\\protocol.json": "3bdb4423b9dcfdf52dc769f655a8e4889353b43d4c4e325d3828815a8c33be96",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D122-cfv-lifetimes\\report.json": "beb9ac274699e746b35e9507753880c7a6306b18d6730562e08162d6a59a9743",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-plan-control\\report.json": "fb947e6d5af4a5122952117864eb531d95d61609eb452e3da947b92f3291545e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-plan-control\\protocol-r2.json": "dfbd6c4eac095ad464904d4ec85eea4a540bb6514bd543ab4210dd17891d63f0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\protocol.json": "700f2aa9700a533e4ccd912abca2c0ff81444f1cd51fffad2f532d58b7f878c4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-build-plan\\build-protocol.json": "e4c57159e81f919698c8727aa7b6f69544ee2829451c1cd9ccd34b877204ba77",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-source\\manifest.json": "b480b6b940c9b8259fa45fd6868d7e9fe9e773a52a7d7d5aff1accd8d382e647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-source\\candidate-plan.rs": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\baseline.json": "f66394c5dc20db32c6c62a4ec30b07c7c4acc249638be59e33e2f4e10742f028",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-primary-plan\\native.py": "aaa495766dcf56173212925051fbd66b3c90a5a55da4697dec993da53d4cd29b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-primary-plan\\assess.py": "953a5d72cfc80e61e346028068a3d77cb8429ffa5d0eeb8c2c765d12eb816a59",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-primary-plan\\root-check.py": "36806c8f9ea01fad72de06d9511eead563c8800594faec29b585d325be56dff4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-primary-plan\\run.py": "70dfcd8dc90384d30cc7e3df1e8ac2e6567689c1485dea387f1a042083f99cd8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-feature-solver.exe": "03843e5cd3a0307588440c674bec1e1e8ddb60fff3fbbf3ef87752e9861e580d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-feature-solver.manifest.json": "2a023715895473240f34826d50e93075ab8e46b521298689cb5fbddabe43d9e7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-solver.exe": "73384357264e2715ae86b3c129d65461c8430eb49029033febb385be9bc930dc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-solver.manifest.json": "f1b739aa600a75ad114e00a8edc8290291544f0dde4b0670c523a3da82f2e91f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-postflop_autoresearch.exe": "a1f9e812b049e233ca27a82f8ae8b901851b5bd37105d582776aec334eef6015",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E076-postflop_autoresearch.manifest.json": "7d600b2626e4b57a4040e1f29f58ebffceeeaeec5ea411ae668cebe4d7c46cb6"
+  },
+  "adoption_requirements": [
+    "Separately frozen fresh16 pairs: unrounded aggregate >=1%, >=13 improving pairs, positive paired/block/order medians, no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/save/resume/continuation, actual graph/launch/memory/capacity and material CPU setup-cost checks.",
+    "Fixed holdout and fresh-original cumulative qualification. Initial screen alone does not establish significance, universal behavior or adoption."
+  ],
+  "source_scope": "One Rust CFV slot allocator plus its lifetime invariant test/documentation. No new persistent field, CUDA source, float operation, worklist, kernel/graph schedule, reach/terminal arithmetic, ABI, save or solve-quality change. Temporary CPU flags, buckets and color scans are included in complete-cycle and material qualification. All12 compiled CFV maps match independently frozen D122, other51 fields/capacities/structs exact.819 direct GPU pairs include138 in-place cases: full logical outputs and expected physical images/inputs/guards exact. Complete clocks include CPU plan allocation/coloring/temporary work, NVRTC/JIT, all setup/readback. No whole-solve/broad/material result yet.",
+  "scope": "Initial warm-cache three-pair complete-cycle screen only; no automatic adoption, confidence or cold-start claim. No historical timing pooling/exclusions/extensions.",
+  "runtime_authority": "Ongoing user-authorized local GPU research; root source/script review only. No live deployment.",
+  "ordinary_unit_id": "V076-unit",
+  "direct_control_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-kernel-control\\complete.json",
+    "sha256": "cb52598bea171cf1749379c1d6bc8ad05744c86d38ce1ee5c7dae3f94890b841"
+  }
+}

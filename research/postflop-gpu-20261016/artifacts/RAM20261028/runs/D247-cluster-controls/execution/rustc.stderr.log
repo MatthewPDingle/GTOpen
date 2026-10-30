@@ -1,0 +1,26 @@
+error[E0425]: cannot find function `cuGraphKernelNodeGetParams` in module `sys`
+     --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D247-cluster-controls\probe.rs:15:76
+      |
+   15 |  let mut p:sys::CUDA_KERNEL_NODE_PARAMS=std::mem::zeroed();assert_eq!(sys::cuGraphKernelNodeGetParams(nodes[0],&mut p),sys::CUres...
+      |                                                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^
+      |
+     ::: C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cudarc-0.19.7\src\driver\sys\mod.rs:10294:1
+      |
+10294 | pub unsafe fn cuGraphKernelNodeGetParams_v2(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+      | --------------------------------------------------------------------------------------------------------------------- similarly named function `cuGraphKernelNodeGetParams_v2` defined here
+      |
+note: found an item that was configured out
+     --> C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\cudarc-0.19.7\src\driver\sys\mod.rs:10277:15
+      |
+10276 | #[cfg(any(feature = "cuda-11040", feature = "cuda-11050", feature = "cuda-11060", feature = "cuda-11070", feature = "cuda-11080"))]
+      |          ------------------------------------------------------------------------------------------------------------------------ the item is gated here
+10277 | pub unsafe fn cuGraphKernelNodeGetParams(hNode: CUgraphNode, nodeParams: *mut CUDA_KERNEL_NODE_PARAMS) -> CUresult {
+      |               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+help: a function with a similar name exists
+      |
+   15 |  let mut p:sys::CUDA_KERNEL_NODE_PARAMS=std::mem::zeroed();assert_eq!(sys::cuGraphKernelNodeGetParams_v2(nodes[0],&mut p),sys::CUresult::CUDA_SUCCESS);assert_eq!([p.gridDimX,p.gridDimY,p.gridDimZ],[blocks,1,1]);assert_eq!([p.blockDimX,p.blockDimY,p.blockDimZ],[threads,1,1]);assert_eq!(p.sharedMemBytes,n.max(1)*4);
+      |                                                                                                      +++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0425`.

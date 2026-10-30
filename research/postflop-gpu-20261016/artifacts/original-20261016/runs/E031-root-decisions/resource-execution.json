@@ -1,0 +1,62 @@
+{
+  "id": "E031-resource-execution",
+  "at": "2026-10-16T18:47:31Z",
+  "decision": "Root authorizes exactly one execution of frozen no-kernel-launch compiler/resource probe. No solver invocation, source activation, direct numerical test or primary cohort.",
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\prepared-manifest.json": "fd50fe183d77d697ce43e8a79d0cdf9d466c720fd452aad39d61c98592f51f16",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\protocol.json": "30b0b9b2b83aa165c004d80a4b1235e394dca1f18850cb543cd173446aba5545",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E031-resource-script-review\\report.json": "75dbc748e7ac09445cc548b28a4fcc5baac36d4a77c60cf7ea3c5440247580b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E031-source-review\\report.json": "6860b52400025410b56c1611e56c222c6fd7ecc638823c5a655eb3c708450108",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-root-decisions\\resource-screen.json": "b92cc0a93b3a80521f57a5060c81c3c862dc5ce0788212f1c8c4b7363173435e"
+  },
+  "live_status_before": {
+    "/api/status": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "/api/preflop/status": {
+      "state": "",
+      "phase": "",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "published_iteration": 0,
+      "accuracy_iteration": null,
+      "target_gap": null,
+      "stop_reason": "",
+      "preview_note": "",
+      "gaps": [],
+      "gap_total": 0.0,
+      "evs": [],
+      "hero": null,
+      "frozen": [],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": ""
+    },
+    "/api/reports/status": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  },
+  "source_entries_verified": 162,
+  "fresh_outputs_verified": true,
+  "resource_screen_preserved": true,
+  "scope_limits": "Resource feasibility only. Independent terminal artifact/PTX audit required before deciding further work. Failure stops this variant; all output retained.",
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

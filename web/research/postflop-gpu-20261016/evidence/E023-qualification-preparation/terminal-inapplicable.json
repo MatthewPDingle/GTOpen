@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-16T13:10:57.223504+00:00",
+  "candidate": "E023",
+  "status": "terminal_inapplicable_primary_rejected",
+  "root_instruction": "Stop conditional adaptation; preserve draft without execution or expansion",
+  "primary_outcome_root_reported": {
+    "aggregate_gain_pct": 1.1981626633,
+    "river_slowdown_pct": 4.8054091,
+    "river_pairs_over3pct": 2,
+    "complete_states_exact": 18,
+    "convergence_checks_exact": 138,
+    "unit_passes": 86
+  },
+  "independent_primary_audit": "Pending root-owned audit; these values are not a new assessment",
+  "draft_archives": {
+    "E023-qualification-plan": {
+      "manifest_sha256": "34b0a7dc56792d3a2e9c647d1d7decf7c60c3a2c16143b3f968c07be48c5b0ad",
+      "preserved_files": 11
+    },
+    "E023-wide-turn-holdout-implementation": {
+      "manifest_sha256": "b7059b57c392fd1f517a22704ac54beb7e22e2e8cd87df6740017e17792b5ee1",
+      "preserved_files": 662
+    }
+  },
+  "preparation_only": true,
+  "broader_builds": 0,
+  "holdout_builds": 0,
+  "native_runs": 0,
+  "gpu_executions": 0,
+  "preparation_scope": "Existing qualification/R2 holdout adapted in partial draft; evaluator and fixture byte-identical; no execution authorizations/readiness or final prepared manifests exist.",
+  "unfinished_by_design": [
+    "No final source review/seal",
+    "No host codec/build-guard selftest execution for new binding",
+    "No broad/holdout binaries or native evidence"
+  ],
+  "preserve_original_evidence": true
+}

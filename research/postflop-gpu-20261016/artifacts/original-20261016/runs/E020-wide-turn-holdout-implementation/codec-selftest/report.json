@@ -1,0 +1,21 @@
+{
+  "status": "pass",
+  "scope": "host parser and exact-file comparator only",
+  "valid_four_store_decode": true,
+  "equal_files_pass": true,
+  "changed_word_rejected_by_full_compare": true,
+  "required_corruptions_rejected": [
+    "bad_magic",
+    "truncated_magic",
+    "truncated_payload",
+    "trailing_byte",
+    "wrong_player",
+    "wrong_kind",
+    "wrong_length",
+    "metadata_mismatch"
+  ],
+  "magic_bytes": 16,
+  "gpu_jobs": 0,
+  "native_solver_runs": 0,
+  "note": "Draft read(15) bug corrected to read(len(magic)) before freeze; no failed/replaced native sample."
+}

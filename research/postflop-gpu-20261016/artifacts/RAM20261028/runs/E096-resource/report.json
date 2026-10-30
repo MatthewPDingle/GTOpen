@@ -1,0 +1,4474 @@
+{
+  "id": "E096-resource",
+  "at": "2026-10-28T16:45:10.649400+00:00",
+  "status": "pass_compiled_prerequisites",
+  "protocol_sha256": "15c9453b2fd4a94ec00a695be3e7ed4db480991c248f37397298c015019acbd8",
+  "gates": {
+    "compute_120:other6entries_exact": true,
+    "compute_120:up_chance:ABI_exact": true,
+    "compute_120:up_chance:barriers_exact": true,
+    "compute_120:up_chance:intended_CFV_cg32_loads": true,
+    "compute_120:up_action:ABI_exact": true,
+    "compute_120:up_action:barriers_exact": true,
+    "compute_120:up_action:intended_CFV_cg32_loads": true,
+    "compute_120:up_action_eval:ABI_exact": true,
+    "compute_120:up_action_eval:barriers_exact": true,
+    "compute_120:up_action_eval:intended_CFV_cg32_loads": true,
+    "compute_75:other6entries_exact": true,
+    "compute_75:up_chance:ABI_exact": true,
+    "compute_75:up_chance:barriers_exact": true,
+    "compute_75:up_chance:intended_CFV_cg32_loads": true,
+    "compute_75:up_action:ABI_exact": true,
+    "compute_75:up_action:barriers_exact": true,
+    "compute_75:up_action:intended_CFV_cg32_loads": true,
+    "compute_75:up_action_eval:ABI_exact": true,
+    "compute_75:up_action_eval:barriers_exact": true,
+    "compute_75:up_action_eval:intended_CFV_cg32_loads": true,
+    "up_chance:no_new_local_spill": true,
+    "up_chance:no_dynamic_shared_increase": true,
+    "up_chance:max_threads_not_lowered": true,
+    "up_chance:positive_fixed_occupancies": true,
+    "up_chance:both_fit_default_limits": true,
+    "up_chance:no_stack_growth": true,
+    "up_action:no_new_local_spill": true,
+    "up_action:no_dynamic_shared_increase": true,
+    "up_action:max_threads_not_lowered": true,
+    "up_action:positive_fixed_occupancies": true,
+    "up_action:both_fit_default_limits": true,
+    "up_action:no_stack_growth": true,
+    "up_action_eval:no_new_local_spill": true,
+    "up_action_eval:no_dynamic_shared_increase": true,
+    "up_action_eval:max_threads_not_lowered": true,
+    "up_action_eval:positive_fixed_occupancies": true,
+    "up_action_eval:both_fit_default_limits": true,
+    "up_action_eval:no_stack_growth": true
+  },
+  "CFV_pointer_load_proof": {
+    "compute_120": {
+      "up_chance": {
+        "baseline": [
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f23, [%rd66];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f24, [%rd80];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f25, [%rd94];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f26, [%rd109];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f27, [%rd123];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f28, [%rd137];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f29, [%rd151];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f23, [%rd57];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f24, [%rd71];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f25, [%rd85];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f26, [%rd100];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f27, [%rd114];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f28, [%rd128];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f29, [%rd142];"
+          }
+        ]
+      },
+      "up_action": {
+        "baseline": [
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f309, [%rd515];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f312, [%rd522];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f290, [%rd486];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f297, [%rd490];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f278, [%rd449];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f280, [%rd452];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f270, [%rd409];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f273, [%rd416];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f276, [%rd423];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f241, [%rd371];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f248, [%rd375];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f255, [%rd379];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f224, [%rd325];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f226, [%rd328];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f228, [%rd331];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f213, [%rd273];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f216, [%rd280];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f219, [%rd287];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f222, [%rd294];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f174, [%rd226];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f181, [%rd230];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f188, [%rd234];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f195, [%rd238];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f152, [%rd171];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f154, [%rd174];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f156, [%rd177];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f158, [%rd180];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f416, [%rd968];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f419, [%rd981];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f422, [%rd994];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f425, [%rd1007];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f428, [%rd1020];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f431, [%rd1033];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f434, [%rd1046];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f437, [%rd1059];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f440, [%rd1072];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f443, [%rd1085];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f446, [%rd1098];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f449, [%rd1111];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f452, [%rd1124];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f455, [%rd1137];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f457, [%rd1150];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f52, [%rd813];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f59, [%rd832];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f66, [%rd851];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f75, [%rd737];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f82, [%rd756];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f89, [%rd775];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f96, [%rd794];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f488, [%rd870];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f490, [%rd883];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f492, [%rd896];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f494, [%rd909];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f496, [%rd923];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f498, [%rd936];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f500, [%rd949];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f318, [%rd543];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f320, [%rd552];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f322, [%rd561];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f324, [%rd570];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f326, [%rd579];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f328, [%rd588];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f330, [%rd597];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f332, [%rd606];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f334, [%rd615];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f336, [%rd624];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f338, [%rd633];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f340, [%rd642];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f342, [%rd651];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f344, [%rd660];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f345, [%rd669];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f308, [%rd503];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f309, [%rd504];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f282, [%rd470];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f283, [%rd471];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f278, [%rd442];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f279, [%rd443];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f269, [%rd396];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f270, [%rd397];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f271, [%rd398];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f230, [%rd353];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f231, [%rd354];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f232, [%rd355];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f224, [%rd317];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f225, [%rd318];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f226, [%rd319];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f212, [%rd259];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f213, [%rd260];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f214, [%rd261];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f215, [%rd262];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f160, [%rd206];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f161, [%rd207];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f162, [%rd208];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f163, [%rd209];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f152, [%rd162];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f153, [%rd163];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f154, [%rd164];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f155, [%rd165];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f429, [%rd954];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f430, [%rd955];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f431, [%rd956];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f432, [%rd957];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f433, [%rd958];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f434, [%rd959];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f435, [%rd960];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f436, [%rd961];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f453, [%rd1058];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f454, [%rd1059];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f455, [%rd1060];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f456, [%rd1061];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f465, [%rd1110];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f466, [%rd1111];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f470, [%rd1136];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f383, [%rd803];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f388, [%rd822];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f393, [%rd841];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f363, [%rd727];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f368, [%rd746];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f373, [%rd765];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f378, [%rd784];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f502, [%rd860];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f504, [%rd873];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f506, [%rd886];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f508, [%rd899];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f510, [%rd913];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f512, [%rd926];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f514, [%rd939];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f318, [%rd533];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f319, [%rd534];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f320, [%rd535];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f321, [%rd536];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f322, [%rd537];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f323, [%rd538];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f324, [%rd539];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f325, [%rd540];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f334, [%rd605];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f335, [%rd606];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f336, [%rd607];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f337, [%rd608];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f342, [%rd641];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f343, [%rd642];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f345, [%rd659];"
+          }
+        ]
+      },
+      "up_action_eval": {
+        "baseline": [
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f84, [%rd57];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f86, [%rd66];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f88, [%rd75];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f90, [%rd84];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f92, [%rd93];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f94, [%rd102];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f96, [%rd111];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f98, [%rd120];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f100, [%rd129];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f102, [%rd138];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f104, [%rd147];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f106, [%rd156];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f108, [%rd165];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f110, [%rd174];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f111, [%rd183];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f266, [%rd580];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f269, [%rd593];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f272, [%rd606];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f275, [%rd619];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f278, [%rd632];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f281, [%rd645];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f284, [%rd658];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f287, [%rd671];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f290, [%rd684];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f293, [%rd697];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f296, [%rd710];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f299, [%rd723];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f302, [%rd736];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f305, [%rd749];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f307, [%rd762];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f331, [%rd426];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f233, [%rd435];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f235, [%rd444];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f237, [%rd453];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f239, [%rd462];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f241, [%rd471];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f243, [%rd480];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f245, [%rd489];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f247, [%rd498];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f249, [%rd507];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f251, [%rd516];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f253, [%rd525];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f255, [%rd534];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f257, [%rd543];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f259, [%rd552];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f260, [%rd561];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f212, [%rd334];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f215, [%rd347];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f218, [%rd360];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f221, [%rd373];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f225, [%rd386];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f228, [%rd399];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f231, [%rd411];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f84, [%rd46];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f85, [%rd47];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f86, [%rd48];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f87, [%rd49];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f88, [%rd50];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f89, [%rd51];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f90, [%rd52];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f91, [%rd53];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f100, [%rd118];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f101, [%rd119];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f102, [%rd120];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f103, [%rd121];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f108, [%rd154];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f109, [%rd155];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f111, [%rd172];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f266, [%rd564];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f267, [%rd565];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f268, [%rd566];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f269, [%rd567];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f270, [%rd568];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f271, [%rd569];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f272, [%rd570];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f273, [%rd571];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f290, [%rd668];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f291, [%rd669];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f292, [%rd670];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f293, [%rd671];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f302, [%rd720];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f303, [%rd721];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f307, [%rd746];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f332, [%rd421];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f234, [%rd424];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f235, [%rd425];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f236, [%rd426];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f237, [%rd427];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f238, [%rd428];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f239, [%rd429];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f240, [%rd430];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f241, [%rd431];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f250, [%rd496];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f251, [%rd497];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f252, [%rd498];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f253, [%rd499];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f258, [%rd532];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f259, [%rd533];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f261, [%rd550];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f212, [%rd323];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f215, [%rd336];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f218, [%rd349];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f221, [%rd362];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f225, [%rd375];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f228, [%rd388];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f231, [%rd400];"
+          }
+        ]
+      }
+    },
+    "compute_75": {
+      "up_chance": {
+        "baseline": [
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f23, [%rd88];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f24, [%rd103];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f25, [%rd118];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f26, [%rd139];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f27, [%rd160];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f28, [%rd181];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f29, [%rd202];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f23, [%rd76];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f24, [%rd91];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f25, [%rd106];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f26, [%rd125];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f27, [%rd146];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f28, [%rd167];"
+          },
+          {
+            "parameters": [
+              12
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f29, [%rd188];"
+          }
+        ]
+      },
+      "up_action": {
+        "baseline": [
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f192, [%rd301];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f195, [%rd305];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f198, [%rd309];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f201, [%rd313];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f263, [%rd479];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f266, [%rd486];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f234, [%rd400];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f237, [%rd404];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f240, [%rd408];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f496, [%rd908];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f499, [%rd918];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f502, [%rd928];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f505, [%rd938];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f507, [%rd951];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f509, [%rd964];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f511, [%rd977];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f152, [%rd219];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f154, [%rd222];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f156, [%rd225];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f158, [%rd228];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f243, [%rd428];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f245, [%rd431];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f204, [%rd337];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f206, [%rd340];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f208, [%rd343];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f272, [%rd507];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f274, [%rd516];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f276, [%rd525];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f278, [%rd534];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f279, [%rd543];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f280, [%rd552];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f281, [%rd561];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f16, [%rd262];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f20, [%rd266];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f24, [%rd269];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f28, [%rd272];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f62, [%rd455];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f66, [%rd459];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f42, [%rd369];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f46, [%rd373];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f50, [%rd377];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f375, [%rd709];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f381, [%rd722];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f387, [%rd731];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f393, [%rd740];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f399, [%rd751];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f405, [%rd765];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f411, [%rd779];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f330, [%rd626];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f336, [%rd635];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f342, [%rd644];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f348, [%rd653];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f354, [%rd667];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f360, [%rd682];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f366, [%rd697];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f417, [%rd793];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f422, [%rd802];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f427, [%rd812];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f432, [%rd822];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f437, [%rd835];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f442, [%rd849];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f447, [%rd863];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f242, [%rd263];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f243, [%rd264];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f244, [%rd265];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f245, [%rd266];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f318, [%rd460];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f319, [%rd461];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f287, [%rd373];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f288, [%rd374];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f289, [%rd375];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f451, [%rd803];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f452, [%rd804];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f453, [%rd805];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f454, [%rd806];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f462, [%rd846];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f464, [%rd859];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f466, [%rd872];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f198, [%rd180];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f199, [%rd181];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f200, [%rd182];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f201, [%rd183];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f296, [%rd409];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f297, [%rd410];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f254, [%rd308];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f255, [%rd309];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f256, [%rd310];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f328, [%rd487];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f329, [%rd488];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f330, [%rd489];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f331, [%rd490];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f335, [%rd523];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f336, [%rd532];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f337, [%rd541];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f302, [%rd435];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f307, [%rd443];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f263, [%rd340];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f268, [%rd348];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f273, [%rd356];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f210, [%rd223];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f215, [%rd231];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f220, [%rd238];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f225, [%rd245];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f385, [%rd612];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f390, [%rd629];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f395, [%rd642];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f400, [%rd655];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f405, [%rd670];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f410, [%rd688];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f415, [%rd705];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f511, [%rd722];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f513, [%rd731];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f515, [%rd740];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f517, [%rd749];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f519, [%rd763];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f521, [%rd776];"
+          },
+          {
+            "parameters": [
+              16
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f523, [%rd789];"
+          }
+        ]
+      },
+      "up_action_eval": {
+        "baseline": [
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f133, [%rd340];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f136, [%rd350];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f139, [%rd360];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f142, [%rd370];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f144, [%rd383];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f146, [%rd396];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f148, [%rd409];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f63, [%rd71];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f65, [%rd80];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f67, [%rd89];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f69, [%rd98];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f70, [%rd107];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f71, [%rd116];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f72, [%rd125];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f99, [%rd168];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f102, [%rd177];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f105, [%rd186];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f108, [%rd195];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f111, [%rd209];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f114, [%rd223];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f117, [%rd237];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f172, [%rd256];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f120, [%rd265];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f122, [%rd274];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f124, [%rd283];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f126, [%rd292];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f127, [%rd301];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f128, [%rd310];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f129, [%rd319];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.f32",
+            "line": "ld.global.f32 \t%f118, [%rd250];"
+          }
+        ],
+        "candidate": [
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f137, [%rd311];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f138, [%rd312];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f139, [%rd313];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f140, [%rd314];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f148, [%rd354];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f150, [%rd367];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f152, [%rd380];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f64, [%rd55];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f65, [%rd56];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f66, [%rd57];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f67, [%rd58];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f71, [%rd91];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f72, [%rd100];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f73, [%rd109];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f102, [%rd151];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f105, [%rd160];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f108, [%rd169];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f111, [%rd178];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f114, [%rd192];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f117, [%rd206];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f120, [%rd220];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f176, [%rd240];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f123, [%rd243];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f124, [%rd244];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f125, [%rd245];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f126, [%rd246];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f130, [%rd279];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f131, [%rd288];"
+          },
+          {
+            "parameters": [
+              14
+            ],
+            "bits": 32,
+            "type": "f",
+            "opcode": "ld.global.cg.f32",
+            "line": "ld.global.cg.f32 %f132, [%rd297];"
+          }
+        ]
+      }
+    }
+  },
+  "other6entry_bodies": {
+    "compute_120": {
+      "copy_root": true,
+      "down_action": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "copy_span": true
+    },
+    "compute_75": {
+      "copy_root": true,
+      "down_action": true,
+      "down_chance": true,
+      "up_fold": true,
+      "up_show": true,
+      "copy_span": true
+    }
+  },
+  "resource_rows": [
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 30,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 36,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          18
+        ],
+        [
+          128,
+          9
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 56,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "context_stack_limit_after_load": 1024,
+      "context_stack_limit_before_load": 1024,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_no_dynamic_shared",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [
+    {
+      "entry": "up_chance",
+      "baseline": {
+        "actual_block_threads": 128,
+        "context_stack_limit_after_load": 1024,
+        "context_stack_limit_before_load": 1024,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 30,
+        "shape": "same128threads_no_dynamic_shared",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "context_stack_limit_after_load": 1024,
+        "context_stack_limit_before_load": 1024,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 36,
+        "shape": "same128threads_no_dynamic_shared",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "parser_fixtures": [
+    {
+      "entry": "up_chance",
+      "cache": "",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    },
+    {
+      "entry": "up_chance",
+      "cache": ".cg",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    },
+    {
+      "entry": "up_action",
+      "cache": "",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    },
+    {
+      "entry": "up_action",
+      "cache": ".cg",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    },
+    {
+      "entry": "up_action_eval",
+      "cache": "",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    },
+    {
+      "entry": "up_action_eval",
+      "cache": ".cg",
+      "positive_cvta_mad_and_negative_wrongparam_loadedvalue_store_checks": true
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "8a9d38e62b3a95de36fe0e7933ce641ff28927541eab3cf7161e9ff67ef454fe",
+    "candidate-compute_75": "82f8c99b9adfc8baa67128318ba5225af7b05248c0675d55f352a8adad2f15e7"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "scope": "Coherent cache load source compiled mechanism/ABI/otherentries/device feasibility only, no numerical or speed claim. All resource differences disclosed underD108. Any genuine failure closes exacthintform withoutcacheop/entrysubset/flags/source rescue. Passing requires fullrawphysics/samequalityspeed/adoption before gain."
+}

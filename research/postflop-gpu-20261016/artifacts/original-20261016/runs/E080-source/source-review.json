@@ -1,0 +1,22 @@
+{
+  "at": "2026-10-18T06:46:05.931412+00:00",
+  "scope": "One scoped CPU-only worker runs the four original full serial scale-first/q predicates while the original caller performs NVRTC/module, pinned staging allocation and ArenaLayout construction. All CUDA/context/stream/budget/plan remain on the original caller. The fixed >=64 MiB quantized-byte eligibility matches admitted D131; smaller/F32 paths retain original in-upload serial checks. Borrowed tokens accept only identical Store and cannot escape initialization; original snapshot guards execute at consumption. No skipped checks, persistent cache, changed integer grouping, kernel/math/quality/upload/state/layout/save changes.",
+  "exact_D131_coordinate_helper": true,
+  "original_predicate_expression_moved_verbatim": true,
+  "original_layout_guards_retained": true,
+  "compile_module_pinned_layout_source_bodies_retained": true,
+  "scan_order": [
+    "regrets0",
+    "regrets1",
+    "strat0",
+    "strat1"
+  ],
+  "four_tokens_used_once_in_same_order": true,
+  "serial_fallback": "No tokens computed for ineligible fixtures; original per-upload scans remain. F32 contributes zero eligibility bytes. OS spawn failure computes original checks serially after setup.",
+  "safety": "Only immutable Store borrows reach worker. Setup reads Spot/tree/plan and owns its allocations; no concurrent traversal, Store write or GPU API on worker. Tokens remain borrowed until final upload and cannot be stored in GpuSolver. Wrong-store token conservatively declines zero path. Setup error priority and joined panic/drop semantics match the 12 tested D131 cases.",
+  "risks": "Speculative scans on setup failure, CPU/cache contention, pinned memory allocation, warm/F32/snapshot and process shape differences require integrated/broad/material checks. No component timing is a complete-solve claim.",
+  "added_units": 2,
+  "expected_ordinary_units_passed": 86,
+  "ignored_unchanged": 4,
+  "component_report_sha256": "535caf6224b536be96d4e5aeb9a11954faaba5af8922be1d6e586eb058a2520a"
+}

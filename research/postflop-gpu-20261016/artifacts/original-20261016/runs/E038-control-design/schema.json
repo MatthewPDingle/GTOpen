@@ -1,0 +1,151 @@
+{
+  "id": "E038-control",
+  "status": "SOURCE_ONLY_FROZEN_PENDING_ROOT_EXECUTION",
+  "baseline": "accepted E020",
+  "filter": "gpu::arena::e038_upload_control::exact_u16_zero_upload_lifecycle",
+  "test_arguments": [
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "E038_CONTROL_DIR": "Fresh nonexistent absolute output directory; existing parent. Original and candidate use distinct directories.",
+    "E038_CONTROL_EXPECT_FAST_PATH": "0 for original, 1 for candidate; mandatory native predicate assertion."
+  },
+  "unit_summary": {
+    "original": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 88
+    },
+    "candidate": {
+      "passed": 1,
+      "failed": 0,
+      "ignored": 0,
+      "filtered_out": 89
+    }
+  },
+  "fixture": {
+    "board": "KsQs2dJd",
+    "range_oop": "AA,KK,QQ,JJ,AKs,AQs,AKo",
+    "range_ip": "AA,QQ,TT,77,AQs,KQs,AQo",
+    "starting_pot": 10.0,
+    "effective_stack": 20.0,
+    "bet": "50",
+    "raises": [],
+    "donks": [],
+    "node_limit": 20000,
+    "maximum_combined_host_elements": 250000,
+    "storage": "Compressed",
+    "solve_iterations": 0
+  },
+  "layout_order": [
+    "full",
+    "compact"
+  ],
+  "phase_order": [
+    "pre_upload",
+    "post_upload",
+    "first_readback",
+    "materialized",
+    "repeat_readback"
+  ],
+  "files_per_layout": [
+    "pre_upload.host.bin",
+    "pre_upload.query.bin",
+    "pre_upload.save",
+    "post_upload.save",
+    "post_upload.query.bin",
+    "post_upload.host.bin",
+    "post_upload.gpu.bin",
+    "first_readback.host.bin",
+    "first_readback.gpu.bin",
+    "materialized.host.bin",
+    "materialized.gpu.bin",
+    "repeat_readback.host.bin",
+    "repeat_readback.gpu.bin"
+  ],
+  "expected_counts": {
+    "layouts": 2,
+    "phases_per_layout": 5,
+    "files_per_layout": 13,
+    "raw_host_images": 10,
+    "raw_device_images": 8,
+    "query_images": 4,
+    "save_images": 4,
+    "root_json_files": 1,
+    "total_files_per_arm": 27,
+    "markers_per_arm": 3,
+    "maximum_output_bytes_per_layout": 33554432
+  },
+  "marker": {
+    "prefix": "E038_UPLOAD_CONTROL ",
+    "order": [
+      "layout_complete:full",
+      "layout_complete:compact",
+      "complete"
+    ],
+    "error_prefix": "E038_CONTROL_CLEANUP_ERROR",
+    "reject_any_error_prefix": true,
+    "complete_json_matches": "evidence.json semantically",
+    "layout_fields": [
+      "layout",
+      "nodes",
+      "nh",
+      "host_elements",
+      "device_elements",
+      "inactive_blocks",
+      "u16_zero_fast_path",
+      "host_query_save_preserved",
+      "device_unchanged_after_readbacks",
+      "repeat_restores_first_readback",
+      "materialization_changed_host",
+      "cleanup_complete",
+      "files",
+      "output_bytes"
+    ]
+  },
+  "binary_codecs": {
+    "byte_order": "little endian, no implicit padding",
+    "host": {
+      "magic": "E038HOST1",
+      "header": "9 magic bytes, iteration:u64, use_isomorphism:u8",
+      "stores": "Exactly regret0, regret1, strategy0, strategy1. Each: tag:u32 (1 I16, 2 U16), q_count:u64, q_count 2-byte raw words, scale_count:u64, scale_count raw f32-bit u32 words. Require EOF after store4; preserve signed I16 two-complement words."
+    },
+    "device": {
+      "magic": "E038GPU1",
+      "arenas": "Exactly regret0, regret1, strategy0, strategy1. Each: count:u64 then count raw f32-bit u32 words. Require EOF after arena4. Lengths equal actual plan device_elements[player]. Every strategy word must have bits0."
+    },
+    "query": {
+      "magic": "E038QUERY1",
+      "records": "All action nodes in ascending ID to EOF: node:u32, player:u32, nh:u32, na:u32, followed by nh*na f32-bit u32 values from actual solved_strategy_into. No record-count prefix. Require exact EOF and at least one nonuniform action strategy."
+    },
+    "save": "Existing Solver::save format, compared as full bytes. Saves decode compressed data and do not preserve raw U16 q by format; complete host images separately preserve those words."
+  },
+  "native_assertions": [
+    "Nonzero deterministic U16 q with all scale bits +0; every host word preserved through actual constructor, CPU queries and saves.",
+    "Actual full layout and actual compact layout with nonempty inactive siblings for both players; actual device lengths match finalized plan.",
+    "Compact U16 inactive snapshots remain positive-zero sentinels; finite distinct I16 snapshots are nonempty.",
+    "Actual first and repeat full sync_to_cpu execute ArenaLayout.write. Repeat host image equals first readback; actual symmetric materialization changes compact host data.",
+    "All four device arenas remain byte-identical through all four captures; both strategy arrays contain exact positive-zero bits.",
+    "Both layout solver owners synchronize before drop; each retained own context error slot is checked after solver destruction."
+  ],
+  "cross_arm_comparison": {
+    "gate": "Require successful original and candidate runs, both exact unit summaries, all three ordered markers, no cleanup error, exact 27-file inventories and descriptor byte lengths before comparison.",
+    "raw": "All 26 files under matching full/compact paths must be byte-identical across original and candidate; decode every raw image to EOF and validate geometry.",
+    "json": "evidence.json and marker payloads must be identical after removing only layouts[*].u16_zero_fast_path (or result.u16_zero_fast_path for layout markers). Original must be false and candidate true before removal. No other field may differ.",
+    "intra_arm": "pre/post host/query/save exact; all four GPU images per layout exact; first/repeat host exact; full materialization no-op and compact materialization changes host."
+  },
+  "limits": [
+    "This is upload/readback correctness, not solver convergence or timing evidence. No iterations, exploitability, or custom GPU kernel.",
+    "Original and candidate are independent processes using the same attachment; no CPU mirror of production upload/decode.",
+    "Signed/F32/bad-scale/reused/snapshot unit coverage in the sealed sources is unchanged.",
+    "Two layouts share one fixed Spot configuration; geometry is asserted at runtime, never silently substituted.",
+    "Existing E038 production archive remains immutable; control attachment is test-only and excluded from eventual performance binaries."
+  ],
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "filter_routing": "Root reuses the established harness with the complete qualified filter, without --exact. Exactly one selected pass and the specified filtered count remain mandatory."
+}

@@ -1,0 +1,423 @@
+{
+  "id": "E068-resource",
+  "at": "2026-10-17T11:40:12.190716+00:00",
+  "status": "pass_resource_and_actual_mechanism_prerequisites",
+  "protocol_sha256": "5f99a8a48847ab088452ab70fed91a102c513aa66e6a8cc5374f07eff9be8c74",
+  "source_manifest_sha256": "f33d3569444dffc8a7ee46c78a1a7de2ffe348ba9f4922be7f2f7c005a12c654",
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 30,
+      "shape": "all_chance_hands_spans",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "all_chance_hands_spans",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "compile_variants": 4,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "resource_rows": 2,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "details": {
+    "all_chance_hands_spans": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 30,
+        "shape": "all_chance_hands_spans",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "all_chance_hands_spans",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      },
+      "gates": {
+        "local_bytes_not_increased": true,
+        "dynamic_shared_not_increased": true,
+        "max_threads_not_reduced": true,
+        "supports_all_fixed_thread_controls": true,
+        "both_fit_default_limits": true,
+        "positive_fixed_driver_occupancy": true,
+        "same_dynamic_bytes": true
+      },
+      "feasibility_admission": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "reject_resource_prefilter",
+          "gates": {
+            "allocated_registers_not_increased": false,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": true
+          },
+          "nominal_registers": [
+            30,
+            40
+          ],
+          "allocated_registers_per_warp": [
+            1024,
+            1280
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 2048,
+              "candidate": 2560
+            },
+            {
+              "threads": 128,
+              "baseline": 4096,
+              "candidate": 5120
+            },
+            {
+              "threads": 256,
+              "baseline": 8192,
+              "candidate": 10240
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [
+          "allocated_registers_not_increased"
+        ],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    }
+  },
+  "abi": {
+    "baseline": [
+      [
+        "u64",
+        " .ptr .align 1",
+        "0"
+      ],
+      [
+        "u32",
+        "",
+        "1"
+      ],
+      [
+        "u32",
+        "",
+        "2"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "3"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "4"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "5"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "6"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "7"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "8"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "9"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "10"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "11"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "12"
+      ],
+      [
+        "u32",
+        "",
+        "13"
+      ],
+      [
+        "u32",
+        "",
+        "14"
+      ]
+    ],
+    "candidate": [
+      [
+        "u64",
+        " .ptr .align 1",
+        "0"
+      ],
+      [
+        "u32",
+        "",
+        "1"
+      ],
+      [
+        "u32",
+        "",
+        "2"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "3"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "4"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "5"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "6"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "7"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "8"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "9"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "10"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "11"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "12"
+      ],
+      [
+        "u32",
+        "",
+        "13"
+      ],
+      [
+        "u32",
+        "",
+        "14"
+      ]
+    ]
+  },
+  "gates": {
+    "other8_entries_exact": true,
+    "other8_sm75_entries_exact": true,
+    "up_chance_changed_actual": true,
+    "up_chance_changed_sm75": true,
+    "all_chance_hands_spans:local_bytes_not_increased": true,
+    "all_chance_hands_spans:dynamic_shared_not_increased": true,
+    "all_chance_hands_spans:max_threads_not_reduced": true,
+    "all_chance_hands_spans:supports_all_fixed_thread_controls": true,
+    "all_chance_hands_spans:both_fit_default_limits": true,
+    "all_chance_hands_spans:positive_fixed_driver_occupancy": true,
+    "all_chance_hands_spans:same_dynamic_bytes": true,
+    "abi_exact": true,
+    "actual_branch:baseline_mask_loads_found": true,
+    "actual_branch:candidate_mask_loads_found": true,
+    "actual_branch:baseline_blocker_branches_found": true,
+    "actual_branch:candidate_blocker_branches_absent": true,
+    "actual_branch:no_unknown_calls": true
+  },
+  "ptx_sha256": {
+    "baseline": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate": "9e9cba178c15be3fc454fa8261dfcb3039c9edc97f9a6ac8fe62d1c1cb954365"
+  },
+  "entry_body_sha256": {
+    "baseline": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    },
+    "candidate": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "9f3d84e80e7c032ea2c54b076b30c6ad43d00ace3e3a1640014f541b84377371",
+      "up_action": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    }
+  },
+  "binary_sha256": "867d8ef2ff537013e8d967139a452d56d9f698dca5127f3f026ce225a171b8b9",
+  "stdout_sha256": "d36266a735b1ef81c194c8440d5bd113c1eca04c92838922bf6e71c7cff99f23",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Actual compiled attributes and theoretical occupancy only. No numerical, runtime utilization, capacity or speed qualification.",
+  "blocker_branch_proof_sha256": "f4bc1b86eba7bda91eb5236d861ec8c13661bfed9af419f60a4a96a47d1bd73a"
+}

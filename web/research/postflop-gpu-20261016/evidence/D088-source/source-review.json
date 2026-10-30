@@ -1,0 +1,12 @@
+{
+  "id": "D088-CPU-constructor-stages",
+  "at": "2026-10-17T05:52:49.225196+00:00",
+  "kind": "diagnostic_only",
+  "basis_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D087-driver-phase-root-check\\report.json",
+  "basis_sha256": "e54ffa8908f061510ab1eab04521c1eefe9bbc65241253984be0a2d6138a84bf",
+  "motivation": "D087init657ms includes417ms outsideAPI/device records. Distinguish planning, NVRTC/CPU work, arena layouts and actual positive-zero scanning before choosing any optimizer.",
+  "instrumentation": "Local Instant spans and stderr JSON only; 12outer stages and four nested zero-scan measurements. Same accepted E051 CUDA, factory call/field order, owned allocations, integer/FP formulas, quality/stop/evaluator. Individual uploads wrapped in expression blocks; same owners and lifetimes returned. No additional GPU call or resource.",
+  "scope": "Fresh compressed rainbow, exact accepted6full states/60checkpoints, fixed3ordinary/diagnostic pairs. Observer absolute complete/native/outer wall changes<=10%in everypair; no extensions/exclusions/pooling. No optimizer accepted or gate relaxed.",
+  "prior_counterevidence": "D012 early-ctor wall stalls were not established algorithm costs; D019 already validated final vectorized readback code; E049zero metadata full-cycle rejection remains closed. Aggregate gaps alone do not reopen those implementations.",
+  "limits": "Instrumentation can alter compiler/allocator/scheduling behavior. Matched observer gate required; stage sums exclude marker logging and nested scans must not be added to enclosing upload spans. No global bias or universal bottleneck proof."
+}

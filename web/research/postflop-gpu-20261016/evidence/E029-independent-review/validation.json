@@ -1,0 +1,774 @@
+{
+  "id": "E029-independent-numerical-review",
+  "at": "2026-10-16T17:27:27.985971+00:00",
+  "verdict": "CONFIRMED_REJECTED",
+  "numerical_audit_pass": true,
+  "primary": {
+    "baseline_sum_fixture_medians_ms": 9575.940299999998,
+    "candidate_sum_fixture_medians_ms": 9609.9709,
+    "gain_pct": -0.35537606682867345,
+    "minimum_pct": 2,
+    "aggregate_gate_met": false,
+    "fixture_guard_failed": true
+  },
+  "all18_complete_non_timing_results_exact": true,
+  "all138_convergence_checkpoints_exact": true,
+  "all_complete_normalized_stage_trajectories_exact": true,
+  "trajectories": [
+    {
+      "run": "B095",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B095",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B095",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E029R1",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E029R1",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E029R1",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E029R2",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E029R2",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E029R2",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "B096",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B096",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B096",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "B097",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "B097",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "B097",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    },
+    {
+      "run": "E029R3",
+      "fixture": "rainbow",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "run": "E029R3",
+      "fixture": "two-tone",
+      "count": 10,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "run": "E029R3",
+      "fixture": "river",
+      "count": 3,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    }
+  ],
+  "unit_inventory": {
+    "passed": 84,
+    "failed": 0,
+    "ignored": 4,
+    "measured": 0,
+    "filtered": 0,
+    "matches_E020_inventory": true,
+    "extended_geometry_test_passed": true
+  },
+  "chronology_including_unit": [
+    {
+      "id": "V029-unit",
+      "started_at": "2026-10-16T17:25:17Z",
+      "finished_at": "2026-10-16T17:25:31Z"
+    },
+    {
+      "id": "B095",
+      "started_at": "2026-10-16T17:25:32Z",
+      "finished_at": "2026-10-16T17:25:45Z"
+    },
+    {
+      "id": "E029R1",
+      "started_at": "2026-10-16T17:25:46Z",
+      "finished_at": "2026-10-16T17:25:59Z"
+    },
+    {
+      "id": "E029R2",
+      "started_at": "2026-10-16T17:26:00Z",
+      "finished_at": "2026-10-16T17:26:13Z"
+    },
+    {
+      "id": "B096",
+      "started_at": "2026-10-16T17:26:14Z",
+      "finished_at": "2026-10-16T17:26:27Z"
+    },
+    {
+      "id": "B097",
+      "started_at": "2026-10-16T17:26:27Z",
+      "finished_at": "2026-10-16T17:26:40Z"
+    },
+    {
+      "id": "E029R3",
+      "started_at": "2026-10-16T17:26:41Z",
+      "finished_at": "2026-10-16T17:26:54Z"
+    }
+  ],
+  "components": [
+    {
+      "fixture_id": "rainbow",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            81.75359999999999,
+            78.5264,
+            77.9291
+          ],
+          "candidate_raw_ms": [
+            84.53049999999999,
+            83.9057,
+            84.2371
+          ],
+          "baseline_median_ms": 78.5264,
+          "candidate_median_ms": 84.2371,
+          "candidate_minus_baseline_median_ms": 5.710700000000003,
+          "gain_pct": -7.2723313433444075,
+          "paired_candidate_minus_baseline_ms": [
+            2.7768999999999977,
+            5.379300000000001,
+            6.307999999999993
+          ],
+          "median_paired_candidate_minus_baseline_ms": 5.379300000000001
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            639.8624000000001,
+            629.1424,
+            610.6156000000001
+          ],
+          "candidate_raw_ms": [
+            668.6568000000001,
+            665.5667,
+            643.0356
+          ],
+          "baseline_median_ms": 629.1424,
+          "candidate_median_ms": 665.5667,
+          "candidate_minus_baseline_median_ms": 36.42430000000002,
+          "gain_pct": -5.789516014180577,
+          "paired_candidate_minus_baseline_ms": [
+            28.794399999999996,
+            36.42430000000002,
+            32.41999999999996
+          ],
+          "median_paired_candidate_minus_baseline_ms": 32.41999999999996
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            4612.785900000001,
+            4611.232099999999,
+            4609.0893
+          ],
+          "candidate_raw_ms": [
+            4618.050399999999,
+            4615.396000000001,
+            4618.309
+          ],
+          "baseline_median_ms": 4611.232099999999,
+          "candidate_median_ms": 4618.050399999999,
+          "candidate_minus_baseline_median_ms": 6.818299999999908,
+          "gain_pct": -0.14786286728009004,
+          "paired_candidate_minus_baseline_ms": [
+            5.264499999998407,
+            4.163900000001377,
+            9.219700000000557
+          ],
+          "median_paired_candidate_minus_baseline_ms": 5.264499999998407
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            319.7303,
+            345.2061,
+            329.243
+          ],
+          "candidate_raw_ms": [
+            338.0461,
+            328.0749,
+            327.9298
+          ],
+          "baseline_median_ms": 329.243,
+          "candidate_median_ms": 328.0749,
+          "candidate_minus_baseline_median_ms": -1.1680999999999813,
+          "gain_pct": 0.3547835489289009,
+          "paired_candidate_minus_baseline_ms": [
+            18.315800000000024,
+            -17.13119999999998,
+            -1.3131999999999948
+          ],
+          "median_paired_candidate_minus_baseline_ms": -1.3131999999999948
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            5654.1804999999995,
+            5664.153899999999,
+            5626.9254
+          ],
+          "candidate_raw_ms": [
+            5709.374699999999,
+            5692.998799999999,
+            5673.5778
+          ],
+          "baseline_median_ms": 5654.1804999999995,
+          "candidate_median_ms": 5692.998799999999,
+          "candidate_minus_baseline_median_ms": 38.81829999999991,
+          "gain_pct": -0.6865415775106563,
+          "paired_candidate_minus_baseline_ms": [
+            55.19419999999991,
+            28.844900000000052,
+            46.65239999999994
+          ],
+          "median_paired_candidate_minus_baseline_ms": 46.65239999999994
+        }
+      },
+      "guard": {
+        "median_regression_pct": 0.6865415775106563,
+        "paired_regression_pct": [
+          0.9761662189595807,
+          0.509253465023259,
+          0.8290922072647336
+        ],
+        "repeats_above3": 0,
+        "failed": false
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            337.1615,
+            345.0082,
+            345.0816
+          ],
+          "candidate_raw_ms": [
+            351.619,
+            362.5335,
+            289.9709
+          ],
+          "baseline_median_ms": 345.0082,
+          "candidate_median_ms": 351.619,
+          "candidate_minus_baseline_median_ms": 6.61080000000004,
+          "gain_pct": -1.9161283702822254,
+          "paired_candidate_minus_baseline_ms": [
+            14.457500000000039,
+            17.525300000000016,
+            -55.11070000000001
+          ],
+          "median_paired_candidate_minus_baseline_ms": 14.457500000000039
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            356.2849,
+            414.9757,
+            405.66790000000003
+          ],
+          "candidate_raw_ms": [
+            398.1481,
+            388.94230000000005,
+            352.8463
+          ],
+          "baseline_median_ms": 405.66790000000003,
+          "candidate_median_ms": 388.94230000000005,
+          "candidate_minus_baseline_median_ms": -16.725599999999986,
+          "gain_pct": 4.122978426441921,
+          "paired_candidate_minus_baseline_ms": [
+            41.863200000000006,
+            -26.033399999999972,
+            -52.821600000000046
+          ],
+          "median_paired_candidate_minus_baseline_ms": -26.033399999999972
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            2827.3948,
+            2833.8509,
+            2832.6318
+          ],
+          "candidate_raw_ms": [
+            2836.5930000000003,
+            2840.6112000000003,
+            2841.942
+          ],
+          "baseline_median_ms": 2832.6318,
+          "candidate_median_ms": 2840.6112000000003,
+          "candidate_minus_baseline_median_ms": 7.979400000000169,
+          "gain_pct": -0.2816956301909824,
+          "paired_candidate_minus_baseline_ms": [
+            9.19820000000027,
+            6.76030000000037,
+            9.310199999999895
+          ],
+          "median_paired_candidate_minus_baseline_ms": 9.19820000000027
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            236.9363,
+            239.3076,
+            248.27759999999998
+          ],
+          "candidate_raw_ms": [
+            233.9277,
+            234.7904,
+            235.2155
+          ],
+          "baseline_median_ms": 239.3076,
+          "candidate_median_ms": 234.7904,
+          "candidate_minus_baseline_median_ms": -4.5172000000000025,
+          "gain_pct": 1.8876124285229563,
+          "paired_candidate_minus_baseline_ms": [
+            -3.0086000000000013,
+            -4.5172000000000025,
+            -13.062099999999987
+          ],
+          "median_paired_candidate_minus_baseline_ms": -4.5172000000000025
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            3757.8319,
+            3833.1937,
+            3831.7052
+          ],
+          "candidate_raw_ms": [
+            3820.3351,
+            3826.9264000000003,
+            3720.0274000000004
+          ],
+          "baseline_median_ms": 3831.7052,
+          "candidate_median_ms": 3820.3351,
+          "candidate_minus_baseline_median_ms": -11.370100000000093,
+          "gain_pct": 0.29673733772629723,
+          "paired_candidate_minus_baseline_ms": [
+            62.50319999999965,
+            -6.267299999999523,
+            -111.67779999999948
+          ],
+          "median_paired_candidate_minus_baseline_ms": -6.267299999999523
+        }
+      },
+      "guard": {
+        "median_regression_pct": -0.29673733772629723,
+        "paired_regression_pct": [
+          1.663278232323262,
+          -0.163500738300794,
+          -2.9145718203999484
+        ],
+        "repeats_above3": 0,
+        "failed": false
+      }
+    },
+    {
+      "fixture_id": "river",
+      "components": {
+        "build_ms": {
+          "baseline_raw_ms": [
+            0.1593,
+            0.1578,
+            0.17450000000000002
+          ],
+          "candidate_raw_ms": [
+            0.1656,
+            0.1594,
+            0.1675
+          ],
+          "baseline_median_ms": 0.1593,
+          "candidate_median_ms": 0.1656,
+          "candidate_minus_baseline_median_ms": 0.0063,
+          "gain_pct": -3.9548022598870056,
+          "paired_candidate_minus_baseline_ms": [
+            0.0063,
+            0.0015999999999999903,
+            -0.007000000000000006
+          ],
+          "median_paired_candidate_minus_baseline_ms": 0.0015999999999999903
+        },
+        "init_ms": {
+          "baseline_raw_ms": [
+            73.8611,
+            79.785,
+            71.3979
+          ],
+          "candidate_raw_ms": [
+            76.1394,
+            78.8702,
+            99.46130000000001
+          ],
+          "baseline_median_ms": 73.8611,
+          "candidate_median_ms": 78.8702,
+          "candidate_minus_baseline_median_ms": 5.009100000000004,
+          "gain_pct": -6.781783645247639,
+          "paired_candidate_minus_baseline_ms": [
+            2.2783000000000015,
+            -0.9147999999999996,
+            28.0634
+          ],
+          "median_paired_candidate_minus_baseline_ms": 2.2783000000000015
+        },
+        "solve_ms": {
+          "baseline_raw_ms": [
+            15.3103,
+            16.3888,
+            15.2394
+          ],
+          "candidate_raw_ms": [
+            16.738,
+            16.889999999999997,
+            16.700400000000002
+          ],
+          "baseline_median_ms": 15.3103,
+          "candidate_median_ms": 16.738,
+          "candidate_minus_baseline_median_ms": 1.4276999999999997,
+          "gain_pct": -9.325094870773269,
+          "paired_candidate_minus_baseline_ms": [
+            1.4276999999999997,
+            0.5011999999999972,
+            1.461000000000002
+          ],
+          "median_paired_candidate_minus_baseline_ms": 1.4276999999999997
+        },
+        "readback_ms": {
+          "baseline_raw_ms": [
+            0.7024,
+            0.762,
+            0.6179
+          ],
+          "candidate_raw_ms": [
+            0.8220999999999999,
+            0.6980000000000001,
+            0.9034
+          ],
+          "baseline_median_ms": 0.7024,
+          "candidate_median_ms": 0.8220999999999999,
+          "candidate_minus_baseline_median_ms": 0.11969999999999992,
+          "gain_pct": -17.04157175398632,
+          "paired_candidate_minus_baseline_ms": [
+            0.11969999999999992,
+            -0.06399999999999995,
+            0.2855
+          ],
+          "median_paired_candidate_minus_baseline_ms": 0.11969999999999992
+        },
+        "full_cycle_ms": {
+          "baseline_raw_ms": [
+            90.0546,
+            97.1135,
+            87.4476
+          ],
+          "candidate_raw_ms": [
+            93.90310000000001,
+            96.637,
+            117.27600000000001
+          ],
+          "baseline_median_ms": 90.0546,
+          "candidate_median_ms": 96.637,
+          "candidate_minus_baseline_median_ms": 6.582400000000007,
+          "gain_pct": -7.309343442755847,
+          "paired_candidate_minus_baseline_ms": [
+            3.8485000000000156,
+            -0.4765000000000015,
+            29.828400000000016
+          ],
+          "median_paired_candidate_minus_baseline_ms": 3.8485000000000156
+        }
+      },
+      "guard": {
+        "median_regression_pct": 7.309343442755847,
+        "paired_regression_pct": [
+          4.2735185098818,
+          -0.49066298712331596,
+          34.11002703333198
+        ],
+        "repeats_above3": 2,
+        "failed": true
+      }
+    }
+  ],
+  "pairs": [
+    {
+      "baseline": "B095",
+      "candidate": "E029R1",
+      "baseline_sum_ms": 9502.067,
+      "candidate_sum_ms": 9623.6129,
+      "gain_pct": -1.279152209724484,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": 17.24070000000006,
+        "init_ms": 72.93589999999995,
+        "solve_ms": 15.890399999998408,
+        "readback_ms": 15.426899999999932,
+        "full_cycle_ms": 121.54590000000098
+      },
+      "process_wall_ms": {
+        "baseline": 12485.000000000582,
+        "candidate": 12594.000000004598
+      },
+      "whole_test_seconds": {
+        "baseline": 12.04,
+        "candidate": 12.18
+      }
+    },
+    {
+      "baseline": "B096",
+      "candidate": "E029R2",
+      "baseline_sum_ms": 9594.461099999999,
+      "candidate_sum_ms": 9616.5622,
+      "gain_pct": -0.23035269797489388,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": 22.906200000000013,
+        "init_ms": 9.476100000000088,
+        "solve_ms": 11.4254000000019,
+        "readback_ms": -21.712400000000002,
+        "full_cycle_ms": 22.10110000000168
+      },
+      "process_wall_ms": {
+        "baseline": 12547.000000005937,
+        "candidate": 12561.99999999808
+      },
+      "whole_test_seconds": {
+        "baseline": 12.16,
+        "candidate": 12.18
+      }
+    },
+    {
+      "baseline": "B097",
+      "candidate": "E029R3",
+      "baseline_sum_ms": 9546.0782,
+      "candidate_sum_ms": 9510.8812,
+      "gain_pct": 0.36870638667091704,
+      "component_sum_candidate_minus_baseline_ms": {
+        "build_ms": -48.80970000000002,
+        "init_ms": 7.661799999999857,
+        "solve_ms": 19.990899999999783,
+        "readback_ms": -14.089800000000082,
+        "full_cycle_ms": -35.197000000000116
+      },
+      "process_wall_ms": {
+        "baseline": 12483.99999999674,
+        "candidate": 12438.00000000192
+      },
+      "whole_test_seconds": {
+        "baseline": 12.08,
+        "candidate": 12.03
+      }
+    }
+  ],
+  "checks": {
+    "artifact_hash": 29,
+    "fixed_seven_run_order": 1,
+    "fixed_pairing": 1,
+    "frozen_unit_counts": 1,
+    "terminal_build_stage_results": 1,
+    "separate_compile_before_primary_build": 1,
+    "fixed_primary_invocation_completion": 1,
+    "successful_physical_run": 7,
+    "runtime_binary_manifest_link": 7,
+    "right_binary_for_run": 7,
+    "wrapper_terminal_order": 7,
+    "fixed_primary_environment": 7,
+    "fixed_workload_environment": 7,
+    "live_server_not_solving": 14,
+    "disk_reserve": 7,
+    "gpu_identity_read": 7,
+    "same_GPU_driver": 7,
+    "raw_json_exact_report": 7,
+    "full_native_test_summary": 7,
+    "reported_pass_count": 7,
+    "fixed_native_invocation": 6,
+    "fixed_fixture_order": 6,
+    "full_three_fixture23_check_completeness": 6,
+    "complete_full_primary_suite": 6,
+    "fixed_quality_settings": 18,
+    "fixed_boundary_flags": 18,
+    "finite_positive_timing": 108,
+    "raw_stage_final_result_agreement": 216,
+    "serialized_chronology": 6,
+    "build_terminal_before_unit_and_primary": 1,
+    "same_88_test_inventory": 1,
+    "complete_non_timing_result_exact": 18,
+    "complete_non_timing_stage_trajectory_exact": 6,
+    "convergence_check_cadence": 18,
+    "same_stopping_check": 18,
+    "comparison_fixture_order": 15,
+    "comparison_raw_components": 15,
+    "comparison_baseline_component_median": 15,
+    "comparison_candidate_component_median": 15,
+    "guard_median": 3,
+    "guard_repeat_rule": 3,
+    "primary_baseline_score": 1,
+    "primary_candidate_score": 1,
+    "primary_gain": 1,
+    "independent_registered_gates": 1,
+    "correct_provisional_decision_no_exclusions": 1,
+    "honest_unrun_broader_scope": 1,
+    "pair_baseline_sum": 3,
+    "pair_candidate_sum": 3,
+    "pair_gain": 3,
+    "published_chronology": 1,
+    "full_88_unit_inventory": 1,
+    "extended_geometry_test_passed": 1,
+    "all138_checkpoints_and18_records": 1,
+    "all_three_samples_retained": 2,
+    "assessment_terminal_and_protocol": 1,
+    "assessment_after_all_runs": 1,
+    "decision_no_significance_claim": 1
+  },
+  "assertions": 675,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-plan\\protocol.json": "6d129fe4448741cd1612089bbdcc56e02cf5940d5b2d04a611203feed2470165",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-plan\\scripts-manifest.json": "a91d06103a2d60220e198fb97272aa6d8663adfc3526aec506eafed3ed4fcb1f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-three-pair-comparison\\report.json": "664b840f6f6413d9208702931a08a6bc3b7d141fb745bf4b5712d924de6ffa61",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-postflop_autoresearch.manifest.json": "32d9d7a0724d50d0562f1f440b5ba67b325e3c1fdc4cfd8b55b0becd244ea3c5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-solver.manifest.json": "f398ee691d1c54f2185e706e714c45817612eacce4eaaad7fef2d6ab7b6bc0f7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-build\\exit.json": "41deb0af1e099ce856052773057aeed5e211a8fb9932dbdc5e607680593d4062",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check\\complete.json": "04536b3327f1692285c257490cac33e2cfe823a351430d6930a68b92316ecf4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\invocation.json": "c04439467a98a8a9245ec11a2956596c6897ad2131cf997d5c53de5fca6da3d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\complete.json": "c19e2f80cce3cd9229b61290fc071da88a6d260a4f7a407230a7955e5ee03e8b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V029-unit\\report.json": "78845c5ccbd009a224044102693f6066b64d257212d16fd0d460d6ec240b01b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V029-unit\\stdout.log": "3a940ea1b22309255a603375c9cfd4c52a36dc3fe65cb12016c2e55877f68d46",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-solver.exe": "9a43e22ee9ca1941f74ed1b0ccbf0472c68bc868bfad2a4806f1259399ba00c1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\V029-unit.invocation.json": "6b1b4034539c100956fd6c619eeaddf79ac00be5ec121bdc690ec80e25ecbe0e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\V029-unit.exit.json": "b5df574f302da4d7fcacbea730796f35bb9f1d0857398e16d8a1017a20dc968c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B095\\report.json": "12d2cf68ce4ebfff4b0d5f9942311b2afb19eedca8d5b41ad57d32262c11fb9a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B095\\stdout.log": "e2e9ee4e05e7d9269ab1fdf16b165fcba909fa6ab1cdd5d1d59b5c78b5909325",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.exe": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B095.invocation.json": "0345a04ba4189a06b2fb6a662f3115da91817fbb821b9ed170785079f7ad7efb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B095.exit.json": "76114c2937defddf7f37e8e3b6bd1e819864f0631c0b61fe617b66ab0b844138",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R1\\report.json": "5a834a3c1d7783d1a43a38f86beadcfab3e04359b659aec6027723aaa063a5ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R1\\stdout.log": "009a3a760eaad0fab192b73cb1f5b568fe898258ff8106f184b459160944d2b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E029-postflop_autoresearch.exe": "f6385500feb508e48174cd4abbabf4a015edfeab76aa0b27be97c75043f0707d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R1.invocation.json": "f294c60f905930006f5043c71a7bf83e819734139c357d0ec20fc55d607ed092",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R1.exit.json": "7494b0d69a5d3550f58f0de06be00d5c5a32ffa564c634554f5ce3786c23032b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R2\\report.json": "b0b8ad7000410a790881b5a3458d9096eba3aec42e11d14794d47942f9d07989",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R2\\stdout.log": "e3418feb055d438b68e7815483aec58069d36256c5e5baf4f127723e67df43d4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R2.invocation.json": "19befd8a56adb145d8a14a55f89a2ecb145500f66bd9888592f63a4947a937ee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R2.exit.json": "dde476e964dc4a76dc3bf69e9e4561681280ab4e9f9a1be59e730c3b9aa7217c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B096\\report.json": "e87d5a8d2e0daa0cea8b0acce02af4fe2c0308c99d8da21c0a79806e7e879a4e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B096\\stdout.log": "08544ffa3cdd4141de670127044c0d93db7cc0f6b085c4d99ea85b30ce9a2af7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B096.invocation.json": "3058d325c3b04618304762e60e04e05f90aee47658a7d713e346cf2f15dbf71c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B096.exit.json": "da1c841c87aeba0f99f43b61db4ed3881fd50108ae884eba652074d6ca4c7f9f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B097\\report.json": "5917d1d800bb9de71b7f1eca31f95b717efb299c97fc79fd7f91d137dc69b8da",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B097\\stdout.log": "8905deafc6108b02b4ae33a48e0c4b52f8667bbf29bab221a87912a46829dbf8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B097.invocation.json": "6d1456a748c095f498f94e802d8e1cd675f27e428302aabb2ff17bf1a7faf72b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\B097.exit.json": "6f6c555b39c2b009f39ae32daad64410ecedb67d977acd4d19a6e61df4c79375",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R3\\report.json": "2c50c268c5ae90995219fcb1f32637f0a349d39a56bd1b7c5529997c05418255",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R3\\stdout.log": "00c36e342e49beb2bba6a9c469d06de15f9f6a71cc842066d4f6e6cf8ee0d73b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R3.invocation.json": "5de77f3fdf7ef5a951e2374a9e8c3910a40ecab0389bde1c39849ce3b1812d4d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-primary-execution\\E029R3.exit.json": "71763511685f7c718ad0c84225c7469524de8f49d0ad4e990a1d9aaec513d9bb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-assessment\\invocation.json": "2364dc047984b90487e624b0fb539ab928a17c40a65b0b5c1ed4550010c644d6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-assessment\\exit.json": "c7f86a9a2a6eb3801ccd01b93b2163b4727d9452e9b9e0862207e78b8337b6b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V020-unit\\stdout.log": "a3c0c0e74c9565a57b31d4412ea629de149c496373227009dfa4173d1d6c8293",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E029-independent-review\\audit-numerical.py": "b98a3a22cf680aeb500edd6eb4b8db90a884ba6b5ffc0119ea95b083d72ba0a8"
+  },
+  "scope": "File-only numerical/order/gate audit. Build/source/auxiliary custody and restoration are independently audited in source-custody.json; this report does not substitute for that audit.",
+  "broader_qualification": "Not run; inapplicable after primary rejection. No extension or rescue.",
+  "limits": [
+    "Compressed full-state and convergence equality does not establish every possible F32, metadata/admission or lifecycle state.",
+    "Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.",
+    "Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.",
+    "No statistical significance, speedup, acceptance or deployment claim."
+  ],
+  "reviewer_preparation_note": "Adapted file-only from the sealed E028 numerical parser before outcomes; E029 fixed IDs,84/4 inventory and extended existing geometry test. No candidate script, native solver or GPU work by reviewer.",
+  "native_or_gpu_executed_by_reviewer": false,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

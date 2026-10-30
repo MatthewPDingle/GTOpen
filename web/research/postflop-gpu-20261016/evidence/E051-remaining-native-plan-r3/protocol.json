@@ -1,0 +1,155 @@
+{
+  "id": "E051-remaining-native-r3",
+  "at": "2026-10-17T04:31:49.740670+00:00",
+  "status": "FROZEN_BEFORE_NATIVE_OUTCOMES",
+  "binaries": {
+    "capacity-baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-baseline.exe",
+      "sha256": "63aceeb3a9c3327fa9fc457e5982105e9aa0c238ba55d1b12763d5b29da6dd07",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-baseline.manifest.json",
+      "manifest_sha256": "b0e74c299c876c51f8801c76b1230247898d23118a16bd4bc90ed11daecc64a8"
+    },
+    "capacity-candidate": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-candidate.exe",
+      "sha256": "97ba3c49e196a50156859cef6979d5f2452c624236dfef829015179f00af7d2f",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-candidate.manifest.json",
+      "manifest_sha256": "b0408b13316ae9aefbed564351194b9dcf498f25313cc0bf4abd31f7a24dc15a"
+    },
+    "holdout-baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-baseline.exe",
+      "sha256": "53518344cd8768fab0be7f57dee5281cf70e6598c9bba6493bc3b51534b532fe",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-baseline.manifest.json",
+      "manifest_sha256": "4e16209cfd7b36cf594bc3fd7bf2e9af6adadf033026ff1f4eb168bb485810e9"
+    },
+    "holdout-candidate": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-candidate.exe",
+      "sha256": "91cf352df0e25ad2aed6f1ad3d038f6610fe67a55c711f0b662f3747168e7b7f",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-candidate.manifest.json",
+      "manifest_sha256": "819976a9a2b43ed006fa89adc14f7abc7c9b558927f195203e044ca708e3e765"
+    },
+    "original": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe",
+      "sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+      "manifest_sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411"
+    },
+    "primary-candidate": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+      "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+    }
+  },
+  "codec": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\run.py",
+  "holdout_fixture": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\fixture.json",
+  "historical_holdout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1",
+  "historical_raw": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1\\state.bin",
+  "holdout_pairs": [
+    {
+      "baseline": "H051B1",
+      "candidate": "H051C1"
+    },
+    {
+      "baseline": "H051B2",
+      "candidate": "H051C2"
+    },
+    {
+      "baseline": "H051B3",
+      "candidate": "H051C3"
+    }
+  ],
+  "holdout_order": [
+    "H051B1",
+    "H051C1",
+    "H051C2",
+    "H051B2",
+    "H051B3",
+    "H051C3"
+  ],
+  "holdout_arms": {
+    "H051B1": "baseline",
+    "H051C1": "candidate",
+    "H051B2": "baseline",
+    "H051C2": "candidate",
+    "H051B3": "baseline",
+    "H051C3": "candidate"
+  },
+  "cumulative_pairs": [
+    {
+      "baseline": "B168",
+      "candidate": "E051O1"
+    },
+    {
+      "baseline": "B169",
+      "candidate": "E051O2"
+    },
+    {
+      "baseline": "B170",
+      "candidate": "E051O3"
+    }
+  ],
+  "cumulative_order": [
+    "B168",
+    "E051O1",
+    "E051O2",
+    "B169",
+    "B170",
+    "E051O3"
+  ],
+  "cumulative_arms": {
+    "B168": "baseline",
+    "E051O1": "candidate",
+    "B169": "baseline",
+    "E051O2": "candidate",
+    "B170": "baseline",
+    "E051O3": "candidate"
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native.py": "88764adcd37358e7dfc3e4614a3c2f55ddcf8033742ca3b6d40c1d834bd370bd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-build-r3\\complete.json": "22590905f6d900368a86013740be4e0093e464fae50f6e0ee28ba6fdb3349b3b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\run.py": "bc14bf40a5760a1e5e012f34943367ae7894a8d230f32c61fcf9386db9a19bc4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\evaluator.rs": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\fixture.json": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1\\stdout.log": "fc87c29c40b6d8e3c4ef5496729594e7197bff85568786a187268b527c98e826",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1\\exit.json": "fa98c6c734797084cedb964137a457521ac5c44b6bba918ae034e7924615075b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1\\invocation.json": "c9835bb13a4092b182c49442b8f1975dc6944ff54a6aef1ed753d24f2b6caddf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C1\\state.bin": "10a67b78a4c867e49285cc24a6d249b5b18647383a7886dfc311abf3bac43d32",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-confirmation-plan\\protocol.json": "747413f6a4c9c1b4b69c2f7f09f0a33c8ada7b50ec517f5d67bafb7cc5b32d3e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E051-fresh16-confirmation\\report.json": "c8f59c562260f735df85fdc8538b58585505770bc9ab6c940712ad9fcfc0c7ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E051-broader-root-check\\report.json": "d4b5f45d38cee2c001c88b83c12b9f01b64dce89ca75ed06d45a09da86142246",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-baseline.exe": "63aceeb3a9c3327fa9fc457e5982105e9aa0c238ba55d1b12763d5b29da6dd07",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-baseline.manifest.json": "b0e74c299c876c51f8801c76b1230247898d23118a16bd4bc90ed11daecc64a8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-candidate.exe": "97ba3c49e196a50156859cef6979d5f2452c624236dfef829015179f00af7d2f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-capacity-candidate.manifest.json": "b0408b13316ae9aefbed564351194b9dcf498f25313cc0bf4abd31f7a24dc15a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-baseline.exe": "53518344cd8768fab0be7f57dee5281cf70e6598c9bba6493bc3b51534b532fe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-baseline.manifest.json": "4e16209cfd7b36cf594bc3fd7bf2e9af6adadf033026ff1f4eb168bb485810e9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-candidate.exe": "91cf352df0e25ad2aed6f1ad3d038f6610fe67a55c711f0b662f3747168e7b7f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-candidate.manifest.json": "819976a9a2b43ed006fa89adc14f7abc7c9b558927f195203e044ca708e3e765",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-plan\\protocol.json": "0c5764a33d781a4cf9ea0dcc96f18ec044073be46ea9e4e936b1b05b30d25a9e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-plan-r2\\native.py": "25ee303ebdd125d5672a59adca8b850f0e85205cef9eac8ab45f3a0d348f7f5c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\failure.json": "2286c283b4b3a16484bb428c8637954e64cef147a14477b3ad47cc92a0c2930f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-baseline\\native.exit.json": "edd48a81c7c2089556ec7d8c30b354b42b8b36f284d54e32991827136472e2ba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-baseline\\native.invocation.json": "5216dca76a1852b4da4915e01a4c5aa81d36a2b5a7a4761668b5452fcff5dd7d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-baseline\\native.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-baseline\\native.stdout.log": "137622633f7d052152b7a111d97716661398305538a0b21b64055882f2e485e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-candidate\\native.exit.json": "4231082b81f37c8329681c398473577abb18b81725fd6ebb1e5519ba914c23e5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-candidate\\native.invocation.json": "de7d521f753836a9d3d4b2f4430338647d1b9eb331a133753f1b2ce4e4ef4a66",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-candidate\\native.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-execution\\capacity-candidate\\native.stdout.log": "137622633f7d052152b7a111d97716661398305538a0b21b64055882f2e485e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E051-remaining-native\\capacity.json": "be33d1170eefa43cce2f51120b71124cff3852a43ad6db647d37801e3a7db9c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-plan-r3\\native.py": "70571d561e168ffe7b42697ad85cabbae5039c5e3be778519c32b515980924ff",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-plan-r2\\protocol.json": "9e903f7b4660b5e52252070833fa01c68c8f1b48b57349eba5fdff60455a2f69",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-remaining-native-plan-r2\\launch-failure.json": "623938db25e353e0dc83e589a589c5c260bc527a995723426c8df2420e686503"
+  },
+  "capacity_rule": "Exact six actual retained owned metadata/canonical state/workspace and public wrapper sizes. Device-wide queries unscored. Same existing stored-case geometry, no solves or forced spill.",
+  "holdout_rule": "Exactly three paired observations BC/CB/BC, fixed full169 turn. Same target/stopping. Every full non-timing payload, checkpoint and entire raw q/scale file exact to historical accepted E020. Reject positive candidate median slowdown plus >=2/3 slower pairs; no epsilon, no minimum holdout gain, no extension.",
+  "cumulative_rule": "Fresh original-to-E051 three primary pairs BC/CB/BC. Same exactness controls and strict fixture non-regression. Unrounded sum of per-fixture medians >=1%. No historical timing pooling or added historical percentages.",
+  "candidate_accepted": false,
+  "next": "Root replay and material/source qualification required before adoption.",
+  "repair": "Explicit absolute artifact root; previous nested-path import failed before launch. Preserve all fixed samples/rules and completed capacity evidence."
+}

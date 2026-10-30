@@ -1,0 +1,174 @@
+{
+  "scope": "Unweighted all unordered rainbow runouts; not canonical GpuPlan visitation or dynamic timing",
+  "method": "Hand-class expansion follows copied range.rs, exact card exclusions only; no hand-strength evaluator needed for card-list lengths",
+  "source_anchor_sha256": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+  "config": {
+    "board": "Ks7h2d",
+    "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+    "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+    "tree": {
+      "add_allin": false,
+      "allin_threshold": 0.85,
+      "carry_aggressor_through_checks": null,
+      "effective_stack": 970.0,
+      "ip": [
+        {
+          "bet": [
+            {
+              "PotPct": 33.0
+            },
+            {
+              "PotPct": 75.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 75.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 75.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        }
+      ],
+      "max_raises": 10,
+      "oop": [
+        {
+          "bet": [
+            {
+              "PotPct": 33.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 75.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        },
+        {
+          "bet": [
+            {
+              "PotPct": 75.0
+            }
+          ],
+          "donk": [],
+          "raise": [
+            {
+              "PotPct": 60.0
+            }
+          ]
+        }
+      ],
+      "rake_cap": 3.0,
+      "rake_pct": 0.0,
+      "starting_pot": 60.0
+    }
+  },
+  "base_hands": [
+    257,
+    319
+  ],
+  "runout_count": 1176,
+  "rows": 2352,
+  "performance_measurement": false,
+  "players": [
+    {
+      "p": 0,
+      "m_p": {
+        "min": 219,
+        "median": 236.0,
+        "max": 252
+      },
+      "m_o": {
+        "min": 256,
+        "median": 294.0,
+        "max": 314
+      },
+      "direct_position_words": {
+        "min": 5792,
+        "median": 7271.5,
+        "max": 8035
+      },
+      "cache_copy_words": {
+        "min": 512,
+        "median": 588.0,
+        "max": 628
+      },
+      "direct_to_copy_ratio": {
+        "min": 11.3125,
+        "median": 12.244315810150514,
+        "max": 12.798076923076923
+      },
+      "inferred_global_launch_max_old_dynamic_bytes": 3788,
+      "inferred_global_launch_max_candidate_dynamic_bytes": 6300
+    },
+    {
+      "p": 1,
+      "m_p": {
+        "min": 256,
+        "median": 294.0,
+        "max": 314
+      },
+      "m_o": {
+        "min": 219,
+        "median": 236.0,
+        "max": 252
+      },
+      "direct_position_words": {
+        "min": 5792,
+        "median": 7271.5,
+        "max": 8035
+      },
+      "cache_copy_words": {
+        "min": 438,
+        "median": 472.0,
+        "max": 504
+      },
+      "direct_to_copy_ratio": {
+        "min": 13.223744292237443,
+        "median": 15.270491803278688,
+        "max": 16.301652892561982
+      },
+      "inferred_global_launch_max_old_dynamic_bytes": 3044,
+      "inferred_global_launch_max_candidate_dynamic_bytes": 5060
+    }
+  ]
+}

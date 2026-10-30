@@ -1,0 +1,49 @@
+{
+  "candidate": "D066",
+  "at": "2026-10-16T20:58:26Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "D066_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-source-review\\report.json",
+      "sha256": "965c2bd3843e57f27f150ad06f2d264593fd6ffaa740924bee582ecf1478bfcc"
+    },
+    "D066_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-script-review\\report.json",
+      "sha256": "5b20c696ae9927616ccd0a6ab8b90682d5c053a8ed2a91c88aac4bba22921790"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\candidate-mod.rs",
+      "sha256": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e"
+    },
+    "crates/solver/src/gpu/fold_zero_census.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\candidate-fold_zero_census.rs",
+      "sha256": "14574cf4d66ab6d4a35fe795968c4f37d8258e7f98efa43f9bcf395048138cf7"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\scripts-manifest.json": "f7bf21efd733c81061fed48b2627e643bb19173cedd05fe9f931cb4bf84834fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\protocol.json": "43916bb15c53ab011964ef7e37946caa2bb6c1e91c42af4f68888b3b9eaad389",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\source-manifest.json": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-source-review\\report.json": "965c2bd3843e57f27f150ad06f2d264593fd6ffaa740924bee582ecf1478bfcc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-source-review\\manifest.json": "3e5577c2a4897a7ca51b7849a22eaa3ae595aba1762562a7ab928087f43d0619",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-script-review\\report.json": "5b20c696ae9927616ccd0a6ab8b90682d5c053a8ed2a91c88aac4bba22921790",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-script-review\\manifest.json": "3327e46a5ea40aaa65093187616cb568517bc8c799886f752c33283510270c98",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-root-decisions\\preparation.json": "7c937402b32eb345c65c54967f47fe674af7d444f33c5c5aec3b426352819063"
+  },
+  "scope": "Activate only the frozen test module and append-only declaration; one fresh GPU-only test build, one fixed D066R1 invocation, assessment, then exact source restoration. No performance cohort or optimization, retry, extra snapshot, continuation work or live deployment. Preserve every outcome. Counts establish sampled incidence only."
+}

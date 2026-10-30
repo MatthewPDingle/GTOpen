@@ -1,0 +1,97 @@
+{
+  "id": "RAM20261028-baseline",
+  "at": "2026-10-28T08:05:47.062365+00:00",
+  "status": "FROZEN_PRE_FIRST_NEW_RAM_BENCHMARK",
+  "sequence": [
+    {
+      "id": "RAM20261028-V01",
+      "title": "New RAM epoch: accepted E080 correctness tests",
+      "kind": "validation",
+      "binary": "E080-solver",
+      "unit": true,
+      "scored": false
+    },
+    {
+      "id": "RAM20261028-W01",
+      "title": "New RAM epoch: prespecified E080 warm-up",
+      "kind": "validation",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": false
+    },
+    {
+      "id": "RAM20261028-B01",
+      "title": "New RAM epoch: accepted E080 baseline 1/5",
+      "kind": "baseline",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": true
+    },
+    {
+      "id": "RAM20261028-B02",
+      "title": "New RAM epoch: accepted E080 baseline 2/5",
+      "kind": "baseline",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": true
+    },
+    {
+      "id": "RAM20261028-B03",
+      "title": "New RAM epoch: accepted E080 baseline 3/5",
+      "kind": "baseline",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": true
+    },
+    {
+      "id": "RAM20261028-B04",
+      "title": "New RAM epoch: accepted E080 baseline 4/5",
+      "kind": "baseline",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": true
+    },
+    {
+      "id": "RAM20261028-B05",
+      "title": "New RAM epoch: accepted E080 baseline 5/5",
+      "kind": "baseline",
+      "binary": "E080-postflop_autoresearch",
+      "unit": false,
+      "scored": true
+    }
+  ],
+  "scored_processes": 5,
+  "prespecified_unscored_warmup_processes": 1,
+  "unit_expected_pass": 86,
+  "unit_expected_ignored": 4,
+  "baseline_configuration": "Exact accepted E080 executable and source, unchanged GPU/compressed/Rayon16/quality/stopping/workloads",
+  "baseline_binary_sha256": "0ca6ea19d0598d36c6396040d4cbaf6c2be5a599ca4cc3d9ace9beba32094184",
+  "output_root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028",
+  "historical_archive_read_only": "S:\\GTOpen-research\\postflop-gpu-20261016",
+  "required_free_bytes": 70866960384,
+  "conservative_peak_new_output_reservation_bytes": 2147483648,
+  "aggregation": "Unrounded sum of five-observation per-fixture complete-cycle medians. All five scored observations retained; warm-up prespecified and separate. No exclusions/extensions/rescue.",
+  "exactness": "Every complete non-timing result, fingerprint, EV/exploitability bits, stop and all23convergence checkpoints match unchanged E020C1 reference.",
+  "scope": "New RAM/machine epoch baseline, not an optimizer speedup or a controlled causal RAM-only comparison. The old14.7414% gain stays historical. Future improvements require new matched controls and unchanged1%/strictfixture/fresh16/broad/material/capacity/holdout/fresh-original qualification.",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\accepted-source.json": "951455cc2aed3e49a5a5ce36d9fdbc23d546387ce413326ef34bac1a9c56fe19",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\anchor-provenance.json": "f6284db3a9dc96832ac9bd0c2ed4d4aec2a2e02120e96cedc1274a542161a356",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\assess-baseline.py": "e0c60eed3f171394885d02ce38073560b8b9a4ee5652c7aa18b6de9b92bf65c0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\dashboard-before.html": "8decd7e57843b5713b78dd33f8bf169cdb0c4d8b9e574755c64a15e893a6ed79",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\exact-anchor.json": "f37067f252068f7094196e3ff0a6e77c4ffe45a9bfc98fc399cde07622936245",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\hardware.json": "069862e236f9a19e95898c6305833fb2319f1e991aee4847d83720de0caa126c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\preexisting-target-artifacts.json": "b744638e13f0d5fe57512555605142d7e03c8cd46483e8e4fa86040cf49b017b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\prepare-baseline.py": "3ac6c077800e19a63a32e178eddbcb0071a38ba95cfb00f89921cd244d628a2b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\protected-main.json": "9c824952f93eeb41000947221a9718356a82b82a86d917b43ecfe8fd3e01311d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\run-baseline.py": "31a393a50d028445cb02e190d165eca12053da522dc6bb9f702110fa472307ad",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\runner.py": "326e654024f7d3daf9d20fe7262be50c8978bf0d460eda26d61a800a73f99b9d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\status-before.json": "d427df80451758aac61a26956e7b500d0f573793414eac2482b29574819db39b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-postflop_autoresearch.exe": "0ca6ea19d0598d36c6396040d4cbaf6c2be5a599ca4cc3d9ace9beba32094184",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-postflop_autoresearch.manifest.json": "44ab3ad4d85c8baab4873d23609c5390b7edf1c45d5fca1e1c1591dba6a2fef2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-solver.exe": "a0acbeca63eef3f4039420711306207b62f4e526905c7ccbf692e60781f56c16",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\binaries\\E080-solver.manifest.json": "6fed37ce153ded3e583dc197ad19c61d6364fec08f0a6d43159536627ff1d988",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "X:\\Dev\\GTOpen\\web\\research\\postflop-gpu-20261016\\index.html": "fc7ecfc3c489679872690c721ba4864445c31cf910226086953796a6608fcbb2"
+  }
+}

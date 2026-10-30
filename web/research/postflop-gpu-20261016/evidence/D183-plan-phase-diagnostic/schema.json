@@ -1,0 +1,218 @@
+{
+  "header": "D183_PLAN_RAW1\\0\\0\\0",
+  "fields": [
+    [
+      "num_levels",
+      "usize"
+    ],
+    [
+      "nh",
+      "[usize; 2]"
+    ],
+    [
+      "nh_max",
+      "usize"
+    ],
+    [
+      "num_nodes",
+      "usize"
+    ],
+    [
+      "iso_active",
+      "bool"
+    ],
+    [
+      "action_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "action_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "chance_parents",
+      "Vec<u32>"
+    ],
+    [
+      "chance_children",
+      "Vec<u32>"
+    ],
+    [
+      "chance_cards",
+      "Vec<u32>"
+    ],
+    [
+      "chance_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "chance_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "chance_node_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "fold_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "fold_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "show_nodes",
+      "Vec<u32>"
+    ],
+    [
+      "show_spans",
+      "Vec<LevelSpan>"
+    ],
+    [
+      "cc_start",
+      "Vec<u32>"
+    ],
+    [
+      "cc_count",
+      "Vec<u32>"
+    ],
+    [
+      "cc_card",
+      "Vec<u32>"
+    ],
+    [
+      "cc_child",
+      "Vec<u32>"
+    ],
+    [
+      "cc_perm",
+      "Vec<u32>"
+    ],
+    [
+      "hand_perm_flat",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "node_player",
+      "Vec<i32>"
+    ],
+    [
+      "node_na",
+      "Vec<i32>"
+    ],
+    [
+      "node_data_off",
+      "Vec<u64>"
+    ],
+    [
+      "arena_elements",
+      "[usize; 2]"
+    ],
+    [
+      "node_children_start",
+      "Vec<u32>"
+    ],
+    [
+      "node_twin",
+      "Vec<f32>"
+    ],
+    [
+      "node_tlose",
+      "Vec<f32>"
+    ],
+    [
+      "node_ttie",
+      "Vec<f32>"
+    ],
+    [
+      "node_cdiv",
+      "Vec<f32>"
+    ],
+    [
+      "node_river_slot",
+      "Vec<i32>"
+    ],
+    [
+      "reach_src",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "reach_slot",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "reach_blocks",
+      "[usize; 2]"
+    ],
+    [
+      "cfv_slot",
+      "Vec<u32>"
+    ],
+    [
+      "cfv_blocks",
+      "usize"
+    ],
+    [
+      "hand_c1",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "hand_c2",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "hand_mask",
+      "[Vec<u64>; 2]"
+    ],
+    [
+      "same_combo",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "weights",
+      "[Vec<f32>; 2]"
+    ],
+    [
+      "num_slots",
+      "usize"
+    ],
+    [
+      "riv_off",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_cnt",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_sorted_idx",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_sorted_str",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_lower",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_upper",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_card_off",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_card_pos",
+      "[Vec<u32>; 2]"
+    ],
+    [
+      "riv_max_cnt",
+      "[usize; 2]"
+    ]
+  ],
+  "encoding": "Each field: u32 littleendian UTF8-name length/name, u64 payload extent, then recursively encoded field. usize/u64=>u64, u32/i32/f32bits=>u32, bool=>u8. Vec/arrays include u64 element count. LevelSpan=>u32start/u32count. Every field including all unreachable/default metadata retained; no exclusions."
+}

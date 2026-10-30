@@ -1,0 +1,9 @@
+"""Generate the same fixed three-pair protocol preparation for E106."""
+import ast
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1];source=ROOT/'runs/E099-prepare-primary.py';target=ROOT/'runs/E106-prepare-primary.py';assert not target.exists();code=source.read_text(encoding='utf-8').replace('E099','E106').replace('V099','V106').replace('D186-paired-canonical-control','D219-nullable-lock-canonical').replace('D185-paired-engine-controls','D216-nullable-lock-engine')
+for a,b in [('B311','B320'),('B312','B321'),('B313','B322')]:code=code.replace(a,b)
+code=code.replace("['cases']==68","['cases']==36").replace("ROOT/'runs/E106-resource/report.json'","ROOT/'runs/E106-resource-host/report.json'").replace("ROOT/'comparisons/E106-direct-controls/report.json'","ROOT/'runs/D217-nullable-lock-direct/report.json'").replace("ROOT/'runs/E106-source/manifest.json'","ROOT/'runs/E106-source-r2/manifest.json'").replace("ROOT/'runs/E106-source/source-review.json'","ROOT/'runs/E106-source-r2/source-review.json'")
+code=code.replace('Allresource/direct/68case/fullcanonicalraw gates passed','Allresource/direct/36case/boundary/fullcanonicalraw gates passed').replace('Paired action','No-lock metadata').replace('Paired action','No-lock metadata')
+needle="'BroaderF32/state/menu/save/resume/paging/stored-continuation/cache/fallback compatibility,actualCPU/process/memory/capacity/graph/resource costs; lower down theoreticaloccupancy is not dismissed by faster timing.'";assert code.count(needle)==1;code=code.replace(needle,"'BroaderF32/state/menu/nonempty-lock complete-cycle cost/save/resume/paging/stored-continuation/fallback compatibility; actualCPU/process/memory/capacity/graph/resource costs. Register/occupancy warnings remain real and are not dismissed by primary speed. No material locked-workload regressions allowed before adoption.'",1)
+ast.parse(code);target.write_text(code,encoding='utf-8',newline='\n');print(target)

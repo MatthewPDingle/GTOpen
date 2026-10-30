@@ -1,0 +1,78 @@
+{
+  "id": "D088-constructor-cohort",
+  "at": "2026-10-17T05:55:25.450388+00:00",
+  "status": "FROZEN_PRE_NATIVE",
+  "order": [
+    "D088B1",
+    "D088T1",
+    "D088T2",
+    "D088B2",
+    "D088B3",
+    "D088T3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D088B1",
+      "diagnostic": "D088T1"
+    },
+    {
+      "baseline": "D088B2",
+      "diagnostic": "D088T2"
+    },
+    {
+      "baseline": "D088B3",
+      "diagnostic": "D088T3"
+    }
+  ],
+  "binaries": {
+    "baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe",
+      "sha256": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54"
+    },
+    "diagnostic": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D088-postflop_autoresearch.exe",
+      "sha256": "4a506c3b7826a7ce295c0107e4c1993d7b64062700dfd51819d52553faae617b",
+      "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D088-postflop_autoresearch.manifest.json",
+      "manifest_sha256": "4b8c791644568882731318c78d9fbdfba0cfb1c9462da33b5dcb7397de7ffe95"
+    }
+  },
+  "fixture": "rainbow",
+  "storage": "compressed",
+  "profile_after_timing": "0",
+  "outer_stages": [
+    "plan_budget",
+    "context_stream",
+    "nvrtc_module",
+    "pinned_staging",
+    "arena_layouts",
+    "regret0_upload",
+    "regret1_upload",
+    "strategy0_upload",
+    "strategy1_upload",
+    "lock_table",
+    "fold_table",
+    "metadata_upload_and_object"
+  ],
+  "quality_gate": "Exact accepted6full states/60checkpoints;12ordered outer markers and4nested positive-zero scans perdiagnostic. Nested spans<=matching upload; outer sum<=enclosing GPU-init clock. Source/ABI/allocations/quality unchanged except CPU timing logs.",
+  "observer_gate": "Absolute complete-cycle, enclosingGPU-init, native-process and whole-runner wall changes<=10%in every fixedpair. No exclusions, extensions or historical timing pooling.",
+  "limits": "Only fresh compressed rainbow and fixed measured process lifecycle. Observer gate is not universal/per-stage-bias proof. CPU markers perturb codegen/scheduling and log outside their own spans. No optimizer accepted; nested times are not additive to enclosing spans.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\native.py": "d83e5e0d3fe741198886f1d9a6a34f4107dbf92259e7694036627cc29155467d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-cohort\\freeze.py": "57680cbf28133698820b9a00e3e023bb5dc633ec46bd1c17df0fd95c087d4b68",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-final-build\\complete.json": "3426f135dfcc52cefeb61efeb713d71cf9a10dacd69bbd66efa11568980c1a13",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-build-plan\\build-protocol.json": "a13d4f615b0473fdf89e1a69a3ab076bc24fe64d6625461cddedb1ab8dc0f31e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\manifest.json": "5bf3fd43d108b1271c859213f56c8af16c5f6019f164d7cad93a99718610d638",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\source-review.json": "c4128905a6682cb7ed8a2c98f95aee3fbdaad17578e992ab9842c274f261b23a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D087-driver-phase-root-check\\report.json": "e54ffa8908f061510ab1eab04521c1eefe9bbc65241253984be0a2d6138a84bf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\common_e051.py": "5113c6b3c25300fda311a1247254730e43ab7161faba03d4f03ee609b098dd96",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.exe": "67ae220cf406706105e9e1cb530a8791fefaaadee925d883e160f98e34c15032",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-postflop_autoresearch.manifest.json": "bf9221680942cdf08cc335231b871fd2cca88bab4af5ec52b1c20a2f9a2b4c54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D088-postflop_autoresearch.exe": "4a506c3b7826a7ce295c0107e4c1993d7b64062700dfd51819d52553faae617b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D088-postflop_autoresearch.manifest.json": "4b8c791644568882731318c78d9fbdfba0cfb1c9462da33b5dcb7397de7ffe95"
+  },
+  "accepted_source": "E051",
+  "optimization_accepted": false,
+  "additional_init_gate_provenance": "Prospectively added before any native observation: D012 found code-layout-associated constructor stalls. The target stage must itself remain representative, beyond the three coarse clocks in the initial diagnostic source review."
+}

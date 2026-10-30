@@ -1,0 +1,44 @@
+{
+  "candidate": "E032",
+  "at": "2026-10-16T19:07:00Z",
+  "E020_accepted": true,
+  "E020_server_qualification_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+      "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+    },
+    "E020_server_qualification": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json",
+      "sha256": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78"
+    },
+    "E032_source_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-source-review\\report.json",
+      "sha256": "2a07bba81aedcd96e4e23d7d09655b7303a1d89f89a02a97fc2efcebec8510d2"
+    },
+    "E032_script_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-script-review\\report.json",
+      "sha256": "babc47bd55a6050f346235b182125f3dfcc1989bd51e08acab7017aa89ef0b4d"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\candidate\\mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\scripts-manifest.json": "b3690242063acc2f8160a21e0266923ed9d04bcad4e0cf825c551126bab5940a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\protocol.json": "6b13cb69e12e48c225a11e5beba5509ca6811c3b8d63a33d90b8bf59ad407402",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\manifest.json": "a8118cb83b89b1cef59f45443b98345eba4b49771d0fdcc9cf6e2e7b564b1b40",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-root-decisions\\preparation.json": "3bf016d5c11940e00cec02b542e928745df8c5105d7171c799cf02aff1b0b3fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D060-independent-source-review\\report.json": "6552d0a03c4cb188101410ce9dde2d0095dc16512a6c605fdf341bacc02cc1c7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-source-review\\report.json": "2a07bba81aedcd96e4e23d7d09655b7303a1d89f89a02a97fc2efcebec8510d2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-script-review\\report.json": "babc47bd55a6050f346235b182125f3dfcc1989bd51e08acab7017aa89ef0b4d"
+  },
+  "scope": "Root authorizes one frozen E032 source activation and fresh GPU-only build, followed only after terminal build success by the fixed unit and six-run primary sequence and assessment. No live deployment, extra samples, broader qualification or acceptance. Preserve all evidence and restore owned source if rejected or failed."
+}

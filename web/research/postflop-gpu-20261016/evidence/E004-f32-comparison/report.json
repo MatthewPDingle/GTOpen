@@ -1,0 +1,36 @@
+{
+  "status": "pass",
+  "scope": "Full F32 CPU arena readback and root-strategy/exploit bits after matched converged GPU solves",
+  "baseline_run": "V004-f32-baseline",
+  "candidate_run": "V004-f32-candidate",
+  "fixtures": [
+    {
+      "fixture": "rainbow",
+      "fingerprint": "1790d0881487f55f",
+      "iteration": 200,
+      "exploit_bits": 4595130701932466176,
+      "exact": true,
+      "baseline_full_cycle_ms": 7020.2119999999995,
+      "candidate_full_cycle_ms": 7085.379900000001
+    },
+    {
+      "fixture": "two-tone",
+      "fingerprint": "d7667975766fe05f",
+      "iteration": 200,
+      "exploit_bits": 4594601713124613664,
+      "exact": true,
+      "baseline_full_cycle_ms": 4827.763,
+      "candidate_full_cycle_ms": 4874.208699999999
+    },
+    {
+      "fixture": "river",
+      "fingerprint": "4297d9f69a89a7f0",
+      "iteration": 60,
+      "exploit_bits": 4595002455471455360,
+      "exact": true,
+      "baseline_full_cycle_ms": 114.9169,
+      "candidate_full_cycle_ms": 129.4906
+    }
+  ],
+  "performance_claim": false
+}

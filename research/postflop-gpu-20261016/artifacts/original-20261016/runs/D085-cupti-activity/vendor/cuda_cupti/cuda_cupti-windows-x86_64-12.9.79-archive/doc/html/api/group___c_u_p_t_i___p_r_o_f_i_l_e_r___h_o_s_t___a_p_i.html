@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.9. CUPTI Profiler Host API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.10. CUPTI Profiling API" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html" />
+    <link rel="prev" title="5.8. CUPTI PM Sampling API" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.9. CUPTI Profiler Host API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.9.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.9.2. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.9.3. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.9.4. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.9. </span>CUPTI Profiler Host API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-profiler-host-api">
+<h1><span class="section-number">5.9. </span>CUPTI Profiler Host API<a class="headerlink" href="#cupti-profiler-host-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i">Functions, types, and enums that implement the CUPTI Profiler Host API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___config_add_metrics___params.html#struct_c_upti___profiler___host___config_add_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_ConfigAddMetrics_Params</span></a></dt><dd><p>Params for cuptiProfilerHostConfigAddMetrics.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___deinitialize___params.html#struct_c_upti___profiler___host___deinitialize___params"><span class="std std-ref">CUpti_Profiler_Host_Deinitialize_Params</span></a></dt><dd><p>Params for cuptiProfilerHostDeinitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___evaluate_to_gpu_values___params.html#struct_c_upti___profiler___host___evaluate_to_gpu_values___params"><span class="std std-ref">CUpti_Profiler_Host_EvaluateToGpuValues_Params</span></a></dt><dd><p>Params for cuptiProfilerHostEvaluateToGpuValues.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_base_metrics___params.html#struct_c_upti___profiler___host___get_base_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_GetBaseMetrics_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetSupportedMetrics.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image_size___params.html#struct_c_upti___profiler___host___get_config_image_size___params"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImageSize_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetConfigImageSize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image___params.html#struct_c_upti___profiler___host___get_config_image___params"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImage_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetConfigImage.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params.html#struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params"><span class="std std-ref">CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetMaxNumHardwareMetricsPerPass.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_metric_properties___params.html#struct_c_upti___profiler___host___get_metric_properties___params"><span class="std std-ref">CUpti_Profiler_Host_GetMetricProperties_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetMetricProperties.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_num_of_passes___params.html#struct_c_upti___profiler___host___get_num_of_passes___params"><span class="std std-ref">CUpti_Profiler_Host_GetNumOfPasses_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetNumOfPasses.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_range_name___params.html#struct_c_upti___profiler___host___get_range_name___params"><span class="std std-ref">CUpti_Profiler_Host_GetRangeName_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetRangeName.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_sub_metrics___params.html#struct_c_upti___profiler___host___get_sub_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_GetSubMetrics_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetSubMetrics.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___get_supported_chips___params.html#struct_c_upti___profiler___host___get_supported_chips___params"><span class="std std-ref">CUpti_Profiler_Host_GetSupportedChips_Params</span></a></dt><dd><p>Params for cuptiProfilerHostGetSupportedChips.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___profiler___host___initialize___params.html#struct_c_upti___profiler___host___initialize___params"><span class="std std-ref">CUpti_Profiler_Host_Initialize_Params</span></a></dt><dd><p>Params for cuptiProfilerHostInitialize.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf67a452b1c4b5dad3b1c940a48893501"><span class="std std-ref">CUpti_Profiler_Host_ConfigAddMetrics_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaabc27da3fd8df836ce123c560c2dca72"><span class="std std-ref">CUpti_Profiler_Host_Deinitialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gab97543f9bd49bf30bc526cb016638a00"><span class="std std-ref">CUpti_Profiler_Host_EvaluateToGpuValues_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga2258c6f8a4a40616135af8a15a555358"><span class="std std-ref">CUpti_Profiler_Host_GetBaseMetrics_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga2484267ccf05bd08826e50ac4f4d04f8"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImageSize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gafd45104d051f42d1ef4a3ffb2e95e2e8"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImage_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaa32677433116e106d5ef7b9150c8e5e6"><span class="std std-ref">CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gac40ebae3da9507358bed161d092a36d1"><span class="std std-ref">CUpti_Profiler_Host_GetMetricProperties_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gad9967636b27320a1797dd270194a149c"><span class="std std-ref">CUpti_Profiler_Host_GetNumOfPasses_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga51a37594dfa9c113ee5cd51ca5a274c8"><span class="std std-ref">CUpti_Profiler_Host_GetRangeName_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf814d8c17e1e9dff6b8955390edcc098"><span class="std std-ref">CUpti_Profiler_Host_GetSubMetrics_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gad7255a38cdd68c9b0b18c590591cfaa2"><span class="std std-ref">CUpti_Profiler_Host_GetSupportedChips_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3335e5101b75d8981ce253d9e6597a61"><span class="std std-ref">CUpti_Profiler_Host_Initialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga284d1917869a151a5cdafecfbe202f3c"><span class="std std-ref">CUpti_MetricType</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf5ee385568840940e5950247f3f8701b"><span class="std std-ref">CUpti_ProfilerType</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gafc7a43e4d0774169f71dddffe11dea1b"><span class="std std-ref">cuptiProfilerHostConfigAddMetrics</span></a>(CUpti_Profiler_Host_ConfigAddMetrics_Params *pParams)</dt><dd><p>Add the metrics to the profiler host object for generating the config image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gacbd2ed7196ec7eea08f643d53d6aa1b6"><span class="std std-ref">cuptiProfilerHostDeinitialize</span></a>(CUpti_Profiler_Host_Deinitialize_Params *pParams)</dt><dd><p>Deinitialize and destroy the profiler host object (CUpti_Profiler_Host_Object).</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga388a983e8bcfc889721c17aae2e67a4f"><span class="std std-ref">cuptiProfilerHostEvaluateToGpuValues</span></a>(CUpti_Profiler_Host_EvaluateToGpuValues_Params *pParams)</dt><dd><p>Evaluate the metric values for the range index stored in the counter data.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gac22e710e7ab4a829fe7078ca03d3dd72"><span class="std std-ref">cuptiProfilerHostGetBaseMetrics</span></a>(CUpti_Profiler_Host_GetBaseMetrics_Params *pParams)</dt><dd><p>Get the list of supported base metrics for the chip.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga6d5be3c323b994c6663457bfa977f083"><span class="std std-ref">cuptiProfilerHostGetConfigImage</span></a>(CUpti_Profiler_Host_GetConfigImage_Params *pParams)</dt><dd><p>Get the config image for the metrics added to the profiler host object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3c3b73ef795e55cab71436e4d0dfb662"><span class="std std-ref">cuptiProfilerHostGetConfigImageSize</span></a>(CUpti_Profiler_Host_GetConfigImageSize_Params *pParams)</dt><dd><p>Get the size of the config image for the metrics added to the profiler host object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gada083d0e2eb8712beeba0635d327df2b"><span class="std std-ref">cuptiProfilerHostGetMaxNumHardwareMetricsPerPass</span></a>(CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params *pParams)</dt><dd><p>Get the maximum number of hardware metrics (metric names which doesn't include <em>sass</em> keyword) that can be scheduled in a single pass for a chip.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga623e00d7b19a7beebbeac85df5634b3e"><span class="std std-ref">cuptiProfilerHostGetMetricProperties</span></a>(CUpti_Profiler_Host_GetMetricProperties_Params *pParams)</dt><dd><p>Get the properties of the metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gae2d8591e46bcee448fe9fa23d6854756"><span class="std std-ref">cuptiProfilerHostGetNumOfPasses</span></a>(CUpti_Profiler_Host_GetNumOfPasses_Params *pParams)</dt><dd><p>Get the number of passes required for profiling the scheduled metrics in the config image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3b3a93d25139edf57fa20078521b431c"><span class="std std-ref">cuptiProfilerHostGetRangeName</span></a>(CUpti_Profiler_Host_GetRangeName_Params *pParams)</dt><dd><p>Get the range name for the range index stored in the counter data.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga21763899041aea8bfd60db908dbe477f"><span class="std std-ref">cuptiProfilerHostGetSubMetrics</span></a>(CUpti_Profiler_Host_GetSubMetrics_Params *pParams)</dt><dd><p>Get the list of supported sub-metrics for the metric.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gae7eeeebc5b7e501bfb7e003dbce610f2"><span class="std std-ref">cuptiProfilerHostGetSupportedChips</span></a>(CUpti_Profiler_Host_GetSupportedChips_Params *pParams)</dt><dd><p>Get the list of supported chips.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga50ce9879e2460d04e1e759cf23043825"><span class="std std-ref">cuptiProfilerHostInitialize</span></a>(CUpti_Profiler_Host_Initialize_Params *pParams)</dt><dd><p>Create and initialize the profiler host object (CUpti_Profiler_Host_Object).</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaa18fe8444413079a6e6b2aa69e83c1c8"><span class="std std-ref">CUpti_Profiler_Host_Object</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.9.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_ConfigAddMetrics_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf67a452b1c4b5dad3b1c940a48893501"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_ConfigAddMetrics_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_ConfigAddMetrics_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_Deinitialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaabc27da3fd8df836ce123c560c2dca72"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_Deinitialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_Deinitialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_EvaluateToGpuValues_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gab97543f9bd49bf30bc526cb016638a00"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_EvaluateToGpuValues_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_EvaluateToGpuValues_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetBaseMetrics_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga2258c6f8a4a40616135af8a15a555358"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetBaseMetrics_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetBaseMetrics_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetConfigImageSize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga2484267ccf05bd08826e50ac4f4d04f8"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetConfigImageSize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetConfigImageSize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetConfigImage_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gafd45104d051f42d1ef4a3ffb2e95e2e8"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetConfigImage_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetConfigImage_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaa32677433116e106d5ef7b9150c8e5e6"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetMetricProperties_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gac40ebae3da9507358bed161d092a36d1"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetMetricProperties_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetMetricProperties_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetNumOfPasses_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gad9967636b27320a1797dd270194a149c"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetNumOfPasses_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetNumOfPasses_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetRangeName_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga51a37594dfa9c113ee5cd51ca5a274c8"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetRangeName_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetRangeName_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetSubMetrics_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf814d8c17e1e9dff6b8955390edcc098"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetSubMetrics_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetSubMetrics_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_GetSupportedChips_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gad7255a38cdd68c9b0b18c590591cfaa2"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_GetSupportedChips_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_GetSupportedChips_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_Profiler_Host_Initialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3335e5101b75d8981ce253d9e6597a61"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_Initialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_Profiler_Host_Initialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="enumerations">
+<h2><span class="section-number">5.9.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv416CUpti_MetricType">
+<span id="_CPPv316CUpti_MetricType"></span><span id="_CPPv216CUpti_MetricType"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga284d1917869a151a5cdafecfbe202f3c"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_MetricType</span></span></span><a class="headerlink" href="#_CPPv416CUpti_MetricType" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16CUpti_MetricType25CUPTI_METRIC_TYPE_COUNTERE">
+<span id="_CPPv3N16CUpti_MetricType25CUPTI_METRIC_TYPE_COUNTERE"></span><span id="_CPPv2N16CUpti_MetricType25CUPTI_METRIC_TYPE_COUNTERE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gga284d1917869a151a5cdafecfbe202f3ca1761808f09448e10184fe2827797056f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_TYPE_COUNTER</span></span></span><a class="headerlink" href="#_CPPv4N16CUpti_MetricType25CUPTI_METRIC_TYPE_COUNTERE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16CUpti_MetricType23CUPTI_METRIC_TYPE_RATIOE">
+<span id="_CPPv3N16CUpti_MetricType23CUPTI_METRIC_TYPE_RATIOE"></span><span id="_CPPv2N16CUpti_MetricType23CUPTI_METRIC_TYPE_RATIOE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gga284d1917869a151a5cdafecfbe202f3ca4f48fa8ce44d393d00023e820ac9fc9a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_TYPE_RATIO</span></span></span><a class="headerlink" href="#_CPPv4N16CUpti_MetricType23CUPTI_METRIC_TYPE_RATIOE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16CUpti_MetricType28CUPTI_METRIC_TYPE_THROUGHPUTE">
+<span id="_CPPv3N16CUpti_MetricType28CUPTI_METRIC_TYPE_THROUGHPUTE"></span><span id="_CPPv2N16CUpti_MetricType28CUPTI_METRIC_TYPE_THROUGHPUTE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gga284d1917869a151a5cdafecfbe202f3ca272ae8567b3eb5fe50b39e4d9cf01fae"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_TYPE_THROUGHPUT</span></span></span><a class="headerlink" href="#_CPPv4N16CUpti_MetricType28CUPTI_METRIC_TYPE_THROUGHPUTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N16CUpti_MetricType24CUPTI_METRIC_TYPE__COUNTE">
+<span id="_CPPv3N16CUpti_MetricType24CUPTI_METRIC_TYPE__COUNTE"></span><span id="_CPPv2N16CUpti_MetricType24CUPTI_METRIC_TYPE__COUNTE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gga284d1917869a151a5cdafecfbe202f3ca761cc3e0d8120bf1e3043d89506af2eb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_METRIC_TYPE__COUNT</span></span></span><a class="headerlink" href="#_CPPv4N16CUpti_MetricType24CUPTI_METRIC_TYPE__COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv418CUpti_ProfilerType">
+<span id="_CPPv318CUpti_ProfilerType"></span><span id="_CPPv218CUpti_ProfilerType"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaf5ee385568840940e5950247f3f8701b"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ProfilerType</span></span></span><a class="headerlink" href="#_CPPv418CUpti_ProfilerType" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_ProfilerType34CUPTI_PROFILER_TYPE_RANGE_PROFILERE">
+<span id="_CPPv3N18CUpti_ProfilerType34CUPTI_PROFILER_TYPE_RANGE_PROFILERE"></span><span id="_CPPv2N18CUpti_ProfilerType34CUPTI_PROFILER_TYPE_RANGE_PROFILERE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ggaf5ee385568840940e5950247f3f8701bad1b3b877522c2ff654dbb2b86fd4819c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_TYPE_RANGE_PROFILER</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_ProfilerType34CUPTI_PROFILER_TYPE_RANGE_PROFILERE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_ProfilerType31CUPTI_PROFILER_TYPE_PM_SAMPLINGE">
+<span id="_CPPv3N18CUpti_ProfilerType31CUPTI_PROFILER_TYPE_PM_SAMPLINGE"></span><span id="_CPPv2N18CUpti_ProfilerType31CUPTI_PROFILER_TYPE_PM_SAMPLINGE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ggaf5ee385568840940e5950247f3f8701bad969603145d57fbeb6832fa875c766de"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_TYPE_PM_SAMPLING</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_ProfilerType31CUPTI_PROFILER_TYPE_PM_SAMPLINGE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N18CUpti_ProfilerType36CUPTI_PROFILER_TYPE_PROFILER_INVALIDE">
+<span id="_CPPv3N18CUpti_ProfilerType36CUPTI_PROFILER_TYPE_PROFILER_INVALIDE"></span><span id="_CPPv2N18CUpti_ProfilerType36CUPTI_PROFILER_TYPE_PROFILER_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ggaf5ee385568840940e5950247f3f8701ba5a9710f87820a92a8526616d2165d528"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PROFILER_TYPE_PROFILER_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N18CUpti_ProfilerType36CUPTI_PROFILER_TYPE_PROFILER_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.9.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv433cuptiProfilerHostConfigAddMetricsP43CUpti_Profiler_Host_ConfigAddMetrics_Params">
+<span id="_CPPv333cuptiProfilerHostConfigAddMetricsP43CUpti_Profiler_Host_ConfigAddMetrics_Params"></span><span id="_CPPv233cuptiProfilerHostConfigAddMetricsP43CUpti_Profiler_Host_ConfigAddMetrics_Params"></span><span id="cuptiProfilerHostConfigAddMetrics__CUpti_Profiler_Host_ConfigAddMetrics_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gafc7a43e4d0774169f71dddffe11dea1b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostConfigAddMetrics</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___config_add_metrics___params.html#_CPPv443CUpti_Profiler_Host_ConfigAddMetrics_Params" title="CUpti_Profiler_Host_ConfigAddMetrics_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_ConfigAddMetrics_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433cuptiProfilerHostConfigAddMetricsP43CUpti_Profiler_Host_ConfigAddMetrics_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Add the metrics to the profiler host object for generating the config image. </p>
+<p>The config image will have the required information to schedule the metrics for collecting the profiling data. Note: PM sampling only supports single pass config image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___config_add_metrics___params.html#struct_c_upti___profiler___host___config_add_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_ConfigAddMetrics_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_NAME</strong> – if the metric name is not valid or not supported for the chip </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv429cuptiProfilerHostDeinitializeP39CUpti_Profiler_Host_Deinitialize_Params">
+<span id="_CPPv329cuptiProfilerHostDeinitializeP39CUpti_Profiler_Host_Deinitialize_Params"></span><span id="_CPPv229cuptiProfilerHostDeinitializeP39CUpti_Profiler_Host_Deinitialize_Params"></span><span id="cuptiProfilerHostDeinitialize__CUpti_Profiler_Host_Deinitialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gacbd2ed7196ec7eea08f643d53d6aa1b6"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostDeinitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___deinitialize___params.html#_CPPv439CUpti_Profiler_Host_Deinitialize_Params" title="CUpti_Profiler_Host_Deinitialize_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_Deinitialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429cuptiProfilerHostDeinitializeP39CUpti_Profiler_Host_Deinitialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Deinitialize and destroy the profiler host object (CUpti_Profiler_Host_Object). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___deinitialize___params.html#struct_c_upti___profiler___host___deinitialize___params"><span class="std std-ref">CUpti_Profiler_Host_Deinitialize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv436cuptiProfilerHostEvaluateToGpuValuesP46CUpti_Profiler_Host_EvaluateToGpuValues_Params">
+<span id="_CPPv336cuptiProfilerHostEvaluateToGpuValuesP46CUpti_Profiler_Host_EvaluateToGpuValues_Params"></span><span id="_CPPv236cuptiProfilerHostEvaluateToGpuValuesP46CUpti_Profiler_Host_EvaluateToGpuValues_Params"></span><span id="cuptiProfilerHostEvaluateToGpuValues__CUpti_Profiler_Host_EvaluateToGpuValues_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga388a983e8bcfc889721c17aae2e67a4f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostEvaluateToGpuValues</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___evaluate_to_gpu_values___params.html#_CPPv446CUpti_Profiler_Host_EvaluateToGpuValues_Params" title="CUpti_Profiler_Host_EvaluateToGpuValues_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_EvaluateToGpuValues_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv436cuptiProfilerHostEvaluateToGpuValuesP46CUpti_Profiler_Host_EvaluateToGpuValues_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Evaluate the metric values for the range index stored in the counter data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___evaluate_to_gpu_values___params.html#struct_c_upti___profiler___host___evaluate_to_gpu_values___params"><span class="std std-ref">CUpti_Profiler_Host_EvaluateToGpuValues_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_NAME</strong> – if the metric name is not valid or not supported for the chip </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiProfilerHostGetBaseMetricsP41CUpti_Profiler_Host_GetBaseMetrics_Params">
+<span id="_CPPv331cuptiProfilerHostGetBaseMetricsP41CUpti_Profiler_Host_GetBaseMetrics_Params"></span><span id="_CPPv231cuptiProfilerHostGetBaseMetricsP41CUpti_Profiler_Host_GetBaseMetrics_Params"></span><span id="cuptiProfilerHostGetBaseMetrics__CUpti_Profiler_Host_GetBaseMetrics_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gac22e710e7ab4a829fe7078ca03d3dd72"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetBaseMetrics</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_base_metrics___params.html#_CPPv441CUpti_Profiler_Host_GetBaseMetrics_Params" title="CUpti_Profiler_Host_GetBaseMetrics_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetBaseMetrics_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiProfilerHostGetBaseMetricsP41CUpti_Profiler_Host_GetBaseMetrics_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the list of supported base metrics for the chip. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_base_metrics___params.html#struct_c_upti___profiler___host___get_base_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_GetBaseMetrics_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiProfilerHostGetConfigImageP41CUpti_Profiler_Host_GetConfigImage_Params">
+<span id="_CPPv331cuptiProfilerHostGetConfigImageP41CUpti_Profiler_Host_GetConfigImage_Params"></span><span id="_CPPv231cuptiProfilerHostGetConfigImageP41CUpti_Profiler_Host_GetConfigImage_Params"></span><span id="cuptiProfilerHostGetConfigImage__CUpti_Profiler_Host_GetConfigImage_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga6d5be3c323b994c6663457bfa977f083"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetConfigImage</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image___params.html#_CPPv441CUpti_Profiler_Host_GetConfigImage_Params" title="CUpti_Profiler_Host_GetConfigImage_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetConfigImage_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiProfilerHostGetConfigImageP41CUpti_Profiler_Host_GetConfigImage_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the config image for the metrics added to the profiler host object. </p>
+<p>User will pass the allocated buffer to store the config image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_config_image___params.html#struct_c_upti___profiler___host___get_config_image___params"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImage_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv435cuptiProfilerHostGetConfigImageSizeP45CUpti_Profiler_Host_GetConfigImageSize_Params">
+<span id="_CPPv335cuptiProfilerHostGetConfigImageSizeP45CUpti_Profiler_Host_GetConfigImageSize_Params"></span><span id="_CPPv235cuptiProfilerHostGetConfigImageSizeP45CUpti_Profiler_Host_GetConfigImageSize_Params"></span><span id="cuptiProfilerHostGetConfigImageSize__CUpti_Profiler_Host_GetConfigImageSize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3c3b73ef795e55cab71436e4d0dfb662"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetConfigImageSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image_size___params.html#_CPPv445CUpti_Profiler_Host_GetConfigImageSize_Params" title="CUpti_Profiler_Host_GetConfigImageSize_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetConfigImageSize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv435cuptiProfilerHostGetConfigImageSizeP45CUpti_Profiler_Host_GetConfigImageSize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the size of the config image for the metrics added to the profiler host object. </p>
+<p>Users need to allocate the buffer for storing the config image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_config_image_size___params.html#struct_c_upti___profiler___host___get_config_image_size___params"><span class="std std-ref">CUpti_Profiler_Host_GetConfigImageSize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv448cuptiProfilerHostGetMaxNumHardwareMetricsPerPassP58CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params">
+<span id="_CPPv348cuptiProfilerHostGetMaxNumHardwareMetricsPerPassP58CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params"></span><span id="_CPPv248cuptiProfilerHostGetMaxNumHardwareMetricsPerPassP58CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params"></span><span id="cuptiProfilerHostGetMaxNumHardwareMetricsPerPass__CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gada083d0e2eb8712beeba0635d327df2b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetMaxNumHardwareMetricsPerPass</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params.html#_CPPv458CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params" title="CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv448cuptiProfilerHostGetMaxNumHardwareMetricsPerPassP58CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the maximum number of hardware metrics (metric names which doesn’t include <em>sass</em> keyword) that can be scheduled in a single pass for a chip. </p>
+<p>While this represents a theoretical upper limit, practical constraints may prevent reaching this threshold for a specific set of metrics. Furthermore, the maximum achievable value is contingent upon the characteristics and architecture of the chip in question.</p>
+<p>Use cuptiProfilerHostGetNumOfPasses API for getting the actual number of passes required for the for collecting the profiling data for the scheduled metrics in a config image.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params.html#struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params"><span class="std std-ref">CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv436cuptiProfilerHostGetMetricPropertiesP46CUpti_Profiler_Host_GetMetricProperties_Params">
+<span id="_CPPv336cuptiProfilerHostGetMetricPropertiesP46CUpti_Profiler_Host_GetMetricProperties_Params"></span><span id="_CPPv236cuptiProfilerHostGetMetricPropertiesP46CUpti_Profiler_Host_GetMetricProperties_Params"></span><span id="cuptiProfilerHostGetMetricProperties__CUpti_Profiler_Host_GetMetricProperties_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga623e00d7b19a7beebbeac85df5634b3e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetMetricProperties</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_metric_properties___params.html#_CPPv446CUpti_Profiler_Host_GetMetricProperties_Params" title="CUpti_Profiler_Host_GetMetricProperties_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetMetricProperties_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv436cuptiProfilerHostGetMetricPropertiesP46CUpti_Profiler_Host_GetMetricProperties_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the properties of the metric. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_metric_properties___params.html#struct_c_upti___profiler___host___get_metric_properties___params"><span class="std std-ref">CUpti_Profiler_Host_GetMetricProperties_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_NAME</strong> – if the metric name is not valid or not supported for the chip </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiProfilerHostGetNumOfPassesP41CUpti_Profiler_Host_GetNumOfPasses_Params">
+<span id="_CPPv331cuptiProfilerHostGetNumOfPassesP41CUpti_Profiler_Host_GetNumOfPasses_Params"></span><span id="_CPPv231cuptiProfilerHostGetNumOfPassesP41CUpti_Profiler_Host_GetNumOfPasses_Params"></span><span id="cuptiProfilerHostGetNumOfPasses__CUpti_Profiler_Host_GetNumOfPasses_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gae2d8591e46bcee448fe9fa23d6854756"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetNumOfPasses</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_num_of_passes___params.html#_CPPv441CUpti_Profiler_Host_GetNumOfPasses_Params" title="CUpti_Profiler_Host_GetNumOfPasses_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetNumOfPasses_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiProfilerHostGetNumOfPassesP41CUpti_Profiler_Host_GetNumOfPasses_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the number of passes required for profiling the scheduled metrics in the config image. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_num_of_passes___params.html#struct_c_upti___profiler___host___get_num_of_passes___params"><span class="std std-ref">CUpti_Profiler_Host_GetNumOfPasses_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv429cuptiProfilerHostGetRangeNameP39CUpti_Profiler_Host_GetRangeName_Params">
+<span id="_CPPv329cuptiProfilerHostGetRangeNameP39CUpti_Profiler_Host_GetRangeName_Params"></span><span id="_CPPv229cuptiProfilerHostGetRangeNameP39CUpti_Profiler_Host_GetRangeName_Params"></span><span id="cuptiProfilerHostGetRangeName__CUpti_Profiler_Host_GetRangeName_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga3b3a93d25139edf57fa20078521b431c"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetRangeName</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_range_name___params.html#_CPPv439CUpti_Profiler_Host_GetRangeName_Params" title="CUpti_Profiler_Host_GetRangeName_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetRangeName_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv429cuptiProfilerHostGetRangeNameP39CUpti_Profiler_Host_GetRangeName_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the range name for the range index stored in the counter data. </p>
+<p>In Range profiler, for Auto range mode the range name will be numeric value assigned to the kernel based on execution order. For user range mode, the name of range will be based on the range name provided by the user using Push range API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_range_name___params.html#struct_c_upti___profiler___host___get_range_name___params"><span class="std std-ref">CUpti_Profiler_Host_GetRangeName_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv430cuptiProfilerHostGetSubMetricsP40CUpti_Profiler_Host_GetSubMetrics_Params">
+<span id="_CPPv330cuptiProfilerHostGetSubMetricsP40CUpti_Profiler_Host_GetSubMetrics_Params"></span><span id="_CPPv230cuptiProfilerHostGetSubMetricsP40CUpti_Profiler_Host_GetSubMetrics_Params"></span><span id="cuptiProfilerHostGetSubMetrics__CUpti_Profiler_Host_GetSubMetrics_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga21763899041aea8bfd60db908dbe477f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetSubMetrics</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_sub_metrics___params.html#_CPPv440CUpti_Profiler_Host_GetSubMetrics_Params" title="CUpti_Profiler_Host_GetSubMetrics_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetSubMetrics_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430cuptiProfilerHostGetSubMetricsP40CUpti_Profiler_Host_GetSubMetrics_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the list of supported sub-metrics for the metric. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_sub_metrics___params.html#struct_c_upti___profiler___host___get_sub_metrics___params"><span class="std std-ref">CUpti_Profiler_Host_GetSubMetrics_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_METRIC_NAME</strong> – if the metric name is not valid or not supported for the chip </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv434cuptiProfilerHostGetSupportedChipsP44CUpti_Profiler_Host_GetSupportedChips_Params">
+<span id="_CPPv334cuptiProfilerHostGetSupportedChipsP44CUpti_Profiler_Host_GetSupportedChips_Params"></span><span id="_CPPv234cuptiProfilerHostGetSupportedChipsP44CUpti_Profiler_Host_GetSupportedChips_Params"></span><span id="cuptiProfilerHostGetSupportedChips__CUpti_Profiler_Host_GetSupportedChips_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gae7eeeebc5b7e501bfb7e003dbce610f2"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostGetSupportedChips</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___get_supported_chips___params.html#_CPPv444CUpti_Profiler_Host_GetSupportedChips_Params" title="CUpti_Profiler_Host_GetSupportedChips_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_GetSupportedChips_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv434cuptiProfilerHostGetSupportedChipsP44CUpti_Profiler_Host_GetSupportedChips_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the list of supported chips. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___get_supported_chips___params.html#struct_c_upti___profiler___host___get_supported_chips___params"><span class="std std-ref">CUpti_Profiler_Host_GetSupportedChips_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv427cuptiProfilerHostInitializeP37CUpti_Profiler_Host_Initialize_Params">
+<span id="_CPPv327cuptiProfilerHostInitializeP37CUpti_Profiler_Host_Initialize_Params"></span><span id="_CPPv227cuptiProfilerHostInitializeP37CUpti_Profiler_Host_Initialize_Params"></span><span id="cuptiProfilerHostInitialize__CUpti_Profiler_Host_Initialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1ga50ce9879e2460d04e1e759cf23043825"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiProfilerHostInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___profiler___host___initialize___params.html#_CPPv437CUpti_Profiler_Host_Initialize_Params" title="CUpti_Profiler_Host_Initialize_Params"><span class="n"><span class="pre">CUpti_Profiler_Host_Initialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv427cuptiProfilerHostInitializeP37CUpti_Profiler_Host_Initialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create and initialize the profiler host object (CUpti_Profiler_Host_Object). </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___profiler___host___initialize___params.html#struct_c_upti___profiler___host___initialize___params"><span class="std std-ref">CUpti_Profiler_Host_Initialize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.9.4. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv426CUpti_Profiler_Host_Object">
+<span id="_CPPv326CUpti_Profiler_Host_Object"></span><span id="_CPPv226CUpti_Profiler_Host_Object"></span><span id="CUpti_Profiler_Host_Object"></span><span class="target" id="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i_1gaa18fe8444413079a6e6b2aa69e83c1c8"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv426CUpti_Profiler_Host_Object" title="CUpti_Profiler_Host_Object"><span class="n"><span class="pre">CUpti_Profiler_Host_Object</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_Profiler_Host_Object</span></span></span><a class="headerlink" href="#_CPPv426CUpti_Profiler_Host_Object" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

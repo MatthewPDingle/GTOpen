@@ -1,0 +1,138 @@
+--- E051/kernels.cu
++++ E070/kernels.cu
+@@ -29,8 +29,7 @@
+ template<int NA>
+ __device__ __forceinline__ void down_action_impl(
+     const u32* __restrict__ nodes, int start, int count,
+-    const int* __restrict__ node_player,
+-    const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -44,8 +43,8 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    int actor = node_player[n];
+-    const int na = NA == 0 ? node_na[n] : NA;
++    int actor = (int)(node_attrs[n] >> 8);
++    const int na = NA == 0 ? (int)(node_attrs[n] & 0xFFu) : NA;
+     u64 doff = node_data_off[n];
+     u32 cs = node_children_start[n];
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+@@ -95,8 +94,7 @@
+ 
+ extern "C" __global__ void down_action(
+     const u32* __restrict__ nodes, int start, int count,
+-    const int* __restrict__ node_player,
+-    const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -108,11 +106,11 @@
+     int nh0, int nh1)
+ {
+     if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
+-    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    const int na = (int)(node_attrs[nodes[start + blockIdx.x]] & 0xFFu);
++    if (na == 2) down_action_impl<2>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else down_action_impl<0>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+ }
+ 
+ // Down sweep, chance edges at one level: child reach = parent reach with
+@@ -139,7 +137,7 @@
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+ extern "C" __global__ void up_fold(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player,
++    const unsigned short* __restrict__ node_attrs,
+     const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
+     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+     const float* __restrict__ reach0, const float* __restrict__ reach1,
+@@ -180,7 +178,7 @@
+         __syncthreads();
+     }
+     float T = total_parts[0];
+-    float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
++    float amount = (int)(node_attrs[n] >> 8) == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];
+         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+@@ -331,7 +329,7 @@
+ template<int NA>
+ __device__ __forceinline__ void up_action_impl(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -349,9 +347,9 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    const int na = NA == 0 ? node_na[n] : NA;
++    const int na = NA == 0 ? (int)(node_attrs[n] & 0xFFu) : NA;
+     u32 cs = node_children_start[n];
+-    if (node_player[n] == p) {
++    if ((int)(node_attrs[n] >> 8) == p) {
+         long long loff = lock_off[n];
+         if (loff >= 0) {
+             // locked: fixed sigma, no regret/strategy update
+@@ -411,7 +409,7 @@
+ 
+ extern "C" __global__ void up_action(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -426,13 +424,13 @@
+     int nh_p, int nh_max)
+ {
+     if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
++    const int na = (int)(node_attrs[nodes[start + blockIdx.x]] & 0xFFu);
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+-    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else up_action_impl<0>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+ }
+ 
+ // Copy the first n floats (used to extract the root cfv span).
+@@ -450,7 +448,7 @@
+ // the way down).
+ extern "C" __global__ void up_action_eval(
+     const u32* __restrict__ nodes, int start, int count, int p, int mode,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -463,9 +461,9 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    int na = node_na[n];
++    int na = (int)(node_attrs[n] & 0xFFu);
+     u32 cs = node_children_start[n];
+-    if (node_player[n] != p) {
++    if ((int)(node_attrs[n] >> 8) != p) {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)

@@ -1,0 +1,1467 @@
+{
+  "id": "D131",
+  "at": "2026-10-18T06:44:20.136452+00:00",
+  "status": "admit_one_integrated_zero_validation_overlap_trial_component_only",
+  "protocol_sha256": "f8be708355e248ff3f5022df6b0208c32468ccc3a1d98e23eb53c43ac5bb0881",
+  "binary_sha256": "a21a04c6097e9c79a5dc049f1e275fd1edd6a7ae1430365e603b2b173451ca5e",
+  "results": {
+    "D131B1": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3117821952,
+          "faults": 642409,
+          "peak_commit_bytes": 3117821952,
+          "peak_working_set_bytes": 2596651008,
+          "working_set_bytes": 2596651008
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2363465728,
+          "faults": 121276,
+          "peak_commit_bytes": 2363486208,
+          "peak_working_set_bytes": 471818240,
+          "working_set_bytes": 471818240
+        },
+        "board": "Ks7h2d",
+        "component_ms": 299.8707,
+        "cpu_after_ticks100ns": 6250000,
+        "cpu_before_ticks100ns": 3281250,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 296.875,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3123351552,
+          "faults": 911630,
+          "peak_commit_bytes": 3464577024,
+          "peak_working_set_bytes": 2596675584,
+          "working_set_bytes": 2448289792
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 3018342400,
+          "faults": 702930,
+          "peak_commit_bytes": 3117821952,
+          "peak_working_set_bytes": 2596675584,
+          "working_set_bytes": 1980166144
+        },
+        "board": "Ks7s2d",
+        "component_ms": 169.26420000000002,
+        "cpu_after_ticks100ns": 11562500,
+        "cpu_before_ticks100ns": 9843750,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 171.875,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 2606366720,
+          "faults": 950899,
+          "peak_commit_bytes": 3464577024,
+          "peak_working_set_bytes": 2596675584,
+          "working_set_bytes": 1922220032
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2603565056,
+          "faults": 950213,
+          "peak_commit_bytes": 3464577024,
+          "peak_working_set_bytes": 2596675584,
+          "working_set_bytes": 1919414272
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 1.8860999999999999,
+        "cpu_after_ticks100ns": 12812500,
+        "cpu_before_ticks100ns": 12812500,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ],
+    "D131T1": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3117981696,
+          "faults": 642144,
+          "peak_commit_bytes": 3118026752,
+          "peak_working_set_bytes": 2595512320,
+          "working_set_bytes": 2595508224
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2363547648,
+          "faults": 121056,
+          "peak_commit_bytes": 2363600896,
+          "peak_working_set_bytes": 470867968,
+          "working_set_bytes": 470867968
+        },
+        "board": "Ks7h2d",
+        "component_ms": 194.8813,
+        "cpu_after_ticks100ns": 6406250,
+        "cpu_before_ticks100ns": 2968750,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 343.75,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3454025728,
+          "faults": 898207,
+          "peak_commit_bytes": 3454070784,
+          "peak_working_set_bytes": 2779103232,
+          "working_set_bytes": 2779086848
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 3007860736,
+          "faults": 698561,
+          "peak_commit_bytes": 3118026752,
+          "peak_working_set_bytes": 2595569664,
+          "working_set_bytes": 1962225664
+        },
+        "board": "Ks7s2d",
+        "component_ms": 111.21300000000001,
+        "cpu_after_ticks100ns": 10937500,
+        "cpu_before_ticks100ns": 9218750,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 171.875,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 2728144896,
+          "faults": 939077,
+          "peak_commit_bytes": 3454070784,
+          "peak_working_set_bytes": 2779111424,
+          "working_set_bytes": 2045521920
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2725302272,
+          "faults": 938389,
+          "peak_commit_bytes": 3454070784,
+          "peak_working_set_bytes": 2779111424,
+          "working_set_bytes": 2042707968
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 1.5893000000000002,
+        "cpu_after_ticks100ns": 12656250,
+        "cpu_before_ticks100ns": 12656250,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ],
+    "D131T2": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3117330432,
+          "faults": 642298,
+          "peak_commit_bytes": 3117375488,
+          "peak_working_set_bytes": 2596212736,
+          "working_set_bytes": 2596208640
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2363408384,
+          "faults": 121278,
+          "peak_commit_bytes": 2363457536,
+          "peak_working_set_bytes": 471842816,
+          "working_set_bytes": 471842816
+        },
+        "board": "Ks7h2d",
+        "component_ms": 201.8315,
+        "cpu_after_ticks100ns": 6406250,
+        "cpu_before_ticks100ns": 3281250,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 312.5,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3103899648,
+          "faults": 902644,
+          "peak_commit_bytes": 3464376320,
+          "peak_working_set_bytes": 2798493696,
+          "working_set_bytes": 2443255808
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 3014553600,
+          "faults": 701784,
+          "peak_commit_bytes": 3117375488,
+          "peak_working_set_bytes": 2596270080,
+          "working_set_bytes": 1976647680
+        },
+        "board": "Ks7s2d",
+        "component_ms": 131.1301,
+        "cpu_after_ticks100ns": 13593750,
+        "cpu_before_ticks100ns": 11875000,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 171.875,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 2735505408,
+          "faults": 946047,
+          "peak_commit_bytes": 3464376320,
+          "peak_working_set_bytes": 2798493696,
+          "working_set_bytes": 2056359936
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2733170688,
+          "faults": 945362,
+          "peak_commit_bytes": 3464376320,
+          "peak_working_set_bytes": 2798493696,
+          "working_set_bytes": 2053558272
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 1.637,
+        "cpu_after_ticks100ns": 15000000,
+        "cpu_before_ticks100ns": 15000000,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ],
+    "D131B2": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3118694400,
+          "faults": 642304,
+          "peak_commit_bytes": 3118694400,
+          "peak_working_set_bytes": 2596331520,
+          "working_set_bytes": 2596331520
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2364329984,
+          "faults": 121278,
+          "peak_commit_bytes": 2364346368,
+          "peak_working_set_bytes": 471896064,
+          "working_set_bytes": 471896064
+        },
+        "board": "Ks7h2d",
+        "component_ms": 308.4047,
+        "cpu_after_ticks100ns": 6250000,
+        "cpu_before_ticks100ns": 3281250,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 296.875,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3124453376,
+          "faults": 912356,
+          "peak_commit_bytes": 3466072064,
+          "peak_working_set_bytes": 2596405248,
+          "working_set_bytes": 2451488768
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 3019563008,
+          "faults": 703701,
+          "peak_commit_bytes": 3118694400,
+          "peak_working_set_bytes": 2596405248,
+          "working_set_bytes": 1983492096
+        },
+        "board": "Ks7s2d",
+        "component_ms": 170.9368,
+        "cpu_after_ticks100ns": 11250000,
+        "cpu_before_ticks100ns": 9531250,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 171.875,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 2607087616,
+          "faults": 951733,
+          "peak_commit_bytes": 3466072064,
+          "peak_working_set_bytes": 2596405248,
+          "working_set_bytes": 1924411392
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2604285952,
+          "faults": 951047,
+          "peak_commit_bytes": 3466072064,
+          "peak_working_set_bytes": 2596405248,
+          "working_set_bytes": 1921605632
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 1.6126999999999998,
+        "cpu_after_ticks100ns": 12343750,
+        "cpu_before_ticks100ns": 12343750,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ],
+    "D131B3": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3117731840,
+          "faults": 641892,
+          "peak_commit_bytes": 3117731840,
+          "peak_working_set_bytes": 2595418112,
+          "working_set_bytes": 2595418112
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2363363328,
+          "faults": 120822,
+          "peak_commit_bytes": 2363396096,
+          "peak_working_set_bytes": 470884352,
+          "working_set_bytes": 470884352
+        },
+        "board": "Ks7h2d",
+        "component_ms": 305.4546,
+        "cpu_after_ticks100ns": 8906250,
+        "cpu_before_ticks100ns": 5781250,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 312.5,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3124514816,
+          "faults": 911644,
+          "peak_commit_bytes": 3466264576,
+          "peak_working_set_bytes": 2595491840,
+          "working_set_bytes": 2449027072
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 3020021760,
+          "faults": 703072,
+          "peak_commit_bytes": 3117731840,
+          "peak_working_set_bytes": 2595491840,
+          "working_set_bytes": 1981427712
+        },
+        "board": "Ks7s2d",
+        "component_ms": 164.6363,
+        "cpu_after_ticks100ns": 13750000,
+        "cpu_before_ticks100ns": 12187500,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 156.25,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 1917530112,
+          "faults": 950891,
+          "peak_commit_bytes": 3466264576,
+          "peak_working_set_bytes": 2595491840,
+          "working_set_bytes": 1233432576
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1915195392,
+          "faults": 950203,
+          "peak_commit_bytes": 3466264576,
+          "peak_working_set_bytes": 2595491840,
+          "working_set_bytes": 1230618624
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 3.4196999999999997,
+        "cpu_after_ticks100ns": 15937500,
+        "cpu_before_ticks100ns": 15937500,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ],
+    "D131T3": [
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3118764032,
+          "faults": 642323,
+          "peak_commit_bytes": 3118809088,
+          "peak_working_set_bytes": 2596278272,
+          "working_set_bytes": 2596274176
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2364411904,
+          "faults": 121310,
+          "peak_commit_bytes": 2364469248,
+          "peak_working_set_bytes": 471928832,
+          "working_set_bytes": 471928832
+        },
+        "board": "Ks7h2d",
+        "component_ms": 190.9825,
+        "cpu_after_ticks100ns": 6406250,
+        "cpu_before_ticks100ns": 3281250,
+        "fixture_index": 0,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 740688652,
+        "process_CPU_ms": 312.5,
+        "q_bytes": 1364772032,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-0.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 3105673216,
+          "faults": 898250,
+          "peak_commit_bytes": 3453964288,
+          "peak_working_set_bytes": 2779541504,
+          "working_set_bytes": 2450771968
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 3007684608,
+          "faults": 698588,
+          "peak_commit_bytes": 3118809088,
+          "peak_working_set_bytes": 2596335616,
+          "working_set_bytes": 1962598400
+        },
+        "board": "Ks7s2d",
+        "component_ms": 133.2844,
+        "cpu_after_ticks100ns": 11562500,
+        "cpu_before_ticks100ns": 9687500,
+        "fixture_index": 1,
+        "full_private_layout_words_per_arm": 2436526,
+        "nodes": 1346813,
+        "overlap_eligible": true,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 442981120,
+        "process_CPU_ms": 187.5,
+        "q_bytes": 1369522280,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-1.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      },
+      {
+        "GPU_solver_executions": 0,
+        "after": {
+          "commit_bytes": 2727800832,
+          "faults": 939530,
+          "peak_commit_bytes": 3453964288,
+          "peak_working_set_bytes": 2779541504,
+          "working_set_bytes": 2055733248
+        },
+        "all_original_full_predicates_and_guards": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "application_kernel_launches": 0,
+        "arm": "overlap",
+        "before": {
+          "commit_bytes": 2724999168,
+          "faults": 938846,
+          "peak_commit_bytes": 3453964288,
+          "peak_working_set_bytes": 2779541504,
+          "working_set_bytes": 2052935680
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 3.3756,
+        "cpu_after_ticks100ns": 13437500,
+        "cpu_before_ticks100ns": 13437500,
+        "fixture_index": 2,
+        "full_private_layout_words_per_arm": 28,
+        "nodes": 33,
+        "overlap_eligible": false,
+        "performance_is_full_solve": false,
+        "pinned_bytes": 17920,
+        "process_CPU_ms": 0.0,
+        "q_bytes": 32832,
+        "raw_layout": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-2.bin",
+        "setup_CUDA_calls_stay_on_caller": true,
+        "stage": "zero_setup_component"
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "nodes": 1346813,
+      "q_bytes": 1364772032,
+      "overlap_applicable": true,
+      "baseline_component_ms": [
+        299.8707,
+        308.4047,
+        305.4546
+      ],
+      "candidate_component_ms": [
+        194.8813,
+        201.8315,
+        190.9825
+      ],
+      "baseline_median_ms": 305.4546,
+      "candidate_median_ms": 194.8813,
+      "saving_of_medians_ms": 110.57330000000002,
+      "paired_saving_ms": [
+        104.98939999999999,
+        106.57319999999999,
+        114.47210000000004
+      ],
+      "improving_pairs": 3,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        296.875,
+        296.875,
+        312.5
+      ],
+      "candidate_CPU_ms": [
+        343.75,
+        312.5,
+        312.5
+      ],
+      "baseline_CPU_median_ms": 296.875,
+      "candidate_CPU_median_ms": 312.5,
+      "CPU_limit_ms": 331.5625,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "nodes": 1346813,
+      "q_bytes": 1369522280,
+      "overlap_applicable": true,
+      "baseline_component_ms": [
+        169.26420000000002,
+        170.9368,
+        164.6363
+      ],
+      "candidate_component_ms": [
+        111.21300000000001,
+        131.1301,
+        133.2844
+      ],
+      "baseline_median_ms": 169.26420000000002,
+      "candidate_median_ms": 131.1301,
+      "saving_of_medians_ms": 38.13410000000002,
+      "paired_saving_ms": [
+        58.05120000000001,
+        39.806700000000006,
+        31.3519
+      ],
+      "improving_pairs": 3,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        171.875,
+        171.875,
+        156.25
+      ],
+      "candidate_CPU_ms": [
+        171.875,
+        171.875,
+        187.5
+      ],
+      "baseline_CPU_median_ms": 171.875,
+      "candidate_CPU_median_ms": 171.875,
+      "CPU_limit_ms": 194.06250000000003,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "nodes": 33,
+      "q_bytes": 32832,
+      "overlap_applicable": false,
+      "baseline_component_ms": [
+        1.8860999999999999,
+        1.6126999999999998,
+        3.4196999999999997
+      ],
+      "candidate_component_ms": [
+        1.5893000000000002,
+        1.637,
+        3.3756
+      ],
+      "baseline_median_ms": 1.8860999999999999,
+      "candidate_median_ms": 1.637,
+      "saving_of_medians_ms": 0.24909999999999988,
+      "paired_saving_ms": [
+        0.29679999999999973,
+        -0.02430000000000021,
+        0.044099999999999806
+      ],
+      "improving_pairs": 2,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidate_CPU_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "baseline_CPU_median_ms": 0.0,
+      "candidate_CPU_median_ms": 0.0,
+      "CPU_limit_ms": 5.0,
+      "CPU_guard_pass": true
+    }
+  ],
+  "sum_fixture_component_saving_ms": 148.95650000000003,
+  "required_component_saving_ms": 95.825124,
+  "admit_one_integrated_trial": true,
+  "full_layout_raw_replays": [
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131B1",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131B1",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131B1",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B1\\fixture-2.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131T1",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131T1",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131T1",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T1\\fixture-2.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131T2",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131T2",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131T2",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T2\\fixture-2.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131B2",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131B2",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131B2",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B2\\fixture-2.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131B3",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131B3",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131B3",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131B3\\fixture-2.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 156020845,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "c8d057504c8fd6e31e2ca44eb2fe4ee9f4e60cb5cab81af498610581c0060fa3"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 185172163,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "10d9c214d7c55481d642b21f68575ecfb97f84c9a89839d2c2a2185f3ad31dd2"
+        }
+      ],
+      "raw_sha256": "b5ca83284ba5de7b7f1ac51f468e1d96fa15ac271e9dc38f60f539f27e18e2a3",
+      "id": "D131T3",
+      "fixture_index": 0,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-0.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 38984472,
+      "encoded_words": 4873052,
+      "checks": 2436526,
+      "images": [
+        {
+          "player": 0,
+          "compact": true,
+          "arena_len": 93381294,
+          "active_blocks": 167213,
+          "copy_spans": 13586,
+          "inactive_blocks": 113272,
+          "words_per_arm": 1276758,
+          "image_sha256": "28ff916bd4a61fea0970c466ea06429eacab1d7fbe847cb0e47f6be2ca58a12a"
+        },
+        {
+          "player": 1,
+          "compact": true,
+          "arena_len": 110745280,
+          "active_blocks": 151349,
+          "copy_spans": 13586,
+          "inactive_blocks": 102528,
+          "words_per_arm": 1159768,
+          "image_sha256": "863b633f443d361275a97415a55abd312f520691d1d77325ab597767bee88933"
+        }
+      ],
+      "raw_sha256": "3b206636a96c21cf56882c47a830751725d3243d7371695d724fbd505920c11b",
+      "id": "D131T3",
+      "fixture_index": 1,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-1.bin"
+    },
+    {
+      "status": "pass_all_layout_words_capacities_and_frames",
+      "raw_bytes": 504,
+      "encoded_words": 56,
+      "checks": 28,
+      "images": [
+        {
+          "player": 0,
+          "compact": false,
+          "arena_len": 3728,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "4ff829435b06f671438af5e782d53df4108f0ac40770caed01d7add54950e8d9"
+        },
+        {
+          "player": 1,
+          "compact": false,
+          "arena_len": 4480,
+          "active_blocks": 0,
+          "copy_spans": 0,
+          "inactive_blocks": 0,
+          "words_per_arm": 14,
+          "image_sha256": "17508f1ee8e8658b1d9a1c416b6a31dcd38eb2dce83d41ef1c881e5f3e1ca663"
+        }
+      ],
+      "raw_sha256": "0182195932600d03e3907c75e5e27a10abeec468be7c8b315ad95c113a0ae286",
+      "id": "D131T3",
+      "fixture_index": 2,
+      "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\execution\\D131T3\\fixture-2.bin"
+    }
+  ],
+  "raw_bytes": 233912880,
+  "encoded_words_checked": 29238984,
+  "root_checks": 14619492,
+  "fixed_six_fresh_processes_complete": true,
+  "ability_lifecycle_controls": 12,
+  "ability_predicate_controls": 15,
+  "ability_wrong_store_tokens": 14,
+  "ability_full_words": 7308,
+  "native_component_processes": 6,
+  "CUDA_context_stream_pairs": 18,
+  "application_kernel_launches": 0,
+  "GPU_solver_executions": 0,
+  "performance_is_full_solve": false,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "limits": "This component includes the original full serial predicates and actual NVRTC/module/pinned/layout setup. It omits device arena allocations/uploads and full solving, so its timing is not a full-solve claim. CUDA stays on the caller, one CPU worker retains all original scans, and full layout fields/capacities match original reference construction after every clock. CPU counts cover all process threads and retain raw quantized values. Spawn failure and actual driver exhaustion remain source-reviewed. Broad exactness/F32/state/menu/save/resume/continuation and actual CPU/host/GPU peak/capacity/responsiveness, full-cycle strict fixture/fresh16/holdout/cumulative gates remain mandatory. Fixed screening budget and CPU guard cannot prove no tradeoffs. No rescue variants or extra samples after a failed screen."
+}

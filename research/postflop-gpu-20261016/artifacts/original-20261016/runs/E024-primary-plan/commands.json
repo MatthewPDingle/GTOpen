@@ -1,0 +1,22 @@
+{
+  "root_only": true,
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "activation": "Root applies only frozen E024-design/candidate.patch after reviews; no activation script provided.",
+  "commands": [
+    [
+      "C:\\Program Files\\Python312\\python.exe",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\build.py",
+      "<authorization SHA256>"
+    ],
+    [
+      "C:\\Program Files\\Python312\\python.exe",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\primary.py"
+    ],
+    [
+      "C:\\Program Files\\Python312\\python.exe",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E024-primary-plan\\assess.py"
+    ]
+  ],
+  "serial_terminal_success_required": true,
+  "execution_performed": false
+}

@@ -1,0 +1,839 @@
+--- E034-primary-plan/compile_check.py
++++ E035-primary-plan/compile_check.py
+@@ -12,44 +12,29 @@
+ assert ar.sha256(authorization_path) == sys.argv[1]
+ authorization = json.loads(authorization_path.read_text(encoding='utf-8'))
+ 
+-assert authorization['candidate'] == 'E034' and authorization['E020_accepted'] is True
++assert authorization['candidate'] == 'E035' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E034_source_review', 'E034_script_review', 'D064_terminal_review', 'E033_failure_cleanup', 'E033_terminal_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'E035_source_review', 'E035_script_review', 'D066_terminal_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-_d064=authorization['prerequisites']['D064_terminal_review']
+-assert Path(_d064['path']).resolve()==(ar.RESEARCH/'comparisons/D064-terminal-review/report.json').resolve()
+-_d064_record=json.loads(Path(_d064['path']).read_text(encoding='utf-8'))
+-assert _d064_record['id']=='D064' and _d064_record['terminal_audit_pass'] is True
+-assert _d064_record['verdict']=='PASS_SCOPED_CAPTURED_NODE_ATTRIBUTE_TERMINAL_AUDIT'
+-assert _d064_record['stream_and_retained_node_semantics_exact'] is True and _d064_record['cleanup_pass'] is True
+-
+-_failure=authorization['prerequisites']['E033_failure_cleanup']
+-assert Path(_failure['path']).resolve()==(ar.RESEARCH/'runs/E033-cleanup/report.json').resolve()
+-_failure_record=json.loads(Path(_failure['path']).read_text(encoding='utf-8'))
+-assert _failure_record['id']=='E033' and _failure_record['status']=='REJECTED_AT_UNIT_GATE'
+-assert _failure_record['accepted_sources_restored'] is True and _failure_record['no_retry_or_timing'] is True
+-assert all(_failure_record['timed_runs_absent'].values()) and len(_failure_record['timed_runs_absent'])==6
+-
+-_terminal=authorization['prerequisites']['E033_terminal_review']
+-assert Path(_terminal['path']).resolve()==(ar.RESEARCH/'comparisons/E033-independent-review/report.json').resolve()
+-_terminal_record=json.loads(Path(_terminal['path']).read_text(encoding='utf-8'))
+-assert _terminal_record['id']=='E033' and _terminal_record['verdict']=='PASS_AUDIT_FAILED_UNIT_GATE'
+-assert _terminal_record['unit_gate_pass'] is False and _terminal_record['primary_executed'] is False
+-assert _terminal_record['performance_measured'] is False and _terminal_record['candidate_accepted'] is False
+-assert _terminal_record['accepted_sources_restored'] is True
+-
+-changed_sources = ('crates/solver/src/gpu/mod.rs',)
+-new_sources = ('crates/solver/src/gpu/cache_policy.rs',)
++protocol=json.loads((here/'protocol.json').read_text(encoding='utf-8'))
++terminal=authorization['prerequisites']['D066_terminal_review']
++assert Path(terminal['path']).resolve()==Path(protocol['incidence_prerequisite']['path']).resolve()
++terminal_record=json.loads(Path(terminal['path']).read_text(encoding='utf-8'))
++assert terminal['sha256']==protocol['incidence_prerequisite']['sha256']
++for key,value in protocol['incidence_prerequisite']['required_fields'].items():
++    assert terminal_record[key]==value,(key,terminal_record.get(key))
++changed_sources = tuple(protocol['changed_accepted_sources'])
++new_sources = tuple(protocol['new_sources'])
+ owned = changed_sources + new_sources
+ all_owned = owned
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = '76ab3c0940fb85dbb94855ad28654239861d96a5f8016190c7ae3e13263d2241'
+-out = ar.RESEARCH / 'runs/E034-compile-check'
+-target = ar.RESEARCH / 'build-check-e034-research'
++protocol_hash = '7b6dc1406e5c77ad3c8f8e370eda0ef790486d5e08685e0bbb08965a00e81b4e'
++out = ar.RESEARCH / 'runs/E035-compile-check'
++target = ar.RESEARCH / 'build-check-e035-research'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -67,7 +52,7 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/E034-design'
++    design=ar.RESEARCH/'runs/E035-design'
+     assert ar.sha256(design/'manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+@@ -80,7 +65,7 @@
+     assert ar.sha256(accepted_path) == '37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768'
+     accepted = json.loads(accepted_path.read_text(encoding='utf-8'))['source_sha256']
+     current = ar.source_identity()['source_sha256']
+-    assert len(accepted) == 162 and len(current) == 163
++    assert len(accepted) == 162 and len(current) == 162 + len(new_sources)
+     assert set(current) == set(accepted) | set(new_sources)
+     for name, expected in accepted.items():
+         if name not in changed_sources:
+@@ -104,7 +89,7 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Compile-checking E034 research library paths', active_experiment='E034',
++            status.update(updated_at=ar.now(), stage='Compile-checking E035 research library paths', active_experiment='E035',
+                           activity='Compile-only research library tests; no native test is executed. Fresh GPU-only build and fixed primary remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+@@ -163,8 +148,8 @@
+         shutil.copyfile(repo/name,destination)
+         source_copies[name]={'path':str(destination),'sha256':ar.sha256(destination)}
+     patch=out/'candidate.patch'
+-    shutil.copyfile(ar.RESEARCH/'runs/E034-design/candidate.patch', patch)
+-    assert ar.sha256(patch) == ar.sha256(ar.RESEARCH/'runs/E034-design/candidate.patch')
++    shutil.copyfile(ar.RESEARCH/'runs/E035-design/candidate.patch', patch)
++    assert ar.sha256(patch) == ar.sha256(ar.RESEARCH/'runs/E035-design/candidate.patch')
+     env=os.environ.copy()
+     override_keys={'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_RUSTFLAGS','CARGO_BUILD_RUSTC','CARGO_BUILD_RUSTC_WRAPPER','CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_TARGET'}
+     overrides={k:v for k,v in env.items() if k in override_keys or k.startswith('CARGO_PROFILE_RELEASE_') or (k.startswith('CARGO_TARGET_') and k.endswith('_RUSTFLAGS'))}
+@@ -184,24 +169,24 @@
+         expected=repo/'crates/solver/src/lib.rs'
+         assert Path(item['target']['src_path']).resolve()==expected.resolve()
+         assert item['profile']['test'] is (name=='solver')
+-        binary=Path(item['executable']);destination=artifacts/('E034-research-'+name+'.exe')
++        binary=Path(item['executable']);destination=artifacts/('E035-research-'+name+'.exe')
+         shutil.copyfile(binary,destination)
+         assert ar.sha256(destination)==ar.sha256(binary)
+         if name=='solver':
+             data=destination.read_bytes()
+-            accepted_cuda=(repo/'crates/solver/src/gpu/kernels.cu').read_bytes()
+-            assert ar.sha256(repo/'crates/solver/src/gpu/kernels.cu')==protocol['accepted_kernel_sha256']
+-            cleanup_source=Path(protocol['cleanup_source_path'])
+-            assert ar.sha256(cleanup_source)==protocol['cleanup_source_sha256']
+-            assert accepted_cuda in data and cleanup_source.read_bytes() in data,'Missing accepted numerical CUDA or E034 cleanup source'
++            candidate_cuda=Path(protocol['candidate_kernel_path'])
++            accepted_cuda=Path(protocol['accepted_kernel_path'])
++            assert ar.sha256(candidate_cuda)==protocol['candidate_kernel_sha256']
++            assert ar.sha256(accepted_cuda)==protocol['accepted_kernel_sha256']
++            assert candidate_cuda.read_bytes() in data and accepted_cuda.read_bytes() not in data,'Candidate CUDA provenance differs'
+         artifact_sha256[str(destination)]=ar.sha256(destination)
+         artifact_records.append({'path':str(destination),'sha256':ar.sha256(destination),'cargo_artifact':item})
+     verify()
+     assert before['source_sha256']==ar.source_identity()['source_sha256']
+     evidence={str(path):ar.sha256(path) for path in out.iterdir() if path.is_file()}
+-    record={**before,'candidate':'E034','status':'COMPILE_ONLY_CHECKS_PASSED','at':ar.now(),'authorization_sha256':sys.argv[1],
++    record={**before,'candidate':'E035','status':'COMPILE_ONLY_CHECKS_PASSED','at':ar.now(),'authorization_sha256':sys.argv[1],
+         'protocol_sha256':protocol_hash,'script_sha256':ar.sha256(Path(__file__)),'commands':[test_exit],
+         'target_dir':str(target),'source_copies':source_copies,'patch_sha256':ar.sha256(patch),'artifact_sha256':artifact_sha256,
+         'artifacts':artifact_records,'evidence_sha256':evidence,'native_executions':0}
+     ar.atomic_json(out/'complete.json',record)
+-    print('E034 feature compile checks terminal success; no native feature test run.',flush=True)
++    print('E035 feature compile checks terminal success; no native feature test run.',flush=True)
+--- E034-primary-plan/build.py
++++ E035-primary-plan/build.py
+@@ -1,4 +1,4 @@
+-"""Root-only build after accepted E020 server qualification and frozen E034 review."""
++"""Root-only build after accepted E020 server qualification and frozen E035 review."""
+ import json, os, shutil, signal, subprocess, sys, time
+ from pathlib import Path
+ 
+@@ -12,44 +12,29 @@
+ assert ar.sha256(authorization_path) == sys.argv[1]
+ authorization = json.loads(authorization_path.read_text(encoding='utf-8'))
+ 
+-assert authorization['candidate'] == 'E034' and authorization['E020_accepted'] is True
++assert authorization['candidate'] == 'E035' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E034_source_review', 'E034_script_review', 'D064_terminal_review', 'E033_failure_cleanup', 'E033_terminal_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'E035_source_review', 'E035_script_review', 'D066_terminal_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-_d064=authorization['prerequisites']['D064_terminal_review']
+-assert Path(_d064['path']).resolve()==(ar.RESEARCH/'comparisons/D064-terminal-review/report.json').resolve()
+-_d064_record=json.loads(Path(_d064['path']).read_text(encoding='utf-8'))
+-assert _d064_record['id']=='D064' and _d064_record['terminal_audit_pass'] is True
+-assert _d064_record['verdict']=='PASS_SCOPED_CAPTURED_NODE_ATTRIBUTE_TERMINAL_AUDIT'
+-assert _d064_record['stream_and_retained_node_semantics_exact'] is True and _d064_record['cleanup_pass'] is True
+-
+-_failure=authorization['prerequisites']['E033_failure_cleanup']
+-assert Path(_failure['path']).resolve()==(ar.RESEARCH/'runs/E033-cleanup/report.json').resolve()
+-_failure_record=json.loads(Path(_failure['path']).read_text(encoding='utf-8'))
+-assert _failure_record['id']=='E033' and _failure_record['status']=='REJECTED_AT_UNIT_GATE'
+-assert _failure_record['accepted_sources_restored'] is True and _failure_record['no_retry_or_timing'] is True
+-assert all(_failure_record['timed_runs_absent'].values()) and len(_failure_record['timed_runs_absent'])==6
+-
+-_terminal=authorization['prerequisites']['E033_terminal_review']
+-assert Path(_terminal['path']).resolve()==(ar.RESEARCH/'comparisons/E033-independent-review/report.json').resolve()
+-_terminal_record=json.loads(Path(_terminal['path']).read_text(encoding='utf-8'))
+-assert _terminal_record['id']=='E033' and _terminal_record['verdict']=='PASS_AUDIT_FAILED_UNIT_GATE'
+-assert _terminal_record['unit_gate_pass'] is False and _terminal_record['primary_executed'] is False
+-assert _terminal_record['performance_measured'] is False and _terminal_record['candidate_accepted'] is False
+-assert _terminal_record['accepted_sources_restored'] is True
+-
+-changed_sources = ('crates/solver/src/gpu/mod.rs',)
+-new_sources = ('crates/solver/src/gpu/cache_policy.rs',)
++protocol=json.loads((here/'protocol.json').read_text(encoding='utf-8'))
++terminal=authorization['prerequisites']['D066_terminal_review']
++assert Path(terminal['path']).resolve()==Path(protocol['incidence_prerequisite']['path']).resolve()
++terminal_record=json.loads(Path(terminal['path']).read_text(encoding='utf-8'))
++assert terminal['sha256']==protocol['incidence_prerequisite']['sha256']
++for key,value in protocol['incidence_prerequisite']['required_fields'].items():
++    assert terminal_record[key]==value,(key,terminal_record.get(key))
++changed_sources = tuple(protocol['changed_accepted_sources'])
++new_sources = tuple(protocol['new_sources'])
+ owned = changed_sources + new_sources
+ all_owned = owned
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = '76ab3c0940fb85dbb94855ad28654239861d96a5f8016190c7ae3e13263d2241'
+-out = ar.RESEARCH / 'runs/E034-build'
+-target = ar.RESEARCH / 'build-e034-primary'
++protocol_hash = '7b6dc1406e5c77ad3c8f8e370eda0ef790486d5e08685e0bbb08965a00e81b4e'
++out = ar.RESEARCH / 'runs/E035-build'
++target = ar.RESEARCH / 'build-e035-primary'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -67,7 +52,7 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/E034-design'
++    design=ar.RESEARCH/'runs/E035-design'
+     assert ar.sha256(design/'manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+@@ -80,7 +65,7 @@
+     assert ar.sha256(accepted_path) == '37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768'
+     accepted = json.loads(accepted_path.read_text(encoding='utf-8'))['source_sha256']
+     current = ar.source_identity()['source_sha256']
+-    assert len(accepted) == 162 and len(current) == 163
++    assert len(accepted) == 162 and len(current) == 162 + len(new_sources)
+     assert set(current) == set(accepted) | set(new_sources)
+     for name, expected in accepted.items():
+         if name not in changed_sources:
+@@ -104,8 +89,8 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen E034 scoped cache policy candidate', active_experiment='E034',
+-                          activity='Accepted E020 server qualification and source/script review passed. Building the two-file scoped cache policy candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
++            status.update(updated_at=ar.now(), stage='Building frozen E035 positive-zero fold candidate', active_experiment='E035',
++                          activity='Accepted E020 server qualification and source/script review passed. Building the two-file positive-zero fold candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+         # Dashboard trouble must never release the GPU lock around a live compiler.
+@@ -117,7 +102,7 @@
+ 
+ 
+ def verify_compile_check():
+-    check = ar.RESEARCH/'runs/E034-compile-check'
++    check = ar.RESEARCH/'runs/E035-compile-check'
+     record = json.loads((check/'complete.json').read_text(encoding='utf-8'))
+     assert record['status'] == 'COMPILE_ONLY_CHECKS_PASSED'
+     assert record['authorization_sha256'] == sys.argv[1]
+@@ -136,10 +121,10 @@
+ with ar.exclusive_lock(ar.RESEARCH / 'gpu-run.lock'):
+     ar.refuse_active(ar.live_status())
+     assert shutil.disk_usage(ar.RESEARCH).free >= 54 * 1024**3
+-    assert not target.exists(), 'Fresh E034 target required; no clean/reuse workaround'
++    assert not target.exists(), 'Fresh E035 target required; no clean/reuse workaround'
+     verify()
+     compile_check_sha256 = verify_compile_check()
+-    for name in ('E034-solver', 'E034-postflop_autoresearch'):
++    for name in ('E035-solver', 'E035-postflop_autoresearch'):
+         assert not (ar.RESEARCH / 'binaries' / (name + '.exe')).exists()
+         assert not (ar.RESEARCH / 'binaries' / (name + '.manifest.json')).exists()
+     out.mkdir(exist_ok=False)
+@@ -152,8 +137,8 @@
+         shutil.copyfile(repo / name, destination)
+         source_copies[name] = {'path': str(destination), 'sha256': ar.sha256(destination)}
+     patch = out / 'candidate.patch'
+-    shutil.copyfile(ar.RESEARCH/'runs/E034-design/candidate.patch', patch)
+-    assert ar.sha256(patch) == ar.sha256(ar.RESEARCH/'runs/E034-design/candidate.patch')
++    shutil.copyfile(ar.RESEARCH/'runs/E035-design/candidate.patch', patch)
++    assert ar.sha256(patch) == ar.sha256(ar.RESEARCH/'runs/E035-design/candidate.patch')
+     command = ['cargo', 'test', '--release', '--locked', '--offline', '-p', 'solver', '--features', 'gpu', '--lib', '--test', 'postflop_autoresearch', '--no-run', '--message-format=json']
+     env = os.environ.copy()
+     override_keys={'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_RUSTFLAGS','CARGO_BUILD_RUSTC','CARGO_BUILD_RUSTC_WRAPPER','CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_TARGET'}
+@@ -164,7 +149,7 @@
+     ar.atomic_json(out/'build-environment.json',{'target_dir':str(target),'target_previously_absent':True,'compiler_override_absence':overrides,'RAYON_NUM_THREADS':'16','rustc':ar.read_command(['rustc','-Vv']),'cargo':ar.read_command(['cargo','-V'])})
+     log, err = out / 'build.jsonl', out / 'build.stderr.log'
+     heartbeat()
+-    print('Building source-frozen E034; no GPU tests run in this step.', flush=True)
++    print('Building source-frozen E035; no GPU tests run in this step.', flush=True)
+     process = None
+     started=time.monotonic()
+     fault = None
+@@ -214,26 +199,26 @@
+         assert Path(item['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+         expected_src=repo/('crates/solver/src/lib.rs' if name=='solver' else 'crates/solver/tests/postflop_autoresearch.rs')
+         assert Path(item['target']['src_path']).resolve()==expected_src.resolve()
+-        destination = ar.RESEARCH / 'binaries' / ('E034-' + name + '.exe')
++        destination = ar.RESEARCH / 'binaries' / ('E035-' + name + '.exe')
+         assert not destination.exists()
+         shutil.copyfile(item['executable'], destination)
+         data=destination.read_bytes()
+-        accepted_cuda=(repo/'crates/solver/src/gpu/kernels.cu').read_bytes()
+-        assert ar.sha256(repo/'crates/solver/src/gpu/kernels.cu') == json.loads((here/'protocol.json').read_text(encoding='utf-8'))['accepted_kernel_sha256']
+-        assert accepted_cuda in data, 'Missing unchanged accepted E020 CUDA'
+-        cleanup_source=Path(json.loads((here/'protocol.json').read_text(encoding='utf-8'))['cleanup_source_path'])
+-        cleanup_sha=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['cleanup_source_sha256']
+-        assert ar.sha256(cleanup_source)==cleanup_sha and cleanup_source.read_bytes() in data,'Missing exact E034 cleanup source'
++        candidate_cuda=Path(protocol['candidate_kernel_path'])
++        accepted_cuda=Path(protocol['accepted_kernel_path'])
++        assert ar.sha256(candidate_cuda)==protocol['candidate_kernel_sha256']
++        assert ar.sha256(accepted_cuda)==protocol['accepted_kernel_sha256']
++        assert candidate_cuda.read_bytes() in data,'Missing complete candidate CUDA'
++        assert accepted_cuda.read_bytes() not in data,'Unexpected complete accepted CUDA in candidate binary'
+         assert ar.sha256(destination)!=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['reference_binary_sha256']
+-        manifest = {**before, 'candidate': 'E034', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
+-                    'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'accepted_cuda_present':True,'unchanged_cuda_sha256':ar.sha256(repo/'crates/solver/src/gpu/kernels.cu'), 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
++        manifest = {**before, 'candidate': 'E035', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
++                    'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'candidate_cuda_present':True,'candidate_cuda_sha256':protocol['candidate_kernel_sha256'],'complete_accepted_cuda_absent':True, 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
+                     'build_stderr_log': str(err), 'build_stderr_sha256': ar.sha256(err),
+                     'patch': str(patch), 'patch_sha256': ar.sha256(patch), 'source_matches_prebuild': True,
+-                    'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash, 'compile_check_sha256': compile_check_sha256, 'cleanup_source_present':True, 'cleanup_source_sha256':cleanup_sha,
++                    'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash, 'compile_check_sha256': compile_check_sha256,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+                     'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020/server qualification and independent E034 source/script review; full-solver and policy/lifecycle qualification remain pending',
+-                    'change': 'One fixed existing-reservation cache window on the owned d_cfv_slot prefix, separate cleanup module and explicit normalization inside sync_to_cpu. Original numerical CUDA, kernel launch schedule and ABI, buffers, floating arithmetic and frozen evaluator remain unchanged; policy/setup/cleanup work is added and timed.'}
++                    'prerequisite_scope': 'Accepted E020/server qualification and independent E035 source/script review; full-solver numerical and performance qualification remain pending',
++                    'change': 'One up_fold exact-positive-zero opponent-row shortcut guarded by finite selected payout. Original fallback arithmetic and all other kernels, host launches, ABI and fixed evaluator remain unchanged; every row pays the predicate overhead. Incidence does not establish speed.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+-    print('E034 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
++    print('E035 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
+--- E034-primary-plan/primary.py
++++ E035-primary-plan/primary.py
+@@ -1,4 +1,4 @@
+-"""Run the predeclared E034 unit screen and all six primary solves once, serially."""
++"""Run the predeclared E035 unit screen and all six primary solves once, serially."""
+ import json, os, re, shutil, signal, subprocess, sys
+ from pathlib import Path
+ 
+@@ -8,7 +8,7 @@
+ 
+ here = Path(__file__).resolve().parent
+ protocol_path = here / 'protocol.json'
+-assert ar.sha256(protocol_path) == '76ab3c0940fb85dbb94855ad28654239861d96a5f8016190c7ae3e13263d2241'
++assert ar.sha256(protocol_path) == '7b6dc1406e5c77ad3c8f8e370eda0ef790486d5e08685e0bbb08965a00e81b4e'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ 
+@@ -25,14 +25,14 @@
+     assert ar.sha256(here / name) == expected, name
+ for path, expected in script_seal['reference_sha256'].items():
+     assert ar.sha256(Path(path)) == expected, path
+-assert protocol['order'] == ['V034-unit', 'B107', 'E034R1', 'E034R2', 'B108', 'B109', 'E034R3']
++assert protocol['order'] == ['V035-unit', 'B110', 'E035R1', 'E035R2', 'B111', 'B112', 'E035R3']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+ assert not (ar.RESEARCH / 'gpu-run.lock').exists(), 'Build or GPU work is still active'
+-assert json.loads((ar.RESEARCH / 'runs/E034-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
++assert json.loads((ar.RESEARCH / 'runs/E035-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
+ current = ar.source_identity()['source_sha256']
+ binary_pins = {}
+-for name in ('E034-solver', 'E034-postflop_autoresearch'):
++for name in ('E035-solver', 'E035-postflop_autoresearch'):
+     manifest_path = ar.RESEARCH / 'binaries' / (name + '.manifest.json')
+     binary_path = ar.RESEARCH / 'binaries' / (name + '.exe')
+     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+@@ -40,9 +40,9 @@
+     assert manifest['primary_protocol_sha256'] == ar.sha256(protocol_path)
+     assert manifest['probe_authorization_sha256'] == ar.sha256(here / 'authorization.json')
+     assert manifest['build_script_sha256'] == ar.sha256(here / 'build.py')
+-    assert manifest['accepted_cuda_present'] is True and manifest['unchanged_cuda_sha256'] == protocol['accepted_kernel_sha256']
+-    assert manifest['cleanup_source_present'] is True and manifest['cleanup_source_sha256']==protocol['cleanup_source_sha256']
+-    check_path=ar.RESEARCH/'runs/E034-compile-check/complete.json'
++    assert manifest['candidate_cuda_present'] is True and manifest['candidate_cuda_sha256']==protocol['candidate_kernel_sha256']
++    assert manifest['complete_accepted_cuda_absent'] is True
++    check_path=ar.RESEARCH/'runs/E035-compile-check/complete.json'
+     assert manifest['compile_check_sha256']==ar.sha256(check_path)
+     check_record=json.loads(check_path.read_text(encoding='utf-8'))
+     assert check_record['status']=='COMPILE_ONLY_CHECKS_PASSED' and check_record['native_executions']==0
+@@ -58,7 +58,7 @@
+ for identity in protocol['order']:
+     assert not (ar.RESEARCH / 'runs' / identity).exists(), identity
+     assert not any(row['id'] == identity for row in status['experiments']), identity
+-out = ar.RESEARCH / 'runs/E034-primary-execution'
++out = ar.RESEARCH / 'runs/E035-primary-execution'
+ out.mkdir(exist_ok=False)
+ env = os.environ.copy()
+ env.pop('POSTFLOP_AUTORESEARCH_FIXTURE',None)
+@@ -66,42 +66,6 @@
+ ar.atomic_json(out / 'invocation.json', {'at': ar.now(), 'primary_protocol_sha256': ar.sha256(protocol_path),
+     'script_sha256': ar.sha256(Path(__file__)), 'order': protocol['order'], 'source_sha256': current, 'candidate_binary_pins': binary_pins,
+     'build_terminal_before_launch': True, 'accepted_performance_claim': False})
+-
+-
+-def verify_policy_markers(raw, candidate, plan):
+-    lines = raw.splitlines()
+-    assert 'E033_CACHE_CLEANUP_ERROR' not in raw, 'Cleanup failure marker'
+-    policy = [(i, json.loads(line.split('E033_CACHE_POLICY ', 1)[1]))
+-              for i, line in enumerate(lines) if 'E033_CACHE_POLICY ' in line]
+-    if not candidate:
+-        assert policy == [], 'Baseline unexpectedly contains candidate policy markers'
+-        return []
+-    assert len(policy) == 6, 'Require exactly three enabled and three clean markers'
+-    stages = [(i, json.loads(line.split('AUTORESEARCH_STAGE ', 1)[1]))
+-              for i, line in enumerate(lines) if 'AUTORESEARCH_STAGE ' in line]
+-    verified = []
+-    for fixture, owned_bytes, window_bytes in [('rainbow',5387252,5387136),('two-tone',5387252,5387136),('river',132,128)]:
+-        def position(stage):
+-            found = [i for i, row in stages if row.get('fixture_id') == fixture and row.get('stage') == stage]
+-            assert len(found) == 1, (fixture, stage, found)
+-            return found[0]
+-        start, build, ready, stop = [position(s) for s in ['fixture_start','build_complete','gpu_ready','timing_complete']]
+-        checks = [(i,r) for i,r in stages if r.get('fixture_id')==fixture and r.get('stage')=='convergence_check']
+-        assert checks and checks[-1][1]['iteration']==plan['expected_stops'][fixture]
+-        assert start < build < ready < checks[-1][0] < stop
+-        rows = [(i,r) for i,r in policy if start < i < stop]
+-        assert len(rows)==2 and [r['stage'] for _,r in rows]==['enabled','clean'], fixture
+-        assert build < rows[0][0] < ready and checks[-1][0] < rows[1][0] < stop, fixture
+-        for _, row in rows:
+-            assert set(row)=={'stage','enabled','owned_bytes','window_bytes','normalized_lines','cleanup_complete','errors'}
+-            assert row['enabled'] is True and row['errors'] is False, fixture
+-            assert row['owned_bytes']==owned_bytes and row['window_bytes']==window_bytes, fixture
+-            assert row['normalized_lines']==(0 if row['stage']=='enabled' else window_bytes//128), fixture
+-            assert row['cleanup_complete'] is (row['stage']=='clean'), fixture
+-            verified.append({'fixture_id':fixture,**row})
+-    assert [r for _,r in policy]==[{k:v for k,v in r.items() if k!='fixture_id'} for r in verified], 'Policy markers outside fixed fixture order'
+-    return verified
+-
+ 
+ 
+ def run(identity, binary, kind, test, ordinary=False):
+@@ -125,7 +89,7 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'E034 scoped cache policy candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E034 GPU solver unit screen'),
++               'E035 positive-zero fold candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E035 GPU solver unit screen'),
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+@@ -147,22 +111,20 @@
+     assert report['test_pass_count'] == (protocol['expected_unit_passed'] if ordinary else 1), identity
+     if ordinary:
+         raw = (ar.RESEARCH / 'runs' / identity / 'stdout.log').read_text(encoding='utf-8')
+-        assert 'E033_CACHE_CLEANUP_ERROR' not in raw, 'Unit cleanup failure marker'
+         summaries = re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out;', raw)
+         assert summaries == [(str(protocol['expected_unit_passed']), '0', str(protocol['expected_unit_ignored']), '0', '0')], summaries
+         for test_name in protocol['expected_new_unit_tests']:
+             assert re.search(r'(?m)^test '+re.escape(test_name)+r' \.\.\. ', raw), test_name
+-    if not ordinary:
+-        raw = (ar.RESEARCH / 'runs' / identity / 'stdout.log').read_text(encoding='utf-8')
+-        policy = verify_policy_markers(raw, kind=='candidate', protocol)
+-        ar.atomic_json(out/(identity+'.policy-markers.json'), {'run_id':identity,'candidate':kind=='candidate','markers':policy,'enabled_and_timed_cleanup_verified':kind=='candidate'})
++        marker=protocol['focused_unit_marker']
++        records=[json.loads(line.split(marker['prefix'],1)[1]) for line in raw.splitlines() if marker['prefix'] in line]
++        assert records==[marker['expected']], 'Focused immutable-old/kernel test evidence differs'
+     verify_binary()
+     assert ar.source_identity()['source_sha256'] == current, 'Source drift during run'
+     print('Completed', identity, flush=True)
+ 
+ 
+-run('V034-unit', 'E034-solver', 'validation', '*', True)
+-for identity, candidate in [('B107', False), ('E034R1', True), ('E034R2', True), ('B108', False), ('B109', False), ('E034R3', True)]:
+-    run(identity, 'E034-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'candidate' if candidate else 'baseline', 'postflop_complete_cycle')
++run('V035-unit', 'E035-solver', 'validation', '*', True)
++for identity, candidate in [('B110', False), ('E035R1', True), ('E035R2', True), ('B111', False), ('B112', False), ('E035R3', True)]:
++    run(identity, 'E035-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'candidate' if candidate else 'baseline', 'postflop_complete_cycle')
+ ar.atomic_json(out / 'complete.json', {'at': ar.now(), 'order': protocol['order'], 'accepted_performance_claim': False})
+-print('All predeclared E034 primary runs complete; independent comparison remains required.', flush=True)
++print('All predeclared E035 primary runs complete; independent comparison remains required.', flush=True)
+--- E034-primary-plan/assess.py
++++ E035-primary-plan/assess.py
+@@ -16,8 +16,8 @@
+ import postflop_compare as compare
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+-protocol = base / 'runs/E034-primary-plan/protocol.json'
+-assert ar.sha256(protocol) == '76ab3c0940fb85dbb94855ad28654239861d96a5f8016190c7ae3e13263d2241'
++protocol = base / 'runs/E035-primary-plan/protocol.json'
++assert ar.sha256(protocol) == '7b6dc1406e5c77ad3c8f8e370eda0ef790486d5e08685e0bbb08965a00e81b4e'
+ plan = json.loads(protocol.read_text(encoding='utf-8'))
+ here=protocol.parent
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+@@ -25,44 +25,8 @@
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ for name,h in seal['script_sha256'].items(): assert ar.sha256(here/name)==h,name
+ for path,h in seal['reference_sha256'].items(): assert ar.sha256(Path(path))==h,path
+-completed = json.loads((base / 'runs/E034-primary-execution/complete.json').read_text(encoding='utf-8'))
++completed = json.loads((base / 'runs/E035-primary-execution/complete.json').read_text(encoding='utf-8'))
+ assert completed['order'] == plan['order']
+-def verify_policy_markers(raw, candidate, plan):
+-    lines = raw.splitlines()
+-    assert 'E033_CACHE_CLEANUP_ERROR' not in raw, 'Cleanup failure marker'
+-    policy = [(i, json.loads(line.split('E033_CACHE_POLICY ', 1)[1]))
+-              for i, line in enumerate(lines) if 'E033_CACHE_POLICY ' in line]
+-    if not candidate:
+-        assert policy == [], 'Baseline unexpectedly contains candidate policy markers'
+-        return []
+-    assert len(policy) == 6, 'Require exactly three enabled and three clean markers'
+-    stages = [(i, json.loads(line.split('AUTORESEARCH_STAGE ', 1)[1]))
+-              for i, line in enumerate(lines) if 'AUTORESEARCH_STAGE ' in line]
+-    verified = []
+-    for fixture, owned_bytes, window_bytes in [('rainbow',5387252,5387136),('two-tone',5387252,5387136),('river',132,128)]:
+-        def position(stage):
+-            found = [i for i, row in stages if row.get('fixture_id') == fixture and row.get('stage') == stage]
+-            assert len(found) == 1, (fixture, stage, found)
+-            return found[0]
+-        start, build, ready, stop = [position(s) for s in ['fixture_start','build_complete','gpu_ready','timing_complete']]
+-        checks = [(i,r) for i,r in stages if r.get('fixture_id')==fixture and r.get('stage')=='convergence_check']
+-        assert checks and checks[-1][1]['iteration']==plan['expected_stops'][fixture]
+-        assert start < build < ready < checks[-1][0] < stop
+-        rows = [(i,r) for i,r in policy if start < i < stop]
+-        assert len(rows)==2 and [r['stage'] for _,r in rows]==['enabled','clean'], fixture
+-        assert build < rows[0][0] < ready and checks[-1][0] < rows[1][0] < stop, fixture
+-        for _, row in rows:
+-            assert set(row)=={'stage','enabled','owned_bytes','window_bytes','normalized_lines','cleanup_complete','errors'}
+-            assert row['enabled'] is True and row['errors'] is False, fixture
+-            assert row['owned_bytes']==owned_bytes and row['window_bytes']==window_bytes, fixture
+-            assert row['normalized_lines']==(0 if row['stage']=='enabled' else window_bytes//128), fixture
+-            assert row['cleanup_complete'] is (row['stage']=='clean'), fixture
+-            verified.append({'fixture_id':fixture,**row})
+-    assert [r for _,r in policy]==[{k:v for k,v in r.items() if k!='fixture_id'} for r in verified], 'Policy markers outside fixed fixture order'
+-    return verified
+-
+-
+-
+ baseline_ids = [p['baseline'] for p in plan['pairs']]
+ candidate_ids = [p['candidate'] for p in plan['pairs']]
+ baseline = [compare.load_run(r)[0] for r in baseline_ids]
+@@ -72,10 +36,8 @@
+ excluded_timing = {'build_ms', 'init_ms', 'solve_ms', 'readback_ms', 'full_cycle_ms', 'fingerprint_ms_excluded'}
+ reference = [{k:v for k,v in result.items() if k not in excluded_timing} for result in baseline[0]['results']]
+ reference_checks=None
+-policy_evidence={}
+ for run in baseline + candidate:
+     raw = (base / 'runs' / run['id'] / 'stdout.log').read_text(encoding='utf-8')
+-    policy_evidence[run['id']]=verify_policy_markers(raw,run['id'] in candidate_ids,plan)
+     results = [json.loads(line.split('AUTORESEARCH_RESULT ',1)[1]) for line in raw.splitlines() if 'AUTORESEARCH_RESULT ' in line]
+     assert results == run['results'], run['id']
+     assert len(results)==3 and [v['fixture_id'] for v in results]==plan['expected_fixtures']
+@@ -90,21 +52,20 @@
+     assert [{k:v for k,v in result.items() if k not in excluded_timing} for result in results] == reference, run['id']
+ assessment = compare.summarize(baseline, candidate, compare.source_hashes(frozen))
+ failures = compare.rejection_reasons(assessment['performance'])
+-out = base / 'runs/E034-assessment'
++out = base / 'runs/E035-assessment'
+ out.mkdir(exist_ok=False)
+-ar.atomic_json(out/'policy-markers.json',policy_evidence)
+-source = base / 'runs/E034-build/candidate.patch'
+-target = base / 'runs/E034R1.patch'
++source = base / 'runs/E035-build/candidate.patch'
++target = base / 'runs/E035R1.patch'
+ assert not target.exists()
+ shutil.copyfile(source, target)
+ assert ar.sha256(target) == ar.sha256(source)
+ ar.atomic_json(out / 'logical-run-link.json', {
+-    'at': ar.now(), 'logical_candidate':'E034', 'actual_first_run':'E034R1',
++    'at': ar.now(), 'logical_candidate':'E035', 'actual_first_run':'E035R1',
+     'actual_run_ids':candidate_ids, 'synthesized_measurement':False,
+     'patch_alias':str(target), 'source_patch':str(source), 'patch_sha256':ar.sha256(source),
+     'reason':'Existing comparison helper consumes a physical run ID; logical display row mirrors its outcome only.'})
+-command = [sys.executable,'-B','tools/postflop_compare.py','--id','E034-three-pair-comparison',
+-           '--candidate-id','E034R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort']
++command = [sys.executable,'-B','tools/postflop_compare.py','--id','E035-three-pair-comparison',
++           '--candidate-id','E035R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort']
+ if failures: command.append('--reject')
+ ar.atomic_json(out / 'invocation.json', {'at':ar.now(),'command':command,'decision_gate_failures':failures,
+     'script_sha256':ar.sha256(Path(__file__)),'protocol_sha256':ar.sha256(protocol)})
+@@ -112,7 +73,7 @@
+     result = subprocess.run(command,cwd=repo,stdout=stdout,stderr=stderr)
+ ar.atomic_json(out / 'exit.json', {'at':ar.now(),'returncode':result.returncode})
+ assert result.returncode == 0, (out / 'stderr.log').read_text(encoding='utf-8')
+-report = json.loads((base / 'comparisons/E034-three-pair-comparison/report.json').read_text(encoding='utf-8'))
++report = json.loads((base / 'comparisons/E035-three-pair-comparison/report.json').read_text(encoding='utf-8'))
+ assert report['performance'] == assessment['performance']
+ assert report['decision'] == ('rejected' if failures else 'qualifying')
+ print(json.dumps({'decision':report['decision'],'performance':report['performance'],'candidate_accepted':False,'deployment_changed':False},indent=2))
+--- E034-primary-plan/protocol.json
++++ E035-primary-plan/protocol.json
+@@ -1,69 +1,63 @@
+ {
+-  "id": "E034-primary-plan",
+-  "at": "2026-10-16T20:15:25.057535+00:00",
++  "id": "E035-primary-plan",
+   "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+-  "candidate": "E034",
++  "candidate": "E035",
+   "reference": "accepted E020",
+-  "production_scope": "One fixed aligned128-byte-line prefix of existing immutable d_cfv_slot uses the existing solver-context persisting reservation. Separate cleanup module applies per-line evict_normal inside successful sync_to_cpu; clean/dirty/rearm/close/Drop ownership and four workload entry hooks. No context limit setter or global cache reset. Original numerical CUDA/evaluator unchanged.",
++  "production_scope": "One up_fold fast path for exact all-positive-zero opponent reach rows with finite selected payout. Fuse bitwise row predicate with existing reach staging and block-uniform first barrier; write every logical output with original amount*positivezero sign behavior. Every other row retains original floating expressions/order. No launch/ABI/other-kernel or host evaluation/continuation route changes.",
+   "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+   "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+   "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+   "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+   "order": [
+-    "V034-unit",
+-    "B107",
+-    "E034R1",
+-    "E034R2",
+-    "B108",
+-    "B109",
+-    "E034R3"
++    "V035-unit",
++    "B110",
++    "E035R1",
++    "E035R2",
++    "B111",
++    "B112",
++    "E035R3"
+   ],
+   "pairs": [
+     {
+-      "baseline": "B107",
+-      "candidate": "E034R1"
++      "baseline": "B110",
++      "candidate": "E035R1"
+     },
+     {
+-      "baseline": "B108",
+-      "candidate": "E034R2"
++      "baseline": "B111",
++      "candidate": "E035R2"
+     },
+     {
+-      "baseline": "B109",
+-      "candidate": "E034R3"
+-    }
+-  ],
+-  "unit_screen": "GPU-only ordinary library87passed,0failed,4ignored,0measured,0filtered, with all three named new geometry/actual-cleanup/lifecycle tests present and passing. Inventory remains prospective until native execution. Separate preflop-research library test build is compile-only; the named continuation test is mandatory later before adoption if primary qualifies.",
++      "baseline": "B112",
++      "candidate": "E035R3"
++    }
++  ],
++  "unit_screen": "GPU-only ordinary library85passed,0failed,4ignored,0measured,0filtered including gpu::tests::fold_positive_zero_matches_original_kernel and exactly one26-pair/52-launch exact-success marker. Native inventory remains prospective. Feature library no-run is compile-only.",
+   "aggregate_gate": "At least2 percent reduction in the sum of complete-cycle fixture medians across all3 alternating pairs.",
+   "fixture_guard": "Reject if a fixture median is more than3 percent slower and a strict majority (minimum2) of paired repetitions are more than3 percent slower.",
+   "exactness": "All complete non-timing result and configuration fields, full fingerprints, stopping iterations and exploitability bits match. Every raw run remains preserved.",
+-  "broader_qualification_if_pass": "Independent primary audit, original160 state/menu/resume records,3F32,6GPU, relevant standalone/continuation/paging/stored controls including fourth entry hook, fixed wide-turn and fresh-original3pair cumulative qualification under separate authorization. Primary is not acceptance. No conditional harness prepared before primary passes. Explicitly run gpu::tests::persisting_l2_continuation_rearms_after_readback in that later qualification; a no-run feature compile does not execute it.",
+-  "measurement_boundaries": "Frozen compressed3-fixture complete cycles include construction/allocation, main and separate cleanup NVRTC/JIT/module setup, solving/checks and full readback including required scoped normalization/disable/completion. Cargo, final fingerprinting/destruction, browser/API latency and disk saving excluded. No cleanup may be moved beyond sync_to_cpu return to improve this score; warm driver cache disclosed.",
++  "broader_qualification_if_pass": "Independent primary audit, original160 state/menu/resume records,3F32,6GPU and relevant continuation/paging/stored controls; independent original-versus-candidate raw/full-state and folded zero/fallback cases, fixed wide-turn holdout and fresh-original3pair cumulative under separate authorization. Primary is not acceptance. No conditional harness prepared before primary passes.",
++  "measurement_boundaries": "Frozen compressed3-fixture complete cycles include construction/allocation, CUDA compilation/module setup, solve/checks and full readback. Cargo, final fingerprinting/destruction, browser/API latency and disk saving remain excluded. Predicate overhead is included on every fold CTA; incidence is not timing evidence.",
+   "exclusions": [],
+   "builds_before_timing": true,
+   "concurrent_gpu_or_build_work": false,
+-  "first_physical_run": "E034R1",
+-  "logical_dashboard_row": "E034",
++  "first_physical_run": "E035R1",
++  "logical_dashboard_row": "E035",
+   "outcome_triggered_extensions": false,
+   "acceptance_from_probe": false,
+   "script_freeze": "New source identities and script references must be frozen/reviewed before any separate root activation/build/native decision.",
+-  "candidate_source_authorization": "Root pins changed/new sources, cleanup string, independent source/script reviews and terminal D064 capture-only audit before activation/build. D064 is retained synthetic metadata evidence only; actual solver attributes and cleanup must pass focused candidate units. No automatic activation or acceptance.",
++  "candidate_source_authorization": "Root pins the exact two changed sources, D066 terminal census audit, independent E035 source/script reviews and fixed protocol before separate activation/build/native authorization. Census establishes snapshot incidence only, not optimization correctness or speed.",
+   "owned_sources": [
+-    "crates/solver/src/gpu/mod.rs",
+-    "crates/solver/src/gpu/cache_policy.rs"
+-  ],
+-  "source_entry_count": 163,
++    "crates/solver/src/gpu/kernels.cu",
++    "crates/solver/src/gpu/mod.rs"
++  ],
++  "source_entry_count": 162,
+   "accepted_owned_sha256": {
++    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+     "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+   },
+-  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-design\\README.md",
+-  "design_sha256": "dac665803109e704792ee9fc187116b0e970d3c2fb0c20a6c6375f4f865458a7",
+-  "candidate_owned_sha256": {
+-    "crates/solver/src/gpu/mod.rs": "5a9e216f4be70fbcaae7f3197c061fb49decfb33769d1a193d008d13a0c4a8b4",
+-    "crates/solver/src/gpu/cache_policy.rs": "e87bd468b383645387019868a81de96fe89a5741f81d675821497df0cc8c9f14"
+-  },
+-  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-design\\manifest.json",
+-  "source_archive_sha256": "882eadeae0c7615b041dfd635b148c484363689a6a901454f658534bab3224d8",
+-  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e034-primary",
++  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\README.md",
++  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\manifest.json",
++  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-e035-primary",
+   "build_target_must_be_previously_absent": true,
+   "build_timeout_seconds": 1800,
+   "primary_child_timeout_seconds": 900,
+@@ -73,7 +67,7 @@
+     "prior_protocol_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\protocol.json",
+     "prior_protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+     "reference": "accepted E020",
+-    "candidate": "E034",
++    "candidate": "E035",
+     "fixed_order": [
+       "B1",
+       "C1",
+@@ -90,22 +84,19 @@
+     "max_iterations": 400,
+     "guard": "Median slowdown greater than3 percent AND at least2 of3 paired slowdowns greater than3 percent rejects adoption. No2 percent gain requirement on holdout. Failure to reach target by400 is inconclusive/failed qualification, not permission to retune.",
+     "exactness": "All6 complete CPU store files byte-identical; every non-timing field, root vector, stopping iteration and convergence trajectory exact.",
+-    "admission": "Unchanged2GiB constructor budget,4GiB device free/30GiB total,16GiB host available,50GiB S reserve plus outputs; hands1128/1128,river max1081/1081,48river cards,node bound11691. No new solver data buffer, duplicate planning pass, budget relaxation or rescue. Existing reservation/window eligibility is checked in the actual solver context.",
+-    "harness": "Reuse exact R2 evaluator/resource/raw-codec provenance and numerical body; separately freeze E020/E034 bindings and per-arm unused Cargo targets before build. No shared-target reuse.",
+-    "resource": "Numerical CUDA/launches/shared memory are unchanged; separate cleanup setup and per-line normalization add work that remains within corresponding lifecycle timing. Existing reservation capacity eligibility and exact scoped extent apply without setting the limit. No arbitrary register/occupancy screen.",
++    "admission": "Unchanged2GiB constructor budget,4GiB device free/30GiB total,16GiB host available,50GiB S reserve plus outputs; hands1128/1128,river max1081/1081,48river cards,node bound11691. No new solver data buffers, duplicate planning pass, budget relaxation or rescue.",
++    "harness": "Reuse exact R2 evaluator/resource/raw-codec provenance and numerical body; separately freeze E020/E035 bindings and per-arm unused Cargo targets before build. No shared-target reuse.",
++    "resource": "No host allocation/shared-layout/launch geometry changes; generated up_fold instructions and resource usage may change. Report any observed resources without arbitrary nonregression threshold; full-cycle guard decides. No prediction from zero incidence.",
+     "separate_from_primary_score": true
+   },
+   "prerequisites": [
+-    "immutable E033 failed-unit and accepted-source restoration records",
+-    "independent E033 terminal failed-unit/no-performance audit",
+-    "formal immutable E020 acceptance record",
+-    "terminal successful E020 server qualification",
+-    "D064 independent terminal capture-only metadata audit",
+-    "independent E034 source review",
+-    "independent E034 script review",
++    "immutable E020 acceptance and server qualification",
++    "D066 independent terminal census and cleanup audit",
++    "independent E035 source review",
++    "independent E035 script review",
+     "separate root activation/execution authorization",
+-    "fresh feature lib compile-only complete before separate fresh GPU-only build",
+-    "focused candidate ordinary unit screen before fixed primary cohort"
++    "fresh feature lib compile-only before separate fresh GPU-only build",
++    "focused candidate unit screen before fixed primary"
+   ],
+   "no_live_server_changes": true,
+   "expected_fixtures": [
+@@ -119,13 +110,13 @@
+     "river": 60
+   },
+   "expected_convergence_records_per_run": 23,
+-  "cuda_provenance": "Fresh feature and separate GPU-only builds embed complete unchanged E020 numerical CUDA plus complete separate cleanup source. Accepted162 becomes163 with one modified mod.rs and one new cache_policy.rs;161 unowned accepted entries and evaluator remain exact. Fresh artifact/source/features and target containment are required.",
++  "cuda_provenance": "Fresh feature and separate GPU-only builds embed complete candidate kernels.cu and omit complete accepted kernels.cu. Focused test embeds only renamed old up_fold fragment. Exactly2 of162 source entries change, all160 others and fixed evaluator exact. Fresh Cargo source/features/artifact identity and target containment required.",
+   "resource_gate": "No arbitrary register, spill or occupancy nonregression threshold. Normal correct device admission and fixed complete-cycle/fixture gates govern qualification.",
+   "owned_source_entry_count": 2,
+-  "expected_unit_passed": 87,
++  "expected_unit_passed": 85,
+   "expected_unit_ignored": 4,
+-  "conditional_terminal_checks": "Only after qualifying primary: independent old/new raw/full-state F32/compressed, state/menu/resume, eager/captured/profiled/evaluation, locks/standalone and continuation/paging/stored controls; dirty-clean-dirty reuse and repeated close/drop/error coverage, exact actual solver stream/node attributes, scoped cleanup instruction/data/tail guards and unchanged context limits. Full normalization plus required completion must be inside sync_to_cpu. Lifecycle/destruction cost outside the fixed score must be separately reported; no full-lifetime claim from primary alone.",
+-  "cleanup": "Root preserves candidate bytes, complete patch, source copies and all outcomes. Restore only mod.rs to E020 and remove only the separately archived new cache_policy.rs, verify all162 accepted entries and unchanged live executable. No destructive target cleanup.",
++  "conditional_terminal_checks": "Only after qualifying primary: independent original/new raw full-state F32/compressed, ordinary eager/captured/profiled/evaluation, zero/nonzero/negative-zero/nonfinite and positive/negative finite payout semantics; original state/menu/resume and continuation/paging/stored controls. No counters, alternate kernel variants or timing extensions.",
++  "cleanup": "Root preserves exact two changed sources, full patch and all outcomes. Restore only kernels.cu and mod.rs to accepted E020, verify all162 accepted entries and both existing PTX files; no destructive target cleanup.",
+   "failure_policy": "A failed primary stops this candidate: no broader/holdout/cumulative work, no exclusions, extensions or outcome-driven rescue. Any prospective later qualification requires separate authorization.",
+   "build_command": [
+     "cargo",
+@@ -143,20 +134,14 @@
+     "--no-run",
+     "--message-format=json"
+   ],
+-  "expected_new_unit_tests": [
+-    "gpu::cache_policy::tests::owned_prefix_geometry_is_bounded",
+-    "gpu::tests::persisting_l2_matches_unhinted_solver_lifecycle",
+-    "gpu::tests::persisting_l2_cleanup_ownership_and_errors"
+-  ],
+   "changed_accepted_sources": [
++    "crates/solver/src/gpu/kernels.cu",
+     "crates/solver/src/gpu/mod.rs"
+   ],
+-  "new_sources": [
+-    "crates/solver/src/gpu/cache_policy.rs"
+-  ],
++  "new_sources": [],
+   "accepted_source_entry_count": 162,
+-  "compile_check_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e034-research",
+-  "compile_check_output": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-compile-check",
++  "compile_check_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e035-research",
++  "compile_check_output": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-compile-check",
+   "compile_only_commands": [
+     [
+       "cargo",
+@@ -173,40 +158,6 @@
+       "--message-format=json"
+     ]
+   ],
+-  "cleanup_source_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-design\\cleanup-source.cu",
+-  "cleanup_source_sha256": "78a08095e0ce8d377484db21d8a6c3a4ca8cdc5c58bb46f338d33b838add5d15",
+-  "primary_policy_markers": {
+-    "prefix": "E033_CACHE_POLICY ",
+-    "candidate_count_per_run": 6,
+-    "baseline_count_per_run": 0,
+-    "ordered_stages_per_fixture": [
+-      "enabled",
+-      "clean"
+-    ],
+-    "fixture_extents": {
+-      "rainbow": {
+-        "owned_bytes": 5387252,
+-        "window_bytes": 5387136,
+-        "normalized_lines": 42087
+-      },
+-      "two-tone": {
+-        "owned_bytes": 5387252,
+-        "window_bytes": 5387136,
+-        "normalized_lines": 42087
+-      },
+-      "river": {
+-        "owned_bytes": 132,
+-        "window_bytes": 128,
+-        "normalized_lines": 1
+-      }
+-    },
+-    "enabled": "enabled:true,errors:false,normalized_lines0,cleanup_completefalse, after build_complete and before gpu_ready",
+-    "clean": "enabled:true,errors:false,normalized_lines W/128,cleanup_completetrue, after final convergence_check and before timing_complete",
+-    "no_cleanup_error_marker": true,
+-    "scope": "Every separate candidate process must enable all three fixed fixture windows and complete normalization inside the full readback boundary. No silent fallback, missing marker or cleanup error may qualify. Logging/timer costs remain included.",
+-    "ordinary_unit_cleanup_error_guard": "V034-unit raw log must contain no E033_CACHE_CLEANUP_ERROR; ordinary policy marker counts are unconstrained."
+-  },
+-  "expected_feature_only_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback",
+   "preexisting_target_artifacts": {
+     "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+       "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+@@ -218,15 +169,42 @@
+     }
+   },
+   "preexisting_target_artifact_gate": "Only the two exact pre-existing generated PTX paths are excluded from Git untracked source-name admission. Both full bytes/size are pinned before and after builds and throughout primary provenance checks; neither belongs to accepted/candidate source maps. Every other unexpected tracked/untracked solver path is rejected. No target deletion or broad ignore.",
+-  "parent_candidate": "E033",
+-  "parent_scripts_manifest_sha256": "09d71fb28ed17f672bf837bfbc16d02bbe31e55cb6057157bdad8034e3f95050",
+-  "test_only_successor": "E033 failed one unconditional enable assertion on a36-byte/W0 fixture, before any timings. E034 corrects only eligibility assertions; production implementation/runtime markers/cleanup/numerical assertions and fixed evaluator stay exact. No performance outcome guided the change.",
+-  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-root-decisions\\preparation.json",
+-  "root_preparation_sha256": "3c47f7b72918f822d9b3b9d57875faa98d043d7650e64884e2f615bc66998f17",
+-  "parent_failure_evidence": {
+-    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\stdout.log": "0e1c06d447025e83f2493df795741d6e02318025c0fbebb92269d7e40e93ca84",
+-    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\report.json": "74b8726cccad4d6621d91f310d2ca7cb07ffee6412ec934caa0da3c53e0f6f89",
+-    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-cleanup\\report.json": "6ba602f0bfa292d1c8dd53b28b93f10cc0b738b4e23b4a23a28dde9544804fea"
+-  },
+-  "parent_terminal_audit_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E033-independent-review\\report.json"
++  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-root-decisions\\preparation.json",
++  "root_preparation_sha256": "c0597f6c70340fc123bdf4ef44e148a18fb4748cc7f7ca710e93b67d6321b1d7",
++  "candidate_kernel_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\candidate\\kernels.cu",
++  "accepted_kernel_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\base\\kernels.cu",
++  "incidence_prerequisite": {
++    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-independent-review\\report.json",
++    "sha256": "b6c9a39790578335bee453727d32bdb7cc4f5e1bae3c194d1e3f91b4a8db1e18",
++    "required_fields": {
++      "id": "D066",
++      "verdict": "PASS_SCOPED_CENSUS_AUDIT",
++      "independent_terminal_audit_pass": true,
++      "exactness_pass": true,
++      "incidence_recomputation_pass": true,
++      "custody_and_cleanup_pass": true,
++      "performance_measurement": false,
++      "candidate_accepted": false
++    }
++  },
++  "expected_new_unit_tests": [
++    "gpu::tests::fold_positive_zero_matches_original_kernel"
++  ],
++  "focused_unit_marker": {
++    "prefix": "E035_FOLD_ZERO_TEST ",
++    "expected": {
++      "comparison_pairs": 26,
++      "kernel_launches": 52,
++      "threads": 128,
++      "exact": true,
++      "performance_measurement": false
++    }
++  },
++  "candidate_owned_sha256": {
++    "crates/solver/src/gpu/kernels.cu": "0a43b40424945a43a1e9bc52ce030c761b2f720987e1dc028fcb0312a4794554",
++    "crates/solver/src/gpu/mod.rs": "4b7e512bbe2ecdb8168bb4d6d712131c8f71d45c6c97b1099aa51a50da66b612"
++  },
++  "source_archive_sha256": "044151bbf7a9118b96d71ddf8d08d4ee2c36122d1a87ecd3ffa098591320d126",
++  "design_sha256": "a99c946faa469274106550c49a1350cd8aeba73bc29a11ed99fb5a70c931aaa2",
++  "candidate_kernel_sha256": "0a43b40424945a43a1e9bc52ce030c761b2f720987e1dc028fcb0312a4794554"
+ }

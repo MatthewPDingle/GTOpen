@@ -1,0 +1,219 @@
+{
+  "id": "D021",
+  "status": "measured_diagnostic",
+  "manifest": {
+    "id": "D021",
+    "source_path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+    "source_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "baseline_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "candidate_sha256": "cfcbaff4ed6815fd6d27ffd2b2d3bb95fba64c0e56bee96308e64df5605a8704",
+    "original_prefix_byte_identical": true,
+    "dispatcher_signature_reused": true,
+    "template3_argument_list_reused": true,
+    "probe_sha256": "85f729c26099b916b4297829d9c2f96caaebf3530bc03beabfdc194c1f83e1e9",
+    "runner_sha256": "edefa9b4008e127e25070192d042fdf8110a3b244b577f619eb03a76a203a37b",
+    "resource_template_sha256": "2b9695bc6259ed3fe846ba5999aad915709d445dd49f31d7714976d5633dd732",
+    "preflight_template_sha256": "3e46376f3f1bab6dda73316f4c01894d2b7aaea0b5542ca5c4d218e159a4f124",
+    "dependency_rlibs": {
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532"
+    },
+    "rustc": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8\n",
+    "checkout_head": "d6b9e77118d96d05a6d7f47e271dff7a35ec3205",
+    "nvrtc_options": "architecture only; all other cudarc CompileOptions default",
+    "resource_block_threads": 128,
+    "kernel_launches": 0,
+    "solver_executions": 0,
+    "scope": "Resource diagnostic only; no speed or numerical correctness claim"
+  },
+  "results": [
+    {
+      "architecture": "compute_120",
+      "area": "postflop",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other options default",
+      "device": "NVIDIA GeForce RTX 5090",
+      "device_ordinal": 0,
+      "dynamic_shared_bytes": 0,
+      "experiment": "D021",
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "occupancy_blocks_per_sm_128": 7,
+      "occupancy_warps_per_sm_128": 28,
+      "performance_measurement": false,
+      "registers": 66,
+      "same_cuda_context": true,
+      "schema_version": 1,
+      "scope": "Compiler resources and theoretical residency only; no numerical or performance qualification",
+      "source_bytes": 22624,
+      "source_fnv1a64": "3f0594b037a1dda3",
+      "source_variant": "baseline",
+      "static_shared_bytes": 0
+    },
+    {
+      "architecture": "compute_120",
+      "area": "postflop",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other options default",
+      "device": "NVIDIA GeForce RTX 5090",
+      "device_ordinal": 0,
+      "dynamic_shared_bytes": 0,
+      "experiment": "D021",
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "occupancy_blocks_per_sm_128": 7,
+      "occupancy_warps_per_sm_128": 28,
+      "performance_measurement": false,
+      "registers": 66,
+      "same_cuda_context": true,
+      "schema_version": 1,
+      "scope": "Compiler resources and theoretical residency only; no numerical or performance qualification",
+      "source_bytes": 23710,
+      "source_fnv1a64": "6493ef9b31a0b64f",
+      "source_variant": "candidate",
+      "static_shared_bytes": 0
+    },
+    {
+      "architecture": "compute_120",
+      "area": "postflop",
+      "block_threads": 128,
+      "compile_options": "architecture only; all other options default",
+      "device": "NVIDIA GeForce RTX 5090",
+      "device_ordinal": 0,
+      "dynamic_shared_bytes": 0,
+      "experiment": "D021",
+      "kernel": "up_action_3",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "occupancy_blocks_per_sm_128": 12,
+      "occupancy_warps_per_sm_128": 48,
+      "performance_measurement": false,
+      "registers": 40,
+      "same_cuda_context": true,
+      "schema_version": 1,
+      "scope": "Compiler resources and theoretical residency only; no numerical or performance qualification",
+      "source_bytes": 23710,
+      "source_fnv1a64": "6493ef9b31a0b64f",
+      "source_variant": "candidate",
+      "static_shared_bytes": 0
+    }
+  ],
+  "code_proof": {
+    "original_source_prefix_exact": true,
+    "dispatcher_ptx_exact": true,
+    "entry_source": "direct3-wrapper.cu",
+    "unchanged_impl": "candidate.cu retains complete baseline.cu prefix byte-for-byte",
+    "ptx_entry_lines": {
+      "baseline_dispatcher": 2407,
+      "direct3": 356
+    }
+  },
+  "commands": [
+    {
+      "args": [
+        "rustc",
+        "probe.rs",
+        "--edition=2021",
+        "-C",
+        "opt-level=3",
+        "-C",
+        "codegen-units=1",
+        "-C",
+        "lto=thin",
+        "-L",
+        "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+        "--extern",
+        "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+        "--extern",
+        "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+        "-o",
+        "probe.exe"
+      ],
+      "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021",
+      "started_at": "2026-10-16T06:55:57.058291+00:00",
+      "elapsed_seconds": 1.8644160000003467,
+      "returncode": 0
+    },
+    {
+      "args": [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\probe.exe"
+      ],
+      "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021",
+      "started_at": "2026-10-16T06:55:58.950607+00:00",
+      "elapsed_seconds": 1.9050218000011228,
+      "returncode": 0
+    }
+  ],
+  "telemetry_after": {
+    "at": "2026-10-16T06:56:00Z",
+    "gpu": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=name,uuid,driver_version,memory.total,memory.used,memory.free,utilization.gpu,temperature.gpu,power.draw,clocks.sm",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607, 2408, 29780, 7, 42, 80.70, 2542",
+      "stderr": ""
+    },
+    "compute_processes": {
+      "command": [
+        "nvidia-smi",
+        "--query-compute-apps=pid,process_name,used_memory",
+        "--format=csv,noheader,nounits"
+      ],
+      "returncode": 0,
+      "stdout": "2288, [Insufficient Permissions], [N/A]\n10392, C:\\Windows\\System32\\ShellHost.exe, [N/A]\n10788, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\CrossDeviceResume.exe, [N/A]\n10288, C:\\Windows\\explorer.exe, [N/A]\n12148, C:\\Windows\\SystemApps\\Microsoft.Windows.StartMenuExperienceHost_cw5n1h2txyewy\\StartMenuExperienceHost.exe, [N/A]\n12124, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\SearchHost.exe, [N/A]\n14836, C:\\Windows\\SystemApps\\Microsoft.LockApp_cw5n1h2txyewy\\LockApp.exe, [N/A]\n7904, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]\n17152, C:\\Windows\\SystemApps\\MicrosoftWindows.Client.CBS_cw5n1h2txyewy\\TextInputHost.exe, [N/A]\n17120, C:\\Program Files\\WindowsApps\\Claude_2.42304.0.0_x64__pzs8sxrjxfjjc\\app\\claude.exe, [N/A]\n2280, C:\\Program Files (x86)\\Razer\\Razer Services\\Razer Central\\Razer Central.exe, [N/A]\n20644, C:\\Program Files\\WindowsApps\\Claude_2.42304.0.0_x64__pzs8sxrjxfjjc\\app\\claude.exe, [N/A]\n19832, C:\\Users\\there\\AppData\\Local\\Programs\\signal-desktop\\Signal.exe, [N/A]\n23060, C:\\Program Files (x86)\\Steam\\bin\\cef\\cef.win64\\steamwebhelper.exe, [N/A]\n24640, C:\\Users\\there\\AppData\\Roaming\\Spotify\\Spotify.exe, [N/A]\n2540, C:\\Program Files\\Alienware\\Alienware Command Center\\Subsystems\\FX\\SubAgent\\AlienFXSubAgent.exe, [N/A]\n27408, C:\\Windows\\SystemApps\\ShellExperienceHost_cw5n1h2txyewy\\ShellExperienceHost.exe, [N/A]\n17264, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]\n29272, C:\\Program Files\\WindowsApps\\OpenAI.Codex_26.1007.9446.0_x64__2p2nqsd0c76g0\\app\\ChatGPT.exe, [N/A]\n28692, C:\\Program Files\\Epic Games\\Launcher\\Portal\\Binaries\\Win64\\EpicGamesLauncher.exe, [N/A]\n29444, C:\\Program Files\\Epic Games\\Launcher\\Engine\\Binaries\\Win64\\EpicWebHelper.exe, [N/A]\n19640, C:\\Program Files (x86)\\Epic Games\\Epic Online Services\\managedArtifacts\\98bc04bc842e4906993fd6d6644ffb8d\\EOSOverlayRenderer-Win64-Shipping.exe, [N/A]\n32964, C:\\Users\\there\\AppData\\Local\\OpenAI\\Codex\\runtimes\\cua_node\\a9ba6825a525118c\\bin\\node_modules\\@oai\\sky\\bin\\windows\\swift\\x64\\codex-computer-use-swift.exe, [N/A]\n29360, [Insufficient Permissions], [N/A]\n25900, C:\\Windows\\System32\\ApplicationFrameHost.exe, [N/A]\n34972, C:\\Windows\\ImmersiveControlPanel\\SystemSettings.exe, [N/A]\n37948, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n26004, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n46984, C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe, [N/A]\n34508, C:\\Users\\there\\AppData\\Local\\Programs\\signal-desktop\\Signal.exe, [N/A]\n47368, C:\\Program Files (x86)\\Microsoft\\EdgeWebView\\Application\\155.0.4283.45\\msedgewebview2.exe, [N/A]",
+      "stderr": ""
+    }
+  },
+  "resource_change": {
+    "registers": {
+      "dispatcher": 66,
+      "direct3": 40
+    },
+    "local_bytes_per_thread": {
+      "dispatcher": 64,
+      "direct3": 0
+    },
+    "static_shared_bytes": {
+      "dispatcher": 0,
+      "direct3": 0
+    },
+    "occupancy_blocks_per_sm_128": {
+      "dispatcher": 7,
+      "direct3": 12
+    }
+  },
+  "kernel_launches": 0,
+  "performance_measurement": false,
+  "numerical_validation": "not executed",
+  "candidate_accepted": false,
+  "artifact_sha256": {
+    "baseline-up_action.ptx": "78937bf1525a007ab6a864404c87d4b8486ae22578ecaacdd4f602dc1f69673a",
+    "baseline.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "baseline.ptx": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+    "candidate-up_action.ptx": "78937bf1525a007ab6a864404c87d4b8486ae22578ecaacdd4f602dc1f69673a",
+    "candidate-up_action_3.ptx": "5153f8ebce2d66335f18e162c25cadb33ca38ba4bdde51cc481938800b8b8abb",
+    "candidate.cu": "cfcbaff4ed6815fd6d27ffd2b2d3bb95fba64c0e56bee96308e64df5605a8704",
+    "candidate.ptx": "34ae6deebd88ee15c59a953906cf6272f30130cb002f1f5b88164ae2fa506691",
+    "commands.json": "fc4cde15206616a91e3c90854ba8eef25d67b835b4ec9acfffc5d0176ddb422d",
+    "direct3-wrapper.cu": "e08c6c95cde97f15464bf092fa8c1e9a64c3c62b89cb73e113ec0363507a6cfc",
+    "launch-preflight.json": "343f99f4e711dcad531e179ed8cec593290d4076cdcfaacb0093e2809badb808",
+    "manifest.json": "d712ff3c0619a5d88a2816c7d9d71ef0e078e7c0050b0a23a94e813cbdf78bcc",
+    "preflight.json": "ae8aeafd0c6bfa96adba8c4f7adcf2bd2383a7cea0f77ae8c0d23dcc46dfa1b1",
+    "probe.exe": "463352b003092f80329694314cc215fff77283902d89d88a505a41a078dca949",
+    "probe.pdb": "212fe647c03972495a2a5dcdf544eef82a826ef89f5f9d21e9bdfa01e1ccf253",
+    "probe.rs": "85f729c26099b916b4297829d9c2f96caaebf3530bc03beabfdc194c1f83e1e9",
+    "probe.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "probe.stdout.log": "67960cc69de0aad7547a5822bfa4813016fce412c91bc58d51112f3ef31b74a6",
+    "run.py": "edefa9b4008e127e25070192d042fdf8110a3b244b577f619eb03a76a203a37b",
+    "runner-primitives-source.py": "3e46376f3f1bab6dda73316f4c01894d2b7aaea0b5542ca5c4d218e159a4f124",
+    "rustc.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "rustc.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "source-D016-audit.md": "cf8b87734325717daa9f5fde1f660974f923cbc4ac291e17b53619d28ae3c09d",
+    "source-E006-resource.rs": "2b9695bc6259ed3fe846ba5999aad915709d445dd49f31d7714976d5633dd732"
+  }
+}

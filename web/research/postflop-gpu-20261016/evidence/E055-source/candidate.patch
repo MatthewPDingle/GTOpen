@@ -1,0 +1,18 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -345,7 +345,6 @@
+                                     // captured graphs stay iteration-invariant
+     int nh_p, int nh_max)
+ {
+-    float pos = disc[0], neg = disc[1], ds = disc[2];
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+@@ -364,6 +363,7 @@
+             }
+             return;
+         }
++        float pos = disc[0], neg = disc[1], ds = disc[2];
+         u64 doff = node_data_off[n];
+         const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
+         // register-cache regrets and child values for the common small-na case

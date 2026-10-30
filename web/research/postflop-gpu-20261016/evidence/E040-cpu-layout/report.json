@@ -1,0 +1,18 @@
+{
+  "id": "E040-cpu-layout",
+  "at": "2026-10-17T00:59:26.955591+00:00",
+  "status": "pass_host_encoding_and_geometry_controls",
+  "tests_passed": 2,
+  "tests_filtered": 88,
+  "cpu_reference_comparisons": "Original whole-arena writer versus chunked writer/inactive restore, full and compact, both players and both compressed stores.",
+  "source_checked_before_async_execution": "Invalid/small/window/coverage policies decline before any DMA; exact q/scales matched CPU reference.",
+  "native_report_sha256": "5b02a97a98aa0d39d523647a13130b2b603a5f4c2d9cfc2851b0adeb61242f30",
+  "native_stdout_sha256": "cbff6d202a8fb33d6aefa27d1e7f572abb4b3ea5d31aae5f3ca33a1591e73d25",
+  "binary_sha256": "a0881bad89ba9ae2b164f88a800e1f22f8bdcad9653adacc1413d132507eb276",
+  "protocol_sha256": "3860175938c0268402e38fe95d8f88eb923a9239b303377279fd93e2d6b36e75",
+  "accepted162_restored": true,
+  "main_live_ptx_unchanged": true,
+  "gpu_pipeline_executed": false,
+  "performance_measured": false,
+  "limits": "These selected test bodies execute CPU Spot/GpuPlan/store code only. Queued-copy lifetime, overlap and GPU readback equivalence remain unverified."
+}

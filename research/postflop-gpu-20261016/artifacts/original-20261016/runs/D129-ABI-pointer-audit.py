@@ -1,0 +1,67 @@
+"""Read-only correction of an ABI observer that omitted valid .ptr .align qualifiers."""
+from pathlib import Path
+import json,re,shutil,subprocess,sys,urllib.request
+R=Path(r'S:\GTOpen-research\postflop-gpu-20261016');C=R/'runs/accepted-E051-live-20261018';sys.path.insert(0,str(C));import common_e051_live as old
+old.custody();assert not(R/'gpu-run.lock').exists();old.ar.refuse_active(old.ar.live_status());H=R/'runs/D129-ABI-pointer-audit';assert not H.exists();H.mkdir();E=R/'runs/E078-resource';S=R/'runs/E078-source';original=old.read(E/'report.json')
+failed=[k for k,v in original['gates'].items()if not v];assert failed==['compute_120:original20ABI_parameters_exact','compute_120:candidate30ABI_parameters']
+ptx=[E/'execution'/f'{arm}-{arch}.ptx'for arch in['compute_120','compute_75']for arm in['baseline','candidate']]
+for path in ptx:old.pin(path,original['ptx_sha256'][path.stem])
+P={'id':'D129','at':old.now(),'scope':'Read-only ABI parser correction on original4sealed E078PTX and reports. No source/compilation/resource/native/applicationkernel/solver/timing rerun. Original rejected report/protocol remain immutable.','input_sha256':{str(p):old.sha(p)for p in[Path(__file__),E/'protocol.json',E/'report.json',E/'execute.py',S/'manifest.json',S/'candidate.cu',S/'candidate-mod.rs',*ptx,C/'common_e051_live.py',C/'protected-main.json']},'cause':'Original regex .param .type NAME failed on .u64 .ptr .align1 NAME, omitting every pointer-qualified compute120declaration. Actual saved header has original20prefix and30candidateparameters. Sm75plain headers already passed; allactualresource/emission/otherentry gates pass.','fixed_criterion':'Same original20parameterprefix exact and candidate30ABI with9u64pointers+u32nh_o. Parse all complete declarations, allow only declared .ptr .alignN syntax, preserve qualifiers and compare exact originalprefixdeclarations/types/names/order. Reject unsupported/missing/duplicate/noncontiguous/unknownsyntax. Require physicalsource pointer/int declaration count agreement. No weakened gate or actualABIdefect waiver.','tests':'Plain/qualifiedpositive declarations; reject unknown type,align0/nonpower2,ptron32,missingname,unknown qualifier,aggregate,duplicate/noncontiguous index. Mixedprefix/extra-type/qualifier alterations must fail contract.','candidate_accepted':False};old.save(H/'protocol.json',P)
+def publish(p,key):
+ dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True)
+ if dst.exists():assert dst.read_bytes()==p.read_bytes()
+ else:shutil.copyfile(p,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+ return {'url':'evidence/'+key,'sha256':old.sha(p)}
+pub=[publish(H/'protocol.json',H.name+'/protocol.json'),publish(Path(__file__),H.name+'/audit.py')];old.save(H/'pre-execution-publication.json',{'at':old.now(),'protocol_sha256':old.sha(H/'protocol.json'),'HTTP_byte_verified_artifacts':pub,'native_or_compiler_executions':0})
+checks=0
+def ck(v,label):
+ global checks
+ assert v,label;checks+=1
+def header(text,name='up_action'):
+ a=text.index('.visible .entry '+name+'(');b=text.index(')',a);c=text.index('{',b);assert not text[b+1:c].strip();return text[a:c]
+def declarations(h):
+ a=h.index('(');b=h.rindex(')');parts=h[a+1:b].strip().split(',');out=[]
+ for i,part in enumerate(parts):
+  line=' '.join(part.strip().split());m=re.fullmatch(r'\.param \.(u32|u64)( \.ptr \.align ([1-9][0-9]*))? (up_action_param_\d+)',line);assert m,line
+  typ,ptr,align,name=m.groups();alignment=int(align)if align else None
+  assert alignment is None or(typ=='u64'and alignment&(alignment-1)==0)
+  assert name=='up_action_param_'+str(i)
+  out.append({'declaration':line,'type':typ,'pointer_qualified':bool(ptr),'alignment':alignment,'name':name})
+ return out
+def contract(b,c):return len(b)==20 and len(c)==30 and c[:20]==b and[x['type']for x in c[20:]]==['u64']*9+['u32']
+plain='.visible .entry up_action(.param .u64 up_action_param_0)\n';qualified='.visible .entry up_action(.param .u64 .ptr .align 1 up_action_param_0)\n'
+ck(declarations(plain)==[{'declaration':'.param .u64 up_action_param_0','type':'u64','pointer_qualified':False,'alignment':None,'name':'up_action_param_0'}],'plain declaration')
+ck(declarations(qualified)==[{'declaration':'.param .u64 .ptr .align 1 up_action_param_0','type':'u64','pointer_qualified':True,'alignment':1,'name':'up_action_param_0'}],'qualified declaration')
+for bad in['.param .f32 up_action_param_0','.param .u64 .ptr .align 0 up_action_param_0','.param .u64 .ptr .align 3 up_action_param_0','.param .u32 .ptr .align 1 up_action_param_0','.param .u64 .ptr .align 1','.param .u64 .bogus up_action_param_0','.param .align 8 .b8 up_action_param_0[8]','.param .u64 up_action_param_1','.param .u64 up_action_param_0,.param .u64 up_action_param_0']:
+ try:declarations('.visible .entry up_action('+bad+')\n')
+ except AssertionError:ck(True,'reject malformed declaration')
+ else:raise AssertionError(bad)
+analyses={};gates=dict(original['gates'])
+for arch in['compute_120','compute_75']:
+ bh=header((E/'execution'/f'baseline-{arch}.ptx').read_text(encoding='utf-8'));ch=header((E/'execution'/f'candidate-{arch}.ptx').read_text(encoding='utf-8'));b,c=declarations(bh),declarations(ch)
+ ck(len(b)==20 and c[:20]==b,'all20complete declarations exactprefix');ck(len(c)==30 and[x['type']for x in c[20:]]==['u64']*9+['u32'],'30declarations expected extras');ck(contract(b,c),'complete original ABI criterion')
+ bad=[dict(x)for x in c];bad[20]['type']='u32';ck(not contract(b,bad),'wrong extra pointer type fails')
+ bad=[dict(x)for x in c];bad[0]['pointer_qualified']=not bad[0]['pointer_qualified'];ck(not contract(b,bad),'changed original pointer qualifier fails')
+ ck(not contract(b,c[:-1]),'missing extra fails');ck(not contract(b,c+c[-1:]),'additional hidden parameter fails')
+ gates[arch+':original20ABI_parameters_exact']=True;gates[arch+':candidate30ABI_parameters']=True;analyses[arch]={'baseline_complete_header':bh,'candidate_complete_header':ch,'baseline_declarations':b,'candidate_declarations':c,'prefix20_exact':True,'original_criterion_pass':True}
+source=(S/'candidate.cu').read_text(encoding='utf-8');a=source.index('extern "C" __global__ void up_action(');b=source.index('{',a);signature=source[a:b];rawparams=signature[signature.index('(')+1:signature.rindex(')')];rawparams=re.sub(r'//[^\n]*','',rawparams);params=[x.strip()for x in rawparams.split(',')]
+ck(len(params)==30,'CUDA source30params');ck(all('*'in x for x in params[20:29])and params[29]=='int nh_o','source9pointer+nh_o')
+host=(S/'candidate-mod.rs').read_text(encoding='utf-8');a=host.index('.launch_builder(&self.f_up_action)');b=host.index('.launch(Self::cfg(sp.count, 0))',a);args=re.findall(r'\.arg\(([^\n]+)\)',host[a:b]);ck(len(args)==30,'hostsource30args');ck(args[-10:]==['&self.d_node_twin','&self.d_node_tlose','&self.d_rsrc[1 - p]','&self.d_reach[1 - p]','&self.d_hand_c1[p]','&self.d_hand_c2[p]','&self.d_fold_card_off[1 - p]','&self.d_fold_card_idx[1 - p]','&self.d_same[p]','&nh_o'],'hostextraorderexact')
+ck(all(gates.values()),'allunchanged originalactual/resource gatespluscorrectABIpass')
+for p,h in P['input_sha256'].items():old.pin(p,h)
+old.custody();report={'id':'D129','at':old.now(),'status':'pass_same_sealed_E078_ABI_criterion','protocol_sha256':old.sha(H/'protocol.json'),'original_resource_report_sha256':old.sha(E/'report.json'),'original_rejected_report_preserved':True,'original_failed_keys':failed,'original_other_gates_unchanged':True,'effective_gates':gates,'checks':checks,'analyses':analyses,'CUDA_parameter_declarations':params,'host_argument_expressions':args,'resource_rows_unchanged':original['rows'],'resource_warnings_unchanged':original['resource_warnings'],'admit_frozen_E078_raw_controls':True,'source_compile_resource_kernel_solver_timing_reruns':0,'candidate_accepted':False,'limits':'Read-only parser repair before firstnumerical or speedrun, same frozen ABI contract/candidate/PTX/resources. Rootaudit not externalindependence, not actualGPUaccuracy/speed/material proof. Shared6544driverbytes and64threadoccupancy16to13warnings retained;128threads8blocks unchanged. Actualhostcompiledmetadata/rawGPU/state/fullcycle/material qualification remains.'};old.save(H/'report.json',report)
+pub.extend(publish(H/n,H.name+'/'+n)for n in['report.json','pre-execution-publication.json']);old.save(H/'publication.json',{'at':old.now(),'HTTP_byte_verified_artifacts':pub,'source_main_live_PTX_custody_pass':True,'no_native_or_compiler_executions':True})
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(old.ar.STATUS);s['experiments'].append({'id':'D129','at':old.now(),'title':'Read complete pointer-qualified PTX ABI declarations','kind':'diagnostic','status':'measured','correctness':'Same original ABI contract passes on all4saved PTX;originalfailurepreserved','fixture':'OriginalE078compute120/75baseline+candidate,no compiler/native repeat','stage':'Read-only observer correction','reason':'Original reader omitted .ptr .align qualifiers, yielding false counts. Allcomplete original20declarations exactprefix and30candidatearguments match source/caller. No source/criterion/resource/numerical/performance change.','accepted':False,'evidence':[{'label':'Frozen parser-correction scope','url':'evidence/D129-ABI-pointer-audit/protocol.json'},{'label':'Complete original ABI replay and fixtures','url':'evidence/D129-ABI-pointer-audit/report.json'}]});e=next(x for x in s['experiments']if x['id']=='E078');e.update(status='pending',correctness='D129read-only ABI repair passes same20/30contract; originalresource/emissionpass; numericalpending',stage='Preparing compiledhost/fullrawGPUcontrols',reason='Original resource rejection preserved: its only failed ABIcounts came from omitting valid .ptr .align qualifiers. D129same4PTX/fulloriginalprefix+source/caller audit passes, no source/criterion/native/resource rerun. Registers62/local64unchanged,shared0to6544,64threadoccupancy16to13warning;128thread8blocks unchanged. No GPUaccuracy/fullcycle/materialadoption yet.',updated_at=old.now());e['evidence'].append({'label':'Attributed ABI reader correction on same4PTX','url':'evidence/D129-ABI-pointer-audit/report.json'});s.update(updated_at=old.now(),state='running',goal_status='active',active_experiment='E078',stage='Preparing E078compiledhost/fullrawGPUcontrols',activity='SameE078ABIcriterion passes after read-only pointerqualifier parserrepair. Originalfailure preserved;no recompilation or numeric/speedrun. Accepted/live E051gain12.44% and lastprimaryB246unchanged.');old.ar.atomic_json(old.ar.STATUS,s)
+ledger=old.REPO/'research/postflop-gpu-20261016/experiments.md';raw=ledger.read_bytes();assert b'### D129 complete pointer-qualified ABI reader'not in raw
+entry=f'''
+
+### D129 complete pointer-qualified ABI reader
+
+E078originalresource report{old.sha(E/'report.json')} remains rejected with only2compute120ABIcount gates failed. Rootinspection of same savedheaders found actualoriginal20/candidate30parameters, but originalregex omitted every`.u64 .ptr .align1 NAME`declaration. Sm75plain declarations and allactualresource/emission/other8entry gates alreadypassed. No actualABIdefect/quality/performancefailure occurred. Sourceforms and4PTXstayexact; no compiler/native/resource/kernel/solver/timing repeat or candidatevariant.
+
+Before anyfirstGPU numerical/speed run, freeze {old.sha(H/'protocol.json')} read-onlyparserrepair. Parse everycomplete declaration with preservedtype/name/order/pointerqualifier/alignment, reject unknownsyntax/types/aggregates/missingname/duplicate/noncontiguousindex/align0/nonpower2/pointeron32. Sameoriginal20parameterprefix EXACT and30candidateABI with9u64pointers+u32nh_o criterion, not relaxation. NativeCUDAdecl/callerorder/count also checked. {checks}rootpositive/negative/fullheader/sourcechecks pass; report{old.sha(H/'report.json')}. Original2failedkeys andcompleteoldreport linked; effectivegatecopy changes only validABIobservation, everyotheroriginalgate/resource row unchanged. Originalclosure wording superseded solely for authoredobservererror, not relabeled measured failure.
+
+Resourcesunchanged registers62/local64,staticshared0to6544driverbytes(6536declaredarraybytes,alignmentallocation),dynamic0,maxthreads1024;64threadoccupancy16to13warning,1288to8,2564to4. Staticshared/occupancycosts remain materialrisks, not no-tradeoff proof. All{len(pub)}parser/protocol/fullheader/report/publicationartifacts HTTPbyteverified. Noownednativechild/lock,accepted162/main163/live/protected2PTXexact; E051accepted/deployed cumulative12.4372274192%andlastprimaryB246unchanged. E078mayproceed onlysamefrozensource through compiledhost12tagmaps andfullrawfold+actionGPUcontrols, then allunchangedexact/broad/state/F32/menu/save/resume/continuation/actualmaterial/fullcycle1%/strictfixture/fresh16/holdout/freshoriginalcumulative gates. Goalactive.
+''';nl=b'\r\n'if b'\r\n'in raw else b'\n';ledger.write_bytes(raw+entry.encode().replace(b'\n',nl));old.custody();subprocess.run(['git','commit','--only','-m','research: correct complete PTX pointer-qualified ABI observation','--','research/postflop-gpu-20261016/experiments.md'],cwd=old.REPO,check=True);old.custody();print(json.dumps({'status':report['status'],'checks':checks,'report_sha256':old.sha(H/'report.json'),'native_reruns':0}),flush=True)

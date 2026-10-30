@@ -1,0 +1,16 @@
+{
+  "id": "E102",
+  "at": "2026-10-28T20:45:13.310443+00:00",
+  "status": "one_parent_fanout_form_staged_for_compiler_gate",
+  "mechanism": "One existing128-thread block per existing chance parent instead of one per representative edge. Each hand loads parent reach and mask before traversing that parents original cc span, copying only cc_perm==0 edges. Original 9 CUDA entries remain byte-identical source prefix; new16-parameter pure-copy entry appended.",
+  "host": "Add one CudaFunction field/lookup. Change exactly two production sites (training paired_sweep and eval_down) to existing chance_node_spans/chance_nodes/cc arrays and new entry. All original device allocations and metadata payloads retained. Original f_down_chance/legacy_down test oracle remains unchanged. p1 reuse still transmits nh1=0; no own-player reconstruction or normalization change.",
+  "integer_proof": "D194 complete selected arrays in all6canonical iso on/off baseline metadata files: 2,839,622 checks. Per-level Counter of parent/child/card triples exact; output reach slots unique/in bounds/disjoint from all same-level parent source slots for both players. Phase timings from D183 explicitly excluded.",
+  "representative_selection": "Plan starts rep=c,k_rep=0 and updates k only when permuted card is lower. Permutation0 is identity. Thus cc_perm==0 iff c remains its own representative; these are exactly the original rep_edges. No new plan/list/encoding/sort/threshold/padding.",
+  "preserved": "No floating arithmetic added or removed: each old reachable output still copies the original parent f32 bits or stores positivezero on the same dealt-card/mask test. Lock/evaluation/traverser/CFR update/upward arithmetic, actor+chancelevel sequence, quality/cadence/stops, save format and GPU payload remain. Actual raw exceptional/nonfinite/multi-parent/tail/zero/reuse controls still mandatory.",
+  "risks": "Fewer blocks can reduce parallelism and serialized card loops can lose. CC identity checks add metadata work; added export/function lookup may cost compile/JIT/setup even on river. Module/graph/CPU/RAM/compiled resources and capacity need actual measurement. No speed forecast from CTA counts or old activity traces.",
+  "novelty": "Bounded D194 local all-ref and636retainedCUDA source-body search found no parent-grouped down_chance. Distinct from E078 upward parent-block fold producer/fusion, E081 action warp packing, E046 interleaved record encoding, E048/E086 membership predicates. None composed/reopened.",
+  "compile_gate": "Original9 alpha-normalized entry bodies/ABIs on120/75 exact. New16argument ABI/no barriers/no float arithmetic. Default-resource feasibility and parent reach32-bit input loads outside representative-card loops mandatory before application kernels. Same payload, no local/dynamic/stack growth or maxthread loss; positive64/128/256occupancy, disclose reg/occupancy warnings under D108.",
+  "closure": "Any genuine gate failure closes this exact parent-fanout form. No edge tile/blockwidth/parent grouping/guard/threshold/field/loop/helper/caller/source/flags/sample rescue. All full raw/state/ordinary/complete1%/strictfixture/fresh16/broad/material/capacity/holdout/cumulative/application gates remain.",
+  "source_activated": false,
+  "candidate_accepted": false
+}

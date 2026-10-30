@@ -1,0 +1,71 @@
+--- a/crates/solver/src/tree.rs
++++ b/crates/solver/src/tree.rs
+@@ -3,7 +3,8 @@
+ //! Streets are indexed 0 = flop, 1 = turn, 2 = river. Players: 0 = OOP, 1 = IP.
+ //! All chip amounts are tracked as f64 during construction.
+ 
+-use serde::{Deserialize, Serialize};
++use serde::{Deserialize, Serialize};
++use smallvec::SmallVec;
+ 
+ pub const OOP: u8 = 0;
+ pub const IP: u8 = 1;
+@@ -451,11 +452,11 @@
+     }
+ 
+     /// Generate the list of legal actions for the given state.
+-    fn legal_actions(&self, st: &BuildState) -> Vec<Action> {
++    fn legal_actions(&self, st: &BuildState) -> SmallVec<[Action; 4]> {
+         let me = st.to_act as usize;
+         let opp = 1 - me;
+         let stack_me = self.config.effective_stack - (st.put[me] - self.config.starting_pot / 2.0);
+-        let mut actions = Vec::new();
++        let mut actions: SmallVec<[Action; 4]> = SmallVec::new();
+ 
+         let facing = st.street_bet[opp] - st.street_bet[me];
+         debug_assert!(facing >= -1e-9);
+@@ -468,7 +469,7 @@
+             if can_raise {
+                 let pot_after_call = st.put[0] + st.put[1] + facing;
+                 let max_to = st.street_bet[me] + stack_me; // all-in "to" amount
+-                let mut candidates: Vec<f64> = Vec::new();
++                let mut candidates: SmallVec<[f64; 4]> = SmallVec::new();
+                 let sizing = self.sizing(st.to_act, st.street);
+                 for size in &sizing.raise {
+                     let to = match size {
+@@ -482,7 +483,7 @@
+                     candidates.push(max_to);
+                 }
+                 let min_to = st.street_bet[opp] + st.last_increment.max(1e-9);
+-                let mut tos: Vec<f64> = Vec::new();
++                let mut tos: SmallVec<[f64; 4]> = SmallVec::new();
+                 for mut to in candidates {
+                     if to < min_to {
+                         to = min_to;
+@@ -511,7 +512,7 @@
+                 let size_list = if donking { &sizing.donk } else { &sizing.bet };
+                 let pot = st.put[0] + st.put[1];
+                 let max_to = stack_me;
+-                let mut candidates: Vec<f64> = Vec::new();
++                let mut candidates: SmallVec<[f64; 4]> = SmallVec::new();
+                 for size in size_list {
+                     let to = match size {
+                         BetSize::PotPct(p) => p / 100.0 * pot,
+@@ -526,7 +527,7 @@
+                 if self.config.add_allin && (!size_list.is_empty() || !donking) {
+                     candidates.push(max_to);
+                 }
+-                let mut tos: Vec<f64> = Vec::new();
++                let mut tos: SmallVec<[f64; 4]> = SmallVec::new();
+                 for mut to in candidates {
+                     if to <= 1e-9 {
+                         continue;
+@@ -810,7 +811,7 @@
+     }
+ }
+ 
+-fn dedupe_amounts(v: &mut Vec<f64>) {
++fn dedupe_amounts(v: &mut SmallVec<[f64; 4]>) {
+     // total_cmp: amounts are validated finite at build entry, but a NaN that
+     // ever slipped through must not panic the sort (defense in depth — this
+     // used to be partial_cmp().unwrap(), which panicked on NaN sizes).

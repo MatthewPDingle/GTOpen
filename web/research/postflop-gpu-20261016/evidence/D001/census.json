@@ -1,0 +1,1194 @@
+[
+  {
+    "action_count_histogram": {
+      "1": 37926,
+      "2": 331244,
+      "3": 154363
+    },
+    "board": "Ks7h2d",
+    "config": {
+      "board": "Ks7h2d",
+      "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+      "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "carry_aggressor_through_checks": null,
+        "effective_stack": 970.0,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              },
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "max_raises": 10,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3.0,
+        "rake_pct": 0.0,
+        "starting_pot": 60.0
+      }
+    },
+    "cuda_initialized": false,
+    "eligible_fractions": {
+      "action_node_fraction": 0.05841465580966243,
+      "span_fraction": 0.3076923076923077,
+      "training_action_node_visit_fraction": 0.05841465580966243,
+      "training_down_hand_visit_fraction": 0.05629812462031829,
+      "training_up_child_hand_visit_fraction": 0.05257313474911539,
+      "training_up_hand_visit_fraction": 0.05841465580966243
+    },
+    "eligible_homogeneous_2_3_4": {
+      "action_nodes": 30582,
+      "child_edges": 61169,
+      "evaluation_down_hand_visits_per_check": 8442994,
+      "evaluation_down_kernel_launches_per_check": 4,
+      "evaluation_up_hand_visits_per_check": 17615232,
+      "evaluation_up_kernel_launches_per_check": 8,
+      "nonempty_spans": 4,
+      "training_action_node_visits_per_iteration": 61164,
+      "training_down_hand_visits_per_iteration": 16885988,
+      "training_down_kernel_launches_per_iteration": 8,
+      "training_up_child_hand_visits_per_iteration": 35233344,
+      "training_up_hand_visits_per_iteration": 17615232,
+      "training_up_kernel_launches_per_iteration": 8
+    },
+    "fixture_id": "rainbow",
+    "hands": [
+      257,
+      319
+    ],
+    "homogeneous_by_action_count": [
+      {
+        "action_count": 2,
+        "counts": {
+          "action_nodes": 30577,
+          "child_edges": 61154,
+          "evaluation_down_hand_visits_per_check": 8441585,
+          "evaluation_down_kernel_launches_per_check": 2,
+          "evaluation_up_hand_visits_per_check": 17612352,
+          "evaluation_up_kernel_launches_per_check": 4,
+          "nonempty_spans": 2,
+          "training_action_node_visits_per_iteration": 61154,
+          "training_down_hand_visits_per_iteration": 16883170,
+          "training_down_kernel_launches_per_iteration": 4,
+          "training_up_child_hand_visits_per_iteration": 35224704,
+          "training_up_hand_visits_per_iteration": 17612352,
+          "training_up_kernel_launches_per_iteration": 4
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 0.05840510531332313,
+          "span_fraction": 0.15384615384615385,
+          "training_action_node_visit_fraction": 0.05840510531332313,
+          "training_down_hand_visit_fraction": 0.05628872936816129,
+          "training_up_child_hand_visit_fraction": 0.05256024264655957,
+          "training_up_hand_visit_fraction": 0.05840510531332313
+        }
+      },
+      {
+        "action_count": 3,
+        "counts": {
+          "action_nodes": 5,
+          "child_edges": 15,
+          "evaluation_down_hand_visits_per_check": 1409,
+          "evaluation_down_kernel_launches_per_check": 2,
+          "evaluation_up_hand_visits_per_check": 2880,
+          "evaluation_up_kernel_launches_per_check": 4,
+          "nonempty_spans": 2,
+          "training_action_node_visits_per_iteration": 10,
+          "training_down_hand_visits_per_iteration": 2818,
+          "training_down_kernel_launches_per_iteration": 4,
+          "training_up_child_hand_visits_per_iteration": 8640,
+          "training_up_hand_visits_per_iteration": 2880,
+          "training_up_kernel_launches_per_iteration": 4
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 9.550496339294753e-06,
+          "span_fraction": 0.15384615384615385,
+          "training_action_node_visit_fraction": 9.550496339294753e-06,
+          "training_down_hand_visit_fraction": 9.395252156998865e-06,
+          "training_up_child_hand_visit_fraction": 1.2892102555816357e-05,
+          "training_up_hand_visit_fraction": 9.550496339294753e-06
+        }
+      }
+    ],
+    "iso_active": false,
+    "levels": [
+      {
+        "action_count_histogram": {
+          "2": 1
+        },
+        "action_nodes": 1,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ],
+        "span_start": 0
+      },
+      {
+        "action_count_histogram": {
+          "3": 2
+        },
+        "action_nodes": 2,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ],
+        "span_start": 1
+      },
+      {
+        "action_count_histogram": {
+          "3": 3
+        },
+        "action_nodes": 3,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 2,
+        "nodes_by_actor": [
+          3,
+          0
+        ],
+        "span_start": 3
+      },
+      {
+        "action_count_histogram": {
+          "2": 98,
+          "3": 3
+        },
+        "action_nodes": 101,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 3,
+        "nodes_by_actor": [
+          98,
+          3
+        ],
+        "span_start": 6
+      },
+      {
+        "action_count_histogram": {
+          "1": 147,
+          "2": 98,
+          "3": 101
+        },
+        "action_nodes": 346,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 4,
+        "nodes_by_actor": [
+          150,
+          196
+        ],
+        "span_start": 107
+      },
+      {
+        "action_count_histogram": {
+          "2": 295,
+          "3": 198
+        },
+        "action_nodes": 493,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 5,
+        "nodes_by_actor": [
+          343,
+          150
+        ],
+        "span_start": 453
+      },
+      {
+        "action_count_histogram": {
+          "1": 147,
+          "2": 9557,
+          "3": 490
+        },
+        "action_nodes": 10194,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 6,
+        "nodes_by_actor": [
+          9704,
+          490
+        ],
+        "span_start": 946
+      },
+      {
+        "action_count_histogram": {
+          "1": 9408,
+          "2": 16856,
+          "3": 9898
+        },
+        "action_nodes": 36162,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 7,
+        "nodes_by_actor": [
+          17052,
+          19110
+        ],
+        "span_start": 11140
+      },
+      {
+        "action_count_histogram": {
+          "1": 7056,
+          "2": 40621,
+          "3": 26068
+        },
+        "action_nodes": 73745,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 8,
+        "nodes_by_actor": [
+          49686,
+          24059
+        ],
+        "span_start": 47302
+      },
+      {
+        "action_count_histogram": {
+          "1": 16464,
+          "2": 59094,
+          "3": 51744
+        },
+        "action_nodes": 127302,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 9,
+        "nodes_by_actor": [
+          54292,
+          73010
+        ],
+        "span_start": 121047
+      },
+      {
+        "action_count_histogram": {
+          "1": 4704,
+          "2": 87024,
+          "3": 49392
+        },
+        "action_nodes": 141120,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 10,
+        "nodes_by_actor": [
+          72912,
+          68208
+        ],
+        "span_start": 248349
+      },
+      {
+        "action_count_histogram": {
+          "2": 87024,
+          "3": 16464
+        },
+        "action_nodes": 103488,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 11,
+        "nodes_by_actor": [
+          49392,
+          54096
+        ],
+        "span_start": 389469
+      },
+      {
+        "action_count_histogram": {
+          "2": 30576
+        },
+        "action_nodes": 30576,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 12,
+        "nodes_by_actor": [
+          21168,
+          9408
+        ],
+        "span_start": 492957
+      }
+    ],
+    "limits": "CPU structure census only; no GPU resource or speed measurement; fractions do not weight individual instructions or kernel latency",
+    "mixed": {
+      "action_nodes": 492951,
+      "child_edges": 1102334,
+      "evaluation_down_hand_visits_per_check": 141526371,
+      "evaluation_down_kernel_launches_per_check": 9,
+      "evaluation_up_hand_visits_per_check": 283939776,
+      "evaluation_up_kernel_launches_per_check": 18,
+      "nonempty_spans": 9,
+      "training_action_node_visits_per_iteration": 985902,
+      "training_down_hand_visits_per_iteration": 283052742,
+      "training_down_kernel_launches_per_iteration": 18,
+      "training_up_child_hand_visits_per_iteration": 634944384,
+      "training_up_hand_visits_per_iteration": 283939776,
+      "training_up_kernel_launches_per_iteration": 18
+    },
+    "plan_build_ms": 123.88119999999999,
+    "plan_levels": 14,
+    "schema_version": 1,
+    "solver_iterations": 0,
+    "total": {
+      "action_nodes": 523533,
+      "child_edges": 1163503,
+      "evaluation_down_hand_visits_per_check": 149969365,
+      "evaluation_down_kernel_launches_per_check": 13,
+      "evaluation_up_hand_visits_per_check": 301555008,
+      "evaluation_up_kernel_launches_per_check": 26,
+      "nonempty_spans": 13,
+      "training_action_node_visits_per_iteration": 1047066,
+      "training_down_hand_visits_per_iteration": 299938730,
+      "training_down_kernel_launches_per_iteration": 26,
+      "training_up_child_hand_visits_per_iteration": 670177728,
+      "training_up_hand_visits_per_iteration": 301555008,
+      "training_up_kernel_launches_per_iteration": 26
+    },
+    "tree_build_ms": 77.1819,
+    "tree_nodes": 1346813,
+    "use_isomorphism": true,
+    "visit_definition": "one node visit per player sweep; two training sweeps per iteration; separate down/up hand rows and child visits describe scheduled work, not elapsed time or occupancy"
+  },
+  {
+    "action_count_histogram": {
+      "1": 23080,
+      "2": 201504,
+      "3": 93978
+    },
+    "board": "Ks7s2d",
+    "config": {
+      "board": "Ks7s2d",
+      "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+      "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "carry_aggressor_through_checks": null,
+        "effective_stack": 970.0,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              },
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "max_raises": 10,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3.0,
+        "rake_pct": 0.05,
+        "starting_pot": 60.0
+      }
+    },
+    "cuda_initialized": false,
+    "eligible_fractions": {
+      "action_node_fraction": 0.058334013473044496,
+      "span_fraction": 0.3076923076923077,
+      "training_action_node_visit_fraction": 0.058334013473044496,
+      "training_down_hand_visit_fraction": 0.05622782457038421,
+      "training_up_child_hand_visit_fraction": 0.05249978108024892,
+      "training_up_hand_visit_fraction": 0.058334013473044496
+    },
+    "eligible_homogeneous_2_3_4": {
+      "action_nodes": 18583,
+      "child_edges": 37171,
+      "evaluation_down_hand_visits_per_check": 5148930,
+      "evaluation_down_kernel_launches_per_check": 4,
+      "evaluation_up_hand_visits_per_check": 21481948,
+      "evaluation_up_kernel_launches_per_check": 16,
+      "nonempty_spans": 4,
+      "training_action_node_visits_per_iteration": 37166,
+      "training_down_hand_visits_per_iteration": 10297860,
+      "training_down_kernel_launches_per_iteration": 8,
+      "training_up_child_hand_visits_per_iteration": 21484838,
+      "training_up_hand_visits_per_iteration": 10740974,
+      "training_up_kernel_launches_per_iteration": 8
+    },
+    "fixture_id": "two-tone",
+    "hands": [
+      258,
+      320
+    ],
+    "homogeneous_by_action_count": [
+      {
+        "action_count": 2,
+        "counts": {
+          "action_nodes": 18578,
+          "child_edges": 37156,
+          "evaluation_down_hand_visits_per_check": 5147516,
+          "evaluation_down_kernel_launches_per_check": 2,
+          "evaluation_up_hand_visits_per_check": 21476168,
+          "evaluation_up_kernel_launches_per_check": 8,
+          "nonempty_spans": 2,
+          "training_action_node_visits_per_iteration": 37156,
+          "training_down_hand_visits_per_iteration": 10295032,
+          "training_down_kernel_launches_per_iteration": 4,
+          "training_up_child_hand_visits_per_iteration": 21476168,
+          "training_up_hand_visits_per_iteration": 10738084,
+          "training_up_kernel_launches_per_iteration": 4
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 0.05831831794124848,
+          "span_fraction": 0.15384615384615385,
+          "training_action_node_visit_fraction": 0.05831831794124848,
+          "training_down_hand_visit_fraction": 0.05621238327599051,
+          "training_up_child_hand_visit_fraction": 0.052478595297886226,
+          "training_up_hand_visit_fraction": 0.05831831794124848
+        }
+      },
+      {
+        "action_count": 3,
+        "counts": {
+          "action_nodes": 5,
+          "child_edges": 15,
+          "evaluation_down_hand_visits_per_check": 1414,
+          "evaluation_down_kernel_launches_per_check": 2,
+          "evaluation_up_hand_visits_per_check": 5780,
+          "evaluation_up_kernel_launches_per_check": 8,
+          "nonempty_spans": 2,
+          "training_action_node_visits_per_iteration": 10,
+          "training_down_hand_visits_per_iteration": 2828,
+          "training_down_kernel_launches_per_iteration": 4,
+          "training_up_child_hand_visits_per_iteration": 8670,
+          "training_up_hand_visits_per_iteration": 2890,
+          "training_up_kernel_launches_per_iteration": 4
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 1.5695531796008313e-05,
+          "span_fraction": 0.15384615384615385,
+          "training_action_node_visit_fraction": 1.5695531796008313e-05,
+          "training_down_hand_visit_fraction": 1.544129439369408e-05,
+          "training_up_child_hand_visit_fraction": 2.1185782362694945e-05,
+          "training_up_hand_visit_fraction": 1.5695531796008313e-05
+        }
+      }
+    ],
+    "iso_active": true,
+    "levels": [
+      {
+        "action_count_histogram": {
+          "2": 1
+        },
+        "action_nodes": 1,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ],
+        "span_start": 0
+      },
+      {
+        "action_count_histogram": {
+          "3": 2
+        },
+        "action_nodes": 2,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ],
+        "span_start": 1
+      },
+      {
+        "action_count_histogram": {
+          "3": 3
+        },
+        "action_nodes": 3,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 2,
+        "nodes_by_actor": [
+          3,
+          0
+        ],
+        "span_start": 3
+      },
+      {
+        "action_count_histogram": {
+          "2": 72,
+          "3": 3
+        },
+        "action_nodes": 75,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 3,
+        "nodes_by_actor": [
+          72,
+          3
+        ],
+        "span_start": 6
+      },
+      {
+        "action_count_histogram": {
+          "1": 108,
+          "2": 72,
+          "3": 75
+        },
+        "action_nodes": 255,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 4,
+        "nodes_by_actor": [
+          111,
+          144
+        ],
+        "span_start": 81
+      },
+      {
+        "action_count_histogram": {
+          "2": 217,
+          "3": 146
+        },
+        "action_nodes": 363,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 5,
+        "nodes_by_actor": [
+          252,
+          111
+        ],
+        "span_start": 336
+      },
+      {
+        "action_count_histogram": {
+          "1": 108,
+          "2": 5826,
+          "3": 360
+        },
+        "action_nodes": 6294,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 6,
+        "nodes_by_actor": [
+          5934,
+          360
+        ],
+        "span_start": 699
+      },
+      {
+        "action_count_histogram": {
+          "1": 5716,
+          "2": 10291,
+          "3": 6076
+        },
+        "action_nodes": 22083,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 7,
+        "nodes_by_actor": [
+          10435,
+          11648
+        ],
+        "span_start": 6993
+      },
+      {
+        "action_count_histogram": {
+          "1": 4287,
+          "2": 24761,
+          "3": 15863
+        },
+        "action_nodes": 44911,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 8,
+        "nodes_by_actor": [
+          30225,
+          14686
+        ],
+        "span_start": 29076
+      },
+      {
+        "action_count_histogram": {
+          "1": 10003,
+          "2": 35941,
+          "3": 31438
+        },
+        "action_nodes": 77382,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 9,
+        "nodes_by_actor": [
+          33011,
+          44371
+        ],
+        "span_start": 73987
+      },
+      {
+        "action_count_histogram": {
+          "1": 2858,
+          "2": 52873,
+          "3": 30009
+        },
+        "action_nodes": 85740,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 10,
+        "nodes_by_actor": [
+          44299,
+          41441
+        ],
+        "span_start": 151369
+      },
+      {
+        "action_count_histogram": {
+          "2": 52873,
+          "3": 10003
+        },
+        "action_nodes": 62876,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 11,
+        "nodes_by_actor": [
+          30009,
+          32867
+        ],
+        "span_start": 237109
+      },
+      {
+        "action_count_histogram": {
+          "2": 18577
+        },
+        "action_nodes": 18577,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 12,
+        "nodes_by_actor": [
+          12861,
+          5716
+        ],
+        "span_start": 299985
+      }
+    ],
+    "limits": "CPU structure census only; no GPU resource or speed measurement; fractions do not weight individual instructions or kernel latency",
+    "mixed": {
+      "action_nodes": 299979,
+      "child_edges": 670851,
+      "evaluation_down_hand_visits_per_check": 86423704,
+      "evaluation_down_kernel_launches_per_check": 9,
+      "evaluation_up_hand_visits_per_check": 346775724,
+      "evaluation_up_kernel_launches_per_check": 36,
+      "nonempty_spans": 9,
+      "training_action_node_visits_per_iteration": 599958,
+      "training_down_hand_visits_per_iteration": 172847408,
+      "training_down_kernel_launches_per_iteration": 18,
+      "training_up_child_hand_visits_per_iteration": 387751878,
+      "training_up_hand_visits_per_iteration": 173387862,
+      "training_up_kernel_launches_per_iteration": 18
+    },
+    "plan_build_ms": 78.571,
+    "plan_levels": 14,
+    "schema_version": 1,
+    "solver_iterations": 0,
+    "total": {
+      "action_nodes": 318562,
+      "child_edges": 708022,
+      "evaluation_down_hand_visits_per_check": 91572634,
+      "evaluation_down_kernel_launches_per_check": 13,
+      "evaluation_up_hand_visits_per_check": 368257672,
+      "evaluation_up_kernel_launches_per_check": 52,
+      "nonempty_spans": 13,
+      "training_action_node_visits_per_iteration": 637124,
+      "training_down_hand_visits_per_iteration": 183145268,
+      "training_down_kernel_launches_per_iteration": 26,
+      "training_up_child_hand_visits_per_iteration": 409236716,
+      "training_up_hand_visits_per_iteration": 184128836,
+      "training_up_kernel_launches_per_iteration": 26
+    },
+    "tree_build_ms": 58.147,
+    "tree_nodes": 1346813,
+    "use_isomorphism": true,
+    "visit_definition": "one node visit per player sweep; two training sweeps per iteration; separate down/up hand rows and child visits describe scheduled work, not elapsed time or occupancy"
+  },
+  {
+    "action_count_histogram": {
+      "2": 4,
+      "3": 8
+    },
+    "board": "Ks7h2dQhTc",
+    "config": {
+      "board": "Ks7h2dQhTc",
+      "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+      "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+      "tree": {
+        "add_allin": false,
+        "allin_threshold": 0.85,
+        "carry_aggressor_through_checks": null,
+        "effective_stack": 970.0,
+        "ip": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              },
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "max_raises": 10,
+        "oop": [
+          {
+            "bet": [
+              {
+                "PotPct": 33.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          },
+          {
+            "bet": [
+              {
+                "PotPct": 75.0
+              }
+            ],
+            "donk": [],
+            "raise": [
+              {
+                "PotPct": 60.0
+              }
+            ]
+          }
+        ],
+        "rake_cap": 3.0,
+        "rake_pct": 0.05,
+        "starting_pot": 60.0
+      }
+    },
+    "cuda_initialized": false,
+    "eligible_fractions": {
+      "action_node_fraction": 0.6666666666666666,
+      "span_fraction": 0.7142857142857143,
+      "training_action_node_visit_fraction": 0.6666666666666666,
+      "training_down_hand_visit_fraction": 0.6361273554256011,
+      "training_up_child_hand_visit_fraction": 0.6875,
+      "training_up_hand_visit_fraction": 0.6666666666666666
+    },
+    "eligible_homogeneous_2_3_4": {
+      "action_nodes": 8,
+      "child_edges": 22,
+      "evaluation_down_hand_visits_per_check": 1958,
+      "evaluation_down_kernel_launches_per_check": 5,
+      "evaluation_up_hand_visits_per_check": 8208,
+      "evaluation_up_kernel_launches_per_check": 20,
+      "nonempty_spans": 5,
+      "training_action_node_visits_per_iteration": 16,
+      "training_down_hand_visits_per_iteration": 3916,
+      "training_down_kernel_launches_per_iteration": 10,
+      "training_up_child_hand_visits_per_iteration": 11286,
+      "training_up_hand_visits_per_iteration": 4104,
+      "training_up_kernel_launches_per_iteration": 10
+    },
+    "fixture_id": "river",
+    "hands": [
+      233,
+      280
+    ],
+    "homogeneous_by_action_count": [
+      {
+        "action_count": 2,
+        "counts": {
+          "action_nodes": 2,
+          "child_edges": 4,
+          "evaluation_down_hand_visits_per_check": 466,
+          "evaluation_down_kernel_launches_per_check": 2,
+          "evaluation_up_hand_visits_per_check": 2052,
+          "evaluation_up_kernel_launches_per_check": 8,
+          "nonempty_spans": 2,
+          "training_action_node_visits_per_iteration": 4,
+          "training_down_hand_visits_per_iteration": 932,
+          "training_down_kernel_launches_per_iteration": 4,
+          "training_up_child_hand_visits_per_iteration": 2052,
+          "training_up_hand_visits_per_iteration": 1026,
+          "training_up_kernel_launches_per_iteration": 4
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 0.16666666666666666,
+          "span_fraction": 0.2857142857142857,
+          "training_action_node_visit_fraction": 0.16666666666666666,
+          "training_down_hand_visit_fraction": 0.15139701104613384,
+          "training_up_child_hand_visit_fraction": 0.125,
+          "training_up_hand_visit_fraction": 0.16666666666666666
+        }
+      },
+      {
+        "action_count": 3,
+        "counts": {
+          "action_nodes": 6,
+          "child_edges": 18,
+          "evaluation_down_hand_visits_per_check": 1492,
+          "evaluation_down_kernel_launches_per_check": 3,
+          "evaluation_up_hand_visits_per_check": 6156,
+          "evaluation_up_kernel_launches_per_check": 12,
+          "nonempty_spans": 3,
+          "training_action_node_visits_per_iteration": 12,
+          "training_down_hand_visits_per_iteration": 2984,
+          "training_down_kernel_launches_per_iteration": 6,
+          "training_up_child_hand_visits_per_iteration": 9234,
+          "training_up_hand_visits_per_iteration": 3078,
+          "training_up_kernel_launches_per_iteration": 6
+        },
+        "fractions_of_all_actions": {
+          "action_node_fraction": 0.5,
+          "span_fraction": 0.42857142857142855,
+          "training_action_node_visit_fraction": 0.5,
+          "training_down_hand_visit_fraction": 0.48473034437946716,
+          "training_up_child_hand_visit_fraction": 0.5625,
+          "training_up_hand_visit_fraction": 0.5
+        }
+      }
+    ],
+    "iso_active": false,
+    "levels": [
+      {
+        "action_count_histogram": {
+          "2": 1
+        },
+        "action_nodes": 1,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ],
+        "span_start": 0
+      },
+      {
+        "action_count_histogram": {
+          "2": 1,
+          "3": 1
+        },
+        "action_nodes": 2,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ],
+        "span_start": 1
+      },
+      {
+        "action_count_histogram": {
+          "3": 2
+        },
+        "action_nodes": 2,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 2,
+        "nodes_by_actor": [
+          2,
+          0
+        ],
+        "span_start": 3
+      },
+      {
+        "action_count_histogram": {
+          "3": 2
+        },
+        "action_nodes": 2,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 3,
+        "nodes_by_actor": [
+          0,
+          2
+        ],
+        "span_start": 5
+      },
+      {
+        "action_count_histogram": {
+          "3": 2
+        },
+        "action_nodes": 2,
+        "common_action_count": 3,
+        "eligible_without_regrouping": true,
+        "level": 4,
+        "nodes_by_actor": [
+          2,
+          0
+        ],
+        "span_start": 7
+      },
+      {
+        "action_count_histogram": {
+          "2": 1,
+          "3": 1
+        },
+        "action_nodes": 2,
+        "common_action_count": null,
+        "eligible_without_regrouping": false,
+        "level": 5,
+        "nodes_by_actor": [
+          0,
+          2
+        ],
+        "span_start": 9
+      },
+      {
+        "action_count_histogram": {
+          "2": 1
+        },
+        "action_nodes": 1,
+        "common_action_count": 2,
+        "eligible_without_regrouping": true,
+        "level": 6,
+        "nodes_by_actor": [
+          1,
+          0
+        ],
+        "span_start": 11
+      }
+    ],
+    "limits": "CPU structure census only; no GPU resource or speed measurement; fractions do not weight individual instructions or kernel latency",
+    "mixed": {
+      "action_nodes": 4,
+      "child_edges": 10,
+      "evaluation_down_hand_visits_per_check": 1120,
+      "evaluation_down_kernel_launches_per_check": 2,
+      "evaluation_up_hand_visits_per_check": 4104,
+      "evaluation_up_kernel_launches_per_check": 8,
+      "nonempty_spans": 2,
+      "training_action_node_visits_per_iteration": 8,
+      "training_down_hand_visits_per_iteration": 2240,
+      "training_down_kernel_launches_per_iteration": 4,
+      "training_up_child_hand_visits_per_iteration": 5130,
+      "training_up_hand_visits_per_iteration": 2052,
+      "training_up_kernel_launches_per_iteration": 4
+    },
+    "plan_build_ms": 0.032799999999999996,
+    "plan_levels": 8,
+    "schema_version": 1,
+    "solver_iterations": 0,
+    "total": {
+      "action_nodes": 12,
+      "child_edges": 32,
+      "evaluation_down_hand_visits_per_check": 3078,
+      "evaluation_down_kernel_launches_per_check": 7,
+      "evaluation_up_hand_visits_per_check": 12312,
+      "evaluation_up_kernel_launches_per_check": 28,
+      "nonempty_spans": 7,
+      "training_action_node_visits_per_iteration": 24,
+      "training_down_hand_visits_per_iteration": 6156,
+      "training_down_kernel_launches_per_iteration": 14,
+      "training_up_child_hand_visits_per_iteration": 16416,
+      "training_up_hand_visits_per_iteration": 6156,
+      "training_up_kernel_launches_per_iteration": 14
+    },
+    "tree_build_ms": 0.1747,
+    "tree_nodes": 33,
+    "use_isomorphism": true,
+    "visit_definition": "one node visit per player sweep; two training sweeps per iteration; separate down/up hand rows and child visits describe scheduled work, not elapsed time or occupancy"
+  }
+]

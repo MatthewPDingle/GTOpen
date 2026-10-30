@@ -1,0 +1,152 @@
+{
+  "id": "E121-prerequisite-checkpoint",
+  "at": "2026-10-29T19:01:13.490901+00:00",
+  "status": "PREREQUISITES_PASS_FULL_DIRECT_GPU_CONTROLS_PENDING",
+  "previous_goal_turn": "Progress: E120 full direct/ordinary/initial-screen evidence and closure changed authoritative state. Revalidated terminal audit, local commit, idle live runtime, source/main/protected PTX and absent locks before this distinct candidate.",
+  "fixed_source": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\baseline.cu",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\candidate.cu",
+      "base_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate_sha256": "f1d7d518223d3fd3ad622d67203936cab25534e8e739d7c5d9cb5e36aab5cd76"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\baseline-mod.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\candidate-mod.rs",
+      "base_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "candidate_sha256": "f901eed725066c965664403ea7cef35f4c3848b1d7865e1e87730b2d5f444e13"
+    }
+  },
+  "change": "Private u32 hand word: card1 bits0..5/card2 bits6..11/same-opponent index bits12..22 with2047 absent. Only d_same[0/1] values change; all GPU arrays/types/lengths/launch ABIs and public plan unchanged. Host constructor packs two local Vecs; fold/show decode one metadata load. All original floating expressions/order/barriers preserved.",
+  "scope_limits": "Source/caller and compiled metadata prerequisites only. Full integrated host constructor, physical GPU numerical state, full solve, F32/locks/save/resume/continuation/material/capacity/responsiveness and speed remain unverified.",
+  "host_integer_control": {
+    "records": 1763580,
+    "checks": 8817900,
+    "legal_tuples": 1759602,
+    "mixed_records": 3978,
+    "raw_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\execution\\host-hand-words.bin",
+    "raw_bytes": 28217307,
+    "raw_sha256": "3baa3d5ef1549ee7326638f95f63d14f0f32ab325204159f72158c18d5860133",
+    "host_function_sha256": "5ed7d1753122ace380f78f6c3a57b4ba2c5bff89e1f1f923f9409571c52979e2"
+  },
+  "host_cost": "Two temporary u32 Vec payloads <=10608B at legal maximum plus headers/allocator costs; no persistent field added by source. Actual material/lifetime/error/latency qualification required.",
+  "compiled_resources": {
+    "up_fold": {
+      "registers_before": 39,
+      "registers_after": 39,
+      "static_shared_bytes": 1232,
+      "worst_dynamic_bytes": 5304,
+      "worst_occupancy_64_128_256": [
+        13,
+        12,
+        6
+      ]
+    },
+    "up_show": {
+      "registers_before": 38,
+      "registers_after": 39,
+      "static_shared_bytes": 1040,
+      "worst_dynamic_bytes": 26520,
+      "worst_occupancy_64_128_256": [
+        3,
+        3,
+        3
+      ]
+    },
+    "both": "local0/stack1024/maxthreads1024 unchanged. Both120/75 two targeted entries change; other7 entry bodies/resources andall9ABIs exact. Register rise warning retained, not material-neutrality proof."
+  },
+  "PTX_control": "Four entry/target witnesses: one packed load, old card pointer dependencies absent, actual card byte offsets(left2&252/right4&252), index>>12/2047 sentinel branch, original ordered FP math/select-register topology (43fold/219show instructions) and barriers exact. All1763580compiledhostwords replay actual address expressions (21162960checks);20negative fixtures. Bounded topology omits full memory/predicate interpretation.",
+  "native_control": "One same-driver owned CUBIN module capture and one nvdisasm, exact baseline reused. Both fixed-driver word-pointer/load/card/index/sentinel/consumer chains bound; every constant-load range including predicated/128bit ranges avoids legacy card pointers. Native FP opcode/barrier inventory unchanged;8negative fixtures. Not universal ABI/pointer/FP proof, dynamic load-count or speed attribution.",
+  "source_preparer_and_reader_repairs": {
+    "at": "2026-10-29T19:01:13.485396+00:00",
+    "source_preparer": "Exit1 before candidate bytes at ambiguous whole-file inverse snippet shared by intended fold/show edits. R2 scopes inverse to entry and reuses immutable scout inputs. Same intended single source form; original and repair retained.",
+    "resource_preparer": "Exit1 before any compiler at generated Python reader bytes-literal newline syntax. R2 removes unnecessary generator replacements; first control probe/source and repair retained. Same candidate and intended magic bytes.",
+    "PTX_reader_preparation": "Python syntax prevented all execution before protocol; one missing token separator corrected, original script and repair retained.",
+    "native_reader_original": {
+      "tool_exit_code": 1,
+      "error": "unsupported constant-read spelling: @!P0 LDC.64 R2, c[0x0][0x3b8]",
+      "scope": "Stopped before first completed entry witness/report."
+    },
+    "native_reader_r2": {
+      "tool_exit_code": 1,
+      "error": "negative fixture accepted: wrong_word_load",
+      "cause": "Unscoped first matching LDG string changed an earlier unrelated reach-copy load; actual required terminal word load unchanged."
+    },
+    "native_reader_r3": {
+      "tool_exit_code": 0,
+      "correction": "Conservatively counts predicated constant ranges; negative word-load mutations anchored to required PC1530/1b50. All positive witnesses and8negative fixtures pass. Includes predicated floating ops in both-arm inventory."
+    },
+    "candidate_source_changes_after_freeze": 0,
+    "resource_or_capture_or_disassembly_repeated": false,
+    "application_kernel_or_speed_results_rescued": false,
+    "actual_application_kernel_solver_or_speed_samples": 0,
+    "limits": "Journal transcribes directly observed tool outcomes; it is not a fabricated subprocess receipt. Original scripts/protocols/repair records remain."
+  },
+  "evidence_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D295-hand-word-scout\\report.json": "4fc3b382c5ea5dfa00b2144d9bb1f01b01bc1630331fe36a5ea0c7362b93cb7b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D295-hand-word-scout\\history-and-callers.json": "371c5cc17992331574b9c9a4bb6955d0851de9f86a82b21e79b80aa6b3d39fa6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D295-hand-word-scout\\encoding-contract.json": "82a6fc85e849ac112c5463be77d5c6666f5f80bc3a77a176a87a82cfc406d6e8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D295-hand-word-scout\\preparation-repair-r2.json": "fe6aa20dd717e0586c6f0ab763595e28e4a6ab4d16d4236cb7a4949f0d1c3a52",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D295-hand-word-scout\\PTX-reader-pre-exec-syntax-repair.json": "d956f3f35ce215d396a42e6b5553cd52c135ec0f98a6933036a3ee19a72dbab6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\manifest.json": "09c44200d3595552a6660bab0ccbd9b00cf66c97770f26f04fa45e9e74433bda",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\protocol.json": "dbe210ebbf32149276cee72103b5c8ac262919276c99bbc66fc6770d9b0ac7b3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\report.json": "d38893134fd1cbe30b6dc7a303f3c7fe10f3bbdc230d4ea6379b85a53206524e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\host-encode-report.json": "f6e143ec32f2d27129e0d3311c3e343519cedcaf403dfe1aacce576ca92b8eec",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\pre-compiler-packaging-repair-r2.json": "1cfaf32d4d6b14e5876792c77dca53bb5c91e9290a1c30cfe2d37329837a12e2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\execution\\complete.json": "1e9139082e5626b284ced77a81fc37766e52dfbacf79cd4058419d9ef05bf282",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D296-hand-word-PTX\\protocol.json": "eb2fd47504642adf85e4ac196cd89769d734b91fea83b0be415694e0c9275af8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D296-hand-word-PTX\\report.json": "c18c67c31d90b01e56c5db78067f77bd5a9b86f3084130924cc2018dad02ce28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\protocol.json": "40ab3b76c2a9862af1ed8b5011062c52a8549dd190467623eb8e704d9bbeec18",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\capture-report.json": "ad269643d4946d16b03c481509d9444d8f5e100a5732583c29953d7d8af5d476",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-protocol.json": "d36ff47794544aaa0bf7683c4566ec8e69732dc9b24b991862455aba44cd039c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-protocol-r2.json": "81182e5596ecdd883864001e5baa93e77f2df178c5ab8334d5d98422a135193a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-protocol-r3.json": "5dbf35832f222a4cd64f831b4f03677a7ce5c41d1d30771bfd68033ccd1df7ef",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\reader-mechanical-outcomes.json": "26257f92df0d9d463ef9a3ffd268a7227762c3778550b7029fabcfe09e79f433",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\report.json": "43ac2bab76c235e0b04e0904716501e37bd261a1209df3160d1197088589ad3d"
+  },
+  "owned_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\execution\\host-reader.exit.json",
+      "sha256": "d407f0ba5d0d84efdae46e6f399a551907b1a7187fab0ee1d77bf850d3f76e65",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\execution\\probe.exit.json",
+      "sha256": "2ab4c811643ad7f4eb079cc93897435e0cad40859fda397103cfe118bb3e7829",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-resource\\execution\\rustc.exit.json",
+      "sha256": "d58603bcb19a8059089501d4a4161577ea3a377f8f20b8d31c8e9a76e7ec641e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\candidate\\capture.exit.json",
+      "sha256": "5de22abe60515abb41a323c919e15a3fa49135bbe5560e92d12b59ab161a6606",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\candidate\\disassemble.exit.json",
+      "sha256": "9d445c07760e3e703f8f3eb5a71550b60d6708918ecfce97395b110025d8274c",
+      "returncode": 0
+    }
+  ],
+  "all_owned_work_terminal": true,
+  "locks_absent": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "new_application_kernel_launches": 0,
+  "new_solver_or_speed_samples": 0,
+  "candidate_adopted": false,
+  "reason": "Compiled host encoder, resources, PTX and native load/decode prerequisites passed. No candidate GPU numerical trial or speed sample exists; full direct fold/show comparisons with independently decoded private metadata are next.",
+  "next_required": [
+    "Freeze complete original fold/show GPU corpora and added descriptor boundaries. Only declared per-arm same_p contents differ; compare every actual packed word and decode original cards/index, every other input and whole CFV/guards exact. No numerical tolerance or array omission.",
+    "Fresh integrated feature/primary builds,86ordinaryunits and initialfixed3pairfullcycle1%/strictfixture screen.",
+    "Full raw engine/canonical lifecycle/broader F32/locks/save/resume/symmetric/paged/stored/fallback; separately frozenfresh16; actualmaterial/capacity/holdout/freshoriginalcurrentRAMcumulative/actualapp beforeadoption."
+  ],
+  "last_primary_baseline": "B371",
+  "next_unused_primary_baseline": "B372",
+  "best_qualified_config": "E080/GPU/compressed/16workers/defaultaffinity",
+  "hardware_epoch_baseline_ms": 10456.4109,
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "goal_active": true
+}

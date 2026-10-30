@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-17T02:23:42.905073+00:00",
+  "returncode": 1,
+  "status": "failed_observer_float_accumulation_assumption",
+  "script_sha256": "ea3bcc26514d8683e241edb59dab4fec2f95d112ad69438b75d7b209d640fac3",
+  "error": "AssertionError: aggregate arithmetic",
+  "cause": "Root used sequential bs+=median; the Python3.12 sum used by the registered assessment is compensated. Same exact three medians give9719.810300000001 versus9719.8103ms, changing gain by1.84e-14 percentage points. R2 independently uses math.fsum over the retained medians. No rounding of source samples, policy change or native rerun.",
+  "timing_decision_unchanged": "rejected: river strict fixture guard failed",
+  "new_native_runs": 0
+}

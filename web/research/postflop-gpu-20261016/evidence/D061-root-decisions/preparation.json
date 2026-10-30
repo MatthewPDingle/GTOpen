@@ -1,0 +1,10 @@
+{
+  "id": "D061",
+  "at": "2026-10-16T19:19:16Z",
+  "decision": "ALLOW_GETTER_SCRIPT_PREPARATION_ONLY",
+  "scope": "One minimal isolated-process CUDA driver capability query. Device getters and optional owned primary-context retain/bind/get-limit/restore/release only. No set-limit, reset-cache, stream/node attribute mutation, compilation, modules, allocation/copies, kernel or solver launches.",
+  "reason": "Source and official API analysis requires actual device support before a production policy proposal. Querying capabilities is informative but cannot establish speed or graph policy behavior.",
+  "execution": "Not authorized by this preparation record; frozen source/API and script review plus separate root decision precede any driver call.",
+  "production_source_modified": false,
+  "performance_claim": false
+}

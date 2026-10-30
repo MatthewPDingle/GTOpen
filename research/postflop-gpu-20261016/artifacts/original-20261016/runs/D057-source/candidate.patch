@@ -1,0 +1,584 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1517,3 +1517,6 @@
+     }
+ 
+ }
++
++#[cfg(test)]
++mod evaluation_device_events;
+--- /dev/null
++++ b/crates/solver/src/gpu/evaluation_device_events.rs
+@@ -0,0 +1,572 @@
++//! Temporary D057 captured evaluation-envelope diagnostic; never performance acceptance.
++use super::*;
++use crate::{Spot, SpotConfig};
++use crate::store::Storage;
++use serde_json::{json, Value};
++use std::collections::BTreeMap;
++use std::ffi::CString;
++use std::io::{self, Write};
++use std::ptr;
++use std::time::Instant;
++type DiagResult<T> = Result<T, String>;
++const CHUNK: usize = 1_048_576;
++const GIB: u64 = 1 << 30;
++fn emit(value: Value) -> DiagResult<()> {
++    let stdout=io::stdout();
++    let mut output=stdout.lock();
++    writeln!(output,"D057_EVAL_DIAGNOSTIC {value}").map_err(e)?;
++    output.flush().map_err(e)
++}
++
++fn cu(code: sys::CUresult) -> DiagResult<()> { code.result().map_err(e) }
++
++fn checked_sum(values: &[u64]) -> DiagResult<u64> {
++    values.iter().try_fold(0u64, |a, &b| a.checked_add(b).ok_or("byte-count overflow".into()))
++}
++
++fn bytes<T>(values: &[T]) -> DiagResult<u64> {
++    (values.len() as u64).checked_mul(std::mem::size_of::<T>() as u64)
++        .ok_or("byte-count overflow".into())
++}
++
++#[cfg(windows)]
++fn available_ram() -> DiagResult<u64> {
++    #[repr(C)]
++    struct MemoryStatus { length: u32, load: u32, total: u64, available: u64,
++        total_page: u64, available_page: u64, total_virtual: u64,
++        available_virtual: u64, extended: u64 }
++    #[link(name = "kernel32")]
++    extern "system" { fn GlobalMemoryStatusEx(status: *mut MemoryStatus) -> i32; }
++    let mut status: MemoryStatus = unsafe { std::mem::zeroed() };
++    status.length = std::mem::size_of::<MemoryStatus>() as u32;
++    if unsafe { GlobalMemoryStatusEx(&mut status) } == 0 {
++        return Err(format!("GlobalMemoryStatusEx: {}", io::Error::last_os_error()));
++    }
++    Ok(status.available)
++}
++
++#[cfg(not(windows))]
++fn available_ram() -> DiagResult<u64> { Err("D057 admission is registered for Windows only".into()) }
++
++// Count every actual E020 device payload; private admission only, no production changes.
++fn planned_device_bytes(spot: &Spot, plan: &GpuPlan) -> DiagResult<u64> {
++    let mut sizes = Vec::new();
++    macro_rules! push { ($($v:expr),+ $(,)?) => { $(sizes.push(bytes(&$v)?);)+ }; }
++    push!(plan.action_nodes, plan.chance_parents, plan.chance_children, plan.chance_cards,
++        plan.chance_nodes, plan.fold_nodes, plan.show_nodes, plan.node_player, plan.node_na,
++        plan.node_data_off, plan.node_children_start, plan.node_twin, plan.node_tlose,
++        plan.node_ttie, plan.node_cdiv, plan.node_river_slot, plan.cc_start, plan.cc_count,
++        plan.cc_card, plan.cc_child, plan.cc_perm, plan.cfv_slot, spot.tree.children);
++    for p in 0..2 {
++        push!(plan.hand_perm_flat[p], plan.reach_slot[p], plan.hand_c1[p], plan.hand_c2[p],
++            plan.hand_mask[p], plan.same_combo[p], plan.weights[p], plan.riv_off[p],
++            plan.riv_cnt[p], plan.riv_sorted_idx[p], plan.riv_lower[p], plan.riv_upper[p],
++            plan.riv_card_off[p], plan.riv_card_pos[p]);
++        // Every two-card hand appears in two fold-card lists; 53 offsets per player.
++        sizes.push(checked_sum(&[53 * 4, (spot.hands[p].len() as u64).checked_mul(8)
++            .ok_or("fold-list overflow")?])?);
++        sizes.push((plan.arena_elements[p] as u64).checked_mul(8).ok_or("arena overflow")?);
++        sizes.push((plan.reach_blocks[p] as u64).checked_mul(plan.nh[p] as u64)
++            .and_then(|x| x.checked_mul(4)).ok_or("reach overflow")?);
++    }
++    sizes.push((plan.cfv_blocks as u64).checked_mul(plan.nh_max as u64)
++        .and_then(|x| x.checked_mul(4)).ok_or("CFV overflow")?);
++    sizes.push((plan.num_nodes as u64).checked_mul(8).ok_or("lock overflow")?);
++    sizes.extend([4, 12, (plan.nh_max as u64).checked_mul(16).ok_or("eval overflow")?]);
++    checked_sum(&sizes)
++}
++
++
++// Exactly two timing-enabled events, owned by this solver's context/stream.
++// No event node, clone, upload, or modified graph execution is used.
++struct EvalEvents {
++    ctx: Arc<CudaContext>,
++    stream: Arc<CudaStream>,
++    handles: [sys::CUevent; 2],
++    record_counts: [usize; 2],
++}
++impl EvalEvents {
++    fn new(gpu: &GpuSolver) -> DiagResult<Self> {
++        let mut result = Self { ctx: gpu._ctx.clone(), stream: gpu.stream.clone(),
++            handles: [ptr::null_mut(); 2], record_counts: [0; 2] };
++        result.ctx.bind_to_thread().map_err(e)?;
++        for event in &mut result.handles {
++            unsafe { cu(sys::cuEventCreate(event, sys::CUevent_flags::CU_EVENT_DEFAULT as u32))?; }
++        }
++        Ok(result)
++    }
++    fn record(&mut self, index: usize) -> DiagResult<()> {
++        self.ctx.bind_to_thread().map_err(e)?;
++        unsafe { cu(sys::cuEventRecord(self.handles[index], self.stream.cu_stream()))?; }
++        self.record_counts[index] += 1;
++        Ok(())
++    }
++    fn elapsed(&self) -> DiagResult<f32> {
++        self.ctx.bind_to_thread().map_err(e)?;
++        let mut ms = 0f32;
++        unsafe { cu(sys::cuEventElapsedTime(&mut ms, self.handles[0], self.handles[1]))?; }
++        if !ms.is_finite() || ms < 0.0 { return Err("invalid evaluation event interval".into()); }
++        Ok(ms)
++    }
++    fn close(&mut self) -> DiagResult<()> {
++        if self.handles.iter().all(|x| x.is_null()) { return Ok(()); }
++        self.ctx.bind_to_thread().map_err(e)?;
++        let mut errors = Vec::new();
++        // A wait failure invalidates the diagnostic but must not skip destruction.
++        if let Err(error) = self.stream.synchronize().map_err(e) { errors.push(error); }
++        for event in &mut self.handles {
++            if !event.is_null() {
++                let result = unsafe { cu(sys::cuEventDestroy_v2(*event)) };
++                *event = ptr::null_mut();
++                if let Err(error) = result { errors.push(error); }
++            }
++        }
++        if errors.is_empty() { Ok(()) } else { Err(errors.join("; ")) }
++    }
++}
++impl Drop for EvalEvents {
++    fn drop(&mut self) {
++        if let Err(error) = self.close() {
++            let _ = writeln!(io::stderr().lock(), "D057_EVENT_CLEANUP_ERROR {error}");
++        }
++    }
++}
++
++struct SolverGuard(GpuSolver);
++impl std::ops::Deref for SolverGuard { type Target=GpuSolver; fn deref(&self)->&GpuSolver { &self.0 } }
++impl std::ops::DerefMut for SolverGuard { fn deref_mut(&mut self)->&mut GpuSolver { &mut self.0 } }
++impl Drop for SolverGuard {
++    fn drop(&mut self) {
++        if let Err(error)=self.0.synchronize() {
++            let _=writeln!(io::stderr().lock(),"D057_SOLVER_CLEANUP_ERROR {error}");
++        }
++    }
++}
++
++// Secondary post140 metadata only: a multiset, not raw enumeration order.
++// All borrowed module/function handles remain owned by the live solver.
++fn graph_metadata(gpu: &GpuSolver) -> DiagResult<Value> {
++    gpu._ctx.bind_to_thread().map_err(e)?;
++    let graph = gpu.eval_graphs[1].as_ref().ok_or("raked evaluation graph absent at140")?;
++    let mut count = 0usize;
++    unsafe { cu(sys::cuGraphGetNodes(graph.cu_graph(), ptr::null_mut(), &mut count))?; }
++    let mut nodes = vec![ptr::null_mut(); count];
++    unsafe { cu(sys::cuGraphGetNodes(graph.cu_graph(), nodes.as_mut_ptr(), &mut count))?; }
++    if count != nodes.len() || nodes.iter().any(|x| x.is_null()) { return Err("unstable graph node enumeration".into()); }
++    let names = ["copy_root", "down_action", "down_chance", "up_fold", "up_show",
++        "up_chance", "up_action", "up_action_eval"];
++    let mut known = BTreeMap::new();
++    let mut module: sys::CUmodule = ptr::null_mut();
++    let mut kinds: BTreeMap<String, usize> = BTreeMap::new();
++    let mut kernels = Vec::new();
++    for node in nodes {
++        let mut kind = sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL;
++        unsafe { cu(sys::cuGraphNodeGetType(node, &mut kind))?; }
++        *kinds.entry(format!("{kind:?}")).or_default() += 1;
++        if kind == sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL {
++            let mut params: sys::CUDA_KERNEL_NODE_PARAMS = unsafe { std::mem::zeroed() };
++            unsafe { cu(sys::cuGraphKernelNodeGetParams_v2(node, &mut params))?; }
++            let mut own_module = ptr::null_mut();
++            unsafe { cu(sys::cuFuncGetModule(&mut own_module, params.func))?; }
++            if module.is_null() {
++                module = own_module;
++                for name in names {
++                    let name_c = CString::new(name).map_err(e)?;
++                    let mut function = ptr::null_mut();
++                    unsafe { cu(sys::cuModuleGetFunction(&mut function, module, name_c.as_ptr()))?; }
++                    known.insert(function as usize, name);
++                }
++            } else if module != own_module { return Err("evaluation kernels span unexpected modules".into()); }
++            let name = known.get(&(params.func as usize)).ok_or("unknown own-module evaluation function")?;
++            // Never dereference kernelParams/extra or compare pointer-bearing structs.
++            kernels.push(json!({"kernel":name,
++                "grid":[params.gridDimX,params.gridDimY,params.gridDimZ],
++                "block":[params.blockDimX,params.blockDimY,params.blockDimZ],
++                "shared_bytes":params.sharedMemBytes}));
++        }
++    }
++    if kernels.is_empty() { return Err("empty captured evaluation kernel set".into()); }
++    kernels.sort_by_key(|v| v.to_string());
++    Ok(json!({"node_count":count,"node_kinds":kinds,"kernel_descriptors_sorted":kernels,
++        "comparison":"logical multiset only; no raw handles, arguments, memcpy addresses or edges"}))
++}
++fn compare_post_raw(a: &GpuSolver, b: &GpuSolver, iteration: u32) -> DiagResult<()> {
++    a.synchronize()?; b.synchronize()?;
++    if a.iteration != iteration || b.iteration != iteration { return Err("raw checkpoint iteration mismatch".into()); }
++    let mut records = Vec::new();
++    for p in 0..2 {
++        for (name, left, right) in [("regrets",&a.d_regrets[p],&b.d_regrets[p]),
++            ("strategy",&a.d_strat[p],&b.d_strat[p]), ("reach",&a.d_reach[p],&b.d_reach[p]),
++            ("weights",&a.d_weights[p],&b.d_weights[p])] {
++            if left.len()!=right.len() { return Err(format!("{name}/{p} length mismatch")); }
++            let mut hash = Fingerprint::new();
++            for offset in (0..left.len()).step_by(CHUNK) {
++                let end = (offset+CHUNK).min(left.len());
++                let x=a.stream.clone_dtoh(&left.slice(offset..end)).map_err(e)?;
++                let y=b.stream.clone_dtoh(&right.slice(offset..end)).map_err(e)?;
++                for (i,(x,y)) in x.iter().zip(&y).enumerate() {
++                    if x.to_bits()!=y.to_bits() { return Err(format!("raw {name}/{p}/{}: {:08x}!={:08x}",offset+i,x.to_bits(),y.to_bits())); }
++                    hash.bytes(&x.to_bits().to_le_bytes());
++                }
++            }
++            records.push(json!({"array":name,"player":p,"entries":left.len(),"hash":hash.finish()}));
++        }
++    }
++    for p in 0..2 {
++        for mode in 0..2 {
++            let off=(2*p+mode)*a.nh_max as usize;
++            let len=a.nh[p] as usize;
++            if a.nh!=b.nh || a.nh_max!=b.nh_max { return Err("root geometry mismatch".into()); }
++            let x=a.stream.clone_dtoh(&a.d_eval_roots.slice(off..off+len)).map_err(e)?;
++            let y=b.stream.clone_dtoh(&b.d_eval_roots.slice(off..off+len)).map_err(e)?;
++            let mut hash=Fingerprint::new();
++            for (x,y) in x.iter().zip(&y) {
++                if x.to_bits()!=y.to_bits() { return Err(format!("evaluation root{p}/{mode} differs")); }
++                hash.bytes(&x.to_bits().to_le_bytes());
++            }
++            records.push(json!({"array":"evaluation_root","player":p,"mode":mode,"entries":len,"hash":hash.finish()}));
++        }
++    }
++    let disc=Discounts::for_iteration(a.algo,iteration);
++    let expected=[disc.pos.to_bits(),disc.neg.to_bits(),disc.strat.to_bits()];
++    for gpu in [a,b] {
++        let actual=gpu.stream.clone_dtoh(&gpu.d_disc).map_err(e)?;
++        if actual.iter().map(|x|x.to_bits()).collect::<Vec<_>>()!=expected { return Err("discount payload differs".into()); }
++    }
++    emit(json!({"stage":"raw_exact","iteration":iteration,"pass":true,"arrays":records,
++        "discount_bits":expected,"chunk_floats":CHUNK,"peak_pairwise_snapshot_bytes":CHUNK*8,
++        "cfv_scratch_compared":false,"before_exploitability":false,"post_evaluation":true}))
++}
++
++fn compare_cpu(a: &Solver,b: &Solver) -> DiagResult<()> {
++    if a.iteration!=b.iteration { return Err("CPU iteration mismatch".into()); }
++    for p in 0..2 {
++        for (x,y) in [(&a.regrets[p],&b.regrets[p]),(&a.strat[p],&b.strat[p])] {
++            let equal=match (x,y) {
++                (Store::I16{q:x,scale:xs},Store::I16{q:y,scale:ys}) => x.as_slice()==y.as_slice()
++                    && xs.len()==ys.len() && xs.as_slice().iter().zip(ys.as_slice()).all(|(x,y)|x.to_bits()==y.to_bits()),
++                (Store::U16{q:x,scale:xs},Store::U16{q:y,scale:ys}) => x.as_slice()==y.as_slice()
++                    && xs.len()==ys.len() && xs.as_slice().iter().zip(ys.as_slice()).all(|(x,y)|x.to_bits()==y.to_bits()),
++                _ => false,
++            };
++            if !equal { return Err(format!("CPU compressed store mismatch player{p}")); }
++        }
++    }
++    Ok(())
++}
++
++fn validate_exploit(gpu: &GpuSolver, exploit: f64, anchors: &Value) -> DiagResult<()> {
++    let expected=anchors.as_array().ok_or("anchor array")?.iter()
++        .find(|x|x["iteration"].as_u64()==Some(gpu.iteration as u64)).ok_or("missing iteration anchor")?;
++    if !exploit.is_finite() || Some(exploit.to_bits())!=expected["exploit_bits"].as_u64() {
++        return Err(format!("iteration{} exploit anchor mismatch: {}",gpu.iteration,exploit.to_bits()));
++    }
++    Ok(())
++}
++// Mechanically copied already-captured E020 evaluation path. No warm/capture fallback.
++fn measured_exploitability(gpu: &mut GpuSolver, solver: &Solver, events: &mut EvalEvents) -> DiagResult<f64> {
++    if !gpu.eval_warmed[1] || gpu.eval_graphs[1].is_none() || solver.spot.tree.config.rake_pct <= 0.0 {
++        return Err("sampled evaluation requires existing warmed raked graph".into());
++    }
++        let denom = solver.pair_weight_sum();
++        if denom <= 0.0 {
++            return Ok(f64::NAN);
++        }
++        let dot = |cfv: &[f32], p: usize| -> f64 {
++            solver.spot.weights[p]
++                .iter()
++                .zip(cfv.iter())
++                .map(|(&w, &v)| w as f64 * v as f64)
++                .sum::<f64>()
++                / denom
++        };
++        let raked = solver.spot.tree.config.rake_pct > 0.0;
++        let key = raked as usize;
++        // Warm kernels eagerly once, then capture the fixed evaluation work.
++        // Root copies remain on device until a single host download. Dot products
++        // below retain the original f64 order and normalization exactly.
++        let roots = {
++            events.record(0)?;
++            gpu.eval_graphs[key].as_ref().unwrap().launch().map_err(e)?;
++            events.record(1)?;
++            gpu.stream.clone_dtoh(&gpu.d_eval_roots).map_err(e)?
++        };
++        let mut br = [0f64; 2];
++        let mut v = [0f64; 2];
++        for p in 0..2 {
++            let off = 2 * p * gpu.nh_max as usize;
++            br[p] = dot(&roots[off..off + gpu.nh[p] as usize], p);
++            if raked {
++                let off = off + gpu.nh_max as usize;
++                v[p] = dot(&roots[off..off + gpu.nh[p] as usize], p);
++            }
++        }
++        if solver.spot.tree.config.rake_pct > 0.0 {
++            // With rake the game is not zero-sum: compare against actual EVs.
++            Ok(((br[0] - v[0]) + (br[1] - v[1])) / 2.0)
++        } else {
++            Ok((br[0] + br[1]) / 2.0)
++        }
++}
++fn sampled_batch(gpu: &mut GpuSolver, host: &Solver, mut events: Option<&mut EvalEvents>) -> DiagResult<(f64,f64)> {
++    let wall=Instant::now();
++    for _ in 0..20 { gpu.iterate()?; }
++    // No synchronize, readback, logging or state inspection before evaluation.
++    let exploit=match events.as_mut() {
++        Some(events) => measured_exploitability(gpu,host,events)?,
++        None => gpu.exploitability(host)?,
++    };
++    let host_ms=wall.elapsed().as_secs_f64()*1000.;
++    if !host_ms.is_finite() || host_ms<=0. { return Err("invalid host batch interval".into()); }
++    Ok((host_ms,exploit))
++}
++
++fn checkpoint(native: &mut GpuSolver, instrumented: &mut GpuSolver,
++    host_a: &mut Solver, host_b: &mut Solver, iteration: u32, exploit: f64) -> DiagResult<()> {
++    compare_post_raw(native,instrumented,iteration)?;
++    native.sync_to_cpu(host_a)?; instrumented.sync_to_cpu(host_b)?;
++    compare_cpu(host_a,host_b)?;
++    emit(json!({"stage":"checkpoint_exact","iteration":iteration,"post_evaluation":true,
++        "raw_and_compressed_pass":true,"exploit_bits":exploit.to_bits()}))
++}
++fn diagnostic() -> DiagResult<()> {
++    let anchor:Value=serde_json::from_str(ANCHOR_JSON).map_err(e)?;
++    let convergence:Value=serde_json::from_str(CONVERGENCE_JSON).map_err(e)?;
++    let free_before_spot=available_ram()?;
++    if free_before_spot<16*GIB { return Err("less than16GiB available RAM before shared Spot build".into()); }
++    let config:SpotConfig=serde_json::from_value(anchor["config"].clone()).map_err(e)?;
++    let spot=Arc::new(Spot::new(config)?);
++    if spot.config.board!="Ks7s2d" || spot.tree.config.rake_cap!=3.0 || spot.tree.config.rake_pct!=0.05 {
++        return Err("diagnostic fixture differs from frozen config".into());
++    }
++    let plan=GpuPlan::build(&spot,true);
++    let device_per_arm=planned_device_bytes(&spot,&plan)?;
++    let dual_device=checked_sum(&[device_per_arm,device_per_arm,2*GIB])?;
++    let cpu_per_arm=spot.arena_bytes_for(Storage::Compressed);
++    let pinned_per_arm=(plan.arena_elements[0].max(plan.arena_elements[1]) as u64)
++        .checked_mul(4).ok_or("pinned bytes overflow")?;
++    // Reserve covers per-solver retained host layouts, constructor temporary plans,
++    // graph metadata/events and allocator overhead; raw pairwise copies are separately bounded.
++    let host_additional=checked_sum(&[cpu_per_arm,cpu_per_arm,pinned_per_arm,pinned_per_arm,CHUNK as u64*8,8*GIB])?;
++    let ram=available_ram()?;
++    let ctx=CudaContext::new(0).map_err(e)?;
++    let (free,total)=ctx.mem_get_info().map_err(e)?;
++    emit(json!({"stage":"admission","device_per_arm_payload_bytes":device_per_arm,
++        "device_arena_elements":plan.arena_elements,
++        "dual_device_required_with_reserve":dual_device,"device_reserve_bytes":2*GIB,
++        "device_free_bytes":free,"device_total_bytes":total,"host_free_before_spot":free_before_spot,
++        "host_free_after_spot_and_plan":ram,"host_additional_required":host_additional,
++        "host_reserve_bytes":8*GIB,"cpu_arena_bytes_per_arm":cpu_per_arm,
++        "pinned_bytes_per_arm":pinned_per_arm,"shared_tree_bytes":spot.tree_bytes(),
++        "raw_compare_max_bytes":CHUNK*8,"diagnostic_only":true}))?;
++    if (free as u64)<dual_device || ram<host_additional { return Err("dual-arm memory admission refused".into()); }
++    if cpu_per_arm!=1_391_071_288 || plan.nh!=[258,320] || plan.num_nodes!=1_346_813 {
++        return Err("fixed two-tone geometry differs".into());
++    }
++    drop(plan);
++    let mut host_a=Solver::with_storage(spot.clone(),Storage::Compressed);
++    let mut host_b=Solver::with_storage(spot,Storage::Compressed);
++    if host_a.algo!=Algorithm::Dcfr || !host_a.use_isomorphism || !host_a.locks.is_empty()
++        || host_b.algo!=host_a.algo || !host_b.use_isomorphism || !host_b.locks.is_empty() {
++        return Err("unexpected solver defaults".into());
++    }
++    let mut native=SolverGuard(GpuSolver::new(&host_a)?);
++    native.synchronize()?;
++    let (free_before_second,_)=ctx.mem_get_info().map_err(e)?;
++    if (free_before_second as u64)<checked_sum(&[device_per_arm,2*GIB])? {
++        return Err("live memory changed before second solver allocation".into());
++    }
++    let mut candidate=SolverGuard(GpuSolver::new(&host_b)?);
++    candidate.synchronize()?;
++    if native.eval_warmed[1] || candidate.eval_warmed[1] || native.eval_graphs[1].is_some() || candidate.eval_graphs[1].is_some() {
++        return Err("fresh evaluation state unexpectedly warm".into());
++    }
++    let mut events=EvalEvents::new(&candidate)?;
++    let mut last_exploit=0.;
++    for check in 1..=7 {
++        for _ in 0..20 { native.iterate()?; }
++        let x=native.exploitability(&host_a)?;
++        for _ in 0..20 { candidate.iterate()?; }
++        let y=candidate.exploitability(&host_b)?;
++        validate_exploit(&native,x,&convergence)?; validate_exploit(&candidate,y,&convergence)?;
++        if x.to_bits()!=y.to_bits() || native.iteration!=check*20 || candidate.iteration!=check*20 {
++            return Err("warm checkpoint mismatch".into());
++        }
++        let captured=check>=2;
++        for gpu in [&*native,&*candidate] {
++            if !gpu.eval_warmed[1] || gpu.eval_graphs[1].is_some()!=captured {
++                return Err("normal evaluation warm/capture cadence differs".into());
++            }
++        }
++        last_exploit=x;
++        emit(json!({"stage":"warm_check","iteration":native.iteration,"exploit_bits":x.to_bits(),
++            "ordinary_eval_graph_present":native.eval_graphs[1].is_some(),
++            "instrumented_eval_graph_present":candidate.eval_graphs[1].is_some(),
++            "ordinary_eval_warmed":native.eval_warmed[1],"instrumented_eval_warmed":candidate.eval_warmed[1],
++            "normal_production_method_both_arms":true}))?;
++    }
++    checkpoint(&mut native,&mut candidate,&mut host_a,&mut host_b,140,last_exploit)?;
++    let metadata_a=graph_metadata(&native)?;
++    let metadata_b=graph_metadata(&candidate)?;
++    if metadata_a!=metadata_b { return Err("logical captured evaluation metadata differs".into()); }
++    emit(json!({"stage":"graph_metadata","iteration":140,"ordinary":metadata_a,"instrumented":metadata_b,
++        "own_module_function_mapping":true,"raw_pointer_or_argument_comparison":false}))?;
++    for (batch,iteration) in [160,180,200].into_iter().enumerate() {
++        let (a,b)=if batch%2==0 {
++            let a=sampled_batch(&mut native,&host_a,None)?;
++            let b=sampled_batch(&mut candidate,&host_b,Some(&mut events))?;
++            (a,b)
++        } else {
++            let b=sampled_batch(&mut candidate,&host_b,Some(&mut events))?;
++            let a=sampled_batch(&mut native,&host_a,None)?;
++            (a,b)
++        };
++        // Both ordinary DTOH/reduction calls completed; query before event reuse.
++        let ms=events.elapsed()?;
++        if native.iteration!=iteration || candidate.iteration!=iteration || events.record_counts!=[batch+1;2] {
++            return Err("sample cadence/event reuse differs".into());
++        }
++        validate_exploit(&native,a.1,&convergence)?; validate_exploit(&candidate,b.1,&convergence)?;
++        if a.1.to_bits()!=b.1.to_bits() { return Err("sample exploitability differs".into()); }
++        let change=(b.0/a.0-1.0)*100.;
++        emit(json!({"stage":"batch","checkpoint":iteration,"iterations":20,
++            "arm_order":if batch%2==0 {["ordinary","instrumented"]} else {["instrumented","ordinary"]},
++            "ordinary_host_batch_ms":a.0,"instrumented_host_batch_ms":b.0,
++            "host_batch_change_pct":change,"abs_host_batch_change_pct":change.abs(),
++            "within_10pct":change.abs()<=10.,"instrumented_evaluation_device_envelope_ms":ms,
++            "near_resolution":ms<=0.0005,"ordinary_exploit_bits":a.1.to_bits(),"instrumented_exploit_bits":b.1.to_bits(),
++            "event_record_counts":events.record_counts,"post_both_arm_completion":true,
++            "scope":"event-perturbed evaluation-device envelope; host20-iterate-plus-check usefulness only"}))?;
++        checkpoint(&mut native,&mut candidate,&mut host_a,&mut host_b,iteration,a.1)?;
++        if iteration==200 {
++            let first=state_fingerprint(&host_a,a.1); let second=state_fingerprint(&host_b,b.1);
++            if first!=anchor["final_state_fingerprint"] || second!=first { return Err("immutable full final anchor differs".into()); }
++            emit(json!({"stage":"final_anchor_exact","state_fingerprint":first,"original_run":"B038",
++                "accepted_run":"E020C1","historical_anchor_run":"E015C1"}))?;
++        }
++    }
++    native.synchronize()?; candidate.synchronize()?;
++    events.close()?;
++    native._ctx.check_err().map_err(e)?; candidate._ctx.check_err().map_err(e)?;
++    emit(json!({"stage":"complete","checkpoints":[140,160,180,200],"sample_iterations":[160,180,200],
++        "event_handles":2,"event_record_counts":events.record_counts,"evaluation_intervals":3,
++        "checked_cleanup":true,"accepted_performance_claim":false,"candidate_accepted":false,
++        "scope":"two-tone captured evaluation-device envelope only"}))
++}
++
++#[test]
++#[ignore = "manual D057 evaluation envelope diagnostic; serialized GPU execution only"]
++fn captured_evaluation_envelope_diagnostic() {
++    if let Err(error)=diagnostic() {
++        let _=emit(json!({"stage":"invalid","error":error}));
++        panic!("D057 invalid diagnostic: {error}");
++    }
++}
++
++// Stream every byte without allocating a second copy of the multi-GB arenas.
++// This is a deterministic equality fingerprint, not a cryptographic digest.
++struct Fingerprint(u64);
++impl Fingerprint {
++    fn new() -> Self {
++        Self(0xcbf29ce484222325)
++    }
++
++    fn bytes(&mut self, bytes: &[u8]) {
++        for &byte in bytes {
++            self.0 = (self.0 ^ u64::from(byte)).wrapping_mul(0x100000001b3);
++        }
++    }
++
++    fn finish(&self) -> String {
++        format!("{:016x}", self.0)
++    }
++}
++
++fn fingerprint_store(store: &Store, combined: &mut Fingerprint) -> Value {
++    let mut hash = Fingerprint::new();
++    let mut feed = |bytes: &[u8]| {
++        hash.bytes(bytes);
++        combined.bytes(bytes);
++    };
++    let (kind, entries, scales) = match store {
++        Store::F32(values) => {
++            feed(b"f32");
++            feed(&(values.len() as u64).to_le_bytes());
++            for value in values.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("f32", values.len(), 0)
++        }
++        Store::I16 { q, scale } => {
++            feed(b"i16");
++            feed(&(q.len() as u64).to_le_bytes());
++            feed(&(scale.len() as u64).to_le_bytes());
++            for value in q.as_slice() {
++                feed(&value.to_le_bytes());
++            }
++            for value in scale.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("i16", q.len(), scale.len())
++        }
++        Store::U16 { q, scale } => {
++            feed(b"u16");
++            feed(&(q.len() as u64).to_le_bytes());
++            feed(&(scale.len() as u64).to_le_bytes());
++            for value in q.as_slice() {
++                feed(&value.to_le_bytes());
++            }
++            for value in scale.as_slice() {
++                feed(&value.to_bits().to_le_bytes());
++            }
++            ("u16", q.len(), scale.len())
++        }
++    };
++    json!({
++        "kind": kind, "entries": entries, "scale_entries": scales,
++        "bytes": store.bytes(), "hash": hash.finish(),
++    })
++}
++
++fn state_fingerprint(solver: &Solver, exploit: f64) -> Value {
++    let mut combined = Fingerprint::new();
++    combined.bytes(b"postflop-autoresearch-state-v1");
++    let algorithm = serde_json::to_vec(&solver.algo).unwrap();
++    combined.bytes(&(algorithm.len() as u64).to_le_bytes());
++    combined.bytes(&algorithm);
++    combined.bytes(&solver.iteration.to_le_bytes());
++    combined.bytes(&[u8::from(solver.use_isomorphism)]);
++    combined.bytes(&exploit.to_bits().to_le_bytes());
++    let mut arenas = Vec::new();
++    for player in 0..2 {
++        for (name, store) in [
++            ("regrets", &solver.regrets[player]),
++            ("strategy_sums", &solver.strat[player]),
++        ] {
++            combined.bytes(&(player as u64).to_le_bytes());
++            combined.bytes(name.as_bytes());
++            let mut arena = fingerprint_store(store, &mut combined);
++            arena["player"] = json!(player);
++            arena["arena"] = json!(name);
++            arenas.push(arena);
++        }
++    }
++    // Root strategy is cheap and does not materialize inactive suit branches.
++    let root_strategy_bits: Vec<u32> = solver
++        .average_strategy(0, &solver.spot.tree.nodes[0])
++        .iter()
++        .map(|value| value.to_bits())
++        .collect();
++    json!({
++        "method": "fnv1a64-little-endian-v1", "hash": combined.finish(),
++        "algorithm": solver.algo, "iteration": solver.iteration,
++        "iteration_le_bytes": solver.iteration.to_le_bytes(),
++        "exploit_bits": exploit.to_bits(), "arenas": arenas,
++        "root_strategy_bits": root_strategy_bits,
++        "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback",
++    })
++}
++
++
++const ANCHOR_JSON: &str = r#"{"id":"D057-two-tone-anchors","fixture_id":"two-tone","algorithm":"Dcfr","storage":"compressed","use_isomorphism":true,"config":{"board":"Ks7s2d","range_ip":"22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo","range_oop":"55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o","tree":{"add_allin":false,"allin_threshold":0.85,"carry_aggressor_through_checks":null,"effective_stack":970.0,"ip":[{"bet":[{"PotPct":33.0},{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]}],"max_raises":10,"oop":[{"bet":[{"PotPct":33.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]},{"bet":[{"PotPct":75.0}],"donk":[],"raise":[{"PotPct":60.0}]}],"rake_cap":3.0,"rake_pct":0.05,"starting_pot":60.0}},"hands":[258,320],"nodes":1346813,"cpu_arena_bytes_per_arm":1391071288,"check_every":20,"normal_target_pct":0.3,"normal_max_iterations":400,"fixed_diagnostic_terminal_iteration":200,"convergence_anchors":[{"iteration":20,"exploit_bits":4621471963641686934,"exploit_chips":9.383330711416232,"exploit_pct_pot":15.638884519027052},{"iteration":40,"exploit_bits":4614489749950135592,"exploit_chips":3.2451069165687336,"exploit_pct_pot":5.408511527614556},{"iteration":60,"exploit_bits":4609632359124586068,"exploit_chips":1.543996031458751,"exploit_pct_pot":2.5733267190979183},{"iteration":80,"exploit_bits":4606308451921813312,"exploit_chips":0.9029701849058043,"exploit_pct_pot":1.5049503081763405},{"iteration":100,"exploit_bits":4603500064677737792,"exploit_chips":0.5911765668621811,"exploit_pct_pot":0.9852942781036352},{"iteration":120,"exploit_bits":4601321529789973376,"exploit_chips":0.42465530381382877,"exploit_pct_pot":0.7077588396897146},{"iteration":140,"exploit_bits":4599374301695986832,"exploit_chips":0.3165624306067878,"exploit_pct_pot":0.527604051011313},{"iteration":160,"exploit_bits":4597912096953046592,"exploit_chips":0.24269688099518483,"exploit_pct_pot":0.40449480165864143},{"iteration":180,"exploit_bits":4596018308513263808,"exploit_chips":0.19013369275478986,"exploit_pct_pot":0.31688948792464977},{"iteration":200,"exploit_bits":4594601713124613664,"exploit_chips":0.15081527232835956,"exploit_pct_pot":0.25135878721393257}],"final_fingerprint":"9dd12ac305ce542f","final_state_fingerprint":{"algorithm":"Dcfr","arenas":[{"arena":"regrets","bytes":318643112,"entries":156627930,"hash":"81e4922faddee8df","kind":"i16","player":0,"scale_entries":1346813},{"arena":"strategy_sums","bytes":318643112,"entries":156627930,"hash":"9b1305ea75f444cf","kind":"u16","player":0,"scale_entries":1346813},{"arena":"regrets","bytes":376892532,"entries":185752640,"hash":"112676fa41d0253e","kind":"i16","player":1,"scale_entries":1346813},{"arena":"strategy_sums","bytes":376892532,"entries":185752640,"hash":"060e1d9bda7dbaa9","kind":"u16","player":1,"scale_entries":1346813}],"exploit_bits":4594601713124613664,"hash":"9dd12ac305ce542f","iteration":200,"iteration_le_bytes":[200,0,0,0],"method":"fnv1a64-little-endian-v1","root_strategy_bits":[1064912653,1065105931,1065106440,1065175304,1065178885,1065175304,1065266180,1065293571,1065266435,1065352192,1065352192,1065182216,1065352192,1065177096,1065182216,1065221894,1065281283,1065289475,1065281283,1065352192,1065352192,1065352192,1065352192,1065173256,1065352192,1065352192,1065169416,1065173256,1065262851,1065227270,1065281795,1065285635,1065281795,1065352192,1065352192,1065352192,1065336577,1065352192,1065352192,1065291523,1065189127,1065013520,1065165062,1065274372,1065290755,1065013520,1065165318,1065352192,1065302018,1065253125,1065285634,1065352192,1065302018,1065245187,1065273092,1065352192,1065352192,1065352192,1065352192,1065300994,1065352192,1065134858,1065352192,1065352192,1065273092,1065352192,1065352192,1065352192,1065352192,1065352192,1065352192,1065352192,1065233157,1065304833,1065352192,1065352192,1065352192,1065352192,1065300482,1065351936,1065352192,1065352192,1065350912,1065304833,1065352192,1065352192,1065352192,1065352192,1065232389,1065341440,1065137930,1065341440,1065297922,1065352192,1065352192,1065352192,1065352192,1065343488,1065281794,1065352192,1065351680,1065352192,1065352192,1065177864,1065297922,1065352192,1065352192,1065352192,1065352192,1065343488,1064968210,1065180421,1065304834,1064780049,1065305090,1065352192,1065303042,1065352192,1065351936,1065351936,1065351936,1065345024,1065351936,1065351936,1065318914,1065352192,1065283074,1065351936,1065351424,1065351936,1065351936,1065319681,1065351936,1065351936,1064806169,1065352192,1065303042,1065352192,1065351936,1065351936,1065351936,1065345024,1065351936,1065351936,1065318914,1064967954,1065140998,1065248259,1065200645,1064459305,1065200645,1065259267,1064655392,1065259267,1065287938,1065019658,1065268483,1065285123,1065298690,1065283586,1065246981,1065261827,1065256451,1065265412,1065226500,1065003792,1065214212,1065294851,1065231108,1065294851,1065256452,1065255427,1065255427,1065262339,1065287938,1065019407,1065268483,1065283586,1065298690,1065285123,1065246981,1065256451,1065261827,1065265412,1065296387,1065349376,1065348608,1065346816,1065347584,1065264131,1065330433,1065328129,1065330433,1065290755,1065293570,1065301250,1065260548,1065271298,1065281027,1065285891,1065277955,1065286402,1065310977,1065302786,1065158153,1065194247,1065332225,1065254403,1065328641,1065265667,1065328641,1065271812,1065291010,1065291010,1065229828,1065262083,1065262083,1065258499,1065273090,1065273090,1065301250,1065296387,1065349376,1065348608,1065346816,1065347584,1065263876,1065330433,1065328129,1065330433,1065290755,1065301250,1065293570,1065260548,1065281282,1065271298,1065285891,1065286402,1065277955,1065310977,1065195525,1065238533,1065164038,1065223174,1065254404,1065174536,1065254916,1065174536,1065275138,1065249285,1065266436,1065249285,1065255427,1065269763,1065255427,1065299458,1065300738,1065299458,1020730962,1014070572,1014038046,1009630711,1009401516,1009630711,1000996354,996736325,1000963757,947911936,947911936,1009188363,947911936,1009516028,1009188363,1006648959,999063130,997784853,999063130,947911936,947911936,947911936,947911936,1009761777,947911936,947911936,1010007526,1009761777,1001422495,1005976862,998997598,998506100,998997598,947911936,947911936,947911936,981597818,947911936,947911936,997260589,1008746015,1017503246,1010286224,999947826,997457188,1017503246,1010269841,947911936,994573736,1002667446,998506232,947911936,994573736,1003683418,1000111658,947911936,947911936,947911936,947911936,994835868,947911936,1012219264,947911936,947911936,1000111658,947911936,947911936,947911936,947911936,947911936,947911936,947911936,1005223232,993853062,947911936,947911936,947911936,947912192,994967140,950009376,947911936,947911936,957349456,993853062,947911936,947911936,947911936,947912192,1005321532,976748176,1012022665,976748176,995622264,947911936,947911936,947911936,947911936,974651088,998997737,947911936,952106624,947911936,947911936,1009466878,995622264,947911936,947911936,947911936,947911936,974651088,1018953164,1009303214,993852873,1024192232,993787340,947911936,994311800,947911936,950009376,950009376,950009376,973078016,950009376,950009376,990248558,947912192,998833902,950009376,954203488,950009376,950009376,990052090,950009376,950009376,1023774319,947911936,994311800,947911936,950009376,950009376,950009376,973078016,950009376,950009376,990248558,1018961356,1011826274,1003290214,1008008918,1029324145,1008008918,1001881233,1026186753,1001881233,998178306,1017306810,1000701621,998571633,995425878,998768368,1003453842,1001553563,1002241670,1001094654,1006075409,1017814528,1007140592,996408660,1005485603,996408660,1002241481,1002372738,1002372738,1001488029,998178306,1017314839,1000701621,998768368,995425878,998571633,1003453842,1002241670,1001553563,1001094654,996015462,963640864,965738208,969408112,967835296,1001258660,984743402,985922996,984743402,997457188,996736558,994770538,1001717217,1000341184,999095897,998473334,999489095,998407931,992280246,994377334,1010728388,1008418350,983826104,1002503806,985660864,1001062058,985660864,1000275491,997391898,997391898,1005649438,1001520796,1001520796,1001979534,1000111815,1000111815,994770538,996015462,963640864,965738208,969408112,967835296,1001291252,984743402,985922996,984743402,997457188,994770538,996736558,1001717217,999063271,1000341184,998473334,998407931,999489095,992280246,1008336588,1004535136,1010351758,1006501126,1002503613,1009679860,1002438080,1009679860,999849679,1003158943,1000963588,1003158943,1002372738,1000537786,1002372738,995229066,994901401,995229066],"scope":"all CPU regret and strategy entries and scales immediately after full GPU readback"},"source_runs":["B038","E015C1","E020C1"],"cross_source_config_full_final_object_and_all10_anchor_bits_equal":true,"original_D033_catalog_two_tone_matches":true}"#;
++const CONVERGENCE_JSON: &str = r#"[{"iteration":20,"exploit_bits":4621471963641686934,"exploit_chips":9.383330711416232,"exploit_pct_pot":15.638884519027052},{"iteration":40,"exploit_bits":4614489749950135592,"exploit_chips":3.2451069165687336,"exploit_pct_pot":5.408511527614556},{"iteration":60,"exploit_bits":4609632359124586068,"exploit_chips":1.543996031458751,"exploit_pct_pot":2.5733267190979183},{"iteration":80,"exploit_bits":4606308451921813312,"exploit_chips":0.9029701849058043,"exploit_pct_pot":1.5049503081763405},{"iteration":100,"exploit_bits":4603500064677737792,"exploit_chips":0.5911765668621811,"exploit_pct_pot":0.9852942781036352},{"iteration":120,"exploit_bits":4601321529789973376,"exploit_chips":0.42465530381382877,"exploit_pct_pot":0.7077588396897146},{"iteration":140,"exploit_bits":4599374301695986832,"exploit_chips":0.3165624306067878,"exploit_pct_pot":0.527604051011313},{"iteration":160,"exploit_bits":4597912096953046592,"exploit_chips":0.24269688099518483,"exploit_pct_pot":0.40449480165864143},{"iteration":180,"exploit_bits":4596018308513263808,"exploit_chips":0.19013369275478986,"exploit_pct_pot":0.31688948792464977},{"iteration":200,"exploit_bits":4594601713124613664,"exploit_chips":0.15081527232835956,"exploit_pct_pot":0.25135878721393257}]"#;

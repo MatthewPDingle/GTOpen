@@ -1,0 +1,60 @@
+{
+  "id": "D096-raked-topology-repair",
+  "at": "2026-10-17T07:52:34.640180+00:00",
+  "invalid_original_inference": "Matching nonempty work-list span patterns do not imply the same evaluation graph. Original prediction omitted the positive-rake branch, which runs average-EV sweeps in addition to BR. Original frozen prediction, first failed reader/manager and every completed run/trace remain preserved.",
+  "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+  "source_sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+  "config_rake_pct": 0.05,
+  "span_counts": {
+    "action_spans": 13,
+    "chance_spans": 9,
+    "chance_node_spans": 9,
+    "fold_spans": 12,
+    "show_spans": 6
+  },
+  "source_formula": {
+    "eval_down": 23,
+    "training_each_player": 63,
+    "BR_up_each_player": 40,
+    "additional_average_up_each_player": 22,
+    "raked_eval_graph": 147,
+    "total_kernel_records": 26670
+  },
+  "expected_graph_kernel_nodes_sorted": [
+    63,
+    63,
+    147
+  ],
+  "expected_kernel_records": 26670,
+  "expected_kernel_family_counts": {
+    "copy_root": 410,
+    "down_action": 5330,
+    "down_chance": 3690,
+    "up_fold": 5040,
+    "up_show": 2520,
+    "up_chance": 3960,
+    "up_action": 5200,
+    "up_action_eval": 520
+  },
+  "original_graph_nodes": [
+    63,
+    63,
+    103
+  ],
+  "original_kernel_records": 26230,
+  "retained_ids": [
+    "D096B1",
+    "D096T1"
+  ],
+  "remaining_native_order": [
+    "D096T2",
+    "D096B2",
+    "D096B3",
+    "D096T3"
+  ],
+  "no_completed_native_repeated": true,
+  "same_binaries_observer_settings_quality_target_and_stop": true,
+  "same_original10pct_clock_gates": true,
+  "no_timing_exclusion_extension_or_pooling": true,
+  "interpretation_limit": "Filtered two-tone runs in a fresh process: first-use NVRTC/context costs belong to this selected fixture here. In the primary3fixture process it runs second and PTX is already cached. Do not infer ordinary second-fixture initialization cost, causal cross-fixture speed or additive full-cycle gains."
+}

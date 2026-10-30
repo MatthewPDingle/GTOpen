@@ -1,0 +1,23 @@
+{
+  "id": "D108-docket",
+  "at": "2026-10-17T11:06:37.222927+00:00",
+  "order": [
+    "E031",
+    "E043",
+    "E059"
+  ],
+  "qualification_ids": [
+    "E066",
+    "E067",
+    "E068"
+  ],
+  "original_aliases": {
+    "E043": "D049 exact source, counted once"
+  },
+  "policy_sha256": "eaa3f168c57a1f390510ac21454fcce3ac0bc454e1ef9a49f73876ec9cda393c",
+  "audit_report_sha256": "8bc418acaa4567329ce531d651a5d2fe75dfb543da279e0facd1bcf5308b977a",
+  "accepted_base": "E051",
+  "rule": "Exact original changed entry on then-accepted base only if original/current baseline entry exactly equal; otherwise defer, no context-driven redesign. Fresh stages; no prior timing used. All current1%/fixture/fresh16/broader/material/holdout/cumulative requirements unchanged.",
+  "native_executions": 0,
+  "candidate_accepted": false
+}

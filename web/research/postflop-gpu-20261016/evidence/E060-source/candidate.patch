@@ -1,0 +1,56 @@
+--- accepted-E051/kernels.cu
++++ E060/kernels.cu
+@@ -328,6 +328,17 @@
+ 
+ // Up sweep, action nodes: traverser nodes combine children with the current
+ // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
++// Reuse only the denominator refinement observed in the compute_120
++// driver's normal division path. Other architectures retain native division.
++// Exceptional values and small numerators retain that division as well.
++__device__ __forceinline__ float action_divide_with_refinement(
++    float numerator, float denominator, float refined_inverse)
++{
++    float quotient = __fmaf_rn(numerator, refined_inverse, 0.f);
++    float residual = __fmaf_rn(-denominator, quotient, numerator);
++    return __fmaf_rn(refined_inverse, residual, quotient);
++}
++
+ template<int NA>
+ __device__ __forceinline__ void up_action_impl(
+     const u32* __restrict__ nodes, int start, int count, int p,
+@@ -377,11 +388,34 @@
+                 sum += r > 0.f ? r : 0.f;
+             }
+             float uni = 1.f / (float)na;
++            bool reuse_division = false;
++            float refined_inverse = 0.f;
++#if __CUDA_ARCH__ == 1200
++            // Every positive regret is <= its rounded nonnegative sum.
++            // This bounds nonzero selected numerators and all quotients
++            // away from underflow/overflow in the reused normal path.
++            if (NA != 0 && sum > 1e-12f && sum <= 0x1p60f) {
++                float inverse;
++                asm("rcp.approx.ftz.f32 %0, %1;" : "=f"(inverse) : "f"(sum));
++                float residual = __fmaf_rn(-sum, inverse, 1.f);
++                refined_inverse = __fmaf_rn(inverse, residual, inverse);
++                reuse_division = true;
++            }
++#endif
+             float reach = rp[i];
+             float out = 0.f;
+             for (int a = 0; a < na; a++) {
+                 float r = small ? rc[a] : regrets_p[doff + (u64)a * nh_p + i];
+-                float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;
++                float numerator = r > 0.f ? r : 0.f;
++                float sig;
++                if (sum > 1e-12f) {
++                    if (reuse_division && (numerator == 0.f || numerator >= 0x1p-60f))
++                        sig = action_divide_with_refinement(numerator, sum, refined_inverse);
++                    else
++                        sig = numerator / sum;
++                } else {
++                    sig = uni;
++                }
+                 float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+                 if (small) vc[a] = v;
+                 out += sig * v;

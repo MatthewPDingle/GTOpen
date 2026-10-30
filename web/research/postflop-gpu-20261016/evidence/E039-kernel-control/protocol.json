@@ -1,0 +1,41 @@
+{
+  "id": "E039-kernel-control",
+  "at": "2026-10-17T00:26:22Z",
+  "status": "FROZEN_PRE_EXECUTION",
+  "rustc_command": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-kernel-control\\probe.rs": "d0b32de29b00a409733c5c3feb27de7b072ce19e7d0f638ccad5b7d5b1f2dbe7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-kernel-control\\baseline.ptx": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-kernel-control\\candidate.ptx": "4f252468aa03ed12000fc8d2c564ec4ada6aed9e2aff7e47567924efb89fda28",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-design\\manifest.json": "1e229d4211172920b6351fcb64b7bf30d108bc7af6cc784f46f4826f129557b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E039-resource\\report.json": "3ef05bebb6e994b6e153a42962bee9fa9faad3902b630ecbe486c80b8b383f41",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532"
+  },
+  "expected_cases": 175,
+  "expected_launches": 350,
+  "coverage": "Widths0..53 with hands1/129/257, plus zero/max1326hands,64-child fallback,block1/32/64/256,negativezero inverse,nonfinite data/inverse,all-blocked andcount0/excess-grid guards.",
+  "binary_schema": "inputs.bin: E039_IN1 then each length-prefixed LE u32 descriptor and11 input vectors; masks areu64. Outputs: E039_OUT1 then case idu32, lengthu64, full CFV bitsu32. Exact files retained for both arms.",
+  "performance_measurement": false,
+  "solver_executions": 0,
+  "criterion": "All full raw output bits equal original GPU; all outside-parent output words and all immutable inputs unchanged;350 CUDA launches successful.",
+  "candidate_accepted": false
+}

@@ -1,0 +1,33 @@
+{
+  "status": "pass_fresh16_timing_only",
+  "performance": {
+    "baseline_full_cycle_ms": 9810.45595,
+    "candidate_full_cycle_ms": 9642.2247,
+    "observed_gain_pct": 1.71481581342811,
+    "required_gain_pct": 1,
+    "positive_pairs": 16,
+    "required_positive_pairs": 13,
+    "pair_median_gain_pct": 1.8536302597157541,
+    "block_median_gains_pct": [
+      1.9960994934136576,
+      1.8253259622527014,
+      1.9974788302254631,
+      1.5356141224114528
+    ],
+    "order_strata_median_gains_pct": {
+      "BC": 1.2820978413874546,
+      "CB": 2.296592329159078
+    },
+    "fresh_confirmation_pass": true
+  },
+  "gates": {
+    "aggregate_at_least1pct": true,
+    "at_least13_positive_pairs": true,
+    "positive_pair_median": true,
+    "all4block_medians_positive": true,
+    "both_order_strata_positive": true,
+    "no_fixture_regression": true,
+    "all96results_736checkpoints_exact": true
+  },
+  "report_sha256": "785d003fd678dda055308771069842e6045b16dad4b65eb8295d55d32ef0e82c"
+}

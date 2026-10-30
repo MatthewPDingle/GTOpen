@@ -1,0 +1,71 @@
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+index 90422043..2a352c4f 100644
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -397,7 +397,7 @@ impl Spot {
+         let n = self.tree.nodes.len() as u64;
+         let nh0 = self.hands[0].len() as u64;
+         let nh1 = self.hands[1].len() as u64;
+-        let nh_max = nh0.max(nh1);
++        let nh_max = nh0.max(nh1).div_ceil(32) * 32;
+         // Count every potential writer, including non-representative chance
+         // branches. This conservatively covers either isomorphism setting.
+         let mut reach_blocks = [1u64; 2];
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 8a98e494..2fde0251 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -29,6 +29,8 @@ pub struct LevelSpan {
+ pub struct GpuPlan {
+     pub num_levels: usize,
+     pub nh: [usize; 2],
++    /// Physical f32 row stride for CFV storage and evaluation roots, rounded to
++    /// 32 elements (128 bytes). Logical hand counts and reach strides remain `nh`.
+     pub nh_max: usize,
+     pub num_nodes: usize,
+     /// Whether orbit folding is active (use_iso && >1 suit perm).
+@@ -428,7 +430,7 @@ impl GpuPlan {
+         GpuPlan {
+             num_levels,
+             nh,
+-            nh_max: nh[0].max(nh[1]),
++            nh_max: nh[0].max(nh[1]).div_ceil(32) * 32,
+             num_nodes: n,
+             iso_active,
+             action_nodes,
+@@ -522,6 +524,35 @@ mod tests {
+             }).unwrap();
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
++                assert_eq!(plan.nh, [spot.hands[0].len(), spot.hands[1].len()]);
++                let max_hands = plan.nh[0].max(plan.nh[1]);
++                assert!(max_hands > 0 && max_hands <= 1326);
++                assert_eq!(plan.nh_max % 32, 0);
++                assert!(max_hands <= plan.nh_max && plan.nh_max < max_hands + 32);
++                // Each consumed CFV row starts on a 128-byte boundary, and its
++                // logical hand payload cannot overlap the following physical row.
++                for &slot in plan.cfv_slot.iter().filter(|&&slot| slot != u32::MAX) {
++                    let start = slot as usize * plan.nh_max;
++                    assert_eq!(start * std::mem::size_of::<f32>() % 128, 0);
++                    assert!(start + max_hands <= (slot as usize + 1) * plan.nh_max);
++                    assert!(start + max_hands <= plan.cfv_blocks * plan.nh_max);
++                }
++                // The four evaluation roots share the CFV stride, while reach
++                // planes retain the exact (possibly unaligned) hand counts.
++                for root in 0..4 {
++                    let start = root * plan.nh_max;
++                    assert_eq!(start * std::mem::size_of::<f32>() % 128, 0);
++                    assert!(start + max_hands <= (root + 1) * plan.nh_max);
++                }
++                let reach_words = plan.reach_blocks[0] * plan.nh[0]
++                    + plan.reach_blocks[1] * plan.nh[1];
++                let unpadded_words = reach_words + plan.cfv_blocks * max_hands;
++                let padding_bytes = (plan.cfv_blocks * (plan.nh_max - max_hands) * 4) as u64;
++                assert_eq!(plan.staging_bytes(), unpadded_words as u64 * 4 + padding_bytes);
++                assert!(spot.vram_estimate_bytes()
++                    >= plan.staging_bytes()
++                        + spot.arena_bytes_for(crate::store::Storage::F32)
++                        + 512 * 1024 * 1024);
+                 assert_eq!(plan.cfv_slot[0], 0);
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();

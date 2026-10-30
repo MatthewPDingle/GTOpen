@@ -1,0 +1,207 @@
+{
+  "id": "E050-resource-root-check",
+  "at": "2026-10-17T03:42:01.113318+00:00",
+  "status": "pass_rejected",
+  "checks": 96,
+  "root_cross_check_only": true,
+  "report_sha256": "16bb9e2f2cc3e7d6e8db38793a176f580b47f821066a7c4c19ae5590049c5ceb",
+  "protocol_sha256": "fe38982cdfcc9741965aae1279d310a3e4384291e0949b98a77cdbc1d2a9ba0b",
+  "native_terminal_sha256": "9a29e4cc57a4b3c3e720c322f3044cebde151158247ae8fb291c81de4bc6b833",
+  "registers_before_after": [
+    38,
+    40
+  ],
+  "local_bytes_per_thread": 0,
+  "static_shared_bytes": 1040,
+  "max_threads": 1024,
+  "all10shape_occupancies_equal": true,
+  "shapes": [
+    {
+      "shape": "rainbow_p0",
+      "dynamic_shared_bytes": 6300,
+      "occupancy_64_128_256": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "rainbow_p1",
+      "dynamic_shared_bytes": 5060,
+      "occupancy_64_128_256": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "two_tone_p0",
+      "dynamic_shared_bytes": 6320,
+      "occupancy_64_128_256": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "two_tone_p1",
+      "dynamic_shared_bytes": 5080,
+      "occupancy_64_128_256": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "river_p0",
+      "dynamic_shared_bytes": 5600,
+      "occupancy_64_128_256": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "river_p1",
+      "dynamic_shared_bytes": 4660,
+      "occupancy_64_128_256": [
+        [
+          64,
+          15
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "wide_turn",
+      "dynamic_shared_bytes": 21808,
+      "occupancy_64_128_256": [
+        [
+          64,
+          4
+        ],
+        [
+          128,
+          4
+        ],
+        [
+          256,
+          4
+        ]
+      ]
+    },
+    {
+      "shape": "full_hand_upper_bound",
+      "dynamic_shared_bytes": 26520,
+      "occupancy_64_128_256": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ]
+    },
+    {
+      "shape": "empty_sorted_opponent",
+      "dynamic_shared_bytes": 1276,
+      "occupancy_64_128_256": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    },
+    {
+      "shape": "single_sorted_opponent",
+      "dynamic_shared_bytes": 1292,
+      "occupancy_64_128_256": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ]
+    }
+  ],
+  "other8current_arch_entries_exact": true,
+  "all9fallback_entries_exact": true,
+  "abi_parameter_count": 27,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_head_live_ptx_unchanged": true,
+  "limits": "Frozen conservative logical-register gate failed. Equal theoretical occupancy is retained, and no increased physical register charge, observed slowdown, numerical failure or material tradeoff is claimed from this probe. No native kernel or complete solve ran. Root replay is not an external independent audit."
+}

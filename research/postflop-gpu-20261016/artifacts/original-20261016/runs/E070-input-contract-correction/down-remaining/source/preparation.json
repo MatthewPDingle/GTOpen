@@ -1,0 +1,52 @@
+{
+  "id": "E070-down-action-unexecuted-tail-valid-byte-fixture",
+  "at": "2026-10-18T01:15:04.869098+00:00",
+  "cases": 24,
+  "source_corpus_cases": 1196,
+  "case_ids": [
+    1172,
+    1195
+  ],
+  "normalized_signed_actor_ids": [
+    1172,
+    1173,
+    1176,
+    1177,
+    1180,
+    1181,
+    1184,
+    1185,
+    1188,
+    1189,
+    1192,
+    1193
+  ],
+  "input_sha256": {
+    "baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate.ptx": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "corpus.json": "2e943870ad9bddb612afdea0ec78a4cd7a974dcb737912dd6bc9d1f28dd5c4ed",
+    "probe.rs": "f540983e9aa39be239f561d85b6f64da6d94f2eb8cbf676496dd71d71d931928"
+  },
+  "rustc_command": [
+    "rustc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-input-contract-correction\\down-remaining\\source\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-input-contract-correction\\down-remaining\\source\\probe.exe"
+  ],
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "new_GPU_executions_before_seal": 0,
+  "source_change_scope": "Harness only; skip the already completed1172cases and normalize12unexecuted invalid signed actors to their valid byte sentinel255 in both arms. All original IDs/dimensions/float factories/locks/widths/PTX retained."
+}

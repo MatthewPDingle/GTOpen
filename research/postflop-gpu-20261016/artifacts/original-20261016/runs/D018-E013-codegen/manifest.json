@@ -1,0 +1,79 @@
+{
+  "id": "D018-E013-codegen",
+  "status": "packed vectorization not demonstrated in library assembly",
+  "source_review": "pass",
+  "expected_roundps_present": false,
+  "specialized_rintf_absent": true,
+  "final_executable_codegen_verified": false,
+  "gpu_launched": false,
+  "tests_run": false,
+  "build_count": 1,
+  "source_unchanged": true,
+  "outputs": [
+    {
+      "path": "assembly-review.json",
+      "bytes": 2705,
+      "sha256": "d91de15db53861e78cbbdb3983416e5c43cd213c8276b83c20268c0578b1778b"
+    },
+    {
+      "path": "build-result.json",
+      "bytes": 198,
+      "sha256": "1cd3acf4da10ebc07c9701dfc6abfda3230be8ad7b10beb28d9ab153262afcb6"
+    },
+    {
+      "path": "command.json",
+      "bytes": 658,
+      "sha256": "017a42d3877435d2bfe713f36ffcb2b6bf27c3cf5a42686ef3e388ead8ca6d69"
+    },
+    {
+      "path": "encode_i16_sse41.asm.txt",
+      "bytes": 1755,
+      "sha256": "172a1c8ebebed41a43a7463d341d63f85631b10785adea5d615874463ec83b42"
+    },
+    {
+      "path": "encode_u16_sse41.asm.txt",
+      "bytes": 1656,
+      "sha256": "d27f2b7e60bec139ea6e148f6f56924d61f430d22475cab0ee0df6bba1aca31f"
+    },
+    {
+      "path": "portable_write_f32.asm.txt",
+      "bytes": 4456,
+      "sha256": "c869e1d2271d131988115009499f84a6b6d75db19d8c723e2abc73669d73a8d5"
+    },
+    {
+      "path": "review.md",
+      "bytes": 2747,
+      "sha256": "9c0ae1813598e3239bbdba3d8ddf260267c538af95a3fe99a2210ba2f3861124"
+    },
+    {
+      "path": "solver-integrated.s",
+      "bytes": 27914451,
+      "sha256": "bb77b66aac599d6dd084e7eaaa65a7c8c529951babec35843f30098a76241439"
+    },
+    {
+      "path": "source-after.json",
+      "bytes": 19334,
+      "sha256": "27f93e2cbfe0f0e467c196576744a83fc1ae4db4d1a8c1b6a946c142171b554c"
+    },
+    {
+      "path": "source-before.json",
+      "bytes": 19334,
+      "sha256": "27f93e2cbfe0f0e467c196576744a83fc1ae4db4d1a8c1b6a946c142171b554c"
+    },
+    {
+      "path": "stderr.log",
+      "bytes": 1651,
+      "sha256": "d7bec6b08ba0519136c214e786ae5987d39390f15eb1566dc043ecc3e7f30c47"
+    },
+    {
+      "path": "stdout.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "path": "write_sse41.asm.txt",
+      "bytes": 1317,
+      "sha256": "a8fba4f8759da6d45b54480a0ba1a6785eb779aab645b668b18a457441715c6b"
+    }
+  ]
+}

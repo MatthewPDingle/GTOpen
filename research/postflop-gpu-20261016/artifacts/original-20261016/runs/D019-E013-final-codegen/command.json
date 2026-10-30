@@ -1,0 +1,24 @@
+{
+  "argv": [
+    "cargo",
+    "rustc",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "gpu",
+    "--test",
+    "postflop_autoresearch",
+    "--",
+    "--emit=asm,link"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "environment_overrides": {
+    "CARGO_TARGET_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\build",
+    "RAYON_NUM_THREADS": "16"
+  },
+  "existing_rustflags": null,
+  "existing_encoded_rustflags": null,
+  "started_at": "2026-10-16T06:36:12.305464+00:00",
+  "scope": "one final thin-LTO test executable compilation-only diagnostic; executable is not run"
+}

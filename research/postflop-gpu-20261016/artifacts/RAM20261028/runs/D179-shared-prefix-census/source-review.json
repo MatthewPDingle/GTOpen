@@ -1,0 +1,44 @@
+{
+  "id": "D179",
+  "at": "2026-10-28T17:13:33.700268+00:00",
+  "status": "one_fixed_CPU_only_shared_index_demand_census",
+  "hypothesis": "up_show ordered blockedscan uses chunk=ceil(m_o/128), logicaltid*chunk+j for reach_sh/prefix. Power-of-two stridecanmapdifferentwords tosame32bank index. Consider fixed physicalP(k)=k+floor(k/32) forBOTHreach_shandprefix,alllogicalFPorderunchanged. This isunimplemented,notadmittedsource.",
+  "model": "For eachactualregisteredshowCTA/opponentcount andbothtraversers, eachsourcechunkiteration/warp computesmaximumdistinct32bitwordaddressesinonebank underoldk%32andprospectiveP(k)%32. Sumserialbankservicephases overactivewarps/loopsteps,weightbyactualshow-node occurrences. Prefix/read/write sharethe model; neednotmultiply byinstructioncount. Conventional32banks/4byte logicalmodel only; ignoreshardwareports/scheduling/instructionlowering/arithmetic,notactualconflicts/stalls/latency/speed/headroom.",
+  "mapping_is_fixed_before_census": "P(k)=k+(k>>5),fixed128threadsand32threadwarps. No padwidth/stride/array-subset sweep orinputfilter. All3fixtures andbothtraversersretained. Need laterexactsource/history/resource/physicalsharedcapacity/numericproof beforeanycompiler/kernel. No sourceadmission fromstructuralcountalone.",
+  "history_queries": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "prefix\\[.*>>|prefix\\[.*32|padded_prefix|bank_conflict|CONFLICT_FREE_OFFSET",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "(reach_sh|prefix)\\[[^\\n]*>>\\s*5|CONFLICT_FREE_OFFSET|padded_prefix",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "closed_families": "GlobalCFV/reachrowpaddingE025/E027 andprefixinverse/shared-index caches E052/E057/E062 mustbeauditedforsemanticaliases beforeanynewcandidate. NoCFVcachehintE096hunk retained. Parentchunk-sum recurrence and everyFPorder/barrier mustremain exactlyoriginal.",
+  "source_refs": {
+    "kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "gpu_mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1"
+  },
+  "native_or_extra_timing_runs": 0
+}

@@ -1,0 +1,1325 @@
+{
+  "id": "D173",
+  "at": "2026-10-28T16:15:16.886348+00:00",
+  "status": "useful_host_diagnostic",
+  "protocol_sha256": "6643800d278fd794bfcdf5383f2ec64b4e091e27870c4fbc6a374ed41afec4d3",
+  "scientific_records_exact": 18,
+  "checkpoints_exact": 138,
+  "constructor_timelines": 9,
+  "host_marks": 189,
+  "reader_checks": 246,
+  "fixtures": [
+    {
+      "fixture": "rainbow",
+      "reference_full_ms": [
+        6127.9313,
+        5932.2505,
+        5838.478
+      ],
+      "instrumented_full_ms": [
+        5946.6433,
+        5861.1228,
+        5887.5535
+      ],
+      "median_full_cycle_perturbation_pct": -0.7534577307549695,
+      "host_span_medians_ms": {
+        "constructor": 596.3317,
+        "CPU_plan": 122.1331,
+        "budget": 0.005,
+        "context": 130.5116,
+        "stream": 0.0369,
+        "overlap_region": 239.4079,
+        "PTX_acquire": 66.9446,
+        "module_load": 1.544,
+        "pinned_alloc": 72.2154,
+        "arena_layout": 11.4216,
+        "setup_closure": 152.7447,
+        "zero_scan_closure": 238.9554,
+        "regrets_upload": 32.8919,
+        "strategy_upload": 21.3163,
+        "metadata_init": 48.6719
+      },
+      "unhidden_tail_ms": [
+        99.1691,
+        86.3782,
+        81.4262
+      ],
+      "median_unhidden_tail_ms": 86.3782
+    },
+    {
+      "fixture": "two-tone",
+      "reference_full_ms": [
+        4156.5927,
+        4026.4144999999994,
+        3983.429
+      ],
+      "instrumented_full_ms": [
+        4065.8436,
+        4050.8077,
+        3945.0659
+      ],
+      "median_full_cycle_perturbation_pct": 0.6058293302887874,
+      "host_span_medians_ms": {
+        "constructor": 434.8308,
+        "CPU_plan": 109.8102,
+        "budget": 0.0052,
+        "context": 85.9795,
+        "stream": 0.0134,
+        "overlap_region": 159.9328,
+        "PTX_acquire": 0.0312,
+        "module_load": 1.521,
+        "pinned_alloc": 58.3593,
+        "arena_layout": 28.6379,
+        "setup_closure": 90.3058,
+        "zero_scan_closure": 159.4873,
+        "regrets_upload": 14.1504,
+        "strategy_upload": 13.552,
+        "metadata_init": 34.9507
+      },
+      "unhidden_tail_ms": [
+        57.2429,
+        69.6216,
+        60.1429
+      ],
+      "median_unhidden_tail_ms": 60.1429
+    },
+    {
+      "fixture": "river",
+      "reference_full_ms": [
+        104.6508,
+        99.7353,
+        106.781
+      ],
+      "instrumented_full_ms": [
+        105.8447,
+        105.424,
+        97.7494
+      ],
+      "median_full_cycle_perturbation_pct": 0.7388381168610403,
+      "host_span_medians_ms": {
+        "constructor": 88.0742,
+        "CPU_plan": 0.0539,
+        "budget": 0.0003,
+        "context": 83.5713,
+        "stream": 0.0133,
+        "overlap_region": 1.5572,
+        "PTX_acquire": 0.0253,
+        "module_load": 1.2185,
+        "pinned_alloc": 0.3092,
+        "arena_layout": 0.0025,
+        "setup_closure": 1.5555,
+        "zero_scan_closure": 0.0005,
+        "regrets_upload": 1.0961,
+        "strategy_upload": 0.0444,
+        "metadata_init": 0.7974
+      },
+      "unhidden_tail_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "median_unhidden_tail_ms": 0.0
+    }
+  ],
+  "profiles": {
+    "D173P1": {
+      "rainbow": {
+        "board": "Ks7h2d",
+        "q_bytes": 1364772032,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 652.6822,
+          "CPU_plan": 122.1331,
+          "budget": 0.004,
+          "context": 130.5116,
+          "stream": 0.0414,
+          "overlap_region": 286.3943,
+          "PTX_acquire": 64.0248,
+          "module_load": 1.4547,
+          "pinned_alloc": 110.0431,
+          "arena_layout": 11.3845,
+          "setup_closure": 186.9071,
+          "zero_scan_closure": 285.8928,
+          "regrets_upload": 44.4958,
+          "strategy_upload": 21.0422,
+          "metadata_init": 47.3662
+        },
+        "unhidden_scan_tail_ms": 99.1691,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            2400,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            10900,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            122144000,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            122148000,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            252659600,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            252701000,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            252701800,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            252763500,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            252946900,
+            "ThreadId(19)"
+          ],
+          [
+            "PTX_ready",
+            316788300,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            318243000,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            428286100,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            439670600,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            538839700,
+            "ThreadId(19)"
+          ],
+          [
+            "overlap_region_end",
+            539096100,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            583591900,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            604634100,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            605209200,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            605280800,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            605318400,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            652684600,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "two-tone": {
+        "board": "Ks7s2d",
+        "q_bytes": 1369522280,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 438.4011,
+          "CPU_plan": 109.8102,
+          "budget": 0.0064,
+          "context": 106.2062,
+          "stream": 0.0134,
+          "overlap_region": 159.9328,
+          "PTX_acquire": 0.0312,
+          "module_load": 1.521,
+          "pinned_alloc": 72.26,
+          "arena_layout": 28.6379,
+          "setup_closure": 102.4501,
+          "zero_scan_closure": 159.4873,
+          "regrets_upload": 14.1504,
+          "strategy_upload": 13.552,
+          "metadata_init": 33.2434
+        },
+        "unhidden_scan_tail_ms": 57.2429,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            2100,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            3700,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            109813900,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            109820300,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            216026500,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            216039900,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            216040700,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            216090500,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            216121700,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            216296200,
+            "ThreadId(20)"
+          ],
+          [
+            "module_ready",
+            217642700,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            289902700,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            318540600,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            375783500,
+            "ThreadId(20)"
+          ],
+          [
+            "overlap_region_end",
+            375973500,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            390123900,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            403675900,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            405109000,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            405132100,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            405159800,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            438403200,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "river": {
+        "board": "Ks7h2dQhTc",
+        "q_bytes": 32832,
+        "overlap": false,
+        "host_spans_ms": {
+          "constructor": 88.4,
+          "CPU_plan": 0.0546,
+          "budget": 0.0003,
+          "context": 85.008,
+          "stream": 0.0117,
+          "overlap_region": 1.4795,
+          "PTX_acquire": 0.0219,
+          "module_load": 1.196,
+          "pinned_alloc": 0.2583,
+          "arena_layout": 0.0016,
+          "setup_closure": 1.4778,
+          "zero_scan_closure": 0.0004,
+          "regrets_upload": 0.9423,
+          "strategy_upload": 0.0444,
+          "metadata_init": 0.7974
+        },
+        "unhidden_scan_tail_ms": 0.0,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            700,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            3400,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            58000,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            58300,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            85066300,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            85078000,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            85078300,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            85078600,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            85100500,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            86296500,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            86554800,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            86556400,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            86557000,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            86557400,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_end",
+            86557800,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            87500100,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            87544500,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            87547300,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            87578100,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            87603300,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            88400700,
+            "ThreadId(2)"
+          ]
+        ]
+      }
+    },
+    "D173P2": {
+      "rainbow": {
+        "board": "Ks7h2d",
+        "q_bytes": 1364772032,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 590.4547,
+          "CPU_plan": 120.8756,
+          "budget": 0.005,
+          "context": 125.3439,
+          "stream": 0.0301,
+          "overlap_region": 239.4079,
+          "PTX_acquire": 66.9446,
+          "module_load": 1.544,
+          "pinned_alloc": 72.2154,
+          "arena_layout": 12.0407,
+          "setup_closure": 152.7447,
+          "zero_scan_closure": 238.9554,
+          "regrets_upload": 32.7818,
+          "strategy_upload": 22.2597,
+          "metadata_init": 49.162
+        },
+        "unhidden_scan_tail_ms": 86.3782,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            5200,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            9500,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            120885100,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            120890100,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            246234000,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            246264100,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            246264600,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            246314200,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            246481700,
+            "ThreadId(19)"
+          ],
+          [
+            "PTX_ready",
+            313258800,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            314802800,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            387018200,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            399058900,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            485437100,
+            "ThreadId(19)"
+          ],
+          [
+            "overlap_region_end",
+            485672500,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            518454300,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            540714000,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            541237800,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            541271600,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            541297900,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            590459900,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "two-tone": {
+        "board": "Ks7s2d",
+        "q_bytes": 1369522280,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 434.8308,
+          "CPU_plan": 117.2331,
+          "budget": 0.0033,
+          "context": 85.9795,
+          "stream": 0.016,
+          "overlap_region": 160.1763,
+          "PTX_acquire": 0.0318,
+          "module_load": 1.7034,
+          "pinned_alloc": 58.3593,
+          "arena_layout": 30.2113,
+          "setup_closure": 90.3058,
+          "zero_scan_closure": 159.7296,
+          "regrets_upload": 18.2175,
+          "strategy_upload": 12.5892,
+          "metadata_init": 38.2761
+        },
+        "unhidden_scan_tail_ms": 69.6216,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            2900,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            5000,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            117238100,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            117241400,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            203220900,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            203236900,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            203237300,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            203286300,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            203318100,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            203484100,
+            "ThreadId(20)"
+          ],
+          [
+            "module_ready",
+            205021500,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            263380800,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            293592100,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            363213700,
+            "ThreadId(20)"
+          ],
+          [
+            "overlap_region_end",
+            363413600,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            381631100,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            394220300,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            396480800,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            396516100,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            396557600,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            434833700,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "river": {
+        "board": "Ks7h2dQhTc",
+        "q_bytes": 32832,
+        "overlap": false,
+        "host_spans_ms": {
+          "constructor": 88.0742,
+          "CPU_plan": 0.0539,
+          "budget": 0.0003,
+          "context": 83.5713,
+          "stream": 0.0165,
+          "overlap_region": 2.1329,
+          "PTX_acquire": 0.0638,
+          "module_load": 1.6443,
+          "pinned_alloc": 0.4189,
+          "arena_layout": 0.0039,
+          "setup_closure": 2.1309,
+          "zero_scan_closure": 0.0006,
+          "regrets_upload": 1.0961,
+          "strategy_upload": 0.057,
+          "metadata_init": 1.1018
+        },
+        "unhidden_scan_tail_ms": 0.0,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            600,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            2600,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            56500,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            56800,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            83628100,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            83644600,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            83645300,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            83645700,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            83709500,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            85353800,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            85772700,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            85776600,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            85777200,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            85777800,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_end",
+            85778200,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            86874300,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            86931300,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            86933000,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            86950500,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            86973000,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            88074800,
+            "ThreadId(2)"
+          ]
+        ]
+      }
+    },
+    "D173P3": {
+      "rainbow": {
+        "board": "Ks7h2d",
+        "q_bytes": 1364772032,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 596.3317,
+          "CPU_plan": 137.7638,
+          "budget": 0.0088,
+          "context": 136.1583,
+          "stream": 0.0369,
+          "overlap_region": 218.8372,
+          "PTX_acquire": 69.9089,
+          "module_load": 1.7039,
+          "pinned_alloc": 54.013,
+          "arena_layout": 11.4216,
+          "setup_closure": 137.0474,
+          "zero_scan_closure": 218.2405,
+          "regrets_upload": 32.8919,
+          "strategy_upload": 21.3163,
+          "metadata_init": 48.6719
+        },
+        "unhidden_scan_tail_ms": 81.4262,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            5500,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            10800,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            137774600,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            137783400,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            273941700,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            273978600,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            273979000,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            274034900,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            274268000,
+            "ThreadId(19)"
+          ],
+          [
+            "PTX_ready",
+            343943800,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            345647700,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            399660700,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            411082300,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            492508500,
+            "ThreadId(19)"
+          ],
+          [
+            "overlap_region_end",
+            492816200,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            525708100,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            547024400,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            547587500,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            547632000,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            547665300,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            596337200,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "two-tone": {
+        "board": "Ks7s2d",
+        "q_bytes": 1369522280,
+        "overlap": true,
+        "host_spans_ms": {
+          "constructor": 363.4087,
+          "CPU_plan": 94.1604,
+          "budget": 0.0052,
+          "context": 85.9285,
+          "stream": 0.0125,
+          "overlap_region": 118.5317,
+          "PTX_acquire": 0.0216,
+          "module_load": 1.4973,
+          "pinned_alloc": 35.5198,
+          "arena_layout": 21.138,
+          "setup_closure": 58.1767,
+          "zero_scan_closure": 118.1506,
+          "regrets_upload": 13.8646,
+          "strategy_upload": 14.2181,
+          "metadata_init": 34.9507
+        },
+        "unhidden_scan_tail_ms": 60.1429,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            2000,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            3700,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            94164100,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            94169300,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            180097800,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            180110300,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            180110700,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            180156200,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            180177800,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            180325200,
+            "ThreadId(20)"
+          ],
+          [
+            "module_ready",
+            181675100,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            217194900,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            238332900,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            298475800,
+            "ThreadId(20)"
+          ],
+          [
+            "overlap_region_end",
+            298642400,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            312507000,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            326725100,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            328396400,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            328427400,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            328460000,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            363410700,
+            "ThreadId(2)"
+          ]
+        ]
+      },
+      "river": {
+        "board": "Ks7h2dQhTc",
+        "q_bytes": 32832,
+        "overlap": false,
+        "host_spans_ms": {
+          "constructor": 80.8866,
+          "CPU_plan": 0.0407,
+          "budget": 0.0002,
+          "context": 77.3241,
+          "stream": 0.0133,
+          "overlap_region": 1.5572,
+          "PTX_acquire": 0.0253,
+          "module_load": 1.2185,
+          "pinned_alloc": 0.3092,
+          "arena_layout": 0.0025,
+          "setup_closure": 1.5555,
+          "zero_scan_closure": 0.0005,
+          "regrets_upload": 1.1608,
+          "strategy_upload": 0.0356,
+          "metadata_init": 0.7124
+        },
+        "unhidden_scan_tail_ms": 0.0,
+        "timeline_ns": [
+          [
+            "constructor_begin",
+            400,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_begin",
+            2600,
+            "ThreadId(2)"
+          ],
+          [
+            "plan_end",
+            43300,
+            "ThreadId(2)"
+          ],
+          [
+            "context_begin",
+            43500,
+            "ThreadId(2)"
+          ],
+          [
+            "context_end",
+            77367600,
+            "ThreadId(2)"
+          ],
+          [
+            "stream_ready",
+            77380900,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_begin",
+            77381300,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_begin",
+            77381600,
+            "ThreadId(2)"
+          ],
+          [
+            "PTX_ready",
+            77406900,
+            "ThreadId(2)"
+          ],
+          [
+            "module_ready",
+            78625400,
+            "ThreadId(2)"
+          ],
+          [
+            "pinned_ready",
+            78934600,
+            "ThreadId(2)"
+          ],
+          [
+            "setup_end",
+            78937100,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_begin",
+            78937600,
+            "ThreadId(2)"
+          ],
+          [
+            "checks_end",
+            78938100,
+            "ThreadId(2)"
+          ],
+          [
+            "overlap_region_end",
+            78938500,
+            "ThreadId(2)"
+          ],
+          [
+            "regrets_upload_end",
+            80099300,
+            "ThreadId(2)"
+          ],
+          [
+            "strategy_upload_end",
+            80134900,
+            "ThreadId(2)"
+          ],
+          [
+            "lock_table_end",
+            80136400,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_begin",
+            80153800,
+            "ThreadId(2)"
+          ],
+          [
+            "fold_metadata_end",
+            80174600,
+            "ThreadId(2)"
+          ],
+          [
+            "constructor_end",
+            80887000,
+            "ThreadId(2)"
+          ]
+        ]
+      }
+    }
+  },
+  "samecohort_reference_sum_fixture_medians_ms": 10063.315799999998,
+  "instrumented_sum_fixture_medians_ms": 10043.7852,
+  "unrounded_observer_aggregate_difference_pct": -0.1940771847783851,
+  "usefulness_pass": true,
+  "sum_fixture_median_unhidden_scan_tail_ms": 146.5211,
+  "tail_fraction_of_samecohort_reference_pct": 1.4559922684727833,
+  "earlier_scan_has_observed_1pct_tail": true,
+  "decision": "separate_source_contract_review_required_before_any_candidate",
+  "retained_report_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173B1\\report.json": "f4ce4e2b7d2a4f9ed0cfc979274d4220843e8a624664ca3fb55c79c7e3453274",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P1\\report.json": "494a71ec949b67f0db2ab5769a21c13d61cfbea866480009d83dbbdc1d326af6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P2\\report.json": "095f4ed32706d2a233e299a4cd0ed07aec0008d6050c98dc896d6ce87243fa27",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173B2\\report.json": "3d61b9b26839b4c366e243c4a218e349371e7c98f3e0a4cd96f4781651ebaf28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173B3\\report.json": "2de9f24d20b816d6667d94a18a58871edb282c9e326474d1c4b8989f7c5c5f55",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173P3\\report.json": "625c272d9e21f8432d1acf623c5e68d053a6257b009219cf747ee64b85a80c9a"
+  },
+  "all_samples_retained": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "historical_or_RAM_baseline_timings_scored": 0,
+  "performance_qualification_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Host wall intervals are diagnostic, scheduling/observer dependent and overlapping. Usefulness10% is coarse, not no bias or component error bound. Tail sum from fixture medians not additive/counterfactual saving; may at most motivate separate source review. No CUDA events/counters/work changes, no benchmark/source/precision/quality shortcuts or performance adoption."
+}

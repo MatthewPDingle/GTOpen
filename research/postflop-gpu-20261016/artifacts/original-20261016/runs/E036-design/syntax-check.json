@@ -1,0 +1,36 @@
+[
+  {
+    "file": "test-body.rs",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2021",
+      "--config",
+      "skip_children=true",
+      "--emit",
+      "stdout",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\test-body.rs"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "formatted_stdout_sha256": "0d23fd27b3116f80138791db3ce2d0fe20e4dbd773de16162e6335b9d19018f6",
+    "scope": "syntax-only parse; no compilation or formatting applied"
+  },
+  {
+    "file": "candidate/mod.rs",
+    "command": [
+      "rustfmt",
+      "--edition",
+      "2021",
+      "--config",
+      "skip_children=true",
+      "--emit",
+      "stdout",
+      "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\mod.rs"
+    ],
+    "returncode": 0,
+    "stderr": "",
+    "formatted_stdout_sha256": "26da1e60dac7cf1d3499125b0076cbd50fd785f198678b7d63d517913e0f623d",
+    "scope": "syntax-only parse; no compilation or formatting applied"
+  }
+]

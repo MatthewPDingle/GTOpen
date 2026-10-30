@@ -1,0 +1,915 @@
+{
+  "id": "D126",
+  "at": "2026-10-18T05:09:54.362604+00:00",
+  "status": "decline_CPU_prefetch_component_budget_or_guard",
+  "protocol_sha256": "fbcc13b598eb543fcd7f4ddf6b8c0281a877113a5b35f60976d886c848929e50",
+  "binary_sha256": "42c6ae27c1d6610ad638f75c9c283b803dc360914e67c6bb456772bd2ae98d44",
+  "ability_report_sha256": "dc177f39b6393683d6d89f02b5d1563784a1c680cfcd585d8159805d5cc75bd4",
+  "complete_fixed_six_process_cohort": true,
+  "API_failure": null,
+  "results": {
+    "D126B1": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790021632,
+          "page_faults": 418922,
+          "peak_commit_bytes": 1790021632,
+          "peak_working_set_bytes": 1712082944,
+          "working_set_bytes": 1712082944
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1790021632,
+          "page_faults": 85677,
+          "peak_commit_bytes": 1790021632,
+          "peak_working_set_bytes": 347111424,
+          "working_set_bytes": 347111424
+        },
+        "board": "Ks7h2d",
+        "component_ms": 199.3538,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 333245,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254204928,
+          "page_faults": 534077,
+          "peak_commit_bytes": 2254204928,
+          "peak_working_set_bytes": 2182852608,
+          "working_set_bytes": 2182852608
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2254204928,
+          "page_faults": 443374,
+          "peak_commit_bytes": 2254204928,
+          "peak_working_set_bytes": 1811333120,
+          "working_set_bytes": 1811333120
+        },
+        "board": "Ks7s2d",
+        "component_ms": 125.11120000000001,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254204928,
+          "page_faults": 534078,
+          "peak_commit_bytes": 2254204928,
+          "peak_working_set_bytes": 2182856704,
+          "working_set_bytes": 2182856704
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2254204928,
+          "page_faults": 534078,
+          "peak_commit_bytes": 2254204928,
+          "peak_working_set_bytes": 2182856704,
+          "working_set_bytes": 2182856704
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0015999999999999999,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ],
+    "D126T1": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790070784,
+          "page_faults": 418681,
+          "peak_commit_bytes": 1790070784,
+          "peak_working_set_bytes": 1711091712,
+          "working_set_bytes": 1711091712
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 1790070784,
+          "page_faults": 85433,
+          "peak_commit_bytes": 1790070784,
+          "peak_working_set_bytes": 346107904,
+          "working_set_bytes": 346107904
+        },
+        "board": "Ks7h2d",
+        "component_ms": 222.3422,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1364772032,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 42.282000000000004,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 333248,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256474112,
+          "page_faults": 534490,
+          "peak_commit_bytes": 2256474112,
+          "peak_working_set_bytes": 2184548352,
+          "working_set_bytes": 2184548352
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2256474112,
+          "page_faults": 443787,
+          "peak_commit_bytes": 2256474112,
+          "peak_working_set_bytes": 1813028864,
+          "working_set_bytes": 1813028864
+        },
+        "board": "Ks7s2d",
+        "component_ms": 136.2508,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1369522280,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 37.14,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256474112,
+          "page_faults": 534491,
+          "peak_commit_bytes": 2256474112,
+          "peak_working_set_bytes": 2184552448,
+          "working_set_bytes": 2184552448
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2256474112,
+          "page_faults": 534491,
+          "peak_commit_bytes": 2256474112,
+          "peak_working_set_bytes": 2184552448,
+          "working_set_bytes": 2184552448
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.001,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ],
+    "D126T2": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790042112,
+          "page_faults": 418922,
+          "peak_commit_bytes": 1790042112,
+          "peak_working_set_bytes": 1712087040,
+          "working_set_bytes": 1712087040
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 1790042112,
+          "page_faults": 85674,
+          "peak_commit_bytes": 1790042112,
+          "peak_working_set_bytes": 347103232,
+          "working_set_bytes": 347103232
+        },
+        "board": "Ks7h2d",
+        "component_ms": 222.0723,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1364772032,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 42.1511,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 333248,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254716928,
+          "page_faults": 534175,
+          "peak_commit_bytes": 2254716928,
+          "peak_working_set_bytes": 2183262208,
+          "working_set_bytes": 2183262208
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2254716928,
+          "page_faults": 443472,
+          "peak_commit_bytes": 2254716928,
+          "peak_working_set_bytes": 1811742720,
+          "working_set_bytes": 1811742720
+        },
+        "board": "Ks7s2d",
+        "component_ms": 136.63559999999998,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1369522280,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 36.6354,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254716928,
+          "page_faults": 534176,
+          "peak_commit_bytes": 2254716928,
+          "peak_working_set_bytes": 2183266304,
+          "working_set_bytes": 2183266304
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2254716928,
+          "page_faults": 534176,
+          "peak_commit_bytes": 2254716928,
+          "peak_working_set_bytes": 2183266304,
+          "working_set_bytes": 2183266304
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0015999999999999999,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ],
+    "D126B2": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1789984768,
+          "page_faults": 418923,
+          "peak_commit_bytes": 1789984768,
+          "peak_working_set_bytes": 1712107520,
+          "working_set_bytes": 1712107520
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1789984768,
+          "page_faults": 85678,
+          "peak_commit_bytes": 1789984768,
+          "peak_working_set_bytes": 347136000,
+          "working_set_bytes": 347136000
+        },
+        "board": "Ks7h2d",
+        "component_ms": 187.2815,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 333245,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254725120,
+          "page_faults": 534164,
+          "peak_commit_bytes": 2254725120,
+          "peak_working_set_bytes": 2183229440,
+          "working_set_bytes": 2183229440
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2254725120,
+          "page_faults": 443461,
+          "peak_commit_bytes": 2254725120,
+          "peak_working_set_bytes": 1811709952,
+          "working_set_bytes": 1811709952
+        },
+        "board": "Ks7s2d",
+        "component_ms": 94.32029999999999,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254725120,
+          "page_faults": 534165,
+          "peak_commit_bytes": 2254725120,
+          "peak_working_set_bytes": 2183233536,
+          "working_set_bytes": 2183233536
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2254725120,
+          "page_faults": 534165,
+          "peak_commit_bytes": 2254725120,
+          "peak_working_set_bytes": 2183233536,
+          "working_set_bytes": 2183233536
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0017000000000000001,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ],
+    "D126B3": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1791004672,
+          "page_faults": 418927,
+          "peak_commit_bytes": 1791004672,
+          "peak_working_set_bytes": 1712107520,
+          "working_set_bytes": 1712107520
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1791004672,
+          "page_faults": 85682,
+          "peak_commit_bytes": 1791004672,
+          "peak_working_set_bytes": 347136000,
+          "working_set_bytes": 347136000
+        },
+        "board": "Ks7h2d",
+        "component_ms": 178.313,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 333245,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255892480,
+          "page_faults": 534421,
+          "peak_commit_bytes": 2255892480,
+          "peak_working_set_bytes": 2184265728,
+          "working_set_bytes": 2184265728
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255892480,
+          "page_faults": 443718,
+          "peak_commit_bytes": 2255892480,
+          "peak_working_set_bytes": 1812746240,
+          "working_set_bytes": 1812746240
+        },
+        "board": "Ks7s2d",
+        "component_ms": 95.8875,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255892480,
+          "page_faults": 534422,
+          "peak_commit_bytes": 2255892480,
+          "peak_working_set_bytes": 2184269824,
+          "working_set_bytes": 2184269824
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255892480,
+          "page_faults": 534422,
+          "peak_commit_bytes": 2255892480,
+          "peak_working_set_bytes": 2184269824,
+          "working_set_bytes": 2184269824
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0015,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ],
+    "D126T3": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790124032,
+          "page_faults": 418662,
+          "peak_commit_bytes": 1790124032,
+          "peak_working_set_bytes": 1711022080,
+          "working_set_bytes": 1711022080
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 1790124032,
+          "page_faults": 85414,
+          "peak_commit_bytes": 1790124032,
+          "peak_working_set_bytes": 346038272,
+          "working_set_bytes": 346038272
+        },
+        "board": "Ks7h2d",
+        "component_ms": 219.9587,
+        "cpu_arena_bytes": 1386321040,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1364772032,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 42.0051,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 333248,
+        "q_bytes": 1364772032,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256056320,
+          "page_faults": 534340,
+          "peak_commit_bytes": 2256056320,
+          "peak_working_set_bytes": 2183933952,
+          "working_set_bytes": 2183933952
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2256056320,
+          "page_faults": 443637,
+          "peak_commit_bytes": 2256056320,
+          "peak_working_set_bytes": 1812414464,
+          "working_set_bytes": 1812414464
+        },
+        "board": "Ks7s2d",
+        "component_ms": 131.5475,
+        "cpu_arena_bytes": 1391071288,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "nodes": 1346813,
+        "plan_levels": 14,
+        "prefetch_bytes": 1369522280,
+        "prefetch_calls": 1,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 36.7191,
+        "prefetch_range_count": 4,
+        "prefetch_success": true,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "stage": "CPU_zero_scan"
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256056320,
+          "page_faults": 534341,
+          "peak_commit_bytes": 2256056320,
+          "peak_working_set_bytes": 2183938048,
+          "working_set_bytes": 2183938048
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "prefetch",
+        "before": {
+          "commit_bytes": 2256056320,
+          "page_faults": 534341,
+          "peak_commit_bytes": 2256056320,
+          "peak_working_set_bytes": 2183938048,
+          "working_set_bytes": 2183938048
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0012,
+        "cpu_arena_bytes": 33360,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "nodes": 33,
+        "plan_levels": 8,
+        "prefetch_bytes": 0,
+        "prefetch_calls": 0,
+        "prefetch_error": 0,
+        "prefetch_ms_contained": 0.0,
+        "prefetch_range_count": 0,
+        "prefetch_success": false,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "stage": "CPU_zero_scan"
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "q_bytes": 1364772032,
+      "prefetch_applicable": true,
+      "baseline_component_raw_ms": [
+        199.3538,
+        187.2815,
+        178.313
+      ],
+      "candidate_component_raw_ms": [
+        222.3422,
+        222.0723,
+        219.9587
+      ],
+      "baseline_median_ms": 187.2815,
+      "candidate_median_ms": 222.0723,
+      "saving_of_medians_ms": -34.79080000000002,
+      "paired_saving_ms": [
+        -22.988399999999984,
+        -34.79080000000002,
+        -41.645700000000005
+      ],
+      "improving_pairs": 0,
+      "median_paired_saving_ms": -34.79080000000002,
+      "component_guard_pass": false,
+      "baseline_faults": [
+        333245,
+        333245,
+        333245
+      ],
+      "candidate_faults": [
+        333248,
+        333248,
+        333248
+      ],
+      "baseline_working_set_after": [
+        1712082944,
+        1712107520,
+        1712107520
+      ],
+      "candidate_working_set_after": [
+        1711091712,
+        1712087040,
+        1711022080
+      ],
+      "candidate_prefetch_ms_contained": [
+        42.282000000000004,
+        42.1511,
+        42.0051
+      ]
+    },
+    {
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "q_bytes": 1369522280,
+      "prefetch_applicable": true,
+      "baseline_component_raw_ms": [
+        125.11120000000001,
+        94.32029999999999,
+        95.8875
+      ],
+      "candidate_component_raw_ms": [
+        136.2508,
+        136.63559999999998,
+        131.5475
+      ],
+      "baseline_median_ms": 95.8875,
+      "candidate_median_ms": 136.2508,
+      "saving_of_medians_ms": -40.363299999999995,
+      "paired_saving_ms": [
+        -11.139599999999987,
+        -42.31529999999999,
+        -35.66000000000001
+      ],
+      "improving_pairs": 0,
+      "median_paired_saving_ms": -35.66000000000001,
+      "component_guard_pass": false,
+      "baseline_faults": [
+        90703,
+        90703,
+        90703
+      ],
+      "candidate_faults": [
+        90703,
+        90703,
+        90703
+      ],
+      "baseline_working_set_after": [
+        2182852608,
+        2183229440,
+        2184265728
+      ],
+      "candidate_working_set_after": [
+        2184548352,
+        2183262208,
+        2183933952
+      ],
+      "candidate_prefetch_ms_contained": [
+        37.14,
+        36.6354,
+        36.7191
+      ]
+    },
+    {
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "q_bytes": 32832,
+      "prefetch_applicable": false,
+      "baseline_component_raw_ms": [
+        0.0015999999999999999,
+        0.0017000000000000001,
+        0.0015
+      ],
+      "candidate_component_raw_ms": [
+        0.001,
+        0.0015999999999999999,
+        0.0012
+      ],
+      "baseline_median_ms": 0.0015999999999999999,
+      "candidate_median_ms": 0.0012,
+      "saving_of_medians_ms": 0.00039999999999999996,
+      "paired_saving_ms": [
+        0.0005999999999999998,
+        0.00010000000000000026,
+        0.00030000000000000014
+      ],
+      "improving_pairs": 3,
+      "median_paired_saving_ms": 0.00030000000000000014,
+      "component_guard_pass": true,
+      "baseline_faults": [
+        0,
+        0,
+        0
+      ],
+      "candidate_faults": [
+        0,
+        0,
+        0
+      ],
+      "baseline_working_set_after": [
+        2182856704,
+        2183233536,
+        2184269824
+      ],
+      "candidate_working_set_after": [
+        2184552448,
+        2183266304,
+        2183938048
+      ],
+      "candidate_prefetch_ms_contained": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  ],
+  "sum_fixture_CPU_component_saving_ms": -75.15370000000001,
+  "required_component_saving_ms": 95.825124,
+  "admit_one_integrated_trial": false,
+  "native_component_processes": 6,
+  "new_GPU_or_solver_executions": 0,
+  "full_solve_performance_measured": false,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "limits": "Fresh-process CPU-only component model, not production upload execution, full-solve timing or causal fault attribution. Same accepted Spot/Solver/GpuPlan and mimalloc, exact original predicate body. GPU context/pinning/allocations/layout construction absent. Process counters cannot isolate hard faults or OS physical-cache cost. Prefetch eligibility/call/timer overhead included. Preset budget is screening only, not a no-tradeoff or universal headroom bound. All integrated exactness/material/1%/strict-fixture/fresh16/broad/holdout/cumulative gates would remain. No threshold/filter/API/flag/source or sample rescue after failed admission."
+}

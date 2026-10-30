@@ -1,0 +1,51 @@
+{
+  "primary": {
+    "baseline_sum_fixture_medians_ms": 9520.4104,
+    "candidate_sum_fixture_medians_ms": 10051.9586,
+    "gain_pct": -5.583248806164903,
+    "minimum_pct": 2,
+    "aggregate_gate_met": false,
+    "fixture_guard_failed": true
+  },
+  "checks": 939,
+  "source_entries": 162,
+  "trajectory_checks": 138,
+  "components": [
+    {
+      "fixture": "rainbow",
+      "delta_ms": {
+        "build_ms": -0.6046,
+        "init_ms": 18.4347,
+        "solve_ms": 329.5016,
+        "readback_ms": -10.3588,
+        "full_cycle_ms": 332.8484
+      }
+    },
+    {
+      "fixture": "two-tone",
+      "delta_ms": {
+        "build_ms": 23.9128,
+        "init_ms": 20.7566,
+        "solve_ms": 193.2919,
+        "readback_ms": 2.6458,
+        "full_cycle_ms": 205.6645
+      }
+    },
+    {
+      "fixture": "river",
+      "delta_ms": {
+        "build_ms": -0.0027,
+        "init_ms": -5.0113,
+        "solve_ms": -1.4749,
+        "readback_ms": 0.0365,
+        "full_cycle_ms": -6.9647
+      }
+    }
+  ],
+  "pairs": [
+    -5.8488928878952,
+    -4.789934657174497,
+    -5.5638586476809895
+  ],
+  "validation_sha256": "d9ea9dff5592a6ed58842ac191cbee7d85d479f7ae6dc69f1b482170564f7363"
+}

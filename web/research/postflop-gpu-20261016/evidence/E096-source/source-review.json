@@ -1,0 +1,73 @@
+{
+  "id": "E096",
+  "at": "2026-10-28T16:44:56.472709+00:00",
+  "status": "one_hint_form_staged_for_compile_prerequisites",
+  "scope": "Exactly10 child-CFV RHS reads in3 sourcefunctions/3 compiled entrypoints up_chance/up_action/up_action_eval become CUDA __ldcg on identicalu64 address expression. EveryCFVstore and allfloat expressions/order/sourceotherwiseunchanged. Nohost/planner/allocation/ABI/launch/capture/cadence/quality/precision/format change. Fullsourcebyte reversal exact.",
+  "source_replacements": [
+    {
+      "function": "up_chance",
+      "original": "cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[cc_child[t]] * nh_max + idx)"
+    },
+    {
+      "function": "up_action_impl",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_impl",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_impl",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_impl",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_eval",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_eval",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_eval",
+      "original": "cfv[(u64)cfv_slot[children[cs]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_eval",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    },
+    {
+      "function": "up_action_eval",
+      "original": "cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i]",
+      "candidate": "__ldcg(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i)"
+    }
+  ],
+  "official_contracts": [
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#load-functions-using-cache-hints",
+      "paraphrase": "CUDA12.9 documents typed load intrinsics with the named PTX cache operator on supported devices."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#cache-operators",
+      "paraphrase": ".cg requests L2 and lower cache levels while bypassingL1. These operators are performance hints and preserve memory-consistency behavior. Intrinsic/API support alone proves neither intended codegen nor speed."
+    }
+  ],
+  "coherence": "Same globalCFVallocation, alignedf32 addresses, originalordered kernels and graph dependencies. This is coherentglobal .cg, not incoherentreadonly .nc or new restrict assumption. Sourceoperands identify alreadycomputed child rows; no newlyassertedimmutability or alias contract and no reordering/bypassbarrier. Originalplainloads/streamordering preserve read-after-write acrosskernels; cacheoperator doesnotweaken memorymodel. FullphysicalCFVpoison/raw/lifetime controls remain mandatory, including generic action paths where values reload afterregret/stratwrites.",
+  "hypothesis": "Streamingchildvalue loads may evict usefulL1metadata or see little reuse; L2only could helporhurt. No measuredheadroom or guaranteed gain. Current originalactualPTX shows no .cg; first require param-origin candidateCFV.cg32 loads inall3entries and unchanged6otherentry bodies/ABI/barriers, no resourcefeasibility failure.",
+  "resource_gate": "D108 feasibility: sameglobalpayload/allfixedshapes, no newlocal/spill or dynamicshared, maxthreadsnotlowered, positive64/128/256occupancy/defaultlimits/stack. Disclose anyreg/shared/occupancy difference. Resourcesonly, no kernel/solve/speed beforepass.",
+  "failure": "Any genuine mechanism/ABI/resource/numeric/cost/speed failure closes form without cacheop/entrysubset/flags/source/shape/precision/sample rescue. All later exactness/1%/strictfixture/fresh16/broad/material/capacity/holdout/freshoriginal/application gates unchanged.",
+  "candidate_accepted": false
+}

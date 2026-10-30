@@ -1,0 +1,58 @@
+_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode11write_sse41:
+.seh_proc _RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode11write_sse41
+	pushq	%rsi
+	.seh_pushreg %rsi
+	pushq	%rdi
+	.seh_pushreg %rdi
+	subq	$40, %rsp
+	.seh_stackalloc 40
+	.seh_endprologue
+	movl	%edx, %esi
+	movq	104(%rsp), %rdx
+	movq	96(%rsp), %rax
+	movq	(%rcx), %r10
+	testq	%r10, %r10
+	je	.LBB1220_3
+	addq	%r8, %r8
+	cmpl	$1, %r10d
+	jne	.LBB1220_5
+	addq	24(%rcx), %r8
+	movq	%rcx, %rdi
+	movq	%rax, %rcx
+	callq	_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_i16_sse41
+	jmp	.LBB1220_6
+.LBB1220_3:
+	cmpq	%rdx, %r9
+	jne	.LBB1220_7
+	movq	24(%rcx), %rcx
+	leaq	(%rcx,%r8,4), %rcx
+	shlq	$2, %r9
+	movq	%rax, %rdx
+	movq	%r9, %r8
+	.seh_startepilogue
+	addq	$40, %rsp
+	popq	%rdi
+	popq	%rsi
+	.seh_endepilogue
+	jmp	memcpy
+.LBB1220_5:
+	addq	24(%rcx), %r8
+	movq	%rcx, %rdi
+	movq	%rax, %rcx
+	callq	_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41
+.LBB1220_6:
+	movl	%esi, %eax
+	movq	48(%rdi), %rcx
+	movss	%xmm0, (%rcx,%rax,4)
+	.seh_startepilogue
+	addq	$40, %rsp
+	popq	%rdi
+	popq	%rsi
+	.seh_endepilogue
+	retq
+.LBB1220_7:
+	leaq	anon.ccb92d8c524d1431f7adfaf125cb7e9d.1174(%rip), %r8
+	movq	%r9, %rcx
+	callq	_RNvNvNtCs8xEFJqa6dYS_4core5slice20copy_from_slice_impl17len_mismatch_fail
+	ud2
+	.seh_endproc

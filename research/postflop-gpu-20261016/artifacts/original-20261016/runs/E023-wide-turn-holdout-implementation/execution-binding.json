@@ -1,0 +1,36 @@
+{
+  "candidate": "E023",
+  "baseline": "E020",
+  "workload_protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+  "evaluator_sha256": "7d43c1a0462ddc58267c83fd4901558ca8cf9eab5db51ae70d7cc51f0244bfda",
+  "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+  "order": [
+    "B1",
+    "C1",
+    "C2",
+    "B2",
+    "B3",
+    "C3"
+  ],
+  "gate": "median slowdown>3% AND at least2of3 paired slowdowns>3%; exact all6 states/checks; no retuning",
+  "actual_dynamic_shared_bytes": {
+    "E020": [
+      21808,
+      21808
+    ],
+    "E023": [
+      21808,
+      21808
+    ]
+  },
+  "unchanged_historical_admission_fields": "The evaluator emits original E015/E020 formula labels13160/21808. These are retained unchanged and are not current-arm resource measurements.",
+  "source_map_difference_exactly": [
+    "crates/solver/src/game.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "accepted": false,
+  "deployed": false
+}

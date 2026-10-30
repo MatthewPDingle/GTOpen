@@ -1,0 +1,134 @@
+{
+  "id": "E028-source-preparation",
+  "all162_accepted_sources_exact": true,
+  "owned_map_count": 9,
+  "unowned_map_count": 153,
+  "auxiliary_count": 2,
+  "all11_base_files_exact_current": true,
+  "only_one_test_added": true,
+  "expected_gpu_only_native_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89,
+    "not_executed": true
+  },
+  "new_test": "gpu::tests::actor1_sigma_cache_production_and_lifetime",
+  "test_declaration_deltas": [
+    {
+      "path": "crates/solver/src/gpu/kernels.cu",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_tests": 4,
+      "candidate_tests": 5,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/plan.rs",
+      "base_tests": 1,
+      "candidate_tests": 1,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_paging.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_storage.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_capacity.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_host_paging_tests.rs",
+      "base_tests": 1,
+      "candidate_tests": 1,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_ssd_paging_tests.rs",
+      "base_tests": 1,
+      "candidate_tests": 1,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/src/game.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/examples/continuation_storage_capacity.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    },
+    {
+      "path": "crates/solver/examples/hu_context_capacity.rs",
+      "base_tests": 0,
+      "candidate_tests": 0,
+      "base_ignored": 0,
+      "candidate_ignored": 0
+    }
+  ],
+  "cuda_entry_names_unchanged": [
+    "copy_root",
+    "down_action",
+    "down_chance",
+    "up_fold",
+    "up_show",
+    "up_chance",
+    "up_action",
+    "copy_span",
+    "up_action_eval"
+  ],
+  "seven_other_cuda_entries_byte_identical": [
+    "copy_root",
+    "down_chance",
+    "up_fold",
+    "up_show",
+    "up_chance",
+    "copy_span",
+    "up_action_eval"
+  ],
+  "original_actor0_up_and_opponent_branch_byte_identical": true,
+  "host_lifecycle_methods_byte_identical": [
+    "pub fn iterate(",
+    "pub fn iterate_profiled(",
+    "fn sweep(",
+    "pub fn update_locks(",
+    "pub fn exploitability("
+  ],
+  "constructor_cache_length_computed_before_any_field_move": true,
+  "all_original_nonascii_lines_preserved": true,
+  "source_newline_modes_preserved": true,
+  "patch_check": {
+    "command": "git apply --check --whitespace=nowarn candidate.patch",
+    "exit_code": 0,
+    "stderr": ""
+  },
+  "rust_syntax_only_all10_passed": true,
+  "compiler_native_gpu_executed": false,
+  "production_checkout_changed": false
+}

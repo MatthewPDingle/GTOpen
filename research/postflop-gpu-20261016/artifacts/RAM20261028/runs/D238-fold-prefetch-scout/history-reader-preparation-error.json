@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-29T03:16:43.140747+00:00",
+  "original_script_sha256": "da2436c7424066f1bb23816b9e1ba1b351996a42dcc943dab00913a7f377d4ef",
+  "error": "Source-history scanner looked only for literal __syncthreads(), overlooking __syncthreads_or and thereby included later unchanged E035 partial loops in its initial-copy stage.",
+  "false_positive_paths": [
+    "E035-design/candidate/kernels.cu",
+    "E035-compile-check/candidate-kernels.cu",
+    "E035-build/candidate-kernels.cu",
+    "E035-cleanup/candidate-kernels.cu"
+  ],
+  "repair": "Recognize the earliest __syncthreads plus optional intrinsic suffix as publication barrier. Same intended pre-first-barrier criterion. ExistingD238nativeaudit reused unchanged.",
+  "candidate_source_or_compiler_or_native_executions_before_repair": 0
+}

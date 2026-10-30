@@ -1,0 +1,554 @@
+{
+  "id": "E108-primary-checkpoint",
+  "at": "2026-10-29T01:35:37.389164+00:00",
+  "status": "rejected_closed_frozen_chunk_division_form",
+  "measurement_epoch": "RAM20261028",
+  "source_manifest_sha256": "f8f2951de9feba2836f8988d92757f7b658176f4398fcdba0d4abd931480c6dc",
+  "change": "Only up_show integer chunk binding: guarded ceil right shift for power widths and exact original unsigned quotient for nonpower widths. Same chunk values, source floating work/order, five barriers, other8entries,27ABI,host/wrapper4448,launch128,payload/capacity/quality/flags. Byte-exact CRLF source reversal; no E107 payout change.",
+  "evidence_sha256": {
+    "integer": "5505ef516895e78a37bb5fc9ac0c24e833efe89993252d505e95a68c0345ba75",
+    "PTX": "484107fb37881d1ee3622322f66aa77088e0b7312680bdc375b662ad8d17e6ef",
+    "resource": "deca015d5168ba08fc7d5f392df0f3b21f22c16253ea2019ad86b5dfcea1f7f3",
+    "native": "a7e916dfdec7625a49596ef98cfdf81a0640bb16e3fc4db10625ba909e2d1fba",
+    "direct": "9f13d2a824268f9e8fb7d030d096ee5acc0a7d74efb4375be820eb70987f0a11",
+    "canonical": "7ed7fac27b35e9dc0273ba7696da85d2309b16084fd6582ecedd03456ec187eb"
+  },
+  "integer_and_PTX_scope": "CPU339712shapes m0..1326,width1..256; emitted120/75CFG1,358,848regions/3,397,120checks exact. Each power width bypassesdiv, each nonpower width retains one original-operanddiv. Count binding traces actualparam15 through losslessconversions; two real predicate decoder fixturechecks. StaticCPU model only.",
+  "native_scope": "Two checksum-bound driverJITCUBINs,staticwidth/ANDpredicate/shift/jump-over-divider/scan-join witnesses. Native ISA mappings are explicitly inferences linked to exhaustivePTX, not a generalSASSsimulator or speed proof. No counters or applicationkernel from capture.",
+  "resource_scope": "Showdown38to40registers;local0,static1040,worstdynamic26520,stack1024,maxthreads1024,occupancy64/128/256=3unchanged; other8entries/resources exact. Register warning preserved; no no-cost claim.",
+  "direct_scope": "7640pairs/15280launches on10widths incl3/48/96/192/255fallback. Original764physical/exceptionalpayout/reach/countcases unchanged; all21actualinputs,wholephysicalCFV/allunownedguards exact.443131readerchecks,69,930,440immutablewords/41,481,040physicaloutputwords/33,406,640guards botharms. Finite corpus, not universality.",
+  "preserved_build_preflight_failure": {
+    "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-final-build\\preflight-failure.json",
+    "sha256": "bb8e0d6744a876f084c8c069277b859776c202aa91fedb66d6d994b196430822",
+    "compilers_or_native_runs_before_repair": 0
+  },
+  "canonical_scope": "6fullscience46checkpoints,12CPU+12all66device/wholephysicalCFVpairs,6queries3saves9futureEVs atoriginal.3%pot/check20/cap400/stops200/200/60. No field/paddingexception; prebuiltPTX/observerclocks unscored.",
+  "canonical_pair_bytes": 54608665195,
+  "retained_canonical_raw_extents": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-converged.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "c18f07897a8b5b97098b0b243ba1732b025d2395a526f6536377da500192e5cd"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-converged.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "c18f07897a8b5b97098b0b243ba1732b025d2395a526f6536377da500192e5cd"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-converged.gpu.bin",
+      "bytes": 5900013831,
+      "sha256": "0ca6a8f5fdd4756f4cf0f73755b8c27d01afb2b9ef4abddd570f0195649621fa"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-converged.gpu.bin",
+      "bytes": 5900013831,
+      "sha256": "0ca6a8f5fdd4756f4cf0f73755b8c27d01afb2b9ef4abddd570f0195649621fa"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-continued.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "be7c99c0777c97fa33d1b6c0bee55480a91ae8b3c482bc6314444df809c286c0"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-continued.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "be7c99c0777c97fa33d1b6c0bee55480a91ae8b3c482bc6314444df809c286c0"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-continued.gpu.bin",
+      "bytes": 5900013831,
+      "sha256": "9ca27483e7ee4ebe62b14bae3acfc2127fef42414c95c433e8fa59a27d96c389"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-continued.gpu.bin",
+      "bytes": 5900013831,
+      "sha256": "9ca27483e7ee4ebe62b14bae3acfc2127fef42414c95c433e8fa59a27d96c389"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-locked.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "641334e46f9b8f41e076f543e8756146eacbdb0efb4a06345b3e87d190f664f3"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-locked.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "641334e46f9b8f41e076f543e8756146eacbdb0efb4a06345b3e87d190f664f3"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-locked.gpu.bin",
+      "bytes": 5900015883,
+      "sha256": "6b7a08d731a0e04a405e0f766dc57d4b02da0a71d79fa617a18b2e26df6c059f"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-locked.gpu.bin",
+      "bytes": 5900015883,
+      "sha256": "6b7a08d731a0e04a405e0f766dc57d4b02da0a71d79fa617a18b2e26df6c059f"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-resumed.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "3c9969ea7d4c1f7cbf2537594655b098348b5151803f0048cd4ef6d629baf015"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-resumed.cpu.bin",
+      "bytes": 1386321152,
+      "sha256": "3c9969ea7d4c1f7cbf2537594655b098348b5151803f0048cd4ef6d629baf015"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-resumed.gpu.bin",
+      "bytes": 5900010783,
+      "sha256": "1030a50e143a893332dc229e87eeb2f9d5651192f1fb17fa218db6bae1e8a75c"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-resumed.gpu.bin",
+      "bytes": 5900010783,
+      "sha256": "1030a50e143a893332dc229e87eeb2f9d5651192f1fb17fa218db6bae1e8a75c"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-locked.query.json",
+      "bytes": 76874,
+      "sha256": "b39df67c326f88b56fdbceb1cf9ee7042aaa1e73bb6ae1fbcd14d0f14ff73831"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-locked.query.json",
+      "bytes": 76874,
+      "sha256": "b39df67c326f88b56fdbceb1cf9ee7042aaa1e73bb6ae1fbcd14d0f14ff73831"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow-resumed.query.json",
+      "bytes": 76837,
+      "sha256": "2a11dcfac269947ea2b557e7b655df7fd2edbb489005161d6c379bf854cdd132"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow-resumed.query.json",
+      "bytes": 76837,
+      "sha256": "2a11dcfac269947ea2b557e7b655df7fd2edbb489005161d6c379bf854cdd132"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\rainbow.save",
+      "bytes": 2729550949,
+      "sha256": "0852cf59c388cdea3a9aedfa04a562134aaac05f97c48bc6835360d9f8675743"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\rainbow.save",
+      "bytes": 2729550949,
+      "sha256": "0852cf59c388cdea3a9aedfa04a562134aaac05f97c48bc6835360d9f8675743"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-converged.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "b7f7502898e5882fbea3354dd2beea5d90b6137ccd37aa6a99475ed3b57c2542"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-converged.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "b7f7502898e5882fbea3354dd2beea5d90b6137ccd37aa6a99475ed3b57c2542"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-converged.gpu.bin",
+      "bytes": 3607280935,
+      "sha256": "b836ded95173fd46de2a624ed56f8fd2f3c38fd042114b0cd51cf6e7f4f884da"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-converged.gpu.bin",
+      "bytes": 3607280935,
+      "sha256": "b836ded95173fd46de2a624ed56f8fd2f3c38fd042114b0cd51cf6e7f4f884da"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-continued.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "dc58c3ce416afd1225a35ee3b863163d86d383d88754da041bc223e8d9686a78"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-continued.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "dc58c3ce416afd1225a35ee3b863163d86d383d88754da041bc223e8d9686a78"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-continued.gpu.bin",
+      "bytes": 3607280935,
+      "sha256": "228ff367917a02d2ec63bb0d1ac2c466b99fbba00aed30bf8906fe7741b71181"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-continued.gpu.bin",
+      "bytes": 3607280935,
+      "sha256": "228ff367917a02d2ec63bb0d1ac2c466b99fbba00aed30bf8906fe7741b71181"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-locked.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "45cb91a467fe822d97a3c0f60cc3550cde71010923cd9ec48f909088bbd83ed6"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-locked.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "45cb91a467fe822d97a3c0f60cc3550cde71010923cd9ec48f909088bbd83ed6"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-locked.gpu.bin",
+      "bytes": 3607282995,
+      "sha256": "3230df93f830057e3ce14745f89534540a7ad6dc669487ae9541eaead5e341e4"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-locked.gpu.bin",
+      "bytes": 3607282995,
+      "sha256": "3230df93f830057e3ce14745f89534540a7ad6dc669487ae9541eaead5e341e4"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-resumed.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "eb8a5b19288e537e49746686ee25450922ebeca1c0b4b27dc915d2f483d54096"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-resumed.cpu.bin",
+      "bytes": 1391071400,
+      "sha256": "eb8a5b19288e537e49746686ee25450922ebeca1c0b4b27dc915d2f483d54096"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-resumed.gpu.bin",
+      "bytes": 3607277879,
+      "sha256": "fe4a749d2b7900f37804e5fdfbe6a23496249a1ee384c30e8c0ce2694fd1c700"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-resumed.gpu.bin",
+      "bytes": 3607277879,
+      "sha256": "fe4a749d2b7900f37804e5fdfbe6a23496249a1ee384c30e8c0ce2694fd1c700"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-locked.query.json",
+      "bytes": 76838,
+      "sha256": "54a88e470aa9b1c69131a27854508184d2bb687e21941a11a9a77983dbcbc84d"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-locked.query.json",
+      "bytes": 76838,
+      "sha256": "54a88e470aa9b1c69131a27854508184d2bb687e21941a11a9a77983dbcbc84d"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone-resumed.query.json",
+      "bytes": 76838,
+      "sha256": "fc71acc036d9181ad86cf95fa1f5159e526c1935894cf84d56cc00decb979d70"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone-resumed.query.json",
+      "bytes": 76838,
+      "sha256": "fc71acc036d9181ad86cf95fa1f5159e526c1935894cf84d56cc00decb979d70"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\two-tone.save",
+      "bytes": 2739051569,
+      "sha256": "ad6f1e85ec084c56133ae01999b093d70d117d411e9d36e452af965c13fb3a23"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\two-tone.save",
+      "bytes": 2739051569,
+      "sha256": "ad6f1e85ec084c56133ae01999b093d70d117d411e9d36e452af965c13fb3a23"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-converged.cpu.bin",
+      "bytes": 33472,
+      "sha256": "39e39df6ecb65945dbe2beb9723fb55be03e29c768b00207ef6c4981b01b5b4b"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-converged.cpu.bin",
+      "bytes": 33472,
+      "sha256": "39e39df6ecb65945dbe2beb9723fb55be03e29c768b00207ef6c4981b01b5b4b"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-converged.gpu.bin",
+      "bytes": 166771,
+      "sha256": "f4b34287ad442eaf3020a8c9d20434be0bc91ed4c0394659ca38b58065e09141"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-converged.gpu.bin",
+      "bytes": 166771,
+      "sha256": "f4b34287ad442eaf3020a8c9d20434be0bc91ed4c0394659ca38b58065e09141"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-continued.cpu.bin",
+      "bytes": 33472,
+      "sha256": "89c06a6d6646ddc143cf57dc7b0b88e1fd15f5f80a96780186ac71bf2570c30e"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-continued.cpu.bin",
+      "bytes": 33472,
+      "sha256": "89c06a6d6646ddc143cf57dc7b0b88e1fd15f5f80a96780186ac71bf2570c30e"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-continued.gpu.bin",
+      "bytes": 166771,
+      "sha256": "08173c51f527706ea7a0507cc09d2557bc886c7caf4c72081eab2d4d72cdc5b1"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-continued.gpu.bin",
+      "bytes": 166771,
+      "sha256": "08173c51f527706ea7a0507cc09d2557bc886c7caf4c72081eab2d4d72cdc5b1"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-locked.cpu.bin",
+      "bytes": 33472,
+      "sha256": "5ed14c0f11d24430d435a6977f69c7e4efb5d47bd3c3d3979cd7c8f055f3484f"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-locked.cpu.bin",
+      "bytes": 33472,
+      "sha256": "5ed14c0f11d24430d435a6977f69c7e4efb5d47bd3c3d3979cd7c8f055f3484f"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-locked.gpu.bin",
+      "bytes": 168631,
+      "sha256": "b5e5a6d74428b93c6d29ad5362301f182fa47bb58521d620d8a0d89dc0523c0a"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-locked.gpu.bin",
+      "bytes": 168631,
+      "sha256": "b5e5a6d74428b93c6d29ad5362301f182fa47bb58521d620d8a0d89dc0523c0a"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-resumed.cpu.bin",
+      "bytes": 33472,
+      "sha256": "5390b43bfcfe1d68cbc3e1e4a22ef2d8cb2412714e1d90337372c21e4f25aea1"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-resumed.cpu.bin",
+      "bytes": 33472,
+      "sha256": "5390b43bfcfe1d68cbc3e1e4a22ef2d8cb2412714e1d90337372c21e4f25aea1"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-resumed.gpu.bin",
+      "bytes": 164155,
+      "sha256": "09f2a31b5bae43cf35703b91375b948cb7b26f9f5f0feb0a3ecd1a354995e7cd"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-resumed.gpu.bin",
+      "bytes": 164155,
+      "sha256": "09f2a31b5bae43cf35703b91375b948cb7b26f9f5f0feb0a3ecd1a354995e7cd"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-locked.query.json",
+      "bytes": 67945,
+      "sha256": "dd40e7ae949c57570806afce35c00f41100ceeac6c9ccbc6d70ffd884f4111d6"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-locked.query.json",
+      "bytes": 67945,
+      "sha256": "dd40e7ae949c57570806afce35c00f41100ceeac6c9ccbc6d70ffd884f4111d6"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river-resumed.query.json",
+      "bytes": 67923,
+      "sha256": "f2c8be2258748a157a7212b8355b52a1783b2fa9fcfb5e320d720a3187cd629a"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river-resumed.query.json",
+      "bytes": 67923,
+      "sha256": "f2c8be2258748a157a7212b8355b52a1783b2fa9fcfb5e320d720a3187cd629a"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline-output\\river.save",
+      "bytes": 71926,
+      "sha256": "2572516abffb71e15cd5a53ad7a475f7b89e8c3302553f7871137eaf4674ebb1"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output\\river.save",
+      "bytes": 71926,
+      "sha256": "2572516abffb71e15cd5a53ad7a475f7b89e8c3302553f7871137eaf4674ebb1"
+    }
+  ],
+  "raw_files_not_rehashed_after_original_complete_reader": true,
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D223-chunk-division-scout\\execution\\proof.exit.json",
+      "sha256": "8085efddbfc644b09bc3a9ca70306b0d636330f189436b4849fbbb0405d82dc2",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG-r3\\execution\\reader.exit.json",
+      "sha256": "2105c5000aba186adda436069644de90884eea25bb81cb30e40d26061eceee9f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\probe.exit.json",
+      "sha256": "90b91de2fb37e1bdaf0e27892b2ed79878502c643d7853831620c3d0bed5ed97",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\rustc.exit.json",
+      "sha256": "444b9cb2b115bbc52c039a2a00cafc0868e880fa5965780dc3b16b7784cd2876",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\capture.exit.json",
+      "sha256": "a1192d49735d4207adc03bdba4e1c50c8e9d0b91b0ae310348b59cbc45066f05",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\disassemble.exit.json",
+      "sha256": "bb4309bd9561ee82488a7fbd809abf82037bee1f6873c0a0dc5714abefd47e71",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\candidate\\capture.exit.json",
+      "sha256": "26b1eda06ce1fa5b0ef61473a2670d07acd530ea84109c44668b739f75a8e42b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\candidate\\disassemble.exit.json",
+      "sha256": "ddb496e8aa598e397ead18860ce5f7580411175b71dae686594433c17e0f3e4a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-kernel-control\\execution\\probe.exit.json",
+      "sha256": "133797a778197d76cb2627e97c28e4363a44b77cee831eec8931f562d7428e3f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-kernel-control\\execution\\rustc.exit.json",
+      "sha256": "bf438a5dac2714e6a8096b723c6949ef4c56392784b65a724f879d91488b2fcb",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-direct-audit\\audit.exit.json",
+      "sha256": "266bd8bcb0b33b9360eff1618c892c908a24516c2bab2705f0af2d6d0edc5840",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\execution\\audit.exit.json",
+      "sha256": "4f30677814401a0591d8646abe0e1221c33710f0ca5575dfd02434a312036a3a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\execution\\baseline.exit.json",
+      "sha256": "003dd2fe7623383357857dbc179c5f8d5358314cab64de0fbcc75622434d4fba",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\execution\\candidate.exit.json",
+      "sha256": "794c9edf590e0ae2c0bc1f3bbe80522be7ea7dd5e6cfd483afa74ddc7f5aca7a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\execution\\rustc-baseline.exit.json",
+      "sha256": "8c71bc1998918f8f9bcbd0a592efe898d0ec8e2557b6f9053f1b15eed972457d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\execution\\rustc-candidate.exit.json",
+      "sha256": "51e8a8ffbae6442cc11fc126324114115c233afc89aa9225b3e3d78655e591af",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-final-build-r2\\feature\\cargo.exit.json",
+      "sha256": "178cc11df620fc0f05edd694b2d5d06ec546299ee601988bd847924f350aa6c1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-final-build-r2\\primary\\cargo.exit.json",
+      "sha256": "ca677fff7b4ec8a212a8a089b5fc8549bd1d2822dd919a2d7fd3a27c67b93729",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\B326.exit.json",
+      "sha256": "1d34482a83951b55d7b65ece0193db432f79d0e40c73b9863c03f146fc530ab0",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\B327.exit.json",
+      "sha256": "c7f8164c558900532f0b954187a42b2c99cd8d57d64e1d86af04ad39ff7edae8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\B328.exit.json",
+      "sha256": "3b1e4ec28af7e2a50cade5712efa6618c4a4170963d8aa532936a8329365856c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\E108R1.exit.json",
+      "sha256": "d482c00c5a8880fcf51dccd9836279e26153bebc3a190e4d1db8bd1c10186823",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\E108R2.exit.json",
+      "sha256": "28afb74cae69a34d3604e5592a8248eee44380857d68630c4abab5e6cfbfdfda",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\E108R3.exit.json",
+      "sha256": "8ef9ec71db59d201622265e08e33d8472a55207c23063bdfb9ae205a9bf6020c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-execution\\V108-unit.exit.json",
+      "sha256": "56da7ce01d430da338d019293a84b9d92592b8380b54326c63e9fa8f1ff52deb",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-wrapper\\assessment.exit.json",
+      "sha256": "bd0317f3a4b69be974fa708306c2c0db1a384ceb8f58352b92078f3e3cc5c6db",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-wrapper\\native.exit.json",
+      "sha256": "4bbb765ff6e2a8a2f14c08f3bfe825b4ed24c0d1dd9f148993cd220c2bc3e09f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-primary-wrapper\\root-replay.exit.json",
+      "sha256": "4dffc14fde3d73ff4148021f53d261c983d781358f1d60b24d0682dfac60f430",
+      "returncode": 0
+    }
+  ],
+  "preserved_mechanical_reader_failure": {
+    "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG-r2\\execution\\reader.exit.json",
+    "sha256": "ebe65b773c732e34ddb8e5b8aa32873027bb3928870804fbf9527dbd9f86f839",
+    "returncode": 1,
+    "explanation": "Initial CPUdecoder demanded direct global count load; compute75 keeps a lossless signed64thenunsigned32 conversion chain. Additive r3 backward def/use now requires exact o_cntparam15 root. R2terminal1/logs/protocol/script retained. Some CPU120regionreplays completed before readerassertion; no GPU/compiler/application case repeated or source/gate change. Pre-execution r1 numerator/fixture correction separately retained."
+  },
+  "primary_protocol_sha256": "88d400b3f84005e26e77458d6f3c480e114b42befd84743384a11317e2af6880",
+  "comparison_sha256": "a5448d0dc7d9d78c268ee4da99e42796524170df367571022a6ae1c5f2cc5249",
+  "root_crosscheck_sha256": "1b700c09d39643b9ea07222d096178c8096b50e548badebc705f0488a35442d5",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9943.056700000001,
+    "candidate_full_cycle_ms": 9950.8543,
+    "observed_gain_pct": -0.07842256395862526,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.026294197514867872,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 0.011789549544550438,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 7.823057927506347,
+        "slower_pairs": 2,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "all_owned_compilers_native_readers_terminal": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "GPU_and_sequence_locks_absent": true,
+  "new_gain_adopted_or_deployed": false,
+  "extra_or_rescue_samples": 0,
+  "source_if_ternary_helper_flags_width_threshold_entrysubset_quality_or_sample_rescue_allowed": false,
+  "qualification_limits": "Initial pass requires separately frozenfresh16>=1%,>=13improvingpairs,positivepaired/block/ordermedians/strictfixtureguards,broaderF32/menu/save/resume/paging/storedcontinuation/fallback,actualCPU/memory/capacity/graph/resource/materialcosts,holdout,freshoriginalcumulative andappbeforeadoption. Failure closes exactform without rescue. No significance/universal/no-tradeoff/adoption claim.",
+  "last_primary_baseline_id": "B328",
+  "best_qualified_config": "E080 / GPU / compressed / 16 workers / default affinity",
+  "original_current_RAM_baseline_ms": 10456.4109,
+  "historical_or_RAM_reference_samples_scored": 0,
+  "goal_active": true
+}

@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.2.1.1. NV::Cupti::Checkpoint &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.2.1.1.1. NV::Cupti::Checkpoint::CUpti_Checkpoint" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html" />
+    <link rel="prev" title="7.2.1. NV::Cupti" href="namespace_n_v_1_1_cupti.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="namespaces.html">7. Namespaces</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="namespace_c_u_p_t_i.html">7.1. CUPTI</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="namespace_n_v.html">7.2. NV</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="namespace_n_v_1_1_cupti.html">7.2.1. Cupti</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">7.2.1.1. Checkpoint</a><ul>
+<li class="toctree-l5"><a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html">7.2.1.1.1. CUpti_Checkpoint</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#enumerations">7.2.1.1.2. Enumerations</a></li>
+<li class="toctree-l5"><a class="reference internal" href="#functions">7.2.1.1.3. Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="namespaces.html"><span class="section-number">7. </span>Namespaces</a> &raquo;</li>
+    <li><a href="namespace_n_v.html"><span class="section-number">7.2. </span>NV</a> &raquo;</li>
+    <li><a href="namespace_n_v_1_1_cupti.html"><span class="section-number">7.2.1. </span>NV::Cupti</a> &raquo;</li>
+<li><span class="section-number">7.2.1.1. </span>NV::Cupti::Checkpoint</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="nv-cupti-checkpoint">
+<h1><span class="section-number">7.2.1.1. </span>NV::Cupti::Checkpoint<a class="headerlink" href="#nv-cupti-checkpoint" title="Permalink to this headline"></a></h1>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10CheckpointE">
+<span id="_CPPv3N2NV5Cupti10CheckpointE"></span><span id="_CPPv2N2NV5Cupti10CheckpointE"></span><span id="NV::Cupti::Checkpoint"></span><span class="target" id="namespace_n_v_1_1_cupti_1_1_checkpoint"></span><span class="k"><span class="pre">namespace</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">Checkpoint</span></span></span><a class="headerlink" href="#_CPPv4N2NV5Cupti10CheckpointE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint"><span class="std std-ref">CUpti_Checkpoint</span></a></dt><dd><p>Configuration and handle for a CUPTI Checkpoint.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga4d49e28d43be23e549b827292271b56d"><span class="std std-ref">CUpti_CheckpointOptimizations</span></a></dt><dd><p>Specifies optimization options for a checkpoint, may be OR'd together to specify multiple options.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga8aaeedd9f88919cdc35baa0a10492c09"><span class="std std-ref">cuptiCheckpointFree</span></a>(CUpti_Checkpoint *const handle)</dt><dd><p>Free the backing data for a checkpoint.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga21cdc23dcb04894c0a59cb1fd4da430f"><span class="std std-ref">cuptiCheckpointRestore</span></a>(CUpti_Checkpoint *const handle)</dt><dd><p>Restore a checkpoint to the device associated with its context.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga90ea5f5068de6135df6b409fa09f947b"><span class="std std-ref">cuptiCheckpointSave</span></a>(CUpti_Checkpoint *const handle)</dt><dd><p>Initialize and save a checkpoint of the device state associated with the handle context.</p>
+</dd>
+</dl>
+</div>
+<section id="enumerations">
+<h2><span class="section-number">7.2.1.1.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizationsE">
+<span id="_CPPv3N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizationsE"></span><span id="_CPPv2N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizationsE"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga4d49e28d43be23e549b827292271b56d"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="namespace_n_v.html#_CPPv42NV" title="NV"><span class="n"><span class="pre">NV</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="namespace_n_v_1_1_cupti.html#_CPPv4N2NV5CuptiE" title="NV::Cupti"><span class="n"><span class="pre">Cupti</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N2NV5Cupti10CheckpointE" title="NV::Cupti::Checkpoint"><span class="n"><span class="pre">Checkpoint</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_CheckpointOptimizations</span></span></span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizationsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Specifies optimization options for a checkpoint, may be OR’d together to specify multiple options. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations25CUPTI_CHECKPOINT_OPT_NONEE">
+<span id="_CPPv3N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations25CUPTI_CHECKPOINT_OPT_NONEE"></span><span id="_CPPv2N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations25CUPTI_CHECKPOINT_OPT_NONEE"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1gga4d49e28d43be23e549b827292271b56da34ddc9bb42fe2f6d94bc8b8d8b418b81"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CHECKPOINT_OPT_NONE</span></span></span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations25CUPTI_CHECKPOINT_OPT_NONEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Default behavior. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations29CUPTI_CHECKPOINT_OPT_TRANSFERE">
+<span id="_CPPv3N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations29CUPTI_CHECKPOINT_OPT_TRANSFERE"></span><span id="_CPPv2N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations29CUPTI_CHECKPOINT_OPT_TRANSFERE"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1gga4d49e28d43be23e549b827292271b56da2de3733a0e7e789f28b7ca280f13484e"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_CHECKPOINT_OPT_TRANSFER</span></span></span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint29CUpti_CheckpointOptimizations29CUPTI_CHECKPOINT_OPT_TRANSFERE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Determine which mem blocks have changed, and only restore those. This optimization is cached, which means cuptiCheckpointRestore must always be called at the same point in the application when this option is enabled, or the result may be incorrect. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">7.2.1.1.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint19cuptiCheckpointFreeEPC16CUpti_Checkpoint">
+<span id="_CPPv3N2NV5Cupti10Checkpoint19cuptiCheckpointFreeEPC16CUpti_Checkpoint"></span><span id="_CPPv2N2NV5Cupti10Checkpoint19cuptiCheckpointFreeEPC16CUpti_Checkpoint"></span><span id="NV::Cupti::Checkpoint::cuptiCheckpointFree__CUpti_CheckpointPC"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga8aaeedd9f88919cdc35baa0a10492c09"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="namespace_n_v.html#_CPPv42NV" title="NV"><span class="n"><span class="pre">NV</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="namespace_n_v_1_1_cupti.html#_CPPv4N2NV5CuptiE" title="NV::Cupti"><span class="n"><span class="pre">Cupti</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N2NV5Cupti10CheckpointE" title="NV::Cupti::Checkpoint"><span class="n"><span class="pre">Checkpoint</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">cuptiCheckpointFree</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#_CPPv4N2NV5Cupti10Checkpoint16CUpti_CheckpointE" title="NV::Cupti::Checkpoint::CUpti_Checkpoint"><span class="n"><span class="pre">CUpti_Checkpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint19cuptiCheckpointFreeEPC16CUpti_Checkpoint" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Free the backing data for a checkpoint. </p>
+<p>Frees all associated device, host memory and filesystem storage used for this context. After freeing a handle, it may be re-used as if it was new - options may be re-configured and will take effect on the next call to <code class="docutils literal notranslate"><span class="pre">cuptiCheckpointSave</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handle</strong> – A pointer to a previously saved <a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint"><span class="std std-ref">CUpti_Checkpoint</span></a> object</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – if the handle was successfully freed </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if the handle was already freed or appears invalid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – if the context is no longer valid </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint22cuptiCheckpointRestoreEPC16CUpti_Checkpoint">
+<span id="_CPPv3N2NV5Cupti10Checkpoint22cuptiCheckpointRestoreEPC16CUpti_Checkpoint"></span><span id="_CPPv2N2NV5Cupti10Checkpoint22cuptiCheckpointRestoreEPC16CUpti_Checkpoint"></span><span id="NV::Cupti::Checkpoint::cuptiCheckpointRestore__CUpti_CheckpointPC"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga21cdc23dcb04894c0a59cb1fd4da430f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="namespace_n_v.html#_CPPv42NV" title="NV"><span class="n"><span class="pre">NV</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="namespace_n_v_1_1_cupti.html#_CPPv4N2NV5CuptiE" title="NV::Cupti"><span class="n"><span class="pre">Cupti</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N2NV5Cupti10CheckpointE" title="NV::Cupti::Checkpoint"><span class="n"><span class="pre">Checkpoint</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">cuptiCheckpointRestore</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#_CPPv4N2NV5Cupti10Checkpoint16CUpti_CheckpointE" title="NV::Cupti::Checkpoint::CUpti_Checkpoint"><span class="n"><span class="pre">CUpti_Checkpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint22cuptiCheckpointRestoreEPC16CUpti_Checkpoint" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Restore a checkpoint to the device associated with its context. </p>
+<p>Restores device, pinned, and allocated memory to the state when the checkpoint was saved</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handle</strong> – A pointer to a previously saved <a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint"><span class="std std-ref">CUpti_Checkpoint</span></a> object</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUTPI_SUCCESS</strong> – if the checkpoint was successfully restored </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_INITIALIZED</strong> – if the checkpoint was not previously initialized </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if the handle appears invalid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – if the restore or optimization operation fails </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv4N2NV5Cupti10Checkpoint19cuptiCheckpointSaveEPC16CUpti_Checkpoint">
+<span id="_CPPv3N2NV5Cupti10Checkpoint19cuptiCheckpointSaveEPC16CUpti_Checkpoint"></span><span id="_CPPv2N2NV5Cupti10Checkpoint19cuptiCheckpointSaveEPC16CUpti_Checkpoint"></span><span id="NV::Cupti::Checkpoint::cuptiCheckpointSave__CUpti_CheckpointPC"></span><span class="target" id="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i_1ga90ea5f5068de6135df6b409fa09f947b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-prename descclassname"><a class="reference internal" href="namespace_n_v.html#_CPPv42NV" title="NV"><span class="n"><span class="pre">NV</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="namespace_n_v_1_1_cupti.html#_CPPv4N2NV5CuptiE" title="NV::Cupti"><span class="n"><span class="pre">Cupti</span></span></a><span class="p"><span class="pre">::</span></span><a class="reference internal" href="#_CPPv4N2NV5Cupti10CheckpointE" title="NV::Cupti::Checkpoint"><span class="n"><span class="pre">Checkpoint</span></span></a><span class="p"><span class="pre">::</span></span></span><span class="sig-name descname"><span class="n"><span class="pre">cuptiCheckpointSave</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#_CPPv4N2NV5Cupti10Checkpoint16CUpti_CheckpointE" title="NV::Cupti::Checkpoint::CUpti_Checkpoint"><span class="n"><span class="pre">CUpti_Checkpoint</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="n sig-param"><span class="pre">handle</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N2NV5Cupti10Checkpoint19cuptiCheckpointSaveEPC16CUpti_Checkpoint" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize and save a checkpoint of the device state associated with the handle context. </p>
+<p>Uses the handle options to configure and save a checkpoint of the device state associated with the specified context.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>handle</strong> – A pointer to a <a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint"><span class="std std-ref">CUpti_Checkpoint</span></a> object</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – if a checkpoint was successfully initialized and saved </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">handle</span></code> does not appear to refer to a valid <a class="reference internal" href="struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint.html#struct_n_v_1_1_cupti_1_1_checkpoint_1_1_c_upti___checkpoint"><span class="std std-ref">CUpti_Checkpoint</span></a> </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_CONTEXT</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_DEVICE</strong> – if device associated with context is not compatible with checkpoint API </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if Save is requested over an existing checkpoint, but <code class="docutils literal notranslate"><span class="pre">allowOverwrite</span></code> was not originally specified </p></li>
+<li><p><strong>CUPTI_ERROR_OUT_OF_MEMORY</strong> – if as configured, not enough backing storage space to save the checkpoint </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-18T01:36:48.837456+00:00",
+  "original_protocol_sha256": "051b4d0d615d3771cf3fc3362243170d8c2b5b0140cfb13bb3b371c720bd021d",
+  "original_manager_exit_sha256": "2872b1e133dea6dc5226414b6764cac4c57c343570b49f735c90cde6f0612dc6",
+  "cause": "New helper module named common was importing common_e051, which in turn imports historical common. Python reused the partially initialized new module by its common name.",
+  "repair": "Rename only the new helper to server_common and update its two imports. Original code and failed native receipt preserved.",
+  "compiler_or_unit_or_solver_or_server_processes_started": 0,
+  "target_and_output_paths_still_absent": true,
+  "source_inputs_and_build_test_smoke_gates_unchanged": true,
+  "no_performance_samples": true
+}

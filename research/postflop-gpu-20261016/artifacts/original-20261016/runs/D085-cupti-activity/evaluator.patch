@@ -1,0 +1,50 @@
+--- frozen-primary-evaluator
++++ D085-diagnostic-evaluator
+@@ -14,6 +14,10 @@
+ use std::io::{self, Write};
+ use std::sync::Arc;
+ use std::time::Instant;
++
++#[link(name="D085Collector")] extern "system" { fn D085StartTrace()->u32; fn D085FlushTrace()->u32; fn D085StopTrace()->u32; }
++struct D085Guard;impl Drop for D085Guard {fn drop(&mut self){unsafe{D085StopTrace();}}}
++
+ 
+ const TARGET_PCT_POT: f64 = 0.3;
+ const CHECK_EVERY: u32 = 20;
+@@ -163,6 +167,8 @@
+         Ok("0") | Err(_) => false,
+         Ok(other) => panic!("unknown POSTFLOP_AUTORESEARCH_PROFILE {other:?}"),
+     };
++    assert_eq!(filter.as_deref(),Some("rainbow"),"D085 diagnostic fixture");
++    assert!(storage==Storage::Compressed && !profile,"D085 diagnostic settings");
+     emit_stage(json!({
+         "schema_version": 1, "stage": "suite_start", "storage": storage_name,
+         "fixture_filter": filter, "smoke_only": filter.is_some(),
+@@ -180,7 +186,7 @@
+             continue;
+         }
+         let mut config: SpotConfig =
+-            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++            serde_json::from_str(include_str!(r"X:\Dev\GTOpen-gpu-research-20261016\bench_spot.json")).unwrap();
+         config.board = board.into();
+         config.tree.rake_pct = rake;
+         config.tree.rake_cap = 3.0;
+@@ -204,6 +210,8 @@
+         }));
+ 
+         let stage_start = Instant::now();
++        let _d085_guard = D085Guard;
++        assert_eq!(unsafe{D085StartTrace()},1,"private CUPTI start");
+         let mut gpu = GpuSolver::new(&host).expect("benchmark requires CUDA");
+         gpu.synchronize().unwrap();
+         let gpu_init_ms = elapsed_ms(stage_start);
+@@ -268,6 +276,9 @@
+         }));
+         assert!(target_met, "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations");
+ 
++        gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D085FlushTrace()},1,"private CUPTI flush");
++        assert_eq!(unsafe{D085StopTrace()},1,"private CUPTI stop while context alive");
+         if profile {
+             let diagnostic = gpu.iterate_profiled().unwrap();
+             emit_stage(json!({

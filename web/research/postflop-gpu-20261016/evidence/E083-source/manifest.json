@@ -1,0 +1,21 @@
+{
+  "id": "E083",
+  "at": "2026-10-18T09:34:15.338693+00:00",
+  "owned": {
+    "crates/solver/src/gpu/arena.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\baseline-arena.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\candidate-arena.rs"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\baseline-mod.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\candidate-mod.rs"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/arena.rs": "76688432e56a176851f4b820e4518058a982cc9ce58224f524722b7e0fd55624",
+    "crates/solver/src/gpu/mod.rs": "9ac9d9103d1417de5c33025a5897118375d384843f4b2ece6c6e25b7017fa91f"
+  },
+  "scope": "Only four proven-positive-zero action-arena uploads in GpuSolver construction defer their per-arena stream waits. All allocations and every zero fill remain; add one final initialization stream wait before returning the fully owned GpuSolver. Ordinary ArenaLayout::upload keeps defer=false, and every F32/nonzero/staging upload keeps its original wait. No new buffers, graph/capture/launch, CPU helper/thread, kernel/math/precision, skipped predicate/initialization, layout, payload, save or quality changes. E080 full zero predicates and borrowed-token guards remain unchanged.",
+  "source_activated": false,
+  "candidate_accepted": false
+}

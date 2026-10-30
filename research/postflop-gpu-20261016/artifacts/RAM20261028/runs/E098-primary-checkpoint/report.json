@@ -1,0 +1,109 @@
+{
+  "id": "E098-primary-checkpoint",
+  "at": "2026-10-28T17:54:36.831382+00:00",
+  "status": "rejected_closed_primary",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9538.8797,
+    "candidate_full_cycle_ms": 9566.481300000001,
+    "observed_gain_pct": -0.2893589275478732,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.009900322719609923,
+        "slower_pairs": 0,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 0.6498963502393226,
+        "slower_pairs": 2,
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 3.543620412328692,
+        "slower_pairs": 3,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "primary_report_sha256": "d9801d7242a88f3eaaa8d75a1825fa6ec278c7343db3bf7e625242e62479728f",
+  "root_replay_sha256": "96633078311291592240c7a5dc36b6a01caa1e8afadc813a4566421cfb37ddea",
+  "all_owned_compilers_native_and_readers_terminal": true,
+  "successful_compiler_and_native_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\V098-default-unit.exit.json",
+      "sha256": "8b792162005cbd0483f21fbd5413c330a8fc1c90e1e99b7e440a427f498a6e27",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\V098-znver3-unit.exit.json",
+      "sha256": "80d879e09eee155f4c49d213c02bf6a2b2f94b1b35dc602009875830335bef61",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\B308.exit.json",
+      "sha256": "8087f85e6d067cfb0fcae85652682518200ff51b34b637169513ee5661220702",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\E098R1.exit.json",
+      "sha256": "461b64bd048ca13b8903ab2ec2ed4f7a60329091f69506350cec29ad3535ac0f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\E098R2.exit.json",
+      "sha256": "eb61812f37a0b39325fb3592b7d164a2b6f981734e0285fceb970bdb548c0f1a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\B309.exit.json",
+      "sha256": "5aa9be9537fefd86d9b87bb1b8a81ffea1985bc621b4b3bccbc540b5bdf7ea2d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\B310.exit.json",
+      "sha256": "7a583c6bddb3c23ecaa2d6ac7e51669089619259c9641a8100c969bdacb0ae4d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-primary-execution\\E098R3.exit.json",
+      "sha256": "10bd473c501219bdb6a953d85ceba740c942bfe5f18dbfb45da1636ebeed4149",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-final-build\\default\\cargo.exit.json",
+      "sha256": "3fd07aec840ce214c88eb0a8556222d0183e9f721c40945e8ba7c42e9016319d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E098-final-build\\znver3\\cargo.exit.json",
+      "sha256": "7b86bf0714c7a82a98f9d70950c29eb73fbb32dbdd137c89c7658a4c6d1de29f",
+      "returncode": 0
+    }
+  ],
+  "ordinary_units_per_arm": 86,
+  "ordinary_ignored_per_arm": 4,
+  "scientific_full_records_exact": 18,
+  "convergence_checkpoints_exact": 138,
+  "same_accepted_source_GPU_string_NVRTC_version_runtime_environment_and_workers": true,
+  "CPU_codegen_only_variant": [
+    "-C",
+    "target-cpu=znver3"
+  ],
+  "CPU_instruction_hardware_scope": "Ryzen5950X/znver3 local host only. Not a portable binary. Default retained and live server unchanged.",
+  "build_log_adapter": "Original default compiler succeeded, then original JSON reader rejected verbose buildscript output. Original files preserved; sealed read-only parser adapter reused exact completed compiler output and ran only remaining original candidate compiler. No compiler/native/timing repeat or flags change.",
+  "full_raw_F32_save_resume_continuation_material_holdout_fresh16_cumulative_application": "PENDING; not implied by primary fingerprint/units",
+  "candidate_accepted": false,
+  "new_gain_deployed": false,
+  "last_primary_baseline_id": "B310",
+  "samecohort_baseline_ms": 9538.8797,
+  "original_epoch_reference_ms": 10456.4109,
+  "historical_epoch_samples_scored": 0,
+  "source_main_live_protected_PTX_unchanged": true,
+  "flag_CPUmodel_source_sample_rescue_allowed_after_failure": false
+}

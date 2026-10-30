@@ -1,0 +1,586 @@
+{
+  "id": "D301",
+  "at": "2026-10-29T19:40:28.453961+00:00",
+  "status": "pass_scoped_native_selector_removal_and_all30_original_priority_pairs",
+  "protocol_sha256": "509d42698b34e406472b5264653552b2a3056cfce3586c85d1fc2d9e47adcc8e",
+  "witness": {
+    "baseline_static_inventory": {
+      "unpredicated:FADD": 106,
+      "predicated:FADD": 30,
+      "predicated:FSEL": 30,
+      "unpredicated:FMUL": 1,
+      "unpredicated:FFMA": 2
+    },
+    "candidate_static_inventory": {
+      "unpredicated:FADD": 76,
+      "predicated:FADD": 60,
+      "unpredicated:FMUL": 1,
+      "unpredicated:FFMA": 2
+    },
+    "all30_native_conditional_pairs": [
+      {
+        "PC": "0x1ea0",
+        "instruction": "@P1 FADD R10, R37, R10",
+        "role": "higher",
+        "position_value_version": "R31@0x1dd0",
+        "reach_value_version": "R37@0x1e40",
+        "predicate_compare_PC": "0x1e50",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x1ee0",
+        "instruction": "@!P2 FADD R28, R37, R28",
+        "role": "lower",
+        "position_value_version": "R31@0x1dd0",
+        "reach_value_version": "R37@0x1e40",
+        "predicate_compare_PC": "0x1e30",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x1fb0",
+        "instruction": "@!P0 FADD R28, R28, R33.reuse",
+        "role": "lower",
+        "position_value_version": "R33@0x1e00",
+        "reach_value_version": "R33@0x1f20",
+        "predicate_compare_PC": "0x1e70",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x1fc0",
+        "instruction": "@P1 FADD R10, R10, R33",
+        "role": "higher",
+        "position_value_version": "R33@0x1e00",
+        "reach_value_version": "R33@0x1f20",
+        "predicate_compare_PC": "0x1eb0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x1ff0",
+        "instruction": "@!P4 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R35@0x1e10",
+        "reach_value_version": "R35@0x1f60",
+        "predicate_compare_PC": "0x1e80",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2000",
+        "instruction": "@P2 FADD R10, R10, R35",
+        "role": "higher",
+        "position_value_version": "R35@0x1e10",
+        "reach_value_version": "R35@0x1f60",
+        "predicate_compare_PC": "0x1f00",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2040",
+        "instruction": "@!P5 FADD R28, R28, R37.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x1e90",
+        "reach_value_version": "R37@0x1f90",
+        "predicate_compare_PC": "0x1f30",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2050",
+        "instruction": "@P3 FADD R10, R10, R37",
+        "role": "higher",
+        "position_value_version": "R31@0x1e90",
+        "reach_value_version": "R37@0x1f90",
+        "predicate_compare_PC": "0x1f70",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2120",
+        "instruction": "@P0 FADD R10, R10, R31",
+        "role": "higher",
+        "position_value_version": "R31@0x1f80",
+        "reach_value_version": "R31@0x20e0",
+        "predicate_compare_PC": "0x2070",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2150",
+        "instruction": "@!P1 FADD R28, R28, R31.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x1f80",
+        "reach_value_version": "R31@0x20e0",
+        "predicate_compare_PC": "0x2020",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2200",
+        "instruction": "@P0 FADD R10, R10, R37.reuse",
+        "role": "higher",
+        "position_value_version": "R37@0x20c0",
+        "reach_value_version": "R37@0x2180",
+        "predicate_compare_PC": "0x2130",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2230",
+        "instruction": "@!P3 FADD R28, R28, R37",
+        "role": "lower",
+        "position_value_version": "R37@0x20c0",
+        "reach_value_version": "R37@0x2180",
+        "predicate_compare_PC": "0x2110",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2240",
+        "instruction": "@!P4 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R35@0x20f0",
+        "reach_value_version": "R35@0x21d0",
+        "predicate_compare_PC": "0x2160",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2250",
+        "instruction": "@P1 FADD R10, R10, R35.reuse",
+        "role": "higher",
+        "position_value_version": "R35@0x20f0",
+        "reach_value_version": "R35@0x21d0",
+        "predicate_compare_PC": "0x2190",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2270",
+        "instruction": "@!P5 FADD R28, R28, R31.reuse",
+        "role": "lower",
+        "position_value_version": "R33@0x2100",
+        "reach_value_version": "R31@0x21f0",
+        "predicate_compare_PC": "0x21b0",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2280",
+        "instruction": "@P2 FADD R10, R10, R31.reuse",
+        "role": "higher",
+        "position_value_version": "R33@0x2100",
+        "reach_value_version": "R31@0x21f0",
+        "predicate_compare_PC": "0x21e0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2520",
+        "instruction": "@!P1 FADD R28, R28, R31.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x23b0",
+        "reach_value_version": "R31@0x2490",
+        "predicate_compare_PC": "0x2440",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2540",
+        "instruction": "@P6 FADD R10, R10, R31.reuse",
+        "role": "higher",
+        "position_value_version": "R31@0x23b0",
+        "reach_value_version": "R31@0x2490",
+        "predicate_compare_PC": "0x2450",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2560",
+        "instruction": "@!P5 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R33@0x23f0",
+        "reach_value_version": "R35@0x24d0",
+        "predicate_compare_PC": "0x2470",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2590",
+        "instruction": "@P4 FADD R10, R10, R35",
+        "role": "higher",
+        "position_value_version": "R33@0x23f0",
+        "reach_value_version": "R35@0x24d0",
+        "predicate_compare_PC": "0x24a0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x25a0",
+        "instruction": "@!P3 FADD R28, R28, R33",
+        "role": "lower",
+        "position_value_version": "R29@0x2410",
+        "reach_value_version": "R33@0x24f0",
+        "predicate_compare_PC": "0x24c0",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x25c0",
+        "instruction": "@P2 FADD R10, R10, R33",
+        "role": "higher",
+        "position_value_version": "R29@0x2410",
+        "reach_value_version": "R33@0x24f0",
+        "predicate_compare_PC": "0x2500",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x25d0",
+        "instruction": "@!P1 FADD R28, R28, R37.reuse",
+        "role": "lower",
+        "position_value_version": "R27@0x2430",
+        "reach_value_version": "R37@0x2510",
+        "predicate_compare_PC": "0x2530",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x25f0",
+        "instruction": "@P6 FADD R10, R10, R37",
+        "role": "higher",
+        "position_value_version": "R27@0x2430",
+        "reach_value_version": "R37@0x2510",
+        "predicate_compare_PC": "0x2570",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2780",
+        "instruction": "@!P0 FADD R28, R28, R27",
+        "role": "lower",
+        "position_value_version": "R11@0x26d0",
+        "reach_value_version": "R27@0x2720",
+        "predicate_compare_PC": "0x2700",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2790",
+        "instruction": "@P2 FADD R10, R10, R27",
+        "role": "higher",
+        "position_value_version": "R11@0x26d0",
+        "reach_value_version": "R27@0x2720",
+        "predicate_compare_PC": "0x2740",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x27b0",
+        "instruction": "@!P3 FADD R28, R28, R31.reuse",
+        "role": "lower",
+        "position_value_version": "R29@0x26e0",
+        "reach_value_version": "R31@0x2750",
+        "predicate_compare_PC": "0x2730",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x27c0",
+        "instruction": "@P4 FADD R10, R10, R31",
+        "role": "higher",
+        "position_value_version": "R29@0x26e0",
+        "reach_value_version": "R31@0x2750",
+        "predicate_compare_PC": "0x2760",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2880",
+        "instruction": "@!P1 FADD R28, R28, R27",
+        "role": "lower",
+        "position_value_version": "R11@0x2820",
+        "reach_value_version": "R27@0x2850",
+        "predicate_compare_PC": "0x2840",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2890",
+        "instruction": "@P0 FADD R10, R10, R27",
+        "role": "higher",
+        "position_value_version": "R11@0x2820",
+        "reach_value_version": "R27@0x2850",
+        "predicate_compare_PC": "0x2860",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2b80",
+        "instruction": "@!P4 FADD R28, R33.reuse, R28",
+        "role": "lower",
+        "position_value_version": "R29@0x2a30",
+        "reach_value_version": "R33@0x2ab0",
+        "predicate_compare_PC": "0x2a80",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2b90",
+        "instruction": "@P1 FADD R10, R33, R10",
+        "role": "higher",
+        "position_value_version": "R29@0x2a30",
+        "reach_value_version": "R33@0x2ab0",
+        "predicate_compare_PC": "0x2ac0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2bb0",
+        "instruction": "@!P5 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x2a50",
+        "reach_value_version": "R35@0x2b00",
+        "predicate_compare_PC": "0x2a90",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2bc0",
+        "instruction": "@P2 FADD R10, R10, R35",
+        "role": "higher",
+        "position_value_version": "R31@0x2a50",
+        "reach_value_version": "R35@0x2b00",
+        "predicate_compare_PC": "0x2ae0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2be0",
+        "instruction": "@!P6 FADD R28, R28, R29.reuse",
+        "role": "lower",
+        "position_value_version": "R37@0x2a60",
+        "reach_value_version": "R29@0x2b30",
+        "predicate_compare_PC": "0x2b10",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2bf0",
+        "instruction": "@P3 FADD R10, R10, R29",
+        "role": "higher",
+        "position_value_version": "R37@0x2a60",
+        "reach_value_version": "R29@0x2b30",
+        "predicate_compare_PC": "0x2b40",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2cf0",
+        "instruction": "@!P2 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x2b60",
+        "reach_value_version": "R35@0x2c70",
+        "predicate_compare_PC": "0x2c10",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2d00",
+        "instruction": "@P1 FADD R10, R10, R35.reuse",
+        "role": "higher",
+        "position_value_version": "R31@0x2b60",
+        "reach_value_version": "R35@0x2c70",
+        "predicate_compare_PC": "0x2c50",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2e00",
+        "instruction": "@!P6 FADD R28, R28, R33.reuse",
+        "role": "lower",
+        "position_value_version": "R33@0x2c90",
+        "reach_value_version": "R33@0x2d90",
+        "predicate_compare_PC": "0x2d20",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2e20",
+        "instruction": "@P1 FADD R10, R10, R33.reuse",
+        "role": "higher",
+        "position_value_version": "R33@0x2c90",
+        "reach_value_version": "R33@0x2d90",
+        "predicate_compare_PC": "0x2d40",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2e40",
+        "instruction": "@!P2 FADD R28, R28, R29.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x2cc0",
+        "reach_value_version": "R29@0x2dc0",
+        "predicate_compare_PC": "0x2d30",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2e80",
+        "instruction": "@P4 FADD R10, R10, R29",
+        "role": "higher",
+        "position_value_version": "R31@0x2cc0",
+        "reach_value_version": "R29@0x2dc0",
+        "predicate_compare_PC": "0x2d70",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2e90",
+        "instruction": "@!P3 FADD R28, R28, R35",
+        "role": "lower",
+        "position_value_version": "R29@0x2cd0",
+        "reach_value_version": "R35@0x2de0",
+        "predicate_compare_PC": "0x2d60",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2eb0",
+        "instruction": "@P5 FADD R10, R10, R35",
+        "role": "higher",
+        "position_value_version": "R29@0x2cd0",
+        "reach_value_version": "R35@0x2de0",
+        "predicate_compare_PC": "0x2da0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x2ec0",
+        "instruction": "@!P6 FADD R28, R28, R37.reuse",
+        "role": "lower",
+        "position_value_version": "R27@0x2ce0",
+        "reach_value_version": "R37@0x2df0",
+        "predicate_compare_PC": "0x2e10",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x2ee0",
+        "instruction": "@P1 FADD R10, R10, R37",
+        "role": "higher",
+        "position_value_version": "R27@0x2ce0",
+        "reach_value_version": "R37@0x2df0",
+        "predicate_compare_PC": "0x2e60",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x3130",
+        "instruction": "@!P1 FADD R28, R28, R33.reuse",
+        "role": "lower",
+        "position_value_version": "R11@0x2fd0",
+        "reach_value_version": "R33@0x3070",
+        "predicate_compare_PC": "0x3060",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x3150",
+        "instruction": "@P6 FADD R10, R10, R33.reuse",
+        "role": "higher",
+        "position_value_version": "R11@0x2fd0",
+        "reach_value_version": "R33@0x3070",
+        "predicate_compare_PC": "0x3090",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x3190",
+        "instruction": "@!P5 FADD R28, R28, R35.reuse",
+        "role": "lower",
+        "position_value_version": "R27@0x3010",
+        "reach_value_version": "R35@0x30d0",
+        "predicate_compare_PC": "0x30a0",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x31a0",
+        "instruction": "@P4 FADD R10, R10, R35",
+        "role": "higher",
+        "position_value_version": "R27@0x3010",
+        "reach_value_version": "R35@0x30d0",
+        "predicate_compare_PC": "0x30f0",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x31c0",
+        "instruction": "@!P3 FADD R28, R28, R11.reuse",
+        "role": "lower",
+        "position_value_version": "R31@0x3030",
+        "reach_value_version": "R11@0x3110",
+        "predicate_compare_PC": "0x30c0",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x31d0",
+        "instruction": "@P2 FADD R10, R10, R11",
+        "role": "higher",
+        "position_value_version": "R31@0x3030",
+        "reach_value_version": "R11@0x3110",
+        "predicate_compare_PC": "0x3100",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x31f0",
+        "instruction": "@!P1 FADD R28, R28, R37",
+        "role": "lower",
+        "position_value_version": "R29@0x3040",
+        "reach_value_version": "R37@0x3120",
+        "predicate_compare_PC": "0x3140",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x3200",
+        "instruction": "@P6 FADD R10, R10, R37",
+        "role": "higher",
+        "position_value_version": "R29@0x3040",
+        "reach_value_version": "R37@0x3120",
+        "predicate_compare_PC": "0x3170",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x3390",
+        "instruction": "@!P0 FADD R28, R28, R11",
+        "role": "lower",
+        "position_value_version": "R7@0x32e0",
+        "reach_value_version": "R11@0x3340",
+        "predicate_compare_PC": "0x3310",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x33a0",
+        "instruction": "@P2 FADD R10, R10, R11",
+        "role": "higher",
+        "position_value_version": "R7@0x32e0",
+        "reach_value_version": "R11@0x3340",
+        "predicate_compare_PC": "0x3350",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x33c0",
+        "instruction": "@!P3 FADD R28, R28, R29.reuse",
+        "role": "lower",
+        "position_value_version": "R27@0x32f0",
+        "reach_value_version": "R29@0x3360",
+        "predicate_compare_PC": "0x3330",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x33d0",
+        "instruction": "@P4 FADD R10, R10, R29",
+        "role": "higher",
+        "position_value_version": "R27@0x32f0",
+        "reach_value_version": "R29@0x3360",
+        "predicate_compare_PC": "0x3370",
+        "accumulator": "R10"
+      },
+      {
+        "PC": "0x3490",
+        "instruction": "@!P1 FADD R28, R28, R11",
+        "role": "lower",
+        "position_value_version": "R7@0x3430",
+        "reach_value_version": "R11@0x3460",
+        "predicate_compare_PC": "0x3450",
+        "accumulator": "R28"
+      },
+      {
+        "PC": "0x34a0",
+        "instruction": "@P0 FADD R10, R10, R11",
+        "role": "higher",
+        "position_value_version": "R7@0x3430",
+        "reach_value_version": "R11@0x3460",
+        "predicate_compare_PC": "0x3470",
+        "accumulator": "R10"
+      }
+    ],
+    "same_position_and_reach_value_version_in_each_pair": true,
+    "bounds": {
+      "lower": "R26",
+      "upper": "R8"
+    },
+    "predicates": "lower=!GE(pos,lb); higher=GE(pos,ub)&GE(pos,lb); original if/else priority",
+    "original5barriers": [
+      "BAR.SYNC.DEFER_BLOCKING 0x0",
+      "BAR.SYNC.DEFER_BLOCKING 0x0",
+      "BAR.SYNC.DEFER_BLOCKING 0x0",
+      "BAR.SYNC.DEFER_BLOCKING 0x0",
+      "BAR.SYNC.DEFER_BLOCKING 0x0"
+    ],
+    "limits": "Fixed-driver static instruction and linear-current-definition/value-version witness, not a complete native CFG/pointer/IEEE interpreter. R26/R8 roles agree with D300 parameter-bound PTX; their full native address ancestry is not re-proved here. No dynamic lane frequency/instruction throughput/counter/speed attribution. Full raw original GPU and engine/canonical/broad/material/speed gates remain mandatory."
+  },
+  "negative_reader_fixtures": [
+    "wrong_reach_word",
+    "wrong_else_bound",
+    "unexpected_selector",
+    "missing_barrier"
+  ],
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_application_kernel_solver_or_speed_samples": 0,
+  "candidate_adopted": false
+}

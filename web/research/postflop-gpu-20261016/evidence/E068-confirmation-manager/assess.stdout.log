@@ -1,0 +1,33 @@
+{
+  "status": "rejected",
+  "performance": {
+    "baseline_full_cycle_ms": 10982.936150000001,
+    "candidate_full_cycle_ms": 10605.1082,
+    "observed_gain_pct": 3.4401360878347704,
+    "required_gain_pct": 1,
+    "positive_pairs": 14,
+    "required_positive_pairs": 13,
+    "pair_median_gain_pct": 1.8683888143757843,
+    "block_median_gains_pct": [
+      2.4378280081213415,
+      2.462104650618285,
+      1.4380765148706962,
+      2.60167391344948
+    ],
+    "order_strata_median_gains_pct": {
+      "BC": 3.2062604801844268,
+      "CB": 1.7634244392121836
+    },
+    "fresh_confirmation_pass": false
+  },
+  "gates": {
+    "aggregate_at_least1pct": true,
+    "at_least13_positive_pairs": true,
+    "positive_pair_median": true,
+    "all4block_medians_positive": true,
+    "both_order_strata_positive": true,
+    "no_fixture_regression": false,
+    "all96results_736checkpoints_exact": true
+  },
+  "report_sha256": "e93bcad8e6b8a9e91a827f363070a1b4166aff5db41b8f286b757a39e8824b70"
+}

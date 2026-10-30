@@ -1,0 +1,195 @@
+{
+  "id": "D310",
+  "at": "2026-10-29T21:38:10.040922+00:00",
+  "status": "EXACT_TRANSPORT_PASS_DECLINE_INTERLEAVED_SOLVER_PROTOTYPE_ON_OBSERVED_COPY_COST",
+  "D309_report_sha256": "74979517e28e7730a0c252f04e5bab54960edee2cbba88b1092e290be3b8f0b3",
+  "source_protocol_sha256": "f3f379475fc7d0835f236652cbbff7be8d5e2bf48f2c2193f539979ea7c9966b",
+  "effective_protocol_sha256": "53f42aee9625aa02ad4e3247000dfc51487592f1d0116ffa5f761247edad2df1",
+  "native_report_sha256": "11ccd88364a5a31c6cf818a892d4f1a2b438cf09c2e4b7626326b7d6f6606183",
+  "reader_report_sha256": "c4ae6b120b6f92c9b202433f7e68d5491a0fba36bfb483fe035f3e1afc130ef9",
+  "native_transport_pass": true,
+  "independent_complete_raw_pass": true,
+  "raw_files": 90,
+  "raw_bytes": 14204434128,
+  "all_physical_and_output_words_checked": 3551107092,
+  "negative_corruption_controls_rejected": [
+    "one_payload_bit",
+    "left_guard_bit",
+    "right_guard_bit",
+    "swapped_regret_strategy_word"
+  ],
+  "single_component_round_diagnostics": [
+    {
+      "fixture": "boundary-1",
+      "words": 1,
+      "contiguous_upload_twofields_ms": 0.0812,
+      "interleaved_upload_twofields_ms": 0.1638,
+      "contiguous_download_twofields_ms": 0.0596,
+      "interleaved_download_twofields_ms": 0.0615,
+      "single_round_D2H_ratio": 1.0318791946308725,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "boundary-2",
+      "words": 2,
+      "contiguous_upload_twofields_ms": 0.0912,
+      "interleaved_upload_twofields_ms": 0.1994,
+      "contiguous_download_twofields_ms": 0.065,
+      "interleaved_download_twofields_ms": 0.0617,
+      "single_round_D2H_ratio": 0.9492307692307692,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "boundary-17",
+      "words": 17,
+      "contiguous_upload_twofields_ms": 0.0821,
+      "interleaved_upload_twofields_ms": 0.0263,
+      "contiguous_download_twofields_ms": 0.0677,
+      "interleaved_download_twofields_ms": 0.0677,
+      "single_round_D2H_ratio": 1.0,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "boundary-1023",
+      "words": 1023,
+      "contiguous_upload_twofields_ms": 0.0763,
+      "interleaved_upload_twofields_ms": 0.0588,
+      "contiguous_download_twofields_ms": 0.0728,
+      "interleaved_download_twofields_ms": 0.0939,
+      "single_round_D2H_ratio": 1.289835164835165,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "boundary-1024",
+      "words": 1024,
+      "contiguous_upload_twofields_ms": 0.0614,
+      "interleaved_upload_twofields_ms": 0.0383,
+      "contiguous_download_twofields_ms": 0.0715,
+      "interleaved_download_twofields_ms": 0.0828,
+      "single_round_D2H_ratio": 1.158041958041958,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "boundary-1025",
+      "words": 1025,
+      "contiguous_upload_twofields_ms": 0.0728,
+      "interleaved_upload_twofields_ms": 0.0598,
+      "contiguous_download_twofields_ms": 0.0754,
+      "interleaved_download_twofields_ms": 0.0956,
+      "single_round_D2H_ratio": 1.2679045092838197,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "rainbow",
+      "words": 185172163,
+      "contiguous_upload_twofields_ms": 53.9604,
+      "interleaved_upload_twofields_ms": 2290.5623,
+      "contiguous_download_twofields_ms": 52.1745,
+      "interleaved_download_twofields_ms": 2212.2289,
+      "single_round_D2H_ratio": 42.400576910176426,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "two-tone",
+      "words": 110745280,
+      "contiguous_upload_twofields_ms": 32.2213,
+      "interleaved_upload_twofields_ms": 1350.8448,
+      "contiguous_download_twofields_ms": 31.7055,
+      "interleaved_download_twofields_ms": 1313.2483,
+      "single_round_D2H_ratio": 41.42020469634606,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    },
+    {
+      "fixture": "river",
+      "words": 4480,
+      "contiguous_upload_twofields_ms": 0.1229,
+      "interleaved_upload_twofields_ms": 0.1366,
+      "contiguous_download_twofields_ms": 0.0734,
+      "interleaved_download_twofields_ms": 0.1366,
+      "single_round_D2H_ratio": 1.8610354223433243,
+      "copy_and_sync_only": true,
+      "not_complete_cycle_or_statistical_speed_test": true
+    }
+  ],
+  "decision": "Do not build E125 from thislead. Fixedwidth4/pitch8 interleavedR/S copyroute is bitexact at9sizes but observedlargearenaD2H cost exceeds40x contiguous inthisoneround. That isstrongnegativeengineeringevidence foraproposedlayoutrequiringthese fielddownloads. Conservativeprototypeadmissiondecision, notfailedprospectiveperformancegate, statisticalregression, completecyclespeedclaim orproofthatallinterleavingdesignsmustlose. No componentgainthreshold inventedaftertest.",
+  "scope": "Rawtransportonly; noCFRmath/GPUapplicationkernel/solver/ordinary/convergence/primarytiming/fresh16/broad/material/capacity/holdout/cumulative/appvalidation performed. Originalacceptedsolver arithmetic/storage/CPUcodec untouched. Logicalperarm2LFP32payloadsame, small128wordpinneddiagnosticminimumanddifferentphysicalguards explicit; no productioncapacity/memoryneutrality claim.",
+  "closed_form": "ClosefixedR/Sinterleaving withwidth4pitch8 host-devicecopyroute. No pitch/width/chunk/gather/helper/kernel/storage/guard/source/quality/round rescue; preserve negativecost andfullsuccessfulrawexactness evidence.",
+  "mechanical_repairs": [
+    "Firstcompilerexit1:twohelpers&CudaStream receivers require&Arc<CudaStream>; only2signatureschanged inretainedv2. No nativehadstarted.",
+    "v2compilerexit0; wrapperattemptedobsoleteprobe.exeratherthanprobe-v2.exe, PopenfailedwithnoPID. Existingcompiledbinarylaunchedcorrectpathonce, nocompilerrepeat.",
+    "CopiedreaderROOTparents1 pointedrunsinstead ofepochroot; readerexit1 atcommonimportbeforeanyrawread. Additivev3parents2/protocolpathrepair, originalreader/receipt preserved; fullnativeoutputreused, no native/compilerrepeat."
+  ],
+  "owned_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution\\rustc.exit.json",
+      "sha256": "ba3cb4d3b6abddd99bc8f93b5700adde36e51cebb233aa3e758198e3f4807e13",
+      "returncode": 1,
+      "error": null,
+      "cleanup": null
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native-v3.exit.json",
+      "sha256": "2b109bfa01f7c13a716b940034605c6a8f7aa29231837bfab5850c2b9fdf769c",
+      "returncode": 0,
+      "error": null,
+      "cleanup": null
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\native.exit.json",
+      "sha256": "6705f67fddda6c9c3a55926620a7d3c0729b8a3577cd11a6912a4fdf865708d5",
+      "returncode": null,
+      "error": "FileNotFoundError(2, 'The system cannot find the file specified', None, 2, None)",
+      "cleanup": null
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\reader-v3.exit.json",
+      "sha256": "a9e874605594c97c63d46eff03afd6adff7ab49c10da09944785d6aa27bfa460",
+      "returncode": 0,
+      "error": null,
+      "cleanup": null
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\reader.exit.json",
+      "sha256": "4fe97297010212a25fdcab2831001b3c2128cb7aab037340a38eaa9b0c8799d3",
+      "returncode": 1,
+      "error": null,
+      "cleanup": null
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D310-interleaved-copy-control\\execution-v2\\rustc.exit.json",
+      "sha256": "36b770fd69ee715894f99f0e8c98e2bf9bac33f772585aea1aa055fd7e4bef27",
+      "returncode": 0,
+      "error": null,
+      "cleanup": null
+    }
+  ],
+  "all_launched_owned_processes_terminal": true,
+  "launched_processes": 5,
+  "successful_processes": 3,
+  "failed_processes": 2,
+  "never_started_launches": 1,
+  "new_compiler_invocations": 2,
+  "actual_native_copy_processes": 1,
+  "successful_complete_raw_readers": 1,
+  "application_kernel_launches": 0,
+  "NVRTC_compiles": 0,
+  "CFR_or_solver_speed_runs": 0,
+  "GPU_free_bytes_before_after_equal_in_owned_control": true,
+  "accepted_main_live_protected_PTX_D304_HTML_unchanged": true,
+  "candidate_adopted": false,
+  "next_unused_candidate": "E125",
+  "last_primary_baseline": "B377",
+  "next_unused_primary_baseline": "B378",
+  "RAM20261028_reference_sum_medians_ms": 10456.4109,
+  "qualified_live_config": "E080/GPU/compressed/Rayon16/defaultaffinity",
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "goal_active": true
+}

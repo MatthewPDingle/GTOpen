@@ -1,0 +1,113 @@
+{
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "source_root": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-server-e020",
+  "target_root_must_be_previously_absent": true,
+  "commands": [
+    {
+      "phase": "build_only",
+      "args": [
+        "cargo",
+        "build",
+        "--release",
+        "--locked",
+        "-p",
+        "server",
+        "--features",
+        "gpu",
+        "--bin",
+        "gto-server",
+        "--message-format=json"
+      ]
+    },
+    {
+      "phase": "build_only",
+      "args": [
+        "cargo",
+        "test",
+        "--release",
+        "--locked",
+        "-p",
+        "server",
+        "--features",
+        "gpu",
+        "--bin",
+        "gto-server",
+        "--no-run",
+        "--message-format=json"
+      ]
+    },
+    {
+      "phase": "inventory_after_build",
+      "args": [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe",
+        "--list",
+        "--format",
+        "terse"
+      ],
+      "timeout_seconds": 60,
+      "not_a_test_execution": true
+    },
+    {
+      "phase": "unit_after_acceptance_gpu_idle",
+      "args": [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe",
+        "--nocapture",
+        "--test-threads=1"
+      ],
+      "expected_summary": [
+        20,
+        0,
+        1,
+        0,
+        0
+      ],
+      "timeout_seconds": 600
+    },
+    {
+      "phase": "isolated_smoke_after_acceptance_gpu_idle",
+      "args": [
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gto-server.exe"
+      ],
+      "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+      "environment_additions": {
+        "PORT": "43736",
+        "SOLVER_GPU": "1",
+        "SOLVER_COMPRESS": "1",
+        "RAYON_NUM_THREADS": "16"
+      },
+      "hidden": true
+    }
+  ],
+  "frozen_outputs": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gto-server.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gto-server.manifest.json",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-server-tests.manifest.json"
+  ],
+  "build_environment": {
+    "CARGO_TARGET_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-server-e020",
+    "RAYON_NUM_THREADS": "16",
+    "PATH_prefix": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin"
+  },
+  "compiler_override_absence_keys": [
+    "RUSTFLAGS",
+    "CARGO_ENCODED_RUSTFLAGS",
+    "RUSTC",
+    "RUSTC_WRAPPER",
+    "RUSTC_WORKSPACE_WRAPPER",
+    "CARGO_BUILD_RUSTFLAGS",
+    "CARGO_BUILD_RUSTC",
+    "CARGO_BUILD_RUSTC_WRAPPER",
+    "CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER",
+    "CARGO_BUILD_TARGET"
+  ],
+  "compiler_override_absence_patterns": [
+    "CARGO_PROFILE_RELEASE_*",
+    "CARGO_TARGET_*_RUSTFLAGS"
+  ],
+  "build_timeout_seconds_per_command": 1800,
+  "minimum_S_free_bytes": 57982058496,
+  "gpu_lock": "S:\\GTOpen-research\\postflop-gpu-20261016\\gpu-run.lock",
+  "no_live_replacement_or_restart": true
+}

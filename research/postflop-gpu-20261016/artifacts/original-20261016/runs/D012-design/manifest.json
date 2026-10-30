@@ -1,0 +1,69 @@
+{
+  "schema_version": 1,
+  "artifact": "D012-design",
+  "status": "artifact_only_not_applied",
+  "created_utc": "2026-10-16T05:52:10.046050+00:00",
+  "base_source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010-source\\mod.rs",
+  "target": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+  "base_sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+  "candidate_sha256": "768cbba4959e741859dccfb7c0755be9193ec8fec209f942435c5bcd5f6029df",
+  "patch_sha256": "b0ab7b3d5a060012dbc0324bb376d41f1781d7a13baac950cc1d15eef2cfd0b6",
+  "required_quantized_readback_base_sha256": "9ed3b74710399f921a7fd4a648ed30304d6f5c983970f42c57a138e11d7e3038",
+  "environment_flag": "POSTFLOP_AUTORESEARCH_CONSTRUCTOR_PROFILE=1",
+  "trace_records_enabling_flag": true,
+  "init_only": true,
+  "extra_cuda_waits": 0,
+  "cuda_call_site_counts": {
+    "\\.synchronize\\(\\)": {
+      "base": 8,
+      "candidate": 8
+    },
+    "CudaContext::new\\(": {
+      "base": 2,
+      "candidate": 2
+    },
+    "\\.new_stream\\(": {
+      "base": 1,
+      "candidate": 1
+    },
+    "\\.load_module\\(": {
+      "base": 1,
+      "candidate": 1
+    },
+    "\\.load_function\\(": {
+      "base": 1,
+      "candidate": 1
+    },
+    "\\.clone_htod\\(": {
+      "base": 8,
+      "candidate": 8
+    },
+    "\\.memcpy_dtoh\\(": {
+      "base": 3,
+      "candidate": 3
+    },
+    "\\.alloc_zeros::<": {
+      "base": 5,
+      "candidate": 5
+    },
+    "arena_layout\\[\\d\\]\\.upload\\(": {
+      "base": 4,
+      "candidate": 4
+    },
+    "QuantizedReadback::try_new\\(": {
+      "base": 1,
+      "candidate": 1
+    }
+  },
+  "original_source_recovered_exactly_after_stripping_instrumentation": true,
+  "constructor_suffix_byte_identical": true,
+  "source_at_creation": {
+    "mod.rs": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+    "quantized_readback.rs": "9ed3b74710399f921a7fd4a648ed30304d6f5c983970f42c57a138e11d7e3038"
+  },
+  "d011_log_sha256": "093416e1bee8aa51d7cc755a936d5d4160c7b5b02661dacb066672a849a96d7f",
+  "validation": "PASS: rustfmt parse-only; git apply --check; equal CUDA-call/wait counts; exact original-file recovery after stripping instrumentation; unchanged post-constructor suffix; repository hashes unchanged. No build/GPU/application.",
+  "readme_sha256": "34b74c162315737a16dabda48cdc697ef28bf9221026eca20567412e667a376e",
+  "separate_context_and_stream_creation": true,
+  "existing_new_stream_implicit_context_wait": "cudarc 0.19.7 driver/safe/core.rs:674-679; no extra wait inserted"
+}

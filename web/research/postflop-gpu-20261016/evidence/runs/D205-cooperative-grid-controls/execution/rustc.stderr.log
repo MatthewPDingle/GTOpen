@@ -1,0 +1,15 @@
+error[E0599]: no variant, associated function, or constant named `CU_KERNEL_NODE_ATTRIBUTE_COOPERATIVE` found for enum `CUkernelNodeAttrID` in the current scope
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D205-cooperative-grid-controls\probe.rs:29:207
+   |
+29 | ...AttrID::CU_KERNEL_NODE_ATTRIBUTE_COOPERATIVE,&mut value),sys::CUresult::CUDA_SUCCESS);assert_eq!(value.cooperative,1);}
+   |            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ variant, associated function, or constant not found in `CUkernelNodeAttrID`
+   |
+help: there is a variant with a similar name
+   |
+29 -    if kind==sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL{kernel+=1;let mut value:sys::CUkernelNodeAttrValue=std::mem::zeroed();assert_eq!(sys::cuGraphKernelNodeGetAttribute(node,sys::CUkernelNodeAttrID::CU_KERNEL_NODE_ATTRIBUTE_COOPERATIVE,&mut value),sys::CUresult::CUDA_SUCCESS);assert_eq!(value.cooperative,1);}
+29 +    if kind==sys::CUgraphNodeType::CU_GRAPH_NODE_TYPE_KERNEL{kernel+=1;let mut value:sys::CUkernelNodeAttrValue=std::mem::zeroed();assert_eq!(sys::cuGraphKernelNodeGetAttribute(node,sys::CUkernelNodeAttrID::CU_LAUNCH_ATTRIBUTE_COOPERATIVE,&mut value),sys::CUresult::CUDA_SUCCESS);assert_eq!(value.cooperative,1);}
+   |
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0599`.

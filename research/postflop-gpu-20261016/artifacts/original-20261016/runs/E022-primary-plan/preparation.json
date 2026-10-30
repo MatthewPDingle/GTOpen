@@ -1,0 +1,32 @@
+{
+  "status": "pass_source_only",
+  "at": "2026-10-16T12:11:59.620948+00:00",
+  "python_ast_parse": [
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "production_sources_all162_match_E020": true,
+  "owned_sources_exactly": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "mod_rs_unchanged": true,
+  "candidate_exact_byte_reversal": true,
+  "patch_apply_check": "passed, no patch applied",
+  "run_ids_unused": [
+    "V022-unit",
+    "B071",
+    "E022R1",
+    "E022R2",
+    "B072",
+    "B073",
+    "E022R3"
+  ],
+  "build_target_previously_absent": true,
+  "wide_fixture_hash_unchanged": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+  "geometry_cases": 339712,
+  "builds": 0,
+  "gpu_executions": 0,
+  "native_tests": 0,
+  "dashboard_edits": 0
+}

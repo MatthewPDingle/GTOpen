@@ -1,0 +1,56 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -312,20 +312,46 @@
+     u32 t0 = cc_start[n];
+     u32 t1 = t0 + cc_count[n];
+     float inv = node_cdiv[n];
++    // Immutable metadata is shared by every hand in this CTA. Preserve the
++    // original path for wider externally supplied lists.
++    u32 width = t1 - t0;
++    if (width > 52) {
++        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++            u64 hm = mask_p[i];
++            float acc = 0.f;
++            for (u32 t = t0; t < t1; t++) {
++                u64 cm = 1ull << cc_card[t];
++                if (hm & cm) continue;
++                u32 k = cc_perm[t];
++                int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
++                acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
++            }
++            cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
++        }
++        return;
++    }
++    __shared__ u64 card_mask[52];
++    __shared__ u64 child_base[52];
++    __shared__ u64 perm_base[52];
++    for (u32 j = threadIdx.x; j < width; j += blockDim.x) {
++        u32 t = t0 + j;
++        card_mask[j] = 1ull << cc_card[t];
++        child_base[j] = (u64)cfv_slot[cc_child[t]] * nh_max;
++        perm_base[j] = (u64)cc_perm[t] * nh_p;
++    }
++    __syncthreads();
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u64 hm = mask_p[i];
+         float acc = 0.f;
+-        for (u32 t = t0; t < t1; t++) {
+-            u64 cm = 1ull << cc_card[t];
+-            if (hm & cm) continue;
+-            u32 k = cc_perm[t];
+-            int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+-            acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
++        for (u32 j = 0; j < width; j++) {
++            if (hm & card_mask[j]) continue;
++            u64 perm = perm_base[j];
++            int idx = perm == 0 ? i : (int)hand_perm_p[perm + i];
++            acc += cfv[child_base[j] + idx];
+         }
+         cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
+     }
+ }
+-
+ // Up sweep, action nodes: traverser nodes combine children with the current
+ // sigma and apply the DCFR/CFR+ update; opponent nodes sum children.
+ template<int NA>

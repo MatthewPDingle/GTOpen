@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-28T16:44:56.105605+00:00",
+  "exact_form_queries": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "__ldcg|ld\\.global\\.cg",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "__ldcg|ld\\.global\\.cg",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu",
+        "-g",
+        "*.rs"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "scope": "Bounded all-local-ref CUDA history and retained old-epoch CU/RS source query; no matching explicit .cg CFVload. Current ledger E033/E034 are context-reservationmetadata policies; E085 changes strategy store cacheoperator, E075 uniform immutable metadata load. These stayclosed and are not composed. Not exhaustive remote semantic uniqueness."
+}

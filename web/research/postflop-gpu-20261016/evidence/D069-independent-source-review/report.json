@@ -1,0 +1,250 @@
+{
+  "id": "D069",
+  "verdict": "PASS_SCOPED_SOURCE_FEASIBILITY",
+  "independent_source_review_pass": true,
+  "source_feasible": true,
+  "findings": [],
+  "scope": "Independent read-only review of frozen zero-output source reasoning and retained payout-sign counts. No implementation or runtime authorization.",
+  "decision": "A separately registered candidate may classify the actual uniform device expression and return only on exact positive-zero bits after the existing full logical positive-zero store pass. Negative-zero and any other result retain the barrier and original present-hand expression.",
+  "reasoning": [
+    "The block-wide whole-row raw-bit predicate and immutable per-node finite payout values are uniform. The zero-mass expression must use the same operation order and compilation options; classification is raw result bits equal to 0x00000000, never x==0 or host sign inference.",
+    "Each logical output index in the full-row strided store loop has exactly one writer. On the positive-zero return path there is no later same-CTA access to those addresses. A final CTA barrier is unnecessary for this path; existing stream/graph dependencies order later consumers.",
+    "Accepted plan construction assigns terminal nodes distinct persistent CFV slots, and reached terminal worklists are unique. This inference does not cover arbitrary aliased metadata or concurrent external writers.",
+    "Sorted present-hand indices can assign different lanes than the full-row store loop. For negative-zero present results the original second barrier remains required before overwriting those indices; absent outputs remain positive zero.",
+    "Keep the entire logical opponent-row predicate, finite checks on all three f32 payouts, card-position preload, fallback bytes, ABI, launch shape and shared layout unchanged. Empty lists and count-zero remain within the retained test coverage."
+  ],
+  "reviewed_source_locations": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\kernels.cu",
+      "lines": "195-292",
+      "role": "accepted up_show ABI, full-row+0 stores and sorted present result expression"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\kernels.cu",
+      "lines": "228-261",
+      "role": "closed E036 eligibility, first collective, full-row stores, mandatory second barrier and present writes"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\source-evidence\\plan.rs",
+      "lines": "214-241,244-277,527-541",
+      "role": "unique persistent terminal CFV slots, complete planned terminal lists and existing slot geometry assertions"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\mod.rs",
+      "lines": "661-697,890-927",
+      "role": "evaluation/training up_show use the same three payoff arrays and existing ordered stream launches"
+    }
+  ],
+  "historical_sign_recount": [
+    {
+      "fixture": "rainbow",
+      "historical_iteration": 20,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 472752,
+      "eligible": 8160,
+      "nonzero_sign_groups": {
+        "011": 8160
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "rainbow",
+      "historical_iteration": 20,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 472752,
+      "eligible": 43361,
+      "nonzero_sign_groups": {
+        "011": 43361
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "rainbow",
+      "historical_iteration": 200,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 472752,
+      "eligible": 52583,
+      "nonzero_sign_groups": {
+        "011": 52583
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "rainbow",
+      "historical_iteration": 200,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 472752,
+      "eligible": 49181,
+      "nonzero_sign_groups": {
+        "011": 49181
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "two-tone",
+      "historical_iteration": 20,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 287229,
+      "eligible": 3388,
+      "nonzero_sign_groups": {
+        "011": 3388
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "two-tone",
+      "historical_iteration": 20,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 287229,
+      "eligible": 17369,
+      "nonzero_sign_groups": {
+        "011": 17369
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "two-tone",
+      "historical_iteration": 200,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 287229,
+      "eligible": 44887,
+      "nonzero_sign_groups": {
+        "011": 44887
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "two-tone",
+      "historical_iteration": 200,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 287229,
+      "eligible": 24798,
+      "nonzero_sign_groups": {
+        "011": 24798
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "river",
+      "historical_iteration": 20,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 11,
+      "eligible": 0,
+      "nonzero_sign_groups": {},
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "river",
+      "historical_iteration": 20,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 11,
+      "eligible": 1,
+      "nonzero_sign_groups": {
+        "011": 1
+      },
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "river",
+      "historical_iteration": 60,
+      "traverser": 0,
+      "opponent": 1,
+      "planned_ctas": 11,
+      "eligible": 0,
+      "nonzero_sign_groups": {},
+      "zero_row_nonfinite_payouts": 0
+    },
+    {
+      "fixture": "river",
+      "historical_iteration": 60,
+      "traverser": 1,
+      "opponent": 0,
+      "planned_ctas": 11,
+      "eligible": 0,
+      "nonzero_sign_groups": {},
+      "zero_row_nonfinite_payouts": 0
+    }
+  ],
+  "historical_recount_pass": true,
+  "historical_interpretation": "All twelve eligible totals independently match D067 and the sign scout. Every nonempty group is 011; none is 111. These are planned metadata sign bits joined to historical row flags, not evaluated GPU expression bits, runtime frequency or timing.",
+  "required_if_implementation_is_later_authorized": [
+    "Reuse all fixed E036 34 original-GPU comparison pairs / 68 launches, both orientations, complete poisoned output/padding and all 21 input-buffer checks; preserve count-zero and partial/full/empty-list cases.",
+    "Retain explicit positive-zero present results and negative-zero present versus positive-zero absent results, with actual cross-lane witnesses. Keep excluded-tail negative-zero/nonzero/nonfinite inputs and each nonfinite payout channel. Source review must establish exact exclusion/fallback because output equality alone need not reveal the path taken.",
+    "Inspect actual new compiled expression/branch and execute the independently authorized original-GPU unit before any timing. No source-only or sign-count correctness claim substitutes for that comparison.",
+    "Keep E036 closed and its evidence unchanged. Any successor retains the prospective complete-cycle >=2 percent gate, conjunctive fixture guards and exact 18-result/138-checkpoint requirements; no extra samples or acceptance from this note."
+  ],
+  "strongest_counterargument": "Extra expression evaluation and a branch cost work while whole-row staging, the first collective, card-position loads and full-row stores remain. Removing a source barrier or observing many eligible CTAs does not establish any complete-cycle headroom. E036 itself failed the unchanged performance gate.",
+  "limits": [
+    "No candidate implementation, compiler, native process, GPU operation, new census or performance measurement.",
+    "D066 retained no raw reach payload or showdown metadata device download; D067 maps remain accepted-source CPU reconstructions.",
+    "Preserving source expression does not by itself prove unchanged compiled floating behavior; actual old-GPU comparison remains necessary."
+  ],
+  "official_documentation": [
+    {
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/asynchronous-execution.html",
+      "use": "Same-stream order supports later-consumer ordering; the no-local-barrier conclusion is an inference from unique writes and no later intra-CTA dependency."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/04-special-topics/cuda-graphs.html",
+      "use": "Stream capture records ordered dependencies; accepted launches do not introduce a programmatic early dependency."
+    }
+  ],
+  "all_162_current_accepted_source_hashes_exact": true,
+  "compiler_native_gpu_executed": false,
+  "production_modified": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-zero-output-scout\\manifest.json": "035b33dd37e72c5a0cac4fc6272a83bdca7dd145be059301da0f9695323092ba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-zero-output-scout\\report.json": "6733c892033abd81eaf48ff7ff019eaff53b5fba4bb40cab2828f1fa5c49cc67",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-root-decisions\\preparation.json": "9f458c46ed104ced45f2bf2dfbfd14c4c23f177e3300e57bb4d5b86a7705a6d2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-payout-sign-scout\\report.json": "66e2a49ec5d241e1aa0bd1551ae8a6c4df5e2339a935d41e2b58b3646552c4bd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-payout-sign-scout\\manifest.json": "970ed8d4a757f5f8d665d6fb611f4661f6b42d038845059cb113c8003f200064",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\manifest.json": "1252fa30431bdb567617577ca75812f48b7127f3cd8d8e6551a8afdbdf9b6bbe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\runtime-design.json": "0ecbf488699999e893e3c965b11614ccd664b54a3a7f73bc4abc66a740047077",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\test-insertion.rs": "ac8537f7c483e49aa026a9a5f255b712bb63fff213240e42b5a2108185116f91",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\source-evidence\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-three-pair-comparison\\report.json": "e45f16a4d7ee724bca3791f4d759fcc27a8049e14b9c99b19ccc89ffa27cce7e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-independent-review\\validation.json": "69d5abdf278c6031380378cfb60fa6eef8de655e0e573a55113a0c18d3ede43c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E036-independent-review\\manifest.json": "5d7b485af23e781d511a9d4403e2eb38be09a4ff898d4d66cab5c557432bcfd0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V036-unit\\stdout.log": "6d534e5aa520f20fb86258abf2fa3dc398e49d405a83df266bcefb3ab29ba6c1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-cleanup\\report.json": "b5e33668bba2e1037e9441131d3114f583c68bc4002529d784938d407a717072",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping-artifacts.json": "72ce0a7e59999f8872b12d78df775d08bb772808f5b4916890e9cdf46e4c7476",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-independent-review\\report.json": "1ecbdcd95211088d000e6ebbee566a1c3a0ab96c1e6e6ef6f69839950cc22cce",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-payout-sign-scout\\count_signs.py": "0fb0644d980ac707acc8f2c703fa4c6f5d67ca5472d8bce8c241b53da83fdef7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D069-payout-sign-scout\\README.md": "37702745b6490410a774549a47463e7f4f45a93c04433f025c394ab75892baa4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census-artifacts.json": "38b1e9c7fcc5780b9cbef76fd48ce5bed508f3fe317b84549b6e9e78b08e56cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D067-planned-show-incidence\\report.json": "bc2abc4281d230d3e8348758bd12795c3ec5a8bf00d6a2c0ac074ba57f831c94",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-independent-review\\report.json": "b6c9a39790578335bee453727d32bdb7cc4f5e1bae3c194d1e3f91b4a8db1e18",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\rainbow-planned-show-mapping.u32le": "0da88cc7dd835769e1526e2c021ee483283be79c4cb7aae93562c8b387a4571b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\rainbow-iteration20-reach1.rowflags": "adda51b2970b64b7b8eabe50cc33c0c5c0330ecdddf61614b2752b5a7ecb227f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\rainbow-iteration20-reach0.rowflags": "754317a11b8cfb22de4bc823a086b0b616ec19f5a6c84a166bff354b2734502c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\rainbow-iteration200-reach1.rowflags": "326d97522259795173fcc1e88a541cd0a2b8e48b320f354e2bc7ae818cc096fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\rainbow-iteration200-reach0.rowflags": "8bf2ece9bfc03b97458096593d8029d04b0c6da044f0b19bb96957751f51a523",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\two-tone-planned-show-mapping.u32le": "5090706e6e40d40361e36cb8f154341f8c456deaaff4174d7b96c4c05bcf7abc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\two-tone-iteration20-reach1.rowflags": "7d23a175bd769317c49c4ecb705a1cbc43938d9ab688fca40894c573eac6a5d2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\two-tone-iteration20-reach0.rowflags": "89f163f4ad284633bc4b91894a457323d82c1004b1dcdb358b5645efb6a5f36e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\two-tone-iteration200-reach1.rowflags": "f4cd7675ea216f630f4c6d0a42390fa55a0821c6a6b47f4e369d5d3cd7216e31",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\two-tone-iteration200-reach0.rowflags": "db376525a96896b825022189dc1fbfff5339a4403a442c63bced0499546241a9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-execution\\mapping\\river-planned-show-mapping.u32le": "01e70648ddf3a2b1f93258d6caefc7e689b95ee7ba4983612ee6eadeb624ba09",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\river-iteration20-reach1.rowflags": "a0304a8d646fb16e328ab2cc4b708e81a63611854a902d734121da1b9b1c7de4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\river-iteration20-reach0.rowflags": "de9ead375c8fc3aa1b46765c6252bda3bb44cbbb87db939612e2ce2b7f39af36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\river-iteration60-reach1.rowflags": "37943e0ad44f8c18e4c2db9279c607070fc9d16d1985f20c60bd83ded796c236",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census\\river-iteration60-reach0.rowflags": "6fe3527f4462d8593a51668613f10d6d9996bb93c16424a1b74e603d81be84e0"
+  },
+  "at": "2026-10-16T22:09:59.729202+00:00"
+}

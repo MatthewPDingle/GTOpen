@@ -1,0 +1,232 @@
+--- E080/kernels.cu
++++ E099/kernels.cu
+@@ -515,3 +515,229 @@
+         }
+     }
+ }
++
++// E099: two adjacent, independently evaluated f32 hands per thread.
++// Callers/entry guards establish natural 8-byte alignment for every row.
++__device__ __forceinline__ float2 pair2_value(float x, float y) {
++    float2 v; v.x = x; v.y = y; return v;
++}
++__device__ __forceinline__ float2 pair2_load(const float* p) {
++    return *reinterpret_cast<const float2*>(p);
++}
++__device__ __forceinline__ void pair2_store(float* p, float2 v) {
++    *reinterpret_cast<float2*>(p) = v;
++}
++
++__device__ __forceinline__ void down_action_pair2_impl(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_player,
++    const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
++    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    float* reach0, float* reach1,
++    int nh0, int nh1)
++{
++    int b = blockIdx.x;
++    if (b >= count) return;
++    u32 n = nodes[start + b];
++    int actor = node_player[n];
++    const int na = 2;
++    u64 doff = node_data_off[n];
++    u32 cs = node_children_start[n];
++    const float* regs = actor == 0 ? regrets0 : regrets1;
++    float* reach_a = actor == 0 ? reach0 : reach1;
++    int nh_a = actor == 0 ? nh0 : nh1;
++    u32 src = actor == 0 ? rsrc0[n] : rsrc1[n];
++    const float* parent_reach = reach_a + (u64)src * nh_a;
++    long long loff = lock_off[n];
++    if (loff >= 0) {
++        const float* sig = lock_sigma + loff;
++        for (int i = 2 * threadIdx.x; i < nh_a; i += 2 * blockDim.x) {
++            float2 pr = pair2_load(parent_reach + i);
++            for (int a = 0; a < na; a++) {
++                u32 child = children[cs + a];
++                float2 sg = pair2_load(sig + a * nh_a + i);
++                pair2_store(reach_a + (u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i,
++                    pair2_value(pr.x * sg.x, pr.y * sg.y));
++            }
++        }
++        return;
++    }
++    float2 rc[2];
++    for (int i = 2 * threadIdx.x; i < nh_a; i += 2 * blockDim.x) {
++        float2 sum = pair2_value(0.f, 0.f);
++        for (int a = 0; a < na; a++) {
++            float2 r = pair2_load(regs + doff + (u64)a * nh_a + i);
++            rc[a] = r;
++            sum.x += r.x > 0.f ? r.x : 0.f;
++            sum.y += r.y > 0.f ? r.y : 0.f;
++        }
++        float2 pr = pair2_load(parent_reach + i);
++        float2 uni = pair2_value(pr.x / (float)na, pr.y / (float)na);
++        for (int a = 0; a < na; a++) {
++            u32 child = children[cs + a];
++            float2 r = rc[a];
++            float2 v;
++            if (sum.x > 1e-12f) v.x = pr.x * ((r.x > 0.f ? r.x : 0.f) / sum.x);
++            else v.x = uni.x;
++            if (sum.y > 1e-12f) v.y = pr.y * ((r.y > 0.f ? r.y : 0.f) / sum.y);
++            else v.y = uni.y;
++            pair2_store(reach_a + (u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i, v);
++        }
++    }
++}
++
++__device__ __forceinline__ void up_action_pair2_impl(
++    const u32* __restrict__ nodes, int start, int count, int p,
++    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    float* regrets_p, float* strat_p,
++    const u32* __restrict__ rsrc_p,
++    const float* __restrict__ reach_p_buf,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    const u32* __restrict__ cfv_slot, float* cfv,
++    const float* __restrict__ disc,
++    int nh_p, int nh_max)
++{
++    float pos = disc[0], neg = disc[1], ds = disc[2];
++    int b = blockIdx.x;
++    if (b >= count) return;
++    u32 n = nodes[start + b];
++    const int na = 2;
++    u32 cs = node_children_start[n];
++    if (node_player[n] == p) {
++        long long loff = lock_off[n];
++        if (loff >= 0) {
++            const float* sig = lock_sigma + loff;
++            for (int i = 2 * threadIdx.x; i < nh_p; i += 2 * blockDim.x) {
++                float2 out = pair2_value(0.f, 0.f);
++                for (int a = 0; a < na; a++) {
++                    float2 sg = pair2_load(sig + a * nh_p + i);
++                    float2 v = pair2_load(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i);
++                    out.x += sg.x * v.x;
++                    out.y += sg.y * v.y;
++                }
++                pair2_store(cfv + (u64)cfv_slot[n] * nh_max + i, out);
++            }
++            return;
++        }
++        u64 doff = node_data_off[n];
++        const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
++        float2 rc[2], vc[2];
++        for (int i = 2 * threadIdx.x; i < nh_p; i += 2 * blockDim.x) {
++            float2 sum = pair2_value(0.f, 0.f);
++            for (int a = 0; a < na; a++) {
++                float2 r = pair2_load(regrets_p + doff + (u64)a * nh_p + i);
++                rc[a] = r;
++                sum.x += r.x > 0.f ? r.x : 0.f;
++                sum.y += r.y > 0.f ? r.y : 0.f;
++            }
++            float uni = 1.f / (float)na;
++            float2 reach = pair2_load(rp + i);
++            float2 out = pair2_value(0.f, 0.f);
++            for (int a = 0; a < na; a++) {
++                float2 r = rc[a];
++                float2 sig = pair2_value(
++                    sum.x > 1e-12f ? (r.x > 0.f ? r.x : 0.f) / sum.x : uni,
++                    sum.y > 1e-12f ? (r.y > 0.f ? r.y : 0.f) / sum.y : uni);
++                float2 v = pair2_load(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i);
++                vc[a] = v;
++                out.x += sig.x * v.x;
++                out.y += sig.y * v.y;
++                u64 idx = doff + (u64)a * nh_p + i;
++                float2 old = pair2_load(strat_p + idx);
++                pair2_store(strat_p + idx,
++                    pair2_value(old.x * ds + reach.x * sig.x, old.y * ds + reach.y * sig.y));
++            }
++            for (int a = 0; a < na; a++) {
++                u64 idx = doff + (u64)a * nh_p + i;
++                float2 val = vc[a];
++                float2 r = rc[a];
++                float2 d = pair2_value(r.x > 0.f ? pos : neg, r.y > 0.f ? pos : neg);
++                pair2_store(regrets_p + idx,
++                    pair2_value(r.x * d.x + (val.x - out.x), r.y * d.y + (val.y - out.y)));
++            }
++            pair2_store(cfv + (u64)cfv_slot[n] * nh_max + i, out);
++        }
++    } else {
++        for (int i = 2 * threadIdx.x; i < nh_p; i += 2 * blockDim.x) {
++            float2 acc = pair2_value(0.f, 0.f);
++            for (int a = 0; a < na; a++) {
++                float2 v = pair2_load(cfv + (u64)cfv_slot[children[cs + a]] * nh_max + i);
++                acc.x += v.x;
++                acc.y += v.y;
++            }
++            pair2_store(cfv + (u64)cfv_slot[n] * nh_max + i, acc);
++        }
++    }
++}
++
++extern "C" __global__ void down_action_pair2(
++    const u32* __restrict__ nodes, int start, int count,
++    const int* __restrict__ node_player,
++    const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
++    const float* __restrict__ regrets0, const float* __restrict__ regrets1,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    float* reach0, float* reach1,
++    int nh0, int nh1)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    const u32 pair2_node = nodes[start + blockIdx.x];
++    const long long pair2_lock = lock_off[pair2_node];
++    const bool pair2_ok = ((nh0 | nh1) & 1) == 0
++        && (node_data_off[pair2_node] & 1ull) == 0
++        && (pair2_lock < 0 || (pair2_lock & 1ll) == 0);
++
++    if (na == 2 && pair2_ok) down_action_pair2_impl(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++}
++
++extern "C" __global__ void up_action_pair2(
++    const u32* __restrict__ nodes, int start, int count, int p,
++    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const u64* __restrict__ node_data_off,
++    const u32* __restrict__ node_children_start,
++    const u32* __restrict__ children,
++    float* regrets_p, float* strat_p,
++    const u32* __restrict__ rsrc_p,
++    const float* __restrict__ reach_p_buf,
++    const long long* __restrict__ lock_off,
++    const float* __restrict__ lock_sigma,
++    const u32* __restrict__ cfv_slot, float* cfv,
++    const float* __restrict__ disc, // [pos, neg, strat] â€” device-resident so
++                                    // captured graphs stay iteration-invariant
++    int nh_p, int nh_max)
++{
++    if (blockIdx.x >= (u32)count) return;
++    const int na = node_na[nodes[start + blockIdx.x]];
++    const u32 pair2_node = nodes[start + blockIdx.x];
++    const long long pair2_lock = lock_off[pair2_node];
++    const bool pair2_ok = ((nh_p | nh_max) & 1) == 0
++        && (node_data_off[pair2_node] & 1ull) == 0
++        && (pair2_lock < 0 || (pair2_lock & 1ll) == 0);
++
++    // Compile-time common action counts keep working arrays in registers.
++    // The generic implementation retains arbitrary action-menu support.
++    if (na == 2 && pair2_ok) up_action_pair2_impl(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++}

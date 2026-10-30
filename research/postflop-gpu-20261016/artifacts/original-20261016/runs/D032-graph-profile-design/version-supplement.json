@@ -1,0 +1,23 @@
+{
+  "recorded_at": "2026-10-16T08:59:22.867103+00:00",
+  "operating_system": {
+    "caption": "Microsoft Windows 11 IoT Enterprise LTSC",
+    "version": "10.0.26100",
+    "build": "26100",
+    "method": "Get-CimInstance Win32_OperatingSystem (read-only)"
+  },
+  "recommended_release": "Nsight Systems2025.3",
+  "documentation_inference": "Supports CUDA12.9; cuda-hw requires Blackwell and Windows11; CUPTI12.9 Update1 recommended Windows driver576.57 or newer. Installed610.88 exceeds that floor; actual profiler execution still unverified.",
+  "archived_primary_sources": {
+    "nsys-2025.3-release.html": "https://archive.docs.nvidia.com/nsight-systems/2025.3/ReleaseNotes/index.html",
+    "nsys-2025.3-guide.html": "https://archive.docs.nvidia.com/nsight-systems/2025.3/UserGuide/index.html",
+    "cupti-12.9.html": "https://developer.nvidia.com/cupti-ctk12_9"
+  },
+  "read_method": "Read-only HTTPS urllib fetch; succeeded after web tool redirect failed. Files preserved verbatim.",
+  "source_sha256": {
+    "cupti-12.9.html": "11039a42af0f2d4c89d1ba5cb4eb662abe763769bf87f74a156a9cdc02feb455",
+    "nsys-2025.3-guide.html": "1d42e35005fa9a4cb21b2c65d0018e4b065c3756dbba308dc0c41f79746e751f",
+    "nsys-2025.3-release.html": "310de4ecc6e24d7070e8f889f88c41328f2b1ddef19522f7ece01e8c791f6f0b"
+  },
+  "scope_unchanged": "No installation, privilege change, profiler invocation, build, GPU/API invocation or source edit."
+}

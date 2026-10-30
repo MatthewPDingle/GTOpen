@@ -1,0 +1,40 @@
+{
+  "id": "E125",
+  "at": "2026-10-29T21:41:31.657862+00:00",
+  "status": "FROZEN_OFFTREE_BEFORE_COMPILER",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\baseline-kernels.cu",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\candidate-kernels.cu",
+      "base_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate_sha256": "8cba9f745e840bb3355a7a7774b68b7f6fef498effd5cd356b3e2ec5ea829c7f"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\baseline-mod.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\candidate-mod.rs",
+      "base_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "candidate_sha256": "6bb477f29fa91b778fabc624080c50691fbc773d97020adef54fe1256db9c5b8"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\baseline-plan.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\candidate-plan.rs",
+      "base_sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "candidate_sha256": "30b55fed9a18db7f3a6e6c3b35c596afe8a26a98ae4ea83c7c83ac9ec4bed42a"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\baseline-continuation_capacity.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E125-source\\candidate-continuation_capacity.rs",
+      "base_sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "candidate_sha256": "66733159075a1029a91733594a239045a1d5c74d5b9449fd6b303a8f87bfc5fa"
+    }
+  },
+  "all4inverse_exact_original_line_endings_preserved": true,
+  "target_entries": [
+    "up_chance"
+  ],
+  "concept": "Retain originalSpot.hand_perm u16throughGpuPlanflatten,privateCudaSliceupload,and unsignedshortloadinup_chance. Samevalues/order/indexarithmetic/castint,onescalarload perexistingnonidentityhand; originalk0identity skipsload. No FPexpression/reduction/order/launch/graph/schedule/save/quality changes.",
+  "capacity": "ExplicitplanandGPUhandpermelementbytes4to2; sameelementcounts. GPUactualpayloadaccounting d_hand_perm typeupdatedu16; genericplanbytesusesactualT. Allotherpayloadandconservativebudgetformulaunchanged. Actualdriver/hostpeak/capacityandgraph/broadqualification stillrequired.",
+  "source_domain": "AuthoritativeSpot.hand_perm [Vec<Vec<u16>>;2]; oldflatten onlywidenedthesewords. All65536u16words exactwidening/rangecontract; no sourcevaluecanbetruncated. FullactualCPUplanandGPUrawcontrolsnotyetperformed.",
+  "risks": "Existingtablesmayalreadyfitincache;16bitload/scaling maycostasmuch; CPUflatcapacities/driverallocation granularity/publicRustfieldtype/instrumentedobservertypesandstoredcapacityneedfullvalidation. No speed/adoption/headroom claim.",
+  "failure": "Closefixedu16handpermtable sourceform after genuinegatefailure; no width/otherfield/packing/helper/layout/scope/architecture/flag/source/quality/sample rescue."
+}

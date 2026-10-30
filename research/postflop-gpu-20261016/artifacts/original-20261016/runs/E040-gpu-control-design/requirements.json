@@ -1,0 +1,30 @@
+{
+  "id": "E040-gpu-control-requirements",
+  "at": "2026-10-17T00:59:26.967592+00:00",
+  "status": "PROSPECTIVE_CONTROL_SCOPE_NO_SOURCE_OR_RUNTIME_YET",
+  "production_source": {
+    "arena_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\candidate\\arena.rs",
+    "arena_sha256": "cc98672e44efe52fbabcba9fcfeb1d18ac72508761932f3fec81644c13776023",
+    "mod_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\candidate\\mod.rs",
+    "mod_sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44"
+  },
+  "preserve_existing_sources": "R1/R2 and CPU-check inputs are frozen; append any ignored GPU test in a new final-source archive, never mutate those artifacts.",
+  "reference": "Embed the accepted original sync_to_cpu body from original-sync-to-cpu.rs as a test-only serial reference, retaining the unchanged ArenaLayout.write method. Compare the same immutable GPU learning buffers into separate identically poisoned CPU targets.",
+  "cases": [
+    "Compressed full and genuinely compact small Spot, same KsQs2dJd fixture; force the production pipeline helper with pieces8/min_words1 so small tests execute overlap.",
+    "F32 full and tight-budget compact must retain the original serial path even under the forced policy.",
+    "Use nonuniform seeded q/scales and four GPU training iterations so node maxima, strategy data and inactive snapshots are nontrivial.",
+    "Compare old serial reference versus forced helper on complete raw CPU q/scales/F32 bits, iteration and use-isomorphism metadata; retain GPU data before/after, query/save observations, materialization and repeated sync.",
+    "Exercise the unchanged production default on the tiny fixture (expected pipeline count0) and a derived mixed-player size gate where practical.",
+    "Inject Err after first queued copy and unwind after next queued copy on compressed full/compact. Catch them before dropping GpuSolver; require READBACK_DRAIN_CALLS increment, nonblocking stream-complete query success, unchanged CPU target before encoding, unchanged GPU data and successful reuse."
+  ],
+  "private_test_hooks": {
+    "method": "GpuSolver.sync_to_cpu_policy -> Result<usize,String> returns pipelined arena count",
+    "policy": "ReadbackPolicy {pieces,min_words, #[cfg(test)]fault:Option<(queued_copy_ordinal,panic_bool)>}",
+    "drain_trace": "#[cfg(test)] READBACK_DRAIN_CALLS AtomicUsize increments only while pending DMA is drained on Drop",
+    "normal_counts": "Four pipelined arrays for forced compressed full/compact; zero for F32/tiny default. Fault code is cfg(test) only."
+  },
+  "memory_ownership": "Assert unchanged staging pointer/length and device buffer lengths. No new pinned allocation, device allocation, stream or CUDA source. Source guard must drain errors/unwind before pinned storage can be released.",
+  "output": "Fresh explicit S: output directory; retain full raw reference/candidate CPU and GPU payloads plus a machine-readable case summary. Do not substitute fingerprints alone.",
+  "next_gate": "Source review and bounded ignored GPU control before ordinary suite/full-cycle timing; cutoff and performance samples remain unfrozen until the implementation/control package is complete."
+}

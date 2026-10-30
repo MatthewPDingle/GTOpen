@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-18T10:55:06.229865+00:00",
+  "status": "next_integration_required_not_implemented",
+  "proposed_candidate": "E087",
+  "fixed_window_bytes": 67108864,
+  "source_files": [
+    "crates/solver/src/gpu/arena.rs",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/continuation_paging.rs"
+  ],
+  "requirements": [
+    "Copy validated complete-node greedy grouping into a nonallocating iterator. Do not retain the diagnostic group vector.",
+    "Reuse compact active metadata. Prepare full-layout active descriptors only above the fixed window; measure their actual costs.",
+    "Build layouts before selecting shared pinned capacity, holding at least one full node. Preserve E080 worker/predicates/tokens and original CUDA caller.",
+    "Keep small arenas and full F32 direct uploads on their original paths. Bounded warm compressed/compact F32 uploads cover every device word using original node reads.",
+    "Drain each copy before staging reuse/read/free or error return. Validate error/unwind behavior without assuming atomic recovery.",
+    "Read back whole nodes with original encoders. Preserve coalesced F32 spans, inactive snapshots, signed-zero/nonfinite values, iteration and symmetry/query/save restoration.",
+    "Avoid new Rayon startup for full F32 or empty inactive restoration.",
+    "Discard full-layout transfer metadata when paging discards full staging. Qualify wrapper/memory/capacity/paging/stored behavior.",
+    "Leave CUDA bytes, flags, GPU buffers/layouts, graph schedule, math/precision, quality/stopping/check cadence and frozen evaluator unchanged.",
+    "GPU/raw controls precede original complete-solve1%/fixture screen. Fresh16,broad/material/capacity/holdout/cumulative gates still control adoption."
+  ],
+  "closed_history": "E040 allocation-retaining two-window overlap stays closed. No overlap or threshold/chunk/source-scope rescue. E087 source/build/native execution does not exist yet.",
+  "CPU_report_sha256": "7e7a0bf3e836e55cb42948c95e8108a6e6cc10537ca56e4cdc8c6955f2d65e53",
+  "CPU_protocol_sha256": "5626486cd9ef666f689042f267faefe171e0871d973cf3e55df0abca208509cf",
+  "limits": "Integration contract only; no actual GPU transfer, pinned/process footprint, speed gain or adoption."
+}

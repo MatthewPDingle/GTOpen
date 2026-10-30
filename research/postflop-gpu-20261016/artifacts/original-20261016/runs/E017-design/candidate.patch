@@ -1,0 +1,394 @@
+diff --git a/crates/solver/src/gpu/continuation_capacity.rs b/crates/solver/src/gpu/continuation_capacity.rs
+index f6fd7afa..c3e10945 100644
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -26,7 +26,7 @@ fn spot_owned(s: &Spot) -> u64 {
+ 
+ fn metadata(p: &GpuPlan, s: &Spot) -> u64 {
+     macro_rules! sum {($($f:ident),*)=>{0u64 $(+bytes(&p.$f))*};}
+-    let mut n=sum!(action_nodes,chance_parents,chance_children,chance_cards,chance_nodes,fold_nodes,show_nodes,
++    let mut n=sum!(action_nodes,down_action0_nodes,chance_parents,chance_children,chance_cards,chance_nodes,fold_nodes,show_nodes,
+         node_player,node_na,node_data_off,node_children_start,node_twin,node_tlose,node_ttie,node_cdiv,node_river_slot,
+         cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot)+bytes(&s.tree.children);
+     for q in 0..2 {
+@@ -47,6 +47,7 @@ pub(super) fn observed_metadata(g: &GpuSolver) -> u64 {
+         d_node_twin:f32,d_node_tlose:f32,d_node_ttie:f32,d_node_cdiv:f32,d_node_river_slot:i32,d_cc_start:u32,
+         d_cc_count:u32,d_cc_card:u32,d_cc_child:u32,d_cc_perm:u32,d_children:u32,d_lock_off:i64,d_lock_sigma:f32,
+         d_cfv_slot:u32,d_eval_roots:f32,d_disc:f32);
++    n+=g.d_down_action0_nodes.as_ref().map_or(0, |v| (v.len()*size_of::<u32>()) as u64);
+     for q in 0..2 {
+         macro_rules! arr {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f[q].len()*size_of::<$t>()) as u64)*};}
+         n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,
+@@ -71,7 +72,7 @@ pub fn stored_capacity_plan(s: &Spot) -> Value {
+     let state=if compact.iso_active {(compact.arena_elements[0]+compact.arena_elements[1]) as u64*8}
+         else {(s.tree.data_size[0]+s.tree.data_size[1])*8};
+     let plan_host=owned(&compact.action_nodes)+owned(&compact.node_data_off);
+-    let spans=owned(&full.action_spans)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans);
++    let spans=owned(&full.action_spans)+owned(&full.down_action0_spans)+owned(&full.chance_spans)+owned(&full.chance_node_spans)+owned(&full.fold_spans)+owned(&full.show_spans);
+     let host=spot_owned(s)+plan_host+spans+4; // one-float pinned staging; full ArenaLayouts have no heap
+     json!({"canonical_state_bytes":state,"explicit_state_bytes":(s.tree.data_size[0]+s.tree.data_size[1])*8,
+         "base_gpu_metadata_bytes":base,"wrapper_gpu_metadata_bytes":wrapper,"retained_gpu_payload_bytes":base+wrapper,
+@@ -80,3 +81,36 @@ pub fn stored_capacity_plan(s: &Spot) -> Value {
+         "node_count":s.tree.nodes.len(),"canonical_actions":compact.action_nodes.len(),"iso_active":compact.iso_active,
+         "limitations":"Payload accounting; excludes CUDA context/modules, allocator bookkeeping, driver scratch, process baseline, constructor temporary plans and evaluation recursion scratch. Reserve separately. Construction temporarily holds previous workspace plus this game's workspace. CPU materialization also holds full explicit arrays."})
+ }
++
++#[cfg(test)]
++mod tests {
++    use super::*;
++    use crate::{parse_sizes, Solver, SpotConfig, StreetSizing};
++    use std::sync::Arc;
++
++    #[test]
++    fn optional_down_list_matches_observed_metadata_for_mixed_and_uniform_plans() {
++        for (board, mixed) in [("KsQs2dJd", true), ("KsQs2dJd3c", false)] {
++            let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++            let spot = Arc::new(Spot::new(SpotConfig {
++                board: board.into(), range_oop: "AA,KK,QQ,AKs,AKo".into(),
++                range_ip: "AA,QQ,TT,AQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                    oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                    ..Default::default() },
++            }).unwrap());
++            let mut solver = Solver::new(spot.clone());
++            solver.use_isomorphism = false;
++            let mut plan = GpuPlan::build(&spot, false);
++            plan.use_full_action_arenas(&spot);
++            assert_eq!(!plan.down_action0_nodes.is_empty(), mixed);
++            let expected = metadata(&plan, &spot);
++            let gpu = GpuSolver::new(&solver).expect("test requires CUDA");
++            assert_eq!(gpu.d_down_action0_nodes.is_some(), mixed);
++            assert_eq!(observed_metadata(&gpu), expected);
++            let capacity = stored_capacity_plan(&spot);
++            assert_eq!(capacity["base_gpu_metadata_bytes"].as_u64().unwrap(), expected);
++            assert_eq!(gpu.down_action0_spans.capacity(), plan.down_action0_spans.capacity());
++        }
++    }
++}
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 8cce0279..065dada3 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -89,6 +89,7 @@ pub struct GpuSolver {
+     nh: [i32; 2],
+     nh_max: i32,
+     action_spans: Vec<LevelSpan>,
++    down_action0_spans: Vec<LevelSpan>,
+     chance_spans: Vec<LevelSpan>,
+     chance_node_spans: Vec<LevelSpan>,
+     fold_spans: Vec<LevelSpan>,
+@@ -97,6 +98,8 @@ pub struct GpuSolver {
+ 
+     // device: work lists
+     d_action_nodes: CudaSlice<u32>,
++    // Immutable per-plan metadata; never part of continuation workspace swaps.
++    d_down_action0_nodes: Option<CudaSlice<u32>>,
+     d_chance_parents: CudaSlice<u32>,
+     d_chance_children: CudaSlice<u32>,
+     d_chance_cards: CudaSlice<u32>,
+@@ -210,14 +213,21 @@ impl GpuSolver {
+         // fits, avoiding inactive host snapshots on warm full-precision solves.
+         // Compressed stores benefit from packing and parallel readback anyway;
+         // a tight F32 budget can use the same exact compact representation.
+-        let full_needed = plan.staging_bytes()
+-            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+-            + 512 * 1024 * 1024;
++        let required = |elements: u64| plan.staging_bytes().checked_add(elements.checked_mul(8)?)
++            .and_then(|v| v.checked_add(512 * 1024 * 1024));
++        let full_elements = solver.spot.tree.data_size[0].checked_add(solver.spot.tree.data_size[1])
++            .ok_or("GPU arena size overflow")?;
++        let full_needed = required(full_elements).ok_or("GPU admission size overflow")?;
++        let compact_elements = (plan.arena_elements[0] as u64).checked_add(plan.arena_elements[1] as u64)
++            .ok_or("GPU arena size overflow")?;
++        let compact_needed = required(compact_elements).ok_or("GPU admission size overflow")?;
++        let needed;
+         if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+             plan.use_full_action_arenas(&solver.spot);
++            needed = full_needed;
++        } else {
++            needed = compact_needed;
+         }
+-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+-        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+         if needed > budget_bytes {
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+@@ -312,6 +322,7 @@ impl GpuSolver {
+             nh: [nh[0] as i32, nh[1] as i32],
+             nh_max: plan.nh_max as i32,
+             action_spans: plan.action_spans,
++            down_action0_spans: plan.down_action0_spans,
+             chance_spans: plan.chance_spans,
+             chance_node_spans: plan.chance_node_spans,
+             fold_spans: plan.fold_spans,
+@@ -319,6 +330,9 @@ impl GpuSolver {
+             riv_max_cnt: plan.riv_max_cnt,
+ 
+             d_action_nodes: up32(&plan.action_nodes)?,
++            d_down_action0_nodes: if plan.down_action0_nodes.is_empty() {
++                None
++            } else { Some(up32(&plan.down_action0_nodes)?) },
+             d_chance_parents: up32(&plan.chance_parents)?,
+             d_chance_children: up32(&plan.chance_children)?,
+             d_chance_cards: up32(&plan.chance_cards)?,
+@@ -791,7 +805,14 @@ impl GpuSolver {
+         prof_acc(&self.stream, &mut prof, 0, t0)?;
+ 
+         for l in 0..self.num_levels {
+-            let sp = self.action_spans[l];
++            // E015 already skips every actor1 hand in this paired sweep.
++            // Drop those no-op CTAs; all other sweeps keep the aggregate list.
++            let (sp, action_nodes) = if reuse_player1_reach {
++                (self.down_action0_spans[l],
++                    self.d_down_action0_nodes.as_ref().unwrap_or(&self.d_action_nodes))
++            } else {
++                (self.action_spans[l], &self.d_action_nodes)
++            };
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+                 let count = sp.count as i32;
+@@ -799,7 +820,7 @@ impl GpuSolver {
+                 unsafe {
+                     self.stream
+                         .launch_builder(&self.f_down_action)
+-                        .arg(&self.d_action_nodes)
++                        .arg(action_nodes)
+                         .arg(&start)
+                         .arg(&count)
+                         .arg(&self.d_node_player)
+@@ -1157,9 +1178,14 @@ mod tests {
+     use crate::{parse_sizes, LockMode, PathStep, Spot, SpotConfig, StreetSizing, TreeConfig};
+ 
+     fn reach_reuse_solver(storage: crate::store::Storage, algo: Algorithm, compact: bool, menu: &str) -> Solver {
++        reach_reuse_solver_on_board(storage, algo, compact, menu, "KsQs2dJd")
++    }
++
++    fn reach_reuse_solver_on_board(storage: crate::store::Storage, algo: Algorithm,
++        compact: bool, menu: &str, board: &str) -> Solver {
+         let sizing = || StreetSizing { bet: parse_sizes(menu).unwrap(), raise: vec![], donk: vec![] };
+         let mut s = Solver::with_storage(Arc::new(Spot::new(SpotConfig {
+-            board: "KsQs2dJd".into(),
++            board: board.into(),
+             range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
+             range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
+             tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
+@@ -1283,6 +1309,7 @@ mod tests {
+                         .map(|n| n.num_children));
+                     let mut candidate = reach_reuse_gpu(&s, compact);
+                     let mut reference = reach_reuse_gpu(&s, compact);
++                    assert!(candidate.d_down_action0_nodes.is_some(), "turn fixture must exercise mixed lists");
+                     let case = format!("{algo:?}/{storage:?}/compact={compact}");
+                     for step in 1..=3 {
+                         candidate.iterate().unwrap();
+@@ -1304,6 +1331,10 @@ mod tests {
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/after-evaluation"));
+                     let profile = candidate.iterate_profiled().unwrap();
+                     assert_eq!(profile.launches[0], 2);
++                    let full_launches = candidate.action_spans.iter().filter(|s| s.count > 0).count();
++                    let selected_launches = candidate.down_action0_spans.iter().filter(|s| s.count > 0).count();
++                    assert!(selected_launches < full_launches, "fixture must omit an actor1-only level");
++                    assert_eq!(profile.launches[1] as usize, full_launches + selected_launches);
+                     legacy_iteration(&mut reference);
+                     assert_reach_reuse_state(&candidate, &reference, &format!("{case}/profiled"));
+                     candidate.sync_to_cpu(&mut s).unwrap();
+@@ -1342,6 +1373,48 @@ mod tests {
+         }
+     }
+ 
++    #[test]
++    fn uniform_actor_levels_reuse_original_list_across_lifecycle() {
++        use crate::store::Storage;
++        for (storage, algo) in [(Storage::F32, Algorithm::Dcfr), (Storage::Compressed, Algorithm::CfrPlus)] {
++            let mut s = reach_reuse_solver_on_board(storage, algo, false, "25,75", "KsQs2dJd3c");
++            let plan = GpuPlan::build(&s.spot, false);
++            assert!(plan.down_action0_nodes.is_empty(), "river must avoid extra device allocation");
++            let budget = plan.staging_bytes() + plan.arena_elements.iter().sum::<usize>() as u64 * 8
++                + 512 * 1024 * 1024;
++            assert!(GpuSolver::new_with_budget(&s, budget - 1).is_err());
++            let mut candidate = GpuSolver::new_with_budget(&s, budget).unwrap();
++            let mut reference = GpuSolver::new(&s).unwrap();
++            assert!(candidate.d_down_action0_nodes.is_none());
++            for step in 1..=3 {
++                candidate.iterate().unwrap(); legacy_iteration(&mut reference);
++                assert_eq!(candidate.graphs.is_some(), step > 1);
++                assert_reach_reuse_state(&candidate, &reference, "uniform eager/capture/replay");
++            }
++            assert_eq!(candidate.exploitability(&s).unwrap().to_bits(), reference.exploitability(&s).unwrap().to_bits());
++            let profile = candidate.iterate_profiled().unwrap(); legacy_iteration(&mut reference);
++            assert!(profile.launches[1] < 2 * candidate.action_spans.iter().filter(|s| s.count > 0).count() as u32);
++            assert_reach_reuse_state(&candidate, &reference, "uniform after evaluation/profiled");
++            candidate.sync_to_cpu(&mut s).unwrap();
++            s.lock_node(&[], LockMode::Freeze, "uniform actor0".into()).unwrap();
++            s.lock_node(&[PathStep::Action { index: 0 }], LockMode::Freeze, "uniform actor1".into()).unwrap();
++            candidate.update_locks(&s).unwrap(); reference.update_locks(&s).unwrap();
++            for _ in 0..2 {
++                candidate.iterate().unwrap(); legacy_iteration(&mut reference);
++                assert_reach_reuse_state(&candidate, &reference, "uniform locked recapture");
++            }
++            candidate.sync_to_cpu(&mut s).unwrap();
++            drop(candidate); drop(reference);
++            let mut resumed = GpuSolver::new(&s).unwrap();
++            let mut resumed_reference = GpuSolver::new(&s).unwrap();
++            assert!(resumed.d_down_action0_nodes.is_none());
++            for _ in 0..2 {
++                resumed.iterate().unwrap(); legacy_iteration(&mut resumed_reference);
++                assert_reach_reuse_state(&resumed, &resumed_reference, "uniform warm");
++            }
++        }
++    }
++
+     #[test]
+     fn paired_reach_reuse_preserves_raw_player1_and_standalone_refresh() {
+         for compact in [false, true] {
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+index 8a98e494..c6ef3006 100644
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -37,6 +37,10 @@ pub struct GpuPlan {
+     // Level-ordered work lists (flat arrays + one span per level).
+     pub action_nodes: Vec<u32>,
+     pub action_spans: Vec<LevelSpan>,
++    /// Stable actor0-only down list for paired reach1 reuse. Empty means all
++    /// levels are uniform and down_action0_spans index action_nodes instead.
++    pub down_action0_nodes: Vec<u32>,
++    pub down_action0_spans: Vec<LevelSpan>,
+     pub chance_parents: Vec<u32>,
+     pub chance_children: Vec<u32>,
+     pub chance_cards: Vec<u32>,
+@@ -425,6 +429,9 @@ impl GpuPlan {
+             }
+         }
+ 
++        let (down_action0_nodes, down_action0_spans) =
++            actor0_down_worklist(&action_nodes, &action_spans, &node_player);
++
+         GpuPlan {
+             num_levels,
+             nh,
+@@ -433,6 +440,8 @@ impl GpuPlan {
+             iso_active,
+             action_nodes,
+             action_spans,
++            down_action0_nodes,
++            down_action0_spans,
+             chance_parents,
+             chance_children,
+             chance_cards,
+@@ -490,12 +499,48 @@ impl GpuPlan {
+         }
+     }
+ 
+-    /// Total bytes of GPU staging (reach + cfv) this plan needs.
++    /// Traversal working storage: reach + CFV + the optional down-action list.
++    /// Include the list here so exact-budget callers account for its upload.
+     pub fn staging_bytes(&self) -> u64 {
+-        (self.reach_blocks[0] as u64 * self.nh[0] as u64
+-            + self.reach_blocks[1] as u64 * self.nh[1] as u64
+-            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
++        let words = [(self.reach_blocks[0], self.nh[0]),
++            (self.reach_blocks[1], self.nh[1]), (self.cfv_blocks, self.nh_max)]
++            .into_iter().try_fold(self.down_action0_nodes.len() as u64, |sum, (n, width)| {
++                (n as u64).checked_mul(width as u64).and_then(|v| sum.checked_add(v))
++            }).expect("GPU traversal storage exceeds u64");
++        words.checked_mul(4).expect("GPU traversal byte count exceeds u64")
++    }
++}
++
++// One pointer coordinate system for every level. Uniform plans borrow the
++// aggregate list without allocating a second device buffer. A mixed plan
++// uses a separate stable actor0-only list for ALL filtered spans.
++fn actor0_down_worklist(
++    nodes: &[u32], spans: &[LevelSpan], players: &[i32],
++) -> (Vec<u32>, Vec<LevelSpan>) {
++    let mut actor0_count = 0usize;
++    let mut mixed = false;
++    for sp in spans {
++        let level = &nodes[sp.start as usize..(sp.start + sp.count) as usize];
++        let count = level.iter().filter(|&&n| players[n as usize] == 0).count();
++        actor0_count += count;
++        mixed |= count != 0 && count != level.len();
+     }
++    let mut filtered = if mixed { Vec::with_capacity(actor0_count) } else { Vec::new() };
++    let mut result = Vec::with_capacity(spans.len());
++    for sp in spans {
++        let level = &nodes[sp.start as usize..(sp.start + sp.count) as usize];
++        if mixed {
++            let start = filtered.len() as u32;
++            filtered.extend(level.iter().copied().filter(|&n| players[n as usize] == 0));
++            result.push(LevelSpan { start, count: filtered.len() as u32 - start });
++        } else {
++            let count = if level.first().is_some_and(|&n| players[n as usize] == 0) {
++                sp.count
++            } else { 0 };
++            result.push(LevelSpan { start: sp.start, count });
++        }
++    }
++    (filtered, result)
+ }
+ 
+ #[cfg(test)]
+@@ -503,6 +548,52 @@ mod tests {
+     use super::*;
+     use crate::{parse_sizes, SpotConfig, StreetSizing, TreeConfig};
+ 
++    fn assert_actor0_worklist(nodes: &[u32], spans: &[LevelSpan], players: &[i32],
++        filtered: &[u32], selected: &[LevelSpan]) {
++        assert_eq!(selected.len(), spans.len());
++        let source = if filtered.is_empty() { nodes } else { filtered };
++        let mut count = 0;
++        for (sp, sel) in spans.iter().zip(selected) {
++            let expected: Vec<_> = nodes[sp.start as usize..(sp.start + sp.count) as usize]
++                .iter().copied().filter(|&n| players[n as usize] == 0).collect();
++            assert_eq!(&source[sel.start as usize..(sel.start + sel.count) as usize], &expected);
++            count += expected.len();
++        }
++        if !filtered.is_empty() { assert_eq!(count, filtered.len()); }
++    }
++
++    #[test]
++    fn actor0_down_lists_preserve_order_membership_and_uniform_coordinates() {
++        // Nonmonotonic IDs expose accidental sorting; include leading/trailing
++        // empty, actor1-only, actor0-only and (in the mixed case) mixed levels.
++        let nodes = [7, 3, 5, 0, 6, 2];
++        let spans = [LevelSpan { start: 0, count: 0 },
++            LevelSpan { start: 0, count: 2 }, LevelSpan { start: 2, count: 2 },
++            LevelSpan { start: 4, count: 2 }, LevelSpan { start: 6, count: 0 }];
++        for mixed in [false, true] {
++            let mut players = [1; 8];
++            players[5] = 0; players[0] = 0;
++            if mixed { players[6] = 0; }
++            let (filtered, selected) = actor0_down_worklist(&nodes, &spans, &players);
++            assert_eq!(!filtered.is_empty(), mixed);
++            assert_actor0_worklist(&nodes, &spans, &players, &filtered, &selected);
++            if mixed { assert_eq!(filtered, [5, 0, 6]); }
++            else {
++                assert_eq!(filtered.capacity(), 0);
++                for (a, b) in spans.iter().zip(&selected) { assert_eq!(a.start, b.start); }
++            }
++            assert_eq!(selected[1].count, 0, "actor1-only level must be skipped");
++            assert_eq!(nodes, [7, 3, 5, 0, 6, 2]);
++        }
++        for players in [[0; 8], [1; 8]] {
++            let (filtered, selected) = actor0_down_worklist(&nodes, &spans, &players);
++            assert!(filtered.is_empty());
++            assert_actor0_worklist(&nodes, &spans, &players, &filtered, &selected);
++        }
++        let (filtered, selected) = actor0_down_worklist(&[], &[LevelSpan::default()], &[]);
++        assert!(filtered.is_empty()); assert_eq!(selected[0].count, 0);
++    }
++
+     #[test]
+     fn river_bounds_match_strength_comparisons() {
+         for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
+@@ -522,6 +613,11 @@ mod tests {
+             }).unwrap();
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
++                assert_actor0_worklist(&plan.action_nodes, &plan.action_spans,
++                    &plan.node_player, &plan.down_action0_nodes, &plan.down_action0_spans);
++                let original_staging = (plan.reach_blocks[0] * plan.nh[0]
++                    + plan.reach_blocks[1] * plan.nh[1] + plan.cfv_blocks * plan.nh_max) as u64 * 4;
++                assert_eq!(plan.staging_bytes(), original_staging + plan.down_action0_nodes.len() as u64 * 4);
+                 assert_eq!(plan.cfv_slot[0], 0);
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();

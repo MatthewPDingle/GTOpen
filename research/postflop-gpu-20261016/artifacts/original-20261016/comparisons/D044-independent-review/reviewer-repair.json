@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-16T13:27:24.415716+00:00",
+  "reason": "Inherited strict chronological comparison rejects equal timestamps at one-second evidence resolution. D044B3 finish and D044P3 start are both13:25:12Z; serial runner waits for child exit.",
+  "change": "Only adjacent run chronological comparison uses <=. Raw results, profile checks, scoring and all input files unchanged.",
+  "preserved_failure_sha256": {
+    "audit.py": "08fa6ec6d83f7688a8c0984114979c99bdedb4a6a13e27312584c812ddcf2d35",
+    "stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr.log": "cd716bf046ad0898cfd325f3264285440c217ec02e7b1bbf4203bd6b7c29dfeb",
+    "exit.json": "6baa833e5bba9b3b0a463408b6f888b9d7e52d6d21d32546d0296939fc8eaa6a"
+  },
+  "repaired_script_sha256": "7827ad62d20b6a97d3afba1ee4ffe0d34e6ef00b956a31b28fbe9246c88f0562",
+  "native_reruns": 0
+}

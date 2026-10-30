@@ -1,0 +1,78 @@
+{
+  "at": "2026-10-29T14:41:23.003682+00:00",
+  "decision": "REJECT_CLOSE_E117_AT_COMPILED_RESOURCE_GATE",
+  "report_sha256": "10394995829c8a950c9e3e5ac37b67bbeafdbd423aeab4f3294043fc55e929c1",
+  "candidate_source_sha256": "e4e612b91cb58f5758f12c1c477e403837765c6623315eb2f72bffe2c433293d",
+  "raw_marker_root_crosscheck": {
+    "baseline": {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    "candidate": {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 896,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          7
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 66,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    "failed_gates_independently_recomputed": [
+      "up_action:no_maxthread_loss"
+    ]
+  },
+  "reason": "Original D108 no-maxthread-loss prerequisite fails. Register allocation increases62to66, maximumblockthreads1024to896, occupancy16/8/4to14/7/3; local64/static0/dynamic0/constant0/stack1024 unchanged. This is a module resource failure, not a measured timed or numerical regression.",
+  "actual_earlier_load_mechanism_qualified": false,
+  "new_application_kernels_numerical_CFR_solver_or_speed_samples": 0,
+  "fixed_form_closed_without_placement_predicate_arity_helper_width_scope_source_flags_quality_or_sample_rescue": true,
+  "all_owned_compiler_module_children_terminal": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "goal_active": true
+}

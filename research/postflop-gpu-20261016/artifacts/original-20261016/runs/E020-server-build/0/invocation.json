@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-16T11:52:42.334971+00:00",
+  "args": [
+    "cargo",
+    "build",
+    "--release",
+    "--locked",
+    "-p",
+    "server",
+    "--features",
+    "gpu",
+    "--bin",
+    "gto-server",
+    "--message-format=json"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "timeout_seconds": 1800,
+  "environment": {
+    "CARGO_TARGET_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-server-e020",
+    "RAYON_NUM_THREADS": "16"
+  },
+  "compiler_override_absence_checked": true
+}

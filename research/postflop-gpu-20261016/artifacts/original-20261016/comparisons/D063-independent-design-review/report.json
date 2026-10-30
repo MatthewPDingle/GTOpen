@@ -1,0 +1,65 @@
+{
+  "id": "D063-independent-design-review",
+  "created_at": "2026-10-16T19:33:07.077459+00:00",
+  "verdict": "PASS_SCOPED_DESIGN_HOLD_NO_IMMEDIATE_PRODUCTION",
+  "no_actionable_factual_gap_in_sealed_report": true,
+  "recommendation": "Retain the frozen no-go for immediate production/primary. Capacity is sufficient to consider one complete immutable window but does not resolve captured-graph application or scoped cleanup. No new experiment is prepared or authorized by this review.",
+  "findings": [
+    {
+      "topic": "Capture and instantiation",
+      "finding": "Installed cudarc end_capture binds the context, ends capture and immediately instantiates the executable. Captured kernel-node getters can establish what capture recorded; a stream getter or successful replay cannot. Later mutation of the retained CUgraph must not be assumed to update its existing executable. A future bounded proof must inspect both training and both evaluation graph variants and recreated graphs, or stop this variant if inheritance is absent.",
+      "source": "cudarc safe/graph.rs:54-68; gpu/mod.rs:393-434,474-501,1046-1057",
+      "official": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__GRAPH.html"
+    },
+    {
+      "topic": "Disable is not proven normalization",
+      "finding": "The guide distinguishes disabling a window from resetting persisting priorities. The stream setter governs subsequent work; no inspected contract says setter-only NORMAL, stream destruction, allocation free or CudaSlice Drop normalizes all old lines. The sealed report correctly leaves a complete NORMAL-access pass as an unimplemented, unproved cleanup mechanism rather than asserting free clears priorities.",
+      "source": "cudarc safe/core.rs:639-648,800-817; gpu/mod.rs:74-163",
+      "official": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#reset-l2-access-to-normal"
+    },
+    {
+      "topic": "Owned lifetime and errors",
+      "finding": "Stop submissions, drain, retire captured pointer users, complete scoped normalization while the allocation lives, then disable the stream window before free. Constructor/capture errors and explicit close failures need reported handling; implicit field order or best-effort Drop is insufficient evidence. No API getter reveals actual physical line residency, so an attribute roundtrip alone cannot prove cleanup.",
+      "source": "gpu/mod.rs:74-163,369,1046-1057; cudarc safe/graph.rs:28-40",
+      "official": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html"
+    },
+    {
+      "topic": "Shared context and reservation",
+      "finding": "CudaContext::new retains the per-process primary context. The D061 18 MiB result belongs to its separate query process, so eligibility must read the actual solver context. Even fitting one window does not grant an exclusive reservation or prevent contention with overlapping solvers; no global limit/reset/restore is justified. The immutable metadata pointer remains outside the mutable continuation workspace swap.",
+      "source": "cudarc safe/core.rs:48-78; gpu/continuation_paging.rs:40-55; gpu/continuation_storage.rs:98-116",
+      "official": "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__PRIMARY__CTX.html"
+    },
+    {
+      "topic": "Measurement scope",
+      "finding": "Source and capability results imply no speed gain. A cleanup pass would add work excluded by the frozen primary final-destruction boundary; disclose and measure that lifetime cost separately before any later adoption. No hidden work movement or full-lifetime improvement claim is supported.",
+      "source": "D063 lifecycle_constraints and cleanup_gate"
+    }
+  ],
+  "bounded_followup_scope_if_separately_authorized": "Capture-attribute inspection can precede replay and avoid populating persisting lines. It proves recorded attributes only, not cache efficacy. Any replay would require its own reviewed cleanup path and exact-state/lifetime evidence; this review prepares neither code nor a test framework.",
+  "checked_artifact_count": 9,
+  "checked_reference_count": 11,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\report.json": "96434f27199d8321cfc6f57e4aaa5f77b63f0f3726d5acd7e5e48d7aa1d59135",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\manifest.json": "68a7cd68abe6191aa8216bbfd2936b545c568f580dce32fef8cee297f8ed7c77",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-cache-capability-query\\execution\\result.json": "4b1baf0fcc17eab443ca8b6fef0c3ce28659077e4771d28d50d34d0f20b5f28d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-next-hypothesis-scout\\report.json": "af176b4a29a7011e203c933c7dfbea3f05afeb417bdb05c8b5d45f8debc081dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-next-hypothesis-scout\\manifest.json": "8a362a8960cdaaf25a925498ab45da2d3c420cfbb9cddd23d67b3d9caabfb23c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\graph.rs": "dfd8eae6e2cb21bdc9089dec4fb58d0fa9fe2f6c191e06ff994780df20dddb8e",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e"
+  },
+  "official_documents_read": "CUDA 12.9.1 driver stream/context/primary-context/graph references and programming-guide L2 access/reset sections, plus installed cudarc0.19.7 sources. No claim of documented capture inheritance or free-time normalization was found.",
+  "production_modified": false,
+  "status_modified": false,
+  "driver_calls": 0,
+  "compiler_native_gpu_executed": false,
+  "candidate_or_probe_prepared": false,
+  "performance_claim": false,
+  "candidate_accepted": false,
+  "reviewer_failures": []
+}

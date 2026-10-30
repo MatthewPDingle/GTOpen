@@ -1,0 +1,8 @@
+D104_RESULT {"stage":"identity","device":"NVIDIA GeForce RTX 5090","major":12,"minor":0,"driver_version":13030,"CUPTI_API_VERSION":28,"initialize_struct_size":16,"support_struct_size":52,"deinitialize_struct_size":16}
+D104_RESULT {"stage":"initialize","result":0,"result_name":"CUPTI_SUCCESS"}
+D104_RESULT {"stage":"context_create","result":0,"private_context":true,"flags":0}
+D104_RESULT {"stage":"availability_size","result":0,"result_name":"CUPTI_SUCCESS","required_bytes":9184,"struct_size":40}
+D104_RESULT {"stage":"availability_fill","result":26,"result_name":"CUPTI_ERROR_HARDWARE_BUSY","allocated_bytes":9184,"returned_bytes":9184,"guard_words_checked":128,"guards_exact":true}
+D104_RESULT {"stage":"context_destroy","result":0}
+D104_RESULT {"stage":"deinitialize","result":0,"result_name":"CUPTI_SUCCESS"}
+D104_RESULT {"stage":"complete","availability_image_obtained":false,"size_queries":1,"fill_queries":1,"requested_bytes":9184,"returned_bytes":9184,"private_contexts_created":1,"private_contexts_destroyed":1,"current_context_after_is_null":true,"cleanup_success":true,"guards_exact":true,"application_kernel_launches":0,"profiling_sessions":0,"counter_collections":0,"live_process_attachments":0,"performance_measured":false}

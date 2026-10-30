@@ -1,0 +1,11 @@
+Starting S:\GTOpen-research\postflop-gpu-20261016\runs\E080-memory-observer-ability\build\rustc
+Observed fixed allocation state baseline
+Observed fixed allocation state CPU128
+Observed fixed allocation state CPU_free
+Observed fixed allocation state GPU256
+Observed fixed allocation state GPU256_free
+Observed fixed allocation state GPU512
+Observed fixed allocation state GPU512_free
+Observed fixed allocation state GPU256_repeat
+Observed fixed allocation state GPU256_repeat_free
+{"status": "observer_declined", "checks": 21, "failed_checks": ["CPU private allocation", "CPU private release"], "plateaus": {"baseline": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 642547712.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "CPU128": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 709791744.0, "working_set_bytes": 264196096.0, "creation_filetime": 134367833669697115}, "CPU_free": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 575303680.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU256": {"GPU_dedicated_bytes": 721035264.0, "GPU_span_bytes": 0, "private_bytes": 844267520.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU256_free": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 777027584.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU512": {"GPU_dedicated_bytes": 989470720.0, "GPU_span_bytes": 0, "private_bytes": 1113235456.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU512_free": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 777031680.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU256_repeat": {"GPU_dedicated_bytes": 721035264.0, "GPU_span_bytes": 0, "private_bytes": 844267520.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}, "GPU256_repeat_free": {"GPU_dedicated_bytes": 452595712.0, "GPU_span_bytes": 0, "private_bytes": 777027584.0, "working_set_bytes": 129974272.0, "creation_filetime": 134367833669697115}}}

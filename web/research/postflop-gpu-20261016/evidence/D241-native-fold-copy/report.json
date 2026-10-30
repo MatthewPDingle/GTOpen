@@ -1,0 +1,44 @@
+{
+  "id": "D241",
+  "at": "2026-10-29T03:22:30.459493+00:00",
+  "status": "pass_static_native_global_copy_partial_fusion",
+  "reader_plan_sha256": "1db7dae4623a2bd8f815d31bc8e87700a1449b53dc786df4487412b015e22c79",
+  "witnesses": {
+    "baseline": {
+      "first_barrier_pc": "0x350",
+      "second_barrier_pc": "0x1220",
+      "partial_register": "R2",
+      "input_register": "R5",
+      "producer_pc": "0x1150",
+      "producer": "LDS R5, [R5]",
+      "ordered_add_pc": "0x1170",
+      "ordered_add": "FADD R2, R5, R2",
+      "total_parts_store_pc": "0x1210",
+      "total_parts_store": "STS [R5], R2",
+      "candidate_keeps_partial_unmodified_across_card_stage": false,
+      "native_barrier_sites": 3
+    },
+    "candidate": {
+      "first_barrier_pc": "0x380",
+      "second_barrier_pc": "0x1110",
+      "partial_register": "R4",
+      "input_register": "R9",
+      "producer_pc": "0x2f0",
+      "producer": "LDG.E.CONSTANT R9, desc[UR6][R8.64]",
+      "ordered_add_pc": "0x340",
+      "ordered_add": "FADD R4, R9, R4",
+      "total_parts_store_pc": "0x1100",
+      "total_parts_store": "STS [R7], R4",
+      "candidate_keeps_partial_unmodified_across_card_stage": true,
+      "native_barrier_sites": 3
+    }
+  },
+  "negative_fixtures": {
+    "scalar_vector_writer_clobber_detected": true,
+    "wrong_producer_operand_detected": true
+  },
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_appkernel_or_counter_or_speed_runs": 0,
+  "candidate_accepted": false,
+  "limits": "Source/PTX-linked local native operand/schedule witness, not fullSASS CFG/FP execution, latency/bottleneck or speed proof. Native FADD operandordering maycommute; rawGPU NaN/Inf/subnormal/zero exactness still mandatory. No newcapture/nativeappkernels orcounters."
+}

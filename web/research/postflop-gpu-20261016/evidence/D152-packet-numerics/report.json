@@ -1,0 +1,32 @@
+{
+  "id": "D152",
+  "at": "2026-10-28T11:16:18.163050+00:00",
+  "status": "pass_scoped_actual_packet_CPU_oracle_equivalence",
+  "protocol_sha256": "a99ac959ff7e1c301ddbd888017bd9f4b4f6ea82ec5ddb621a034e671a4617fe",
+  "binary_sha256": "2ba0206e8ce4fa63845a723971139c471021297d5c33e0dbe982a71d87bf5af9",
+  "PTX_sha256": "579e3c44469c9c8052097970f7bb37cb307e2bb18ded5aed15aed40f47e19292",
+  "cases_per_type": 2212,
+  "cohorts": 6,
+  "descriptor_limits": [
+    1,
+    7,
+    31
+  ],
+  "capacity_words": 65544,
+  "encoded_values_per_type": 1964131,
+  "actual_kernel_launches": 5208,
+  "all_packet_descriptor_q_scale_and_guard_words_exact": true,
+  "all_host_q_scale_words_exact": true,
+  "source_bits_exact_at_all_six_cohort_boundaries": true,
+  "represented_raw_words": 67599373,
+  "physical_packet_guard_words_checked": 83328,
+  "odd_block_occurrences": 7674,
+  "empty_block_occurrences": 246,
+  "injected_reader_failure_calibrations": 12,
+  "reader_checks": 62458,
+  "performance_measurement": false,
+  "integration_created": false,
+  "candidate_accepted": false,
+  "source_main_live_PTX_custody_pass": true,
+  "scope": "Fixed2212case source-bound shared Rust CPU encoding oracle, signed/unsigned x max1/7/31 descriptors and65544-word packets. Complete packet inputs/expected/actual and direct-scattered host q/scales retained and checked, including all guard/odd-tail words. Full source words checked before/after each cohort, not after every individual packet. No physical >4Gi-element source allocation, large-app capacity, pinned/runtime borrow proof, integrated engine readback or speed qualification."
+}

@@ -1,0 +1,30 @@
+{
+  "id": "E051-isolated-application-smoke",
+  "at": "2026-10-18T01:39:54.692429+00:00",
+  "candidate": "E051",
+  "status": "FROZEN_PRE_SERVER_LAUNCH",
+  "acceptance": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E051-qualification-r2\\report.json",
+    "sha256": "cd036bb4d3d66bf99d8eb60c7b2df4994626e8ffe305e9bfb45467cca7cf4316"
+  },
+  "server_binary_sha256": "6909ebe22240d17cab427e5a348d6ce2c6fe4634cbad49f31b2213fb2103cf4c",
+  "server_manifest_sha256": "75e542d33b8be0e3a97919dc816f0b0efe8b9fbc6e6c5e694e7a7327f959a04d",
+  "server_unit_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V051-server-unit\\report.json",
+    "sha256": "c258868aaa429889c8e557794d0580f5967840bce9d4e6a05c69929ffed418d5"
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-prepare-final-server-smoke.py": "38010d2edbe7e69bfed0ce46f07752ef1feb18a8c9e8cb5dec8916a7fddc6f6e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-plan-r2\\smoke-r2.py": "58b02a12dd457d6d7ce55b7f560d99ed104834995777a2bb1c43f39023dd3a1d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-plan-r2\\smoke-guard-schema-alignment.json": "2ea7ea1602952be797d5060d4c03701c36745d1441f0a2152538ab6b5f195c04",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-plan-r2\\protocol.json": "faf5dfd755582982f80ede4ba164b5654ebda0682bf69f609ccc3cd90f821fde",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-build\\report.json": "17f4d1ad0249718357b8b9735913b095538d785911bdc5e23a1b8b93aa8f4265",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-manager-r2\\build-unit.exit.json": "bd89b23d8d769e253c9a1f9e0301cbcc5e936323f8e8fd6eb4d3f1bd459be748",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V051-server-unit\\report.json": "c258868aaa429889c8e557794d0580f5967840bce9d4e6a05c69929ffed418d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V051-server-unit\\stdout.log": "5b60aeb640371acf97ef34ee96cb9d5808c93d3bec66f34c97a3b6b2e1a99e97",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-gto-server.exe": "6909ebe22240d17cab427e5a348d6ce2c6fe4634cbad49f31b2213fb2103cf4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-gto-server.manifest.json": "75e542d33b8be0e3a97919dc816f0b0efe8b9fbc6e6c5e694e7a7327f959a04d"
+  },
+  "port": 43736,
+  "scope": "Isolated API correctness smoke; no measured speed claim, live mutation or deployment."
+}

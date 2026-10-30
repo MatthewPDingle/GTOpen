@@ -1,0 +1,65 @@
+{
+  "id": "D049",
+  "status": "prospective_before_execution",
+  "base": "Accepted E020",
+  "base_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "aa7c5d83b610b94ca3b722312cfe977d235c2f286333453bbbe5b68c1a7762fb",
+  "source_delta": "Only down_action_impl: select const u32* rsrc_a = actor == 0 ? rsrc0 : rsrc1; use rsrc_a[n] and both locked/unlocked rsrc_a[child] expressions. No new restrict, arithmetic, guard, loop, cache, launch, metadata or host change.",
+  "source_arity_variants": [
+    2,
+    3,
+    4,
+    0
+  ],
+  "resource_rows": [
+    {
+      "variant": "baseline",
+      "kernel": "down_action"
+    },
+    {
+      "variant": "candidate",
+      "kernel": "down_action"
+    }
+  ],
+  "same_context": true,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "architecture": "compute_120",
+  "compile_options": "arch only; other cudarc CompileOptions default, matching accepted production",
+  "block_threads": 128,
+  "dynamic_shared_bytes": 0,
+  "resource_prerequisite": {
+    "local_bytes_no_more_than_baseline": true,
+    "registers_no_more_than_baseline": true,
+    "active_blocks_per_sm_no_fewer_than_baseline": true,
+    "max_threads_per_block_at_least": 128,
+    "scope": "Necessary compiler-resource condition only; no numerical/performance acceptance."
+  },
+  "required_independent_ptx_gate": {
+    "each_common_arity": [
+      2,
+      3,
+      4
+    ],
+    "requires": "For each common arity, actual actor-selection branch removal and/or selected reach-slot load hoisting out of its hand loop; identify before/after paths and operands. Unchanged ABI, guard behavior and floating dependencies. Eight other entry bodies byte-identical.",
+    "static_opcode_counts_sufficient": false,
+    "no_useful_compiler_reduction": "Stop; no rescue variants, altered compiler options or automatic native experiment.",
+    "numerical_validation": "No launches here; a later separately authorized native exactness screen remains mandatory even after scoped PTX review."
+  },
+  "per_stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "minimum_free_bytes": 53687091200,
+  "output_reservation_bytes": 1073741824,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "preserve_failure_no_overwrite": true,
+  "other_eight_entries_must_have_byte_identical_extracted_ptx": true,
+  "entry_names_and_down_action_signature_unchanged": true,
+  "root_execution_requires": "Independent frozen source/script review, E025 terminal rejection audit/restoration and all162 accepted E020 identities exact under lock. Root alone executes.",
+  "fixed_variants": 1,
+  "outcome_triggered_rescue": false,
+  "required_down_action_ptx_review": "Archive complete entries and diff, static opcodes and local/float/controlflow/load counts. Independent review must verify the concrete per-common-arity mechanism and unchanged floating dependencies. No inference from resource pass alone."
+}

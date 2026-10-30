@@ -1,0 +1,17 @@
+{
+  "id": "E085",
+  "at": "2026-10-18T10:01:52.689720+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E085-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "a571500cda6ec5fc34857976d2071f3486855e999400fd24a73825c417cc5a6c"
+  },
+  "scope": "Only unlocked own-node up_action strategy store uses st.global.cs.f32. Identical original expression computes its value at the same location; all regret/CFV stores, arithmetic/reduction order, locks/opponent paths, host/ABI/allocations/launch/graph/quality/save remain unchanged.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

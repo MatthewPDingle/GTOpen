@@ -1,0 +1,48 @@
+{
+  "id": "E038-source-review",
+  "at": "2026-10-16T23:45:02.774308+00:00",
+  "verdict": "PASS_OFF_TREE_SOURCE_PENDING_FINAL_BASE_AND_RUNTIME",
+  "independent_source_review_pass": true,
+  "source_manifest_sha256": "61b64edf06df7aec0df01382f2d6c3d7f6b119c77a2cadcb0c38f7f5e9b654ff",
+  "candidate_sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+  "patch_sha256": "f54ff244050c59a09756fd403d755b30d39af2a04b4b450199c8541b2471b6e7",
+  "final_baseline_selected": false,
+  "execution_authorized": false,
+  "findings": [],
+  "production_review": [
+    "Only the U16 eligibility arm drops its q-word OR reduction; the comment changes accordingly. Independently reversing those two regions recovers the entire original production prefix byte-for-byte. I16, F32, exact scale bits, initial/inactive guards and upload/write/sync code are unchanged.",
+    "Actual decode_u16 uses k=scale/65535.0 followed by exact finite nonnegative u16-to-f32 conversion times k. Scale bits0 therefore imply exact positive-zero decoded words for every u16. Negative-zero/nonzero/nonfinite scales remain ineligible; signed-q logic remains conservative and unchanged.",
+    "No host quant/scales are rewritten. This is required because solved_strategy_into normalizes U16 q directly without scale. Device layout/size, capacity admission, saved representation and constructor ownership remain unchanged; subsequent original write/readback paths still operate on the same decoded image."
+  ],
+  "written_test_review": [
+    "New test explicitly calls the actual decode_u16 on the inclusive0..=65535 range, poisons outputs with NaN first and checks every output bit pattern equals0. It populates a real U16 Store with those quants, checks both predicate layout flags and both snapshot indices, and verifies host q/scales are preserved. The corrected usize-to-u64 length is lossless for65536 and matches the Store factory signature.",
+    "Existing signed rejection values1,-1,MIN,MAX, F32 rejection and nonpositive-zero/nonfinite scale cases are retained. Existing reused-snapshot assertions are extended to U16. Four local tests become five; prospective E020 GPU-only85/4 is conditional on the eventual baseline and not an executed result.",
+    "These are decode/predicate checks, not GPU upload evidence. No independent native full/compact upload test is present."
+  ],
+  "future_control_review": [
+    "The proposed one-small-Spot original-versus-candidate comparison is proportionate: require actual full and compact-with-inactive geometry, identical initial nonzero q/+0 scale, exact raw GPU arrays, host q/scale/query/save preservation before sync, then full raw-store equality through sync, CPU materialization and resync. Pin the original path independently; comparing two candidate paths would be insufficient.",
+    "Keep existing I16/bad-scale/F32/reused-snapshot fallbacks. Final source identity, actual native correctness and fresh complete-cycle evidence under the current1% policy remain separate prerequisites."
+  ],
+  "history_and_limits": [
+    "This is D041's previously unimplemented hypothesis. D042's150.1862ms/9736.4349ms is a historical whole-U16-predicate optimistic1.5425% ceiling, not isolated q time or a promised saving. Remaining scale/snapshot and cache effects prevent a measured gain claim.",
+    "All current family arms leave arena.rs unchanged, but this review does not select or assume the final adopted baseline. No partial family outcomes were read.",
+    "File-only review: no compiler, tests, native solver, CUDA/GPU, active source or status changes. Builder's initial type-signature mismatch and corrected draft remain pinned."
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\manifest.json": "61b64edf06df7aec0df01382f2d6c3d7f6b119c77a2cadcb0c38f7f5e9b654ff",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\base\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate\\arena.rs": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate.patch": "f54ff244050c59a09756fd403d755b30d39af2a04b4b450199c8541b2471b6e7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\source-checks.json": "f103dd5985ff73cb4b4d24b8a04a7228d0ca136164d251e75ab99abfd0da5163",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\README.md": "ad8f59d7a0b072b026e84c66203107a09b94708a7e21d638b8f9e74548854b3d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\draft-r1\\arena.rs": "a0065e335d5e9c2d6e18a70abeb5589c5d1e0b3a7f61f2e2cab85b604e182a31",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\draft-r1\\candidate.patch": "c7b768b4f0604d7ce301181b355bf2185af6d7aaae8bb73785cfdf36c4d4e59b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\AGENTS.md": "1eb8ce866fbc544cd86f643b15af319ab263eba64aa95463ab706debf219998c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D041-initialization-source-audit\\u16-zero-proof-scope.md": "33fdd61027d2a9b0376e519cce098f399315b05d96fe2186a50576224714daeb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D042-zero-proof-diagnostic\\report.json": "abb01cbd1dd3af865c6c6df84b47c3fcf63205c5b756ad4104f834b0b132d87c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\accepted-source-map.json": "8e9aeadd572e6dd7365129929b8b786abc5906508f4e39aba534b5a0d965808b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+  }
+}

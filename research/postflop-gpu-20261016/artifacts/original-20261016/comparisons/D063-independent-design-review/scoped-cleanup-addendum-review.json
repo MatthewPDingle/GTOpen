@@ -1,0 +1,32 @@
+{
+  "id": "D063-independent-scoped-cleanup-addendum",
+  "created_at": "2026-10-16T19:39:56.353152+00:00",
+  "verdict": "PASS_DESIGN_ONLY_SCOPED_PTX_ROUTE_NO_PRODUCTION_AUTHORITY",
+  "parent_review_sha256": "3e88bda881f6e6f5451d343070db8a11d9d8be9cb7d9bcb900b50a2a0001845f",
+  "reviewed_addendum_sha256": "afe42688933201d9af77631d5096225107c08f51b244f5fddffef445b46ca0be",
+  "reviewed_addendum_manifest_sha256": "22db49e1c3cba7b61affdfff86da4e7bb315e605c9dd7243fb71828f82fcf416",
+  "findings": [
+    "Official archived PTX12.1.1 and13.0.3 document applypriority.global.L2::evict_normal on global 128-byte aligned ranges, literal size128, PTX7.4 and SM80+. This supplies a direct scoped normalization contract absent from the original setter/free reasoning. It is not discard and is not a physical-residency measurement.",
+    "Whole owned prefix arithmetic is correct: 5,387,252 -> 5,387,136 bytes/42,087 lines with116-byte untouched tail;132 ->128 bytes/one line with4-byte tail. Require the actual base alignment and checked bounds; never round accesses beyond allocation. Exact stream/node extent readback must reject driver alignment mismatch. Runtime and compilation eligibility are both required.",
+    "CUDA12.1.1 explicitly allows prefetch of an absent line; normalizing can consume bandwidth and cannot be called free. No newer bulk instruction or global context/cache setter is needed or authorized.",
+    "Epoch cleanup is distinct from final teardown. Graphs may be retained while the allocation remains live and launches are quiesced. Mark dirty before fallible eager/captured submissions; disable/verify stream policy, issue bounded normalization, synchronize, then mark clean. Any failure stays failed/dirty. Rearm before a later deliberate epoch; final close forbids later launches and retires graph references before free.",
+    "The frozen evaluator calls full sync_to_cpu and synchronize before stopping readback and total timers. Completing disable/verification/normalization inside sync_to_cpu counts the new cost without evaluator changes. Destructor-only cleanup would not qualify; successful clean epochs should not be charged again silently on Drop.",
+    "Graph inheritance remains separately unproved. D064 stays capture-only, with no replay or normalization work added. A future separately authorized cleanup feasibility check can establish emitted instruction, address coverage, successful ordered completion and exact data, but cannot itself establish solver equivalence or performance."
+  ],
+  "official_urls": [
+    "https://docs.nvidia.com/cuda/archive/12.1.1/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-applypriority",
+    "https://docs.nvidia.com/cuda/archive/13.0.3/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-applypriority",
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/structCUaccessPolicyWindow__v1.html",
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-driver-api/group__CUDA__STREAM.html"
+  ],
+  "artifacts_verified": 3,
+  "references_verified": 8,
+  "original_review_and_report_preserved": true,
+  "actionable_findings": [],
+  "production_modified": false,
+  "status_modified": false,
+  "query_compile_native_gpu_executed": false,
+  "probe_prepared": false,
+  "performance_claim": false,
+  "candidate_accepted": false
+}

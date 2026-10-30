@@ -1,0 +1,211 @@
+--- crates/solver/src/gpu/kernels.cu
++++ crates/solver/src/gpu/kernels.cu
+@@ -409,6 +409,56 @@
+     }
+ }
+ 
++// Training-only fold producer. Its unique action-parent CTA owns this
++// persistent terminal row; all reductions and writes retain up_fold order.
++__device__ __forceinline__ void produce_fold_in_parent(
++    u32 n, int p, const int* __restrict__ node_player,
++    const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
++    const u32* __restrict__ rsrc_o, const float* __restrict__ reach_o_buf,
++    const u32* __restrict__ pc1, const u32* __restrict__ pc2,
++    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
++    const u32* __restrict__ same_p,
++    const u32* __restrict__ cfv_slot, float* cfv,
++    int nh_p, int nh_o, int nh_max)
++{
++    __shared__ float local_reach[1326];
++    __shared__ float s[52];
++    __shared__ float total_parts[256];
++    const float* global_reach = reach_o_buf + (u64)rsrc_o[n] * nh_o;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
++        local_reach[j] = global_reach[j];
++    __syncthreads();
++    const float* ro = local_reach;
++    // Card lists preserve opponent hand order; all sums use the existing f32 precision.
++    // Each card has one writer, so no atomic order noise or contention.
++    for (int card = threadIdx.x; card < 52; card += blockDim.x) {
++        float sum = 0.0;
++        for (u32 k = card_off[card]; k < card_off[card + 1]; k++)
++            sum += (float)ro[card_idx[k]];
++        s[card] = sum;
++    }
++    float partial = 0.0;
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x)
++        partial += (float)ro[j];
++    total_parts[threadIdx.x] = partial;
++    __syncthreads();
++    for (int step = blockDim.x >> 1; step > 0; step >>= 1) {
++        if (threadIdx.x < (u32)step)
++            total_parts[threadIdx.x] += total_parts[threadIdx.x + step];
++        __syncthreads();
++    }
++    float T = total_parts[0];
++    float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
++    for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++        u32 sc = same_p[i];
++        float same_r = sc != SENTINEL ? ro[sc] : 0.f;
++        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;
++        cfv[(u64)cfv_slot[n] * nh_max + i] = amount * valid;
++    }
++    // All original terminal stores precede the original action consumer.
++    __syncthreads();
++}
++
+ extern "C" __global__ void up_action(
+     const u32* __restrict__ nodes, int start, int count, int p,
+     const int* __restrict__ node_player, const int* __restrict__ node_na,
+@@ -423,10 +473,26 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+-    int nh_p, int nh_max)
++    int nh_p, int nh_max,
++    const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
++    const u32* __restrict__ rsrc_o, const float* __restrict__ reach_o_buf,
++    const u32* __restrict__ pc1, const u32* __restrict__ pc2,
++    const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
++    const u32* __restrict__ same_p, int nh_o)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     const int na = node_na[nodes[start + blockIdx.x]];
++    // Only reached fold terminals have the constructor-private -1 marker.
++    u32 parent = nodes[start + blockIdx.x];
++    u32 first_child = node_children_start[parent];
++    for (int a = 0; a < na; a++) {
++        u32 child = children[first_child + a];
++        if (node_na[child] == -1) {
++            produce_fold_in_parent(child, p, node_player, node_twin, node_tlose,
++                rsrc_o, reach_o_buf, pc1, pc2, card_off, card_idx, same_p,
++                cfv_slot, cfv, nh_p, nh_o, nh_max);
++        }
++    }
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+     if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+--- crates/solver/src/gpu/mod.rs
++++ crates/solver/src/gpu/mod.rs
+@@ -222,6 +222,7 @@
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
++        mark_fold_producers(&mut plan);
+         let ctx = CudaContext::new(0).map_err(e)?;
+         let stream = ctx.new_stream().map_err(e)?;
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+@@ -853,40 +854,7 @@
+         let pi = p as i32;
+         let show_shared = (self.riv_max_cnt[1 - p] * 16 + nh_o as usize * 4) as u32;
+         for l in (0..self.num_levels).rev() {
+-            let sp = self.fold_spans[l];
+-            if sp.count > 0 {
+-                let start = sp.start as i32;
+-                let count = sp.count as i32;
+-                let t0 = profq(&prof);
+-                unsafe {
+-                    self.stream
+-                        .launch_builder(&self.f_up_fold)
+-                        .arg(&self.d_fold_nodes)
+-                        .arg(&start)
+-                        .arg(&count)
+-                        .arg(&pi)
+-                        .arg(&self.d_node_player)
+-                        .arg(&self.d_node_twin)
+-                        .arg(&self.d_node_tlose)
+-                        .arg(&self.d_rsrc[0])
+-                        .arg(&self.d_rsrc[1])
+-                        .arg(&self.d_reach[0])
+-                        .arg(&self.d_reach[1])
+-                        .arg(&self.d_hand_c1[p])
+-                        .arg(&self.d_hand_c2[p])
+-                        .arg(&self.d_fold_card_off[1 - p])
+-                        .arg(&self.d_fold_card_idx[1 - p])
+-                        .arg(&self.d_same[p])
+-                        .arg(&self.d_cfv_slot)
+-                        .arg(&mut self.d_cfv)
+-                        .arg(&nh_p)
+-                        .arg(&nh_o)
+-                        .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, nh_o as u32 * 4))
+-                        .map_err(e)?;
+-                }
+-                prof_acc(&self.stream, &mut prof, 3, t0)?;
+-            }
++            // Fold producers execute inside their unique action-parent CTA.
+             let sp = self.show_spans[l];
+             if sp.count > 0 {
+                 let start = sp.start as i32;
+@@ -983,6 +951,16 @@
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
++                        .arg(&self.d_node_twin)
++                        .arg(&self.d_node_tlose)
++                        .arg(&self.d_rsrc[1 - p])
++                        .arg(&self.d_reach[1 - p])
++                        .arg(&self.d_hand_c1[p])
++                        .arg(&self.d_hand_c2[p])
++                        .arg(&self.d_fold_card_off[1 - p])
++                        .arg(&self.d_fold_card_idx[1 - p])
++                        .arg(&self.d_same[p])
++                        .arg(&nh_o)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+                 }
+@@ -1112,6 +1090,14 @@
+ }
+ 
+ /// Per-node offset (-1 = unlocked) plus concatenated locked sigmas.
++/// Mark only constructor-owned reached fold entries in the existing upload.
++/// Public GpuPlan values and all vector lengths/capacities remain unchanged.
++fn mark_fold_producers(plan: &mut GpuPlan) {
++    for &node in &plan.fold_nodes {
++        plan.node_na[node as usize] = -1;
++    }
++}
++
+ fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
+     let n = solver.spot.tree.nodes.len();
+     let mut off = vec![-1i64; n];
+@@ -1155,6 +1141,39 @@
+ mod tests {
+     use super::*;
+     use crate::{parse_sizes, LockMode, PathStep, Spot, SpotConfig, StreetSizing, TreeConfig};
++
++    #[test]
++    fn fold_producer_markers_are_private_and_exact() {
++        for board in ["KsQs2d", "Qs7h2dKh", "AsKsQsJsTs"] {
++            let spot = Spot::new(SpotConfig {
++                board: board.into(), range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
++                range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
++                tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0, ..Default::default() },
++            }).unwrap();
++            for iso in [false, true] { for full in [false, true] {
++                let mut plan = GpuPlan::build(&spot, iso);
++                if full { plan.use_full_action_arenas(&spot); }
++                let original = plan.node_na.clone(); let capacity = plan.node_na.capacity();
++                mark_fold_producers(&mut plan);
++                let folds: std::collections::HashSet<_> = plan.fold_nodes.iter().copied().collect();
++                assert!(!folds.is_empty());
++                for (n, (&a, &b)) in original.iter().zip(&plan.node_na).enumerate() {
++                    if folds.contains(&(n as u32)) {
++                        assert_eq!(spot.tree.nodes[n].kind, crate::tree::KIND_TERM_FOLD);
++                        assert_eq!(a, 0); assert_eq!(b, -1);
++                    } else { assert_eq!(a, b); }
++                }
++                assert_eq!(plan.node_na.capacity(), capacity);
++                assert_eq!(plan.node_na.len(), original.len());
++                for &n in &plan.action_nodes { assert!(plan.node_na[n as usize] > 0); }
++                let once = plan.node_na.clone(); mark_fold_producers(&mut plan);
++                assert_eq!(plan.node_na, once);
++                let mut fresh = GpuPlan::build(&spot, iso);
++                if full { fresh.use_full_action_arenas(&spot); }
++                assert_eq!(fresh.node_na, original);
++            }}
++        }
++    }
+ 
+     fn reach_reuse_solver(storage: crate::store::Storage, algo: Algorithm, compact: bool, menu: &str) -> Solver {
+         let sizing = || StreetSizing { bet: parse_sizes(menu).unwrap(), raise: vec![], donk: vec![] };

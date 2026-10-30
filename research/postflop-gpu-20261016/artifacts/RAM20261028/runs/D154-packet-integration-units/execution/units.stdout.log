@@ -1,0 +1,18 @@
+
+running 13 tests
+test observed::arena::tests::scoped_zero_checks_reject_other_stores_and_preserve_all_guards_and_bits ... ok
+test observed::arena::tests::zero_upload_accepts_only_positive_zero_compressed_sources ... ok
+test observed::arena::tests::zero_upload_preserves_existing_inactive_snapshot_metadata ... ok
+test observed::arena::tests::zero_upload_rejects_nonzero_quantized_values_with_zero_scale ... ok
+test observed::arena::tests::zero_upload_rejects_signed_zero_nonzero_and_nonfinite_scales ... ok
+test observed::packet_readback::packet_memory_controls::checked_layout_declines_overflows_aliases_wrong_owners_and_capacity_excess ... ok
+test observed::packet_readback::packet_memory_controls::direct_scatter_keeps_all_q_scale_guards_signed_bits_and_odd_tail_poison_exact ... ok
+test observed::packet_readback::packet_memory_controls::exact_prefix_initialization_preserves_all_surrounding_words_and_declines_invalid_views ... ok
+test observed::tests::paired_reach_reuse_matches_full_sweeps_across_lifecycle ... ok
+test observed::tests::paired_reach_reuse_preserves_raw_player1_and_standalone_refresh ... ok
+test observed::tests::shared_evaluation_matches_independent_sweeps ... ok
+test observed::tests::tight_f32_budget_preserves_warm_and_queried_inactive_state ... ok
+test observed::tests::zero_check_setup_preserves_caller_error_priority_and_joined_cleanup ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.51s
+

@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.12. CUPTI Result Codes &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.13. CUPTI SASS Metrics API" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html" />
+    <link rel="prev" title="5.11. CUPTI Range Profiling API" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.12. CUPTI Result Codes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.12.1. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.12.2. Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.12. </span>CUPTI Result Codes</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-result-codes">
+<h1><span class="section-number">5.12. </span>CUPTI Result Codes<a class="headerlink" href="#cupti-result-codes" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i">Error and result codes returned by CUPTI functions. </p>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga8c54bf95108e67d858f37fcf76c88714"><span class="std std-ref">CUptiResult</span></a></dt><dd><p>CUPTI result codes.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga457c9a7058749ae118bd2247d9722041"><span class="std std-ref">cuptiGetErrorMessage</span></a>(CUptiResult result, const char **str)</dt><dd><p>Get the descriptive message corresponding to error codes returned by CUPTI.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga6d5275dd8f127592c1fe3033bb73a751"><span class="std std-ref">cuptiGetResultString</span></a>(CUptiResult result, const char **str)</dt><dd><p>Get the descriptive string for a CUptiResult.</p>
+</dd>
+</dl>
+</div>
+<section id="enumerations">
+<h2><span class="section-number">5.12.1. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv411CUptiResult">
+<span id="_CPPv311CUptiResult"></span><span id="_CPPv211CUptiResult"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga8c54bf95108e67d858f37fcf76c88714"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUptiResult</span></span></span><a class="headerlink" href="#_CPPv411CUptiResult" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI result codes. </p>
+<p>Error and result codes returned by CUPTI functions. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult13CUPTI_SUCCESSE">
+<span id="_CPPv3N11CUptiResult13CUPTI_SUCCESSE"></span><span id="_CPPv2N11CUptiResult13CUPTI_SUCCESSE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a60bd0257372573920d9bb2c802ce3b71"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_SUCCESS</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult13CUPTI_SUCCESSE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>No error. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_PARAMETERE">
+<span id="_CPPv3N11CUptiResult29CUPTI_ERROR_INVALID_PARAMETERE"></span><span id="_CPPv2N11CUptiResult29CUPTI_ERROR_INVALID_PARAMETERE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ad4dc6d34f22e4adc9b129df68b7bae63"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_PARAMETER</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_PARAMETERE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>One or more of the parameters is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_DEVICEE">
+<span id="_CPPv3N11CUptiResult26CUPTI_ERROR_INVALID_DEVICEE"></span><span id="_CPPv2N11CUptiResult26CUPTI_ERROR_INVALID_DEVICEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ad4e3edbcbf87a0e56a8419aa4d5a056c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_DEVICE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_DEVICEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The device does not correspond to a valid CUDA device. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult27CUPTI_ERROR_INVALID_CONTEXTE">
+<span id="_CPPv3N11CUptiResult27CUPTI_ERROR_INVALID_CONTEXTE"></span><span id="_CPPv2N11CUptiResult27CUPTI_ERROR_INVALID_CONTEXTE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a4693d88f65fa6efcd21a8259ec3e8c29"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_CONTEXT</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult27CUPTI_ERROR_INVALID_CONTEXTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The context is NULL or not valid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult35CUPTI_ERROR_INVALID_EVENT_DOMAIN_IDE">
+<span id="_CPPv3N11CUptiResult35CUPTI_ERROR_INVALID_EVENT_DOMAIN_IDE"></span><span id="_CPPv2N11CUptiResult35CUPTI_ERROR_INVALID_EVENT_DOMAIN_IDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a226fc11ce118a08b207666af282aa096"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_EVENT_DOMAIN_ID</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult35CUPTI_ERROR_INVALID_EVENT_DOMAIN_IDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The event domain id is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult28CUPTI_ERROR_INVALID_EVENT_IDE">
+<span id="_CPPv3N11CUptiResult28CUPTI_ERROR_INVALID_EVENT_IDE"></span><span id="_CPPv2N11CUptiResult28CUPTI_ERROR_INVALID_EVENT_IDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a9da48ef2a261b2c3047603acc8d5c548"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_EVENT_ID</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult28CUPTI_ERROR_INVALID_EVENT_IDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The event id is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult30CUPTI_ERROR_INVALID_EVENT_NAMEE">
+<span id="_CPPv3N11CUptiResult30CUPTI_ERROR_INVALID_EVENT_NAMEE"></span><span id="_CPPv2N11CUptiResult30CUPTI_ERROR_INVALID_EVENT_NAMEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a03f2933f692108a1ad544936572cbdca"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_EVENT_NAME</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult30CUPTI_ERROR_INVALID_EVENT_NAMEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The event name is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_OPERATIONE">
+<span id="_CPPv3N11CUptiResult29CUPTI_ERROR_INVALID_OPERATIONE"></span><span id="_CPPv2N11CUptiResult29CUPTI_ERROR_INVALID_OPERATIONE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714afdf49c2358b9da99aaad9f932fde2b25"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_OPERATION</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_OPERATIONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The current operation cannot be performed due to dependency on other factors. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult25CUPTI_ERROR_OUT_OF_MEMORYE">
+<span id="_CPPv3N11CUptiResult25CUPTI_ERROR_OUT_OF_MEMORYE"></span><span id="_CPPv2N11CUptiResult25CUPTI_ERROR_OUT_OF_MEMORYE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a3026007911417005c6e8195cecbb982a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_OUT_OF_MEMORY</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult25CUPTI_ERROR_OUT_OF_MEMORYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unable to allocate enough memory to perform the requested operation. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult20CUPTI_ERROR_HARDWAREE">
+<span id="_CPPv3N11CUptiResult20CUPTI_ERROR_HARDWAREE"></span><span id="_CPPv2N11CUptiResult20CUPTI_ERROR_HARDWAREE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a323402d9af39654ac88a83ec4a9c1bd6"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_HARDWARE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult20CUPTI_ERROR_HARDWAREE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An error occurred on the performance monitoring hardware. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult41CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENTE">
+<span id="_CPPv3N11CUptiResult41CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENTE"></span><span id="_CPPv2N11CUptiResult41CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENTE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a004b896abf14bd89619e48db8d7f45b5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENT</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult41CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The output buffer size is not sufficient to return all requested data. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult31CUPTI_ERROR_API_NOT_IMPLEMENTEDE">
+<span id="_CPPv3N11CUptiResult31CUPTI_ERROR_API_NOT_IMPLEMENTEDE"></span><span id="_CPPv2N11CUptiResult31CUPTI_ERROR_API_NOT_IMPLEMENTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a9266804628c7702b3531d435610f154a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_API_NOT_IMPLEMENTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult31CUPTI_ERROR_API_NOT_IMPLEMENTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>API is not implemented. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult29CUPTI_ERROR_MAX_LIMIT_REACHEDE">
+<span id="_CPPv3N11CUptiResult29CUPTI_ERROR_MAX_LIMIT_REACHEDE"></span><span id="_CPPv2N11CUptiResult29CUPTI_ERROR_MAX_LIMIT_REACHEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714aa6d97464748158d2c5e45eeac821d1da"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_MAX_LIMIT_REACHED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult29CUPTI_ERROR_MAX_LIMIT_REACHEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The maximum limit is reached. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult21CUPTI_ERROR_NOT_READYE">
+<span id="_CPPv3N11CUptiResult21CUPTI_ERROR_NOT_READYE"></span><span id="_CPPv2N11CUptiResult21CUPTI_ERROR_NOT_READYE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a3c7fb2db82ff0f7a206c54b2dd387fa0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_NOT_READY</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult21CUPTI_ERROR_NOT_READYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The object is not yet ready to perform the requested operation. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult26CUPTI_ERROR_NOT_COMPATIBLEE">
+<span id="_CPPv3N11CUptiResult26CUPTI_ERROR_NOT_COMPATIBLEE"></span><span id="_CPPv2N11CUptiResult26CUPTI_ERROR_NOT_COMPATIBLEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ae513a0f34c398fe4c4416b8e673e0721"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_NOT_COMPATIBLE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult26CUPTI_ERROR_NOT_COMPATIBLEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The current operation is not compatible with the current state of the object. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult27CUPTI_ERROR_NOT_INITIALIZEDE">
+<span id="_CPPv3N11CUptiResult27CUPTI_ERROR_NOT_INITIALIZEDE"></span><span id="_CPPv2N11CUptiResult27CUPTI_ERROR_NOT_INITIALIZEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a6eacb4cecd3e569b080a94fe5520e111"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_NOT_INITIALIZED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult27CUPTI_ERROR_NOT_INITIALIZEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI is unable to initialize its connection to the CUDA driver. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_METRIC_IDE">
+<span id="_CPPv3N11CUptiResult29CUPTI_ERROR_INVALID_METRIC_IDE"></span><span id="_CPPv2N11CUptiResult29CUPTI_ERROR_INVALID_METRIC_IDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ad00647ff8e3dd14a08a452873954c02b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_METRIC_ID</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult29CUPTI_ERROR_INVALID_METRIC_IDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric id is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult31CUPTI_ERROR_INVALID_METRIC_NAMEE">
+<span id="_CPPv3N11CUptiResult31CUPTI_ERROR_INVALID_METRIC_NAMEE"></span><span id="_CPPv2N11CUptiResult31CUPTI_ERROR_INVALID_METRIC_NAMEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a7a2c57f2bff34bfe66e570dedcea724b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_METRIC_NAME</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult31CUPTI_ERROR_INVALID_METRIC_NAMEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The metric name is invalid. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult23CUPTI_ERROR_QUEUE_EMPTYE">
+<span id="_CPPv3N11CUptiResult23CUPTI_ERROR_QUEUE_EMPTYE"></span><span id="_CPPv2N11CUptiResult23CUPTI_ERROR_QUEUE_EMPTYE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ae267e4096cca7c586fcd650920c61389"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_QUEUE_EMPTY</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult23CUPTI_ERROR_QUEUE_EMPTYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The queue is empty. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_HANDLEE">
+<span id="_CPPv3N11CUptiResult26CUPTI_ERROR_INVALID_HANDLEE"></span><span id="_CPPv2N11CUptiResult26CUPTI_ERROR_INVALID_HANDLEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714af7e3481f8285b6dc0f4e57f61636a728"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_HANDLE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_HANDLEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid handle (internal?). </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_STREAME">
+<span id="_CPPv3N11CUptiResult26CUPTI_ERROR_INVALID_STREAME"></span><span id="_CPPv2N11CUptiResult26CUPTI_ERROR_INVALID_STREAME"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ab9e1cbc9a6eec9ee2cee5e5e7634bdd8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_STREAM</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_STREAME" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid stream. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult24CUPTI_ERROR_INVALID_KINDE">
+<span id="_CPPv3N11CUptiResult24CUPTI_ERROR_INVALID_KINDE"></span><span id="_CPPv2N11CUptiResult24CUPTI_ERROR_INVALID_KINDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ab80850b04865d344e1cb74c6e5f4fa89"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_KIND</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult24CUPTI_ERROR_INVALID_KINDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid kind. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult31CUPTI_ERROR_INVALID_EVENT_VALUEE">
+<span id="_CPPv3N11CUptiResult31CUPTI_ERROR_INVALID_EVENT_VALUEE"></span><span id="_CPPv2N11CUptiResult31CUPTI_ERROR_INVALID_EVENT_VALUEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a8a86d5e5179c2301f07175ed1fc48f53"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_EVENT_VALUE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult31CUPTI_ERROR_INVALID_EVENT_VALUEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid event value. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult20CUPTI_ERROR_DISABLEDE">
+<span id="_CPPv3N11CUptiResult20CUPTI_ERROR_DISABLEDE"></span><span id="_CPPv2N11CUptiResult20CUPTI_ERROR_DISABLEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a220d3758190ac7ee209f87806e4d1190"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_DISABLED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult20CUPTI_ERROR_DISABLEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI is disabled due to conflicts with other enabled profilers. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_MODULEE">
+<span id="_CPPv3N11CUptiResult26CUPTI_ERROR_INVALID_MODULEE"></span><span id="_CPPv2N11CUptiResult26CUPTI_ERROR_INVALID_MODULEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a9521d0be61abb1275a1084934e4f439b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_MODULE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult26CUPTI_ERROR_INVALID_MODULEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid module. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult32CUPTI_ERROR_INVALID_METRIC_VALUEE">
+<span id="_CPPv3N11CUptiResult32CUPTI_ERROR_INVALID_METRIC_VALUEE"></span><span id="_CPPv2N11CUptiResult32CUPTI_ERROR_INVALID_METRIC_VALUEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a219f355b450d885882913616e209bd13"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INVALID_METRIC_VALUE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult32CUPTI_ERROR_INVALID_METRIC_VALUEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Invalid metric value. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult25CUPTI_ERROR_HARDWARE_BUSYE">
+<span id="_CPPv3N11CUptiResult25CUPTI_ERROR_HARDWARE_BUSYE"></span><span id="_CPPv2N11CUptiResult25CUPTI_ERROR_HARDWARE_BUSYE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a278d02b6dfb6149a194d52b21b7d4b51"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_HARDWARE_BUSY</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult25CUPTI_ERROR_HARDWARE_BUSYE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The performance monitoring hardware is in use by other client. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult25CUPTI_ERROR_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult25CUPTI_ERROR_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult25CUPTI_ERROR_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a64bccf609555971c74dcdfde280d1ec5"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult25CUPTI_ERROR_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The attempted operation is not supported on the current system or device. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult38CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult38CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult38CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a0552463887f8a8ee360a0a6266cb38d4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult38CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unified memory profiling is not supported on the system. </p>
+<p>Potential reason could be unsupported OS or architecture. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult48CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_DEVICEE">
+<span id="_CPPv3N11CUptiResult48CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_DEVICEE"></span><span id="_CPPv2N11CUptiResult48CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_DEVICEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a9bdac8360c3201c14a105ae7ebc1fc60"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_DEVICE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult48CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_DEVICEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unified memory profiling is not supported on the device. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult57CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_NON_P2P_DEVICESE">
+<span id="_CPPv3N11CUptiResult57CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_NON_P2P_DEVICESE"></span><span id="_CPPv2N11CUptiResult57CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_NON_P2P_DEVICESE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a87c48905f22aacfce2952766295e9012"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_NON_P2P_DEVICES</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult57CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_ON_NON_P2P_DEVICESE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unified memory profiling is not supported on a multi-GPU configuration without P2P support between any pair of devices. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult47CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_WITH_MPSE">
+<span id="_CPPv3N11CUptiResult47CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_WITH_MPSE"></span><span id="_CPPv2N11CUptiResult47CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_WITH_MPSE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a5ec165813586cf953b594a771e9731af"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_WITH_MPS</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult47CUPTI_ERROR_UM_PROFILING_NOT_SUPPORTED_WITH_MPSE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Unified memory profiling is not supported under the Multi-Process Service (MPS) environment. </p>
+<p>CUDA 7.5 removes this restriction. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult37CUPTI_ERROR_CDP_TRACING_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult37CUPTI_ERROR_CDP_TRACING_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult37CUPTI_ERROR_CDP_TRACING_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ae37e4aa9b8df0783da522633e60aadde"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_CDP_TRACING_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult37CUPTI_ERROR_CDP_TRACING_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>In CUDA 9.0, devices with compute capability 7.0 don’t support CDP tracing. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult44CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult44CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult44CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ab8c2ebd3c7127dd3ccdc79bd7a1e6667"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult44CUPTI_ERROR_VIRTUALIZED_DEVICE_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling on virtualized GPU is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult40CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLEE">
+<span id="_CPPv3N11CUptiResult40CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLEE"></span><span id="_CPPv2N11CUptiResult40CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a98cc4acf3321aed42fb903ce5a3bf442"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult40CUPTI_ERROR_CUDA_COMPILER_NOT_COMPATIBLEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling results might be incorrect for CUDA applications compiled with nvcc version older than 9.0 for devices with compute capability 6.0 and 6.1. </p>
+<p>Profiling session will continue and CUPTI will notify it using this error code. User is advised to recompile the application code with nvcc version 9.0 or later. Ignore this warning if code is already compiled with the recommended nvcc version. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult35CUPTI_ERROR_INSUFFICIENT_PRIVILEGESE">
+<span id="_CPPv3N11CUptiResult35CUPTI_ERROR_INSUFFICIENT_PRIVILEGESE"></span><span id="_CPPv2N11CUptiResult35CUPTI_ERROR_INSUFFICIENT_PRIVILEGESE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714abd91e10d1fe9756753603b1409bf1925"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_INSUFFICIENT_PRIVILEGES</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult35CUPTI_ERROR_INSUFFICIENT_PRIVILEGESE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>User doesn’t have sufficient privileges which are required to start the profiling session. </p>
+<p>One possible reason for this may be that the NVIDIA driver or your system administrator may have restricted access to the NVIDIA GPU performance counters. To learn how to resolve this issue and find more information, please visit <a class="reference external" href="https://developer.nvidia.com/CUPTI_ERROR_INSUFFICIENT_PRIVILEGES">https://developer.nvidia.com/CUPTI_ERROR_INSUFFICIENT_PRIVILEGES</a> </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult40CUPTI_ERROR_OLD_PROFILER_API_INITIALIZEDE">
+<span id="_CPPv3N11CUptiResult40CUPTI_ERROR_OLD_PROFILER_API_INITIALIZEDE"></span><span id="_CPPv2N11CUptiResult40CUPTI_ERROR_OLD_PROFILER_API_INITIALIZEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a5e147bacdf9e74450a51473282c0544a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_OLD_PROFILER_API_INITIALIZED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult40CUPTI_ERROR_OLD_PROFILER_API_INITIALIZEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Legacy CUPTI Profiling API i.e. </p>
+<p>event API from the header cupti_events.h and metric API from the header cupti_metrics.h are not compatible with the Profiling API in the header cupti_profiler_target.h and Perfworks metrics API in the headers nvperf_host.h and nvperf_target.h. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult37CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINEE">
+<span id="_CPPv3N11CUptiResult37CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINEE"></span><span id="_CPPv2N11CUptiResult37CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINEE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a32d7813e01513b9c11b3ab379b59e368"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINE</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult37CUPTI_ERROR_OPENACC_UNDEFINED_ROUTINEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Missing definition of the OpenACC API routine in the linked OpenACC library. </p>
+<p>One possible reason is that OpenACC library is linked statically in the user application, which might not have the definition of all the OpenACC API routines needed for the OpenACC profiling, as compiler might ignore definitions for the functions not used in the application. This issue can be mitigated by linking the OpenACC library dynamically. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult41CUPTI_ERROR_LEGACY_PROFILER_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult41CUPTI_ERROR_LEGACY_PROFILER_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult41CUPTI_ERROR_LEGACY_PROFILER_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714abd59b3c4fe91d2a294495953ded7cbfd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_LEGACY_PROFILER_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult41CUPTI_ERROR_LEGACY_PROFILER_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Legacy CUPTI Profiling API i.e. </p>
+<p>event API from the header cupti_events.h and metric API from the header cupti_metrics.h are not supported on devices with compute capability 7.5 and higher (i.e. Turing and later GPU architectures). These APIs are deprecated in the CUDA 12.8 release and will be removed in a future CUDA release. These are replaced by the host profiling API in the header cupti_profiler_host.h and target profiling API in the header cupti_range_profiler.h which are supported on devices with compute capability 7.0 and higher (i.e. Volta and later GPU architectures). </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult46CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult46CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult46CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a83a17b153be4fcfeec47702b464c10ae"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult46CUPTI_ERROR_MULTIPLE_SUBSCRIBERS_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI doesn’t allow multiple callback subscribers. </p>
+<p>Only a single subscriber can be registered at a time. Same error code is used when application is launched using NVIDIA tools like nvprof, Visual Profiler, Nsight Systems, Nsight Compute, cuda-gdb and cuda-memcheck. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult54CUPTI_ERROR_VIRTUALIZED_DEVICE_INSUFFICIENT_PRIVILEGESE">
+<span id="_CPPv3N11CUptiResult54CUPTI_ERROR_VIRTUALIZED_DEVICE_INSUFFICIENT_PRIVILEGESE"></span><span id="_CPPv2N11CUptiResult54CUPTI_ERROR_VIRTUALIZED_DEVICE_INSUFFICIENT_PRIVILEGESE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a5d6870795eeefd97df1ba7028bd1c510"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_VIRTUALIZED_DEVICE_INSUFFICIENT_PRIVILEGES</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult54CUPTI_ERROR_VIRTUALIZED_DEVICE_INSUFFICIENT_PRIVILEGESE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling on virtualized GPU is not allowed by hypervisor. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult48CUPTI_ERROR_CONFIDENTIAL_COMPUTING_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult48CUPTI_ERROR_CONFIDENTIAL_COMPUTING_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult48CUPTI_ERROR_CONFIDENTIAL_COMPUTING_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a27c8f73606b8c590313b99d4d6a37361"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_CONFIDENTIAL_COMPUTING_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult48CUPTI_ERROR_CONFIDENTIAL_COMPUTING_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling and tracing are not allowed when confidential computing mode is enabled. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult36CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult36CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult36CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a0c33e0b62d6e3b8952e527446073df98"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult36CUPTI_ERROR_CMP_DEVICE_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>CUPTI does not support NVIDIA Crypto Mining Processors (CMP). </p>
+<p>For more information, please visit <a class="reference external" href="https://developer.nvidia.com/ERR_NVCMPGPU">https://developer.nvidia.com/ERR_NVCMPGPU</a> </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult36CUPTI_ERROR_MIG_DEVICE_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult36CUPTI_ERROR_MIG_DEVICE_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult36CUPTI_ERROR_MIG_DEVICE_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714aa1bf75102c96b9ae1c8710fe5407657b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_MIG_DEVICE_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult36CUPTI_ERROR_MIG_DEVICE_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling on Multi-instance GPU (MIG) is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult36CUPTI_ERROR_SLI_DEVICE_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult36CUPTI_ERROR_SLI_DEVICE_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult36CUPTI_ERROR_SLI_DEVICE_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714a726eb201b1fe95c340f051cf60b2dd37"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_SLI_DEVICE_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult36CUPTI_ERROR_SLI_DEVICE_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling on SLI device is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult36CUPTI_ERROR_WSL_DEVICE_NOT_SUPPORTEDE">
+<span id="_CPPv3N11CUptiResult36CUPTI_ERROR_WSL_DEVICE_NOT_SUPPORTEDE"></span><span id="_CPPv2N11CUptiResult36CUPTI_ERROR_WSL_DEVICE_NOT_SUPPORTEDE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714ac0bf8f1d8bfbde94fe43efebced50289"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_WSL_DEVICE_NOT_SUPPORTED</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult36CUPTI_ERROR_WSL_DEVICE_NOT_SUPPORTEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Profiling on WSL device is not supported. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult19CUPTI_ERROR_UNKNOWNE">
+<span id="_CPPv3N11CUptiResult19CUPTI_ERROR_UNKNOWNE"></span><span id="_CPPv2N11CUptiResult19CUPTI_ERROR_UNKNOWNE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714af9d2ec11d1e9023750bb9f03259da407"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_UNKNOWN</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult19CUPTI_ERROR_UNKNOWNE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>An unknown internal error has occurred. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N11CUptiResult21CUPTI_ERROR_FORCE_INTE">
+<span id="_CPPv3N11CUptiResult21CUPTI_ERROR_FORCE_INTE"></span><span id="_CPPv2N11CUptiResult21CUPTI_ERROR_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1gga8c54bf95108e67d858f37fcf76c88714aadf338d9b6cf6bc47ccf5fe4a7f370a8"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_ERROR_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N11CUptiResult21CUPTI_ERROR_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.12.2. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiGetErrorMessage11CUptiResultPPKc">
+<span id="_CPPv320cuptiGetErrorMessage11CUptiResultPPKc"></span><span id="_CPPv220cuptiGetErrorMessage11CUptiResultPPKc"></span><span id="cuptiGetErrorMessage__CUptiResult.cCPP"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga457c9a7058749ae118bd2247d9722041"></span><a class="reference internal" href="#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetErrorMessage</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">result</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiGetErrorMessage11CUptiResultPPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the descriptive message corresponding to error codes returned by CUPTI. </p>
+<p>Return the descriptive error message for a CUptiResult in <code class="docutils literal notranslate"><span class="pre">*str</span></code>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong>: this function is thread safe.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> – The result to get the descriptive error message for </p></li>
+<li><p><strong>str</strong> – Returns the error message string</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">str</span></code> is NULL or <code class="docutils literal notranslate"><span class="pre">result</span></code> is not a valid CUptiResult </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiGetResultString11CUptiResultPPKc">
+<span id="_CPPv320cuptiGetResultString11CUptiResultPPKc"></span><span id="_CPPv220cuptiGetResultString11CUptiResultPPKc"></span><span id="cuptiGetResultString__CUptiResult.cCPP"></span><span class="target" id="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i_1ga6d5275dd8f127592c1fe3033bb73a751"></span><a class="reference internal" href="#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetResultString</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">result</span></span>, <span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">str</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiGetResultString11CUptiResultPPKc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the descriptive string for a CUptiResult. </p>
+<p>Return the descriptive string for a CUptiResult in <code class="docutils literal notranslate"><span class="pre">*str</span></code>. </p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p><strong>Thread-safety</strong>: this function is thread safe.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>result</strong> – The result to get the string for </p></li>
+<li><p><strong>str</strong> – Returns the string</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – on success </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">str</span></code> is NULL or <code class="docutils literal notranslate"><span class="pre">result</span></code> is not a valid CUptiResult </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

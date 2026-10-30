@@ -1,0 +1,32 @@
+{
+  "id": "D033-api-design-review",
+  "created_at": "2026-10-16T09:11:51.519497+00:00",
+  "reviewer": "menu_change_review",
+  "status": "API_FEASIBLE_FINAL_PROTOCOL_PENDING",
+  "review_sha256": "ced55a6ba1561f1a0f8dddc9e2be07dc75ad301fa9d200d7da42598d96fb5e1a",
+  "inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-design-review\\api-review.md": "ced55a6ba1561f1a0f8dddc9e2be07dc75ad301fa9d200d7da42598d96fb5e1a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\graph.rs": "dfd8eae6e2cb21bdc9089dec4fb58d0fa9fe2f6c191e06ff994780df20dddb8e",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\result.rs": "096198a59cf9c551edcca167ebb26292149fae1a39fef6372cf3ebbef65966b2",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\sys\\mod.rs": "8e7a870f3823946049fe016fadd2702e328b5dac28e9a104e39f83fbc6158a9e"
+  },
+  "official_references": [
+    "https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__EVENT.html",
+    "https://docs.nvidia.com/cuda/archive/12.6.3/cuda-driver-api/group__CUDA__GRAPH.html"
+  ],
+  "checkout_edits": false,
+  "builds": false,
+  "gpu_execution": false,
+  "profiler_invocation": false,
+  "runtime_validated": false,
+  "performance_claim": false,
+  "limitations": [
+    "Final builder protocol and implementation not yet reviewed.",
+    "Timing-enabled graph events are supported by API contract, not yet proven on installed driver.",
+    "Event-boundary instrumentation perturbs graph scheduling and cannot establish native time shares or causal speedup."
+  ]
+}

@@ -1,0 +1,76 @@
+{
+  "at": "2026-10-18T08:12:06.135635+00:00",
+  "status": "pass_material_arithmetic_and_observation_replay",
+  "checks": 15738,
+  "derived": [
+    {
+      "metric": "rainbow",
+      "baseline_median": 10343.75,
+      "candidate_median": 10203.125,
+      "limit": 10566.25,
+      "passed": true
+    },
+    {
+      "metric": "two-tone",
+      "baseline_median": 7281.25,
+      "candidate_median": 7218.75,
+      "limit": 7442.5,
+      "passed": true
+    },
+    {
+      "metric": "river",
+      "baseline_median": 125.0,
+      "candidate_median": 93.75,
+      "limit": 143.125,
+      "passed": true
+    },
+    {
+      "metric": "phase_sum_CPU_ms",
+      "baseline_median": 17421.875,
+      "candidate_median": 17578.125,
+      "limit": 17785.9375,
+      "passed": true
+    },
+    {
+      "metric": "whole_process_CPU_ms",
+      "baseline_median": 20500.0,
+      "candidate_median": 20609.375,
+      "limit": 20925.625,
+      "passed": true
+    },
+    {
+      "metric": "peak_working_bytes",
+      "baseline_median": 2612064256,
+      "candidate_median": 2612322304,
+      "limit": 2638184898.56,
+      "passed": true
+    },
+    {
+      "metric": "peak_total_commit_bytes",
+      "baseline_median": 9048412160,
+      "candidate_median": 9049587712,
+      "limit": 9138896281.6,
+      "passed": true
+    },
+    {
+      "metric": "GPU_dedicated_peak_bytes",
+      "baseline_median": 6359678976,
+      "candidate_median": 6359678976,
+      "limit": 6361776128,
+      "passed": true
+    },
+    {
+      "metric": "GPU_shared_peak_bytes",
+      "baseline_median": 822083584,
+      "candidate_median": 822083584,
+      "limit": 824180736,
+      "passed": true
+    }
+  ],
+  "all_material_guards_pass": true,
+  "report_sha256": "02b10776c509bb2ff704ed11044e6b55757f7ef130bcf93a9ee41a0eb8c3501a",
+  "root_cross_check_only": true,
+  "candidate_accepted": false,
+  "source_main_live_PTX_unchanged": true,
+  "limits": "Independent stdlib arithmetic and retained-record/owner checks by root; not an external independent audit or universal physical GPU peak proof. Original calibration and experimental research failures remain failed. Responsiveness and final compiled-resource/graph/scope audit remain."
+}

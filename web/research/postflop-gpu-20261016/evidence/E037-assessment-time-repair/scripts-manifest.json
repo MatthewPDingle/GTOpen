@@ -1,0 +1,34 @@
+{
+  "id": "E037-assessment-time-repair",
+  "status": "FROZEN_ASSESSMENT_ONLY_NOT_EXECUTED",
+  "script_sha256": {
+    "policy_guard.py": "3ed05dae890af226d518fdc623d32bbab00e03fff9013c4a58a02b14150481b1",
+    "assess.py": "e371dcbcc718aeb3dc39424bb60ed37b38191a61925ec75c18d9da1a3e33adf4",
+    "compare_policy.py": "91a3dbc671ddb2d2069c6d9231cd5ef104bc76b71dfa6dcf1b3849a7d14a59d0",
+    "repair-policy.json": "3d85bc13ceb813670c7ad0f36bcb4d3351b248a012ce6c85bb765f1ec1994650",
+    "README.md": "56cb659355106b141478f2740d76070efc2213ae771c046b5bc5cdfc294e737d",
+    "repair.patch": "1dd3371c489a2fbd9e19b31ace53ae183b9366270d2a67043e2ef380c12304a0",
+    "preparation.json": "9d98baf67a679758b3a64113e182130a22b0f4aa9546c592c7162f7e47864a15"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\policy_guard.py": "96816a6419981b4e8f6cbcfc28028c81b8f8ed9277ea67e6a3c86350dfd0d20c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\primary.py": "28b3b8ffa0322a8aaeeacfc29e28e820c6f36f3ed5c2225b923dc88d4dc24f98",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\compare_policy.py": "56d9b825182b2965514b97e7d58d1a81760126f4375e3956858a3af61c18fb0a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\assess.py": "57db7febc3868c0e82272efe3d4fe04094fd302a96ca5bf611b3560715fbf0ea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\policy.json": "f2eaef2759f628db85a414e5496f7dec89be1e398f7d00d8d068d1db74be55d4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\README.md": "45b30e7c4335afe9c0b51b4945e78d0a53f920e71a9fcc4cd4bc466c9ff0ff44",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\adaptation.patch": "7818aca8fea4bd90ba3fa2fbd729f2f785074f3bb854d3103b5ea674f95c66d6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\preparation.json": "51bd59e149a14aa9b638dad6169aa5337dd5621995258a6d5a887ca44cfc03ad",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\scripts-manifest.json": "bf84a6f7f685d42ee3fbcf7aed5737a073b8acbf9401544ddaa03c9cc1b4d37a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-1pct\\authorization.json": "df9e39cc5ad89c9eb9c9133b2205acd706926343c67c6d3ee1d326a38c4b9da3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-root-decisions\\user-policy-1pct.json": "1127d11e472842cfd9d6ebafbb3408a06fca14de1c1b718ae3757517ba9c3a5c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-assessment-preparation-error\\error.json": "b8ab72850519b9810cf0165cbcea499aed94c1cb8604868de6e03a1c88e959fe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-execution\\pre-primary.json": "a670456c07274d9707d079d78fcee24b8948a634240c328ec38c9a744d217b09",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-policy-execution\\exit.json": "c7a9395180b7b0703451bd48a1f9fc08fed0cf866a3856a1aca40453b5ec055a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E037-policy-review\\report.json": "80c14dd34db4fe95c617268fda3a962ac44a0d8e3203d4c876c438a44178c099",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E037-policy-review\\manifest.json": "44fa0ccfe6d5d18b3a545f220736e9d0e34190411887da980365ac54d5932c5f"
+  },
+  "execution": "Root only, after independent review: python -I -B assess.py ORIGINAL_POLICY_AUTH_SHA REVIEWED_REPAIR_MANIFEST_SHA",
+  "gate_or_measurement_changes": false,
+  "native_rerun_authorized": false
+}

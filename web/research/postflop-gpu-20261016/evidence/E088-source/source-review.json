@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T12:00:48.582382+00:00",
+  "scope": "Only up_action_impl cache predicate changes from na<=8 to compile-time NA!=0. Common2/3/4 instantiations retain original caches; arbitrary-menu generic uses existing uncached memory-read branches. No arithmetic/expression/order/address/threshold/lock/opponent/down/eval/host/layout/ABI/graph/precision/quality/save change.",
+  "source_reverse_exact": true,
+  "numeric_obligations": "For common NA2/3/4, old predicate is always true; candidate true. Generic changes cache only at actioncounts1,5,6,7,8 (wrapper dispatch otherwise2/3/4; >8 alreadyuncached). Regrets are unchanged throughout sum/sigma loops; strategy writes are disjoint. During final ascending regret updates, prior action writes cannot alias later action reads. Child CFV rows remain unchanged until final parent CFV write; actual plan/direct-control child-parent disjointness is required. Thus existing reread branches consume same bits and execute identical floating operations/order. No atomic/read-race/fault alias guarantee for malformed inputs.",
+  "compiler_hypothesis": "Dynamic rc[8]/vc[8] indexing may allocate localmemory in generic path. Removing that cache can trade local stores/reads for extra global loads and alter common physical registers or scheduling. Require complete local removal on actual120 and PTXlocal-memory absence120/75 before numerical work; no speed inferred.",
+  "distinct_from_closed": "E074 modifies private generic call boundary while preserving original cache; this changes cache policy without any new call/helper/entry/dispatch or forced parameter. E064localactionindices,E085streamingstores,E087staging are absent.",
+  "primary_sources": [
+    "https://docs.nvidia.com/cuda/cuda-programming-guide/02-basics/writing-cuda-kernels.html"
+  ],
+  "required": "Resource/codegen prerequisites, original819raw up_action controls with whole mutable/immutable/guards, full builds/ordinary units, original same-quality complete-solve1%strictfixture screen, separatefresh16/broad/material/capacity/holdout/cumulative beforeadoption."
+}

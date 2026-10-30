@@ -1,0 +1,79 @@
+{
+  "action_nodes": 523533,
+  "all53fields_bitwise_equal": true,
+  "all_vec_capacities_equal": true,
+  "baseline_plan_ms": 111.9666,
+  "baseline_samples_ms": [
+    110.7994,
+    111.9666,
+    130.1603,
+    123.5988,
+    111.4234,
+    112.75150000000001,
+    108.7521,
+    113.1495,
+    110.5716
+  ],
+  "baseline_words": 27687171,
+  "board": "Ks7s2d",
+  "candidate_plan_ms": 107.7227,
+  "candidate_samples_ms": [
+    106.35409999999999,
+    108.81269999999999,
+    112.4379,
+    107.46350000000001,
+    107.5561,
+    106.8633,
+    136.2189,
+    109.1134,
+    107.7227
+  ],
+  "fields": 53,
+  "first": "baseline",
+  "fixture_index": 1,
+  "full_arenas": false,
+  "full_cycle_performance_measured": false,
+  "gpu_executions": 0,
+  "id": 4,
+  "iso_active": false,
+  "iso_requested": false,
+  "measured_pairs": 9,
+  "nodes": 1346813,
+  "pair_orders": [
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "BC",
+    "CB",
+    "BC"
+  ],
+  "posting_mechanism": [
+    {
+      "all_card_posting_values_and_order_exact": true,
+      "baseline_allocation_growth_events": 144279,
+      "baseline_last_slot_temporary_requested_capacity_bytes": 3680,
+      "baseline_peak_temporary_requested_capacity_bytes": 3952,
+      "membership_words": 557796,
+      "player": 0,
+      "reused_allocation_growth_events": 130,
+      "reused_peak_temporary_requested_capacity_bytes": 3984,
+      "slots": 1176
+    },
+    {
+      "all_card_posting_values_and_order_exact": true,
+      "baseline_allocation_growth_events": 150075,
+      "baseline_last_slot_temporary_requested_capacity_bytes": 4416,
+      "baseline_peak_temporary_requested_capacity_bytes": 4688,
+      "membership_words": 691840,
+      "player": 1,
+      "reused_allocation_growth_events": 134,
+      "reused_peak_temporary_requested_capacity_bytes": 4720,
+      "slots": 1176
+    }
+  ],
+  "struct_size_equal": true,
+  "warmup_pairs": 2
+}

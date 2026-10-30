@@ -1,0 +1,105 @@
+{
+  "id": "D119",
+  "at": "2026-10-18T02:45:42.243556+00:00",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D119-boundary-load-audit.py": "13ea71894b626d253894366e5016d7d657579384986df0662ae8fef5c95a6b75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource-execute.py": "796fdc8cc93a221c194addf585c973a26553c384a26c5f1f811a6b2a312b5f03",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\protocol.json": "cc3fdb805e3c0a2fcc0254e911139fb85523075019bf9812d1129acbc74122d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\report.json": "bf6259b747613ce9867d312c6c196d763ba16373faf4abe0ef44459e52b893be",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D119-boundary-load-audit\\corrected-pointer-decoder.py": "66b0bbf720362260f4954702c8cc6b8882ce86dbb246f72e30121ec899d44231",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source\\manifest.json": "a028e6d8fd4ddeb587dcf93de37b0b3b54bb438d007586c75ae6eae58650dde8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source\\source-review.json": "926316d16990e1bb125f212dd7ba264ebf5aaaf4eb2c813fef9bbbd9260d5227",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D118-river-boundaries\\report.json": "f282f668f83d8c6b73cd539b7e2d1b93f68e6f2aa94a5326998d3a3741f300ec",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\execution\\baseline-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\execution\\candidate-compute_120.ptx": "c005619968bc96bd5c788c9b475347832f6b2137b1460a3e087a721e3fe9548b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-resource\\execution\\candidate-compute_75.ptx": "5f51d6a6a87eb7f92a801d0106f2cf23cf20f79087ab6dc937f21709aafb4a50"
+  },
+  "scope": "Read-only decoder correction and re-evaluation of the same4sealed PTXfiles. No source/compiler/resource/GPU/kernel/numerical/timing rerun.",
+  "change": "Only propagate address origin through cvta.to.global.u64 as through existing mov/cvt/arithmetic. Same original32to16load criterion, not a criterion amendment.",
+  "parser_fixtures": [
+    {
+      "fixture": "direct",
+      "expected": [
+        [
+          [
+            12
+          ],
+          32
+        ]
+      ],
+      "actual": [
+        [
+          [
+            12
+          ],
+          32
+        ]
+      ]
+    },
+    {
+      "fixture": "cvta",
+      "expected": [
+        [
+          [
+            12
+          ],
+          16
+        ]
+      ],
+      "actual": [
+        [
+          [
+            12
+          ],
+          16
+        ]
+      ]
+    },
+    {
+      "fixture": "wide-address",
+      "expected": [
+        [
+          [
+            13
+          ],
+          16
+        ]
+      ],
+      "actual": [
+        [
+          [
+            13
+          ],
+          16
+        ]
+      ]
+    },
+    {
+      "fixture": "unrelated-pointer",
+      "expected": [],
+      "actual": []
+    },
+    {
+      "fixture": "loaded-value-is-not-pointer",
+      "expected": [
+        [
+          [
+            12
+          ],
+          32
+        ]
+      ],
+      "actual": [
+        [
+          [
+            12
+          ],
+          32
+        ]
+      ]
+    }
+  ],
+  "original_failure_immutable": true,
+  "candidate_accepted": false
+}

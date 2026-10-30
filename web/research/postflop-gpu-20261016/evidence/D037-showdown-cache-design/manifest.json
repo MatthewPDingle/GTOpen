@@ -1,0 +1,41 @@
+{
+  "id": "D037",
+  "status": "source_only_go_for_bounded_experiment",
+  "accepted_base": "E015",
+  "production_edits": 0,
+  "builds_executed": 0,
+  "gpu_calls_executed": 0,
+  "performance_measurement": false,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E008-three-pair-comparison\\report.json": "571d9139d024a9863a08803b75e3febab4303a1bf973b0556b49e98c774a16f8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E008.patch": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\baseline.ptx": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D005\\stdout.log": "5922c3499f633629a2b76aa6c307f514a563a27dd141baca979ad8cce876dcbc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\results.tsv": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9"
+  },
+  "artifact_sha256": {
+    "accepted-up_show.ptx.txt": "18d81b90c1672abb32531050b65be15b5dcf0a5004973f4b9afb1723359775c8",
+    "census-summary.json": "b15a483c7b130b14cb4634882bf68adb60809b5640d77e4d1f355a7c937ad576",
+    "census.py": "540e12af3b6803b1904be6d9b513a306f3df37907cb051c1669c32ddfee6bd30",
+    "D033-show-launches.json": "c4678ed622bf2bcdfefc68c42e17b5f5b325d80f0e394b5f5384e33e21a0d03d",
+    "E008-summary.json": "c0a2fb2a54261d4bfdb839869482ad5f7872c4eb8b69277596a424225ca12e40",
+    "E008.patch": "f4c2ade4d0a27b40c60f2858e697c112066fae5759b4592afdcf516d990c2965",
+    "historical-E034.tsv": "aa1ae30ed05ef56ab73932fdda6eac40ed5c4ed708dc16ce0c160f7102a5902f",
+    "prior-resources.json": "ccd7c61a16a68026571ab9e0d96eece23ab07ad20b1998ef3113a2d63e45f1a1",
+    "rainbow-unweighted-census.json": "a521725f714731c9087520eb30225864606191ade4a8e1528896c84c4a240edc",
+    "README.md": "37c28a9b14ab49a3f7e7d78621ed3d845a890dc7ed3bac52515c623eb3c35fc2",
+    "source/cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+    "source/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "source/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "source/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "source/range.rs": "56c4f1eb2b9e0dc325c1da07a73ec2b94c5ee4812b4f91384d6ac3fbc2844cab"
+  },
+  "limits": [
+    "Host census is unweighted all-runout combinatorics, not actual canonical plan traversal or timing.",
+    "Current prefix values are already hoisted; target only integer card positions.",
+    "Prior resource values do not establish candidate occupancy."
+  ],
+  "official_reference": "https://docs.nvidia.com/cuda/archive/12.4.1/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-ld-nc"
+}

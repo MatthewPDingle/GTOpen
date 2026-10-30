@@ -1,0 +1,7198 @@
+{
+  "at": "2026-10-18T09:37:37.786134+00:00",
+  "id": "D134-zero-init-fence-component",
+  "status": "closed_component_admission_failed",
+  "protocol_sha256": "9c3528ab494d2ad703d8c7e3d8d6b13c84528bd1b1a3460deff305881c7c66ad",
+  "checks": 6821,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_component_ms": [
+        524.4491999999999,
+        481.1884,
+        497.1966
+      ],
+      "candidate_component_ms": [
+        500.0953,
+        475.9184,
+        521.8663
+      ],
+      "baseline_median_ms": 497.1966,
+      "candidate_median_ms": 500.0953,
+      "saving_of_medians_ms": -2.8987000000000194,
+      "improving_pairs": 2,
+      "large_fixture_wall_gate": false,
+      "baseline_CPU_ms": [
+        562.5,
+        500.0,
+        531.25
+      ],
+      "candidate_CPU_ms": [
+        515.625,
+        500.0,
+        562.5
+      ],
+      "baseline_CPU_median_ms": 531.25,
+      "candidate_CPU_median_ms": 515.625,
+      "CPU_limit_ms": 557.5,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_component_ms": [
+        437.4129,
+        365.1135,
+        313.3186
+      ],
+      "candidate_component_ms": [
+        325.8173,
+        310.67060000000004,
+        357.77189999999996
+      ],
+      "baseline_median_ms": 365.1135,
+      "candidate_median_ms": 325.8173,
+      "saving_of_medians_ms": 39.2962,
+      "improving_pairs": 2,
+      "large_fixture_wall_gate": true,
+      "baseline_CPU_ms": [
+        562.5,
+        437.5,
+        375.0
+      ],
+      "candidate_CPU_ms": [
+        359.375,
+        343.75,
+        390.625
+      ],
+      "baseline_CPU_median_ms": 437.5,
+      "candidate_CPU_median_ms": 359.375,
+      "CPU_limit_ms": 461.875,
+      "CPU_guard_pass": true
+    },
+    {
+      "fixture_id": "river",
+      "baseline_component_ms": [
+        81.8032,
+        89.29520000000001,
+        88.6551
+      ],
+      "candidate_component_ms": [
+        85.0129,
+        92.0523,
+        84.9208
+      ],
+      "baseline_median_ms": 88.6551,
+      "candidate_median_ms": 85.0129,
+      "saving_of_medians_ms": 3.6422000000000025,
+      "improving_pairs": 1,
+      "large_fixture_wall_gate": true,
+      "baseline_CPU_ms": [
+        62.5,
+        78.125,
+        62.5
+      ],
+      "candidate_CPU_ms": [
+        93.75,
+        78.125,
+        93.75
+      ],
+      "baseline_CPU_median_ms": 62.5,
+      "candidate_CPU_median_ms": 93.75,
+      "CPU_limit_ms": 79.375,
+      "CPU_guard_pass": false
+    }
+  ],
+  "sum_fixture_median_component_saving_ms": 40.03969999999998,
+  "minimum_saving_ms": 94.215979,
+  "component_budget_pass": false,
+  "all_complete_frames_exact": true,
+  "ability_fresh_warm_compressed_F32_pass": true,
+  "ability_frames": {
+    "B-Compressed-fresh-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1077,
+      "verified_positive_zero_words": 1404,
+      "sha256": "35ead7e35f7dd519ccc44012849e1baf718d2ad19d09da6dca7254285b04cbc8",
+      "bytes": 10530
+    },
+    "B-Compressed-warm-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 1,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 1,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1737,
+      "verified_positive_zero_words": 744,
+      "sha256": "2fdbe91cb0d9eb2b6365756fb5d9a131a26a4cdb937330ba6086ec063e4fcbfc",
+      "bytes": 15794
+    },
+    "B-F32-fresh-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1077,
+      "verified_positive_zero_words": 1404,
+      "sha256": "35ead7e35f7dd519ccc44012849e1baf718d2ad19d09da6dca7254285b04cbc8",
+      "bytes": 10530
+    },
+    "B-F32-warm-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 1,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 1,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1737,
+      "verified_positive_zero_words": 744,
+      "sha256": "a76bbae2ae022fac7faede9fa989e46a60b3409666a112bb78f287aea6e9c729",
+      "bytes": 15794
+    },
+    "C-Compressed-fresh-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1077,
+      "verified_positive_zero_words": 1404,
+      "sha256": "35ead7e35f7dd519ccc44012849e1baf718d2ad19d09da6dca7254285b04cbc8",
+      "bytes": 10530
+    },
+    "C-Compressed-warm-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 1,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 1,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1737,
+      "verified_positive_zero_words": 744,
+      "sha256": "2fdbe91cb0d9eb2b6365756fb5d9a131a26a4cdb937330ba6086ec063e4fcbfc",
+      "bytes": 15794
+    },
+    "C-F32-fresh-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1077,
+      "verified_positive_zero_words": 1404,
+      "sha256": "35ead7e35f7dd519ccc44012849e1baf718d2ad19d09da6dca7254285b04cbc8",
+      "bytes": 10530
+    },
+    "C-F32-warm-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 8
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 6
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 7
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 21
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 20
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 15
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 18
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 30
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 36
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 42
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 21
+        },
+        "arena-0-0": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-0-1": {
+          "kind": 1,
+          "words": 150
+        },
+        "arena-1-0": {
+          "kind": 1,
+          "words": 180
+        },
+        "arena-1-1": {
+          "kind": 1,
+          "words": 180
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 165
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 198
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 306
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 72
+        }
+      },
+      "explicit_words": 1737,
+      "verified_positive_zero_words": 744,
+      "sha256": "a76bbae2ae022fac7faede9fa989e46a60b3409666a112bb78f287aea6e9c729",
+      "bytes": 15794
+    }
+  },
+  "frames": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C1\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C1\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C1\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C2\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C2\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C2\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B2\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B2\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B2\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B3\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B3\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B3\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C3\\0-rainbow-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 523533
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 3250
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 319985
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 472752
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 156016
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 514
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 638
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 257
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 319
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1176
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 277817
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 344839
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 62328
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 555634
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 689678
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 156020845
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 185172163
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 192956371
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 231190146
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 338869234
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1276
+        }
+      },
+      "explicit_words": 29755930,
+      "verified_positive_zero_words": 1445403046,
+      "sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "bytes": 238049354
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C3\\1-two-tone-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 318562
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 94890
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 2392
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 194730
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 287229
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 114832
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 1356562
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 516
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 640
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 258
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 320
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 799
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 189493
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 235030
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 42347
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 378986
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 470060
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 2693626
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 1346813
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 93381294
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 110745280
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 117863172
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 141110400
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 206690880
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1280
+        }
+      },
+      "explicit_words": 27900854,
+      "verified_positive_zero_words": 873918883,
+      "sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "bytes": 223208746
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\C3\\2-river-device-frame.bin": {
+      "fields": {
+        "d_action_nodes": {
+          "kind": 1,
+          "words": 12
+        },
+        "d_chance_parents": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_children": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_cards": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_chance_nodes": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_fold_nodes": {
+          "kind": 1,
+          "words": 10
+        },
+        "d_show_nodes": {
+          "kind": 1,
+          "words": 11
+        },
+        "d_node_player": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_na": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_data_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_node_children_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_twin": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_tlose": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_ttie": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_cdiv": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_node_river_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_start": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_count": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_cc_card": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_child": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_cc_perm": {
+          "kind": 1,
+          "words": 0
+        },
+        "d_hand_perm[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_perm[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_rsrc[0]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_rsrc[1]": {
+          "kind": 1,
+          "words": 33
+        },
+        "d_children": {
+          "kind": 1,
+          "words": 32
+        },
+        "d_fold_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_fold_card_idx[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_fold_card_idx[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_hand_c1[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c1[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_c2[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_hand_c2[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_hand_mask[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_hand_mask[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_same[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_same[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_weights[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_weights[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_off[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_off[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[0]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_cnt[1]": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_riv_idx[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_idx[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_lower[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_lower[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_upper[0]": {
+          "kind": 1,
+          "words": 233
+        },
+        "d_riv_upper[1]": {
+          "kind": 1,
+          "words": 280
+        },
+        "d_riv_card_off[0]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_off[1]": {
+          "kind": 1,
+          "words": 53
+        },
+        "d_riv_card_pos[0]": {
+          "kind": 1,
+          "words": 466
+        },
+        "d_riv_card_pos[1]": {
+          "kind": 1,
+          "words": 560
+        },
+        "d_lock_off": {
+          "kind": 1,
+          "words": 66
+        },
+        "d_lock_sigma": {
+          "kind": 1,
+          "words": 1
+        },
+        "d_cfv_slot": {
+          "kind": 1,
+          "words": 33
+        },
+        "arena-0-0": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-0-1": {
+          "kind": 0,
+          "words": 3728
+        },
+        "arena-1-0": {
+          "kind": 0,
+          "words": 4480
+        },
+        "arena-1-1": {
+          "kind": 0,
+          "words": 4480
+        },
+        "reach0": {
+          "kind": 0,
+          "words": 3961
+        },
+        "reach1": {
+          "kind": 0,
+          "words": 4760
+        },
+        "cfv": {
+          "kind": 0,
+          "words": 7000
+        },
+        "disc": {
+          "kind": 0,
+          "words": 3
+        },
+        "eval_roots": {
+          "kind": 0,
+          "words": 1120
+        }
+      },
+      "explicit_words": 8025,
+      "verified_positive_zero_words": 33260,
+      "sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "bytes": 66114
+    }
+  },
+  "all_owned_children_terminal": true,
+  "compiler_count": 1,
+  "ability_processes": 1,
+  "timing_processes": 6,
+  "initialization_components": 18,
+  "application_kernel_launches": 0,
+  "full_solver_executions": 0,
+  "admit_one_integrated_trial": false,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "source_main_live_PTX_custody_pass": true,
+  "limits": "Copied-constructor full GPU-initialization component only, not a complete solve or observed1%full-cycle gain. Every exposed device field compared to CPU references and paired frames. Full GPU positive-zero images were read and checked, represented losslessly as zero runs; no separate full raw zero files. CPU observer outside timing; full stage cost retained. No actual forced allocator/hardware failure. Material/whole-solver/graph/application/holdout/cumulative checks remain if admitted. No extensions, variants or retry rescue."
+}

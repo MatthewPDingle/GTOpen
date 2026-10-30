@@ -1,0 +1,93 @@
+{
+  "at": "2026-10-28T14:51:02.085954+00:00",
+  "status": "pass_rejected_E093_and_retained_prerequisite_replay",
+  "E093_decision": "rejected_closed",
+  "E093_aggregate_gain_pct": -0.1142261341624782,
+  "E093_baseline_ms": 9909.7287,
+  "E093_candidate_ms": 9921.0482,
+  "E093_fixture_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": -0.3674936349424465,
+      "slower_pairs": 1,
+      "failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 0.9829911842226914,
+      "slower_pairs": 2,
+      "failed": true
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": -5.117319044318853,
+      "slower_pairs": 1,
+      "failed": false
+    }
+  ],
+  "all18primary_scientific_records_and138checkpoints_exact": true,
+  "ordinary_unit_passed": 86,
+  "ordinary_unit_ignored": 4,
+  "actual_runtime13_backend_markers": {
+    "V093-unit": 1,
+    "B299": 0,
+    "E093R1": 1,
+    "E093R2": 1,
+    "B300": 0,
+    "B301": 0,
+    "E093R3": 1
+  },
+  "ordinaryunit_not_repeated": true,
+  "original_primary_controller_log_locator_failure_preserved": true,
+  "mechanical_adapter_repair_protocol_sha256": "7005db76327017ea0a607e0b0973a5fe080bce75f352b9084eebd023e755cef8",
+  "actual_primary_controller_sha256": "eb6dc5a5c7be311187cb60618cac4891e926507cdc1d1ac675ed0cb010fc090c",
+  "all_terminal_native_run_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\V093-unit.exit.json",
+      "sha256": "f907f3216c7b1c9fb13350eea8fb92790d03f829d2974612b78ccffb0e5678c5",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\B299.exit.json",
+      "sha256": "81bd468fe16dda6d4b3fadb7e24bd44e5d0e8a87b274131445396fff8d8f9c12",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\E093R1.exit.json",
+      "sha256": "c081e3736592ae54009551234d7cdb89bb743afc0fdf50240f04a075075b8cf6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\E093R2.exit.json",
+      "sha256": "d3c2191adf2408cc6365ff2d2873573229ec08cccda1b461b8a21fb132bf324a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\B300.exit.json",
+      "sha256": "bc410bf3b983beff969fe7b804cd24b6c6c53d0934814c232e76508689f42c29",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\B301.exit.json",
+      "sha256": "15ca2f81f9631cd3250f09c1b062097e824bd52bf0e52c4c5065df11fc0f7017",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-primary-execution\\E093R3.exit.json",
+      "sha256": "404392a19bb25ef357653ed17a4595f23d65394cc8670fb822a8fcee1c917602",
+      "returncode": 0
+    }
+  ],
+  "fresh_feature_and_primary_builds_terminal_and_restored": true,
+  "D166_pair_bytes_compared": 54608665195,
+  "D166_all_device_CPU_and_lifecycle_exact": true,
+  "D166_raw_files_recorded_SHA_and_current_extents_bound": 66,
+  "D167_actual_runtime_PTX_exact": true,
+  "D167_observed13modules_unloaded_after_success_and_expected_error": true,
+  "D168_scope_sha256": "6e4b5414acaabd93ee3fa6abc1f60817d6d5e4f692a449df1eb248889b0a4afa",
+  "source_main_live_protected_PTX_custody_pass": true,
+  "no_main13source_or_package_installed": true,
+  "no_new_performance_gain_accepted": true,
+  "current_RAM_E080_baseline_ms": 10456.4109,
+  "goal_status": "active"
+}

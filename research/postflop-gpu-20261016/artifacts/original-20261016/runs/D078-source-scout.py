@@ -1,0 +1,41 @@
+"""Canonical card-membership algebra/source scout only; no CUDA or solve execution."""
+import json,struct,subprocess,sys,urllib.request
+from pathlib import Path
+ROOT=Path(__file__).resolve().parent.parent
+sys.path.insert(0,str(ROOT/'runs/small-gain-confirmation-plan'));import common as old
+ar=old.ar;old.custody();assert not (ROOT/'gpu-run.lock').exists()
+D=ROOT/'runs/D078-card-membership-source';D.mkdir()
+raw=bytearray(b'D078ALG1');count=0;valid_distinct=0
+for c1 in range(52):
+ for c2 in range(52):
+  mask=(1<<c1)|(1<<c2)
+  for dealt in range(52):
+   original=bool(mask&(1<<dealt));candidate=c1==dealt or c2==dealt
+   assert original==candidate
+   raw.extend(bytes([c1,c2,dealt,int(original),int(candidate)]));count+=1;valid_distinct+=int(c1!=c2)
+assert count==140608 and valid_distinct==137904
+(D/'algebra.bin').write_bytes(raw)
+paths=['crates/solver/src/gpu/kernels.cu','crates/solver/src/gpu/mod.rs','crates/solver/src/gpu/plan.rs','crates/solver/src/gpu/continuation_capacity.rs','crates/solver/src/game.rs','crates/solver/src/save.rs']
+hist=subprocess.run(['git','log','--all','--format=%H %s','-G','c1.*==.*card|card.*==.*c1|hand_c1.*down_chance','--','crates/solver/src/gpu'],cwd=ar.REPO,capture_output=True,text=True);assert hist.returncode==0
+report={'id':'D078-card-membership-source','at':old.now(),'status':'source_algebra_pass_pending_bounded_compiler_design','root_review_only':True,'source_sha256':{str(ar.REPO/p):old.sha(ar.REPO/p) for p in paths},'proposal':'For valid canonical hands, replace the down_chance/up_chance 64-bit mask membership tests with equality against the existing GPU hand_c1/hand_c2 arrays. Potentially remove the two redundant private device hand-mask buffers. Preserve all public CPU plan fields, floating expressions/order, launch shapes and graph ordering.','algebra':{'domain':'All c1,c2,dealt card IDs0..51, including duplicate-card pairs for algebra only; actual poker hands require c1!=c2.','cases':count,'distinct_card_hand_cases':valid_distinct,'all_equal':True,'raw_schema':'D078ALG1 then140608 records of5 bytes(c1,c2,dealt,originalBool,newBool), lexicographic order.','raw_sha256':old.sha(D/'algebra.bin'),'proof_kind':'CPU exhaustive boolean identity only, not compiled CUDA/numerical/solve or speed proof.'},'input_invariant':'game.rs184 constructs each HandInfo.mask as card_mask(c1)|card_mask(c2), with c1/c2 from canonical combo_from_index; supported saved-session load reconstructs through Spot::new_lenient. Source search found no in-engine HandInfo construction outside that factory and no mask assignment mutation. Public Rust fields can be manually inconsistent; no equivalence is claimed for malformed custom HandInfo values or IDs outside0..51. Confirm all continuation/testing callers before implementation.','gpu_callers':{'private_masks':'mod.rs131/350','evaluation_down':'mod.rs607-608','evaluation_up':'mod.rs715','training_down':'mod.rs840-841','training_up':'mod.rs947','ordinary_test_full_down_reference':'mod.rs1265','payload_accounting':'continuation_capacity.rs34/53'},'resource_design':'No new card buffer or host packing. Reuse uploaded u32 card arrays already required by fold/show kernels. If masks are removed, device payload decreases8*(nh0+nh1)bytes and two allocations; private solver field count falls. GPU plan CPU fields remain untouched, and both actual/expected metadata accounting must reflect the reduction without changing capacity vector indices. No material resource/speed claim follows yet.','novelty':{'preserved_patch_candidate_review_search':'No match found for mask-to-card-comparison descriptions or card equality in retained candidate/patch/readme/review search.','local_all_ref_history_stdout':hist.stdout,'limits':'Local records/text search, no exhaustive remote-history claim. Separate from E046 triplet layout and E047 arity routing. E031 offset-cache mechanism is not revived.'},'possible_costs':['Two32bit loads/predicates replace one64bit load/bit operation; extra pointers and code may increase registers or run slower.','Removing allocations can affect constructor/lifetime/allocator behavior; qualification must use whole-cycle and material-cost evidence.'],'next_prerequisites':['Confirm valid-hand domain for every supported caller and exact host/feature payload integration before any source activation.','One frozen two-kernel compiler/ABI/resource probe, no launch: changed down_chance/up_chance, other7 entries exact; no register/local/shared/thread-limit/occupancy regression. No packing/factor sweep after outcome.','Direct old-mask/new-card GPU raw controls for both kernels across all canonical hand/dealt-card relations, zero counts, tails, identity/nonidentity permutations and float payload stress.','Only then fresh feature/primary builds, ordinary suite and fixed3pair1%/strict fixture screen. Fresh16pair/broader/holdout/cumulative/resource qualification before adoption.'],'candidate_source_written':False,'compiler_gpu_solver_executions':0,'performance_measured':False,'candidate_accepted':False}
+old.save(D/'report.json',report)
+published={}
+for name in ['report.json','algebra.bin']:
+ src=D/name;key=D.name+'/'+name;dst=ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True);assert not dst.exists();data=src.read_bytes();dst.write_bytes(data)
+ with urllib.request.urlopen('http://127.0.0.1:43735/research/postflop-gpu-20261016/evidence/'+key,timeout=15) as response:assert response.read()==data
+ published[key]=old.sha(src)
+old.save(D/'publication.json',{'at':old.now(),'http_verified_files':2,'artifact_sha256':published,'compiler_gpu_solver_executions':0})
+with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(ar.STATUS);s.update(state='running',stage='D078 card-membership source review',activity='E046/E047 closed. Canonical card-membership algebra checked; compiler/caller/resource design next. No new gain claimed.',updated_at=ar.now());s['evidence'].append({'label':'D078 canonical blocker/source scout','url':'evidence/D078-card-membership-source/report.json'});ar.atomic_json(ar.STATUS,s)
+ledger=ar.REPO/'research/postflop-gpu-20261016/experiments.md';before=ledger.read_bytes();assert b'## D078 canonical card-membership source scout' not in before
+text=f'''
+
+## D078 canonical card-membership source scout
+
+After E046/E047 closure, source scout {old.sha(D/'report.json')} proposes comparing dealt cards with the existing GPU c1/c2 arrays instead of the64-bit hand masks in down_chance/up_chance. The canonical factory derives masks from those same card IDs, and supported save loading reconstructs the Spot; manually inconsistent public Rust HandInfo fields are outside this algebra claim. Exhaustive CPU enumeration matched all140608 card-ID triples in0..51, including137904 distinct-card-hand cases; the703048-byte raw algebra file is retained and HTTP verified. This is not compiled CUDA, full-solver correctness or speed evidence.
+
+No candidate source or compiler/GPU/solver run exists yet. All four production training/evaluation caller sites, the full-down unit reference and feature capacity accounting need review. Reusing existing card arrays could remove two mask allocations, but additional pointer/compare instructions may regress resources or speed. The next step is one bounded two-entry compiler/ABI/resource design, then direct original/new GPU raw controls if it passes. E031 offset caching and rejected E046/E047 variants are not revived. Accepted E020, last primaryB142 and protected source/main/live/PTX remain unchanged; the goal remains active.
+'''
+nl=b'\r\n' if b'\r\n' in before else b'\n';ledger.write_bytes(before+text.encode('utf-8').replace(b'\n',nl))
+old.save(D/'checkpoint.json',{'at':old.now(),'accepted':'E020','last_primary_baseline':'B142','last_closed':['E046','E047'],'all_known_compiler_native_sessions_terminal':[56160,32806],'accepted162_main_live_ptx_unchanged':True,'source_scout_sha256':old.sha(D/'report.json'),'next':'Verify caller/domain and freeze one two-kernel card-membership resource probe; no candidate implementation yet.','goal_active':True})
+print(json.dumps({'status':report['status'],'algebra_cases':count,'raw_bytes':len(raw),'source_report_sha256':old.sha(D/'report.json'),'history_matches':hist.stdout}),flush=True)

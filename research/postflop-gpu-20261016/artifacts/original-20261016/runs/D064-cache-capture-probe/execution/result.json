@@ -1,0 +1,273 @@
+{
+  "abi": {
+    "alignment": 8,
+    "union_size": 64,
+    "window_offsets": {
+      "base_ptr": 0,
+      "hitProp": 20,
+      "hitRatio": 16,
+      "missProp": 24,
+      "num_bytes": 8
+    },
+    "window_size": 32
+  },
+  "allocation": {
+    "base_ptr": 107818778624,
+    "bytes": 256
+  },
+  "calls": [
+    {
+      "api": "cuInit",
+      "return_code": 0
+    },
+    {
+      "api": "cuDriverGetVersion",
+      "purpose": "driver_version",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetCount",
+      "purpose": "device_count",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGet",
+      "purpose": "device_handle",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetName",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetUuid_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "compute_capability_major",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "compute_capability_minor",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "l2_cache_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "max_persisting_l2_cache_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuDeviceGetAttribute",
+      "purpose": "max_access_policy_window_bytes",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxGetCurrent",
+      "return_code": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxRetain",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxSetCurrent",
+      "purpose": "bind owned process context",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxGetLimit",
+      "return_code": 0
+    },
+    {
+      "api": "cuMemAlloc_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuModuleLoadData",
+      "return_code": 0
+    },
+    {
+      "api": "cuModuleGetFunction",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamCreate",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamGetAttribute",
+      "purpose": "new stream policy",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamSetAttribute",
+      "purpose": "single fixed window",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamGetAttribute",
+      "purpose": "exact stream readback",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamBeginCapture_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamIsCapturing",
+      "return_code": 0
+    },
+    {
+      "api": "cuLaunchKernel",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamEndCapture",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphInstantiateWithFlags",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphGetNodes",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphGetNodes",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphNodeGetType",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphKernelNodeGetAttribute",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphExecDestroy",
+      "return_code": 0
+    },
+    {
+      "api": "cuGraphDestroy",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamSetAttribute",
+      "purpose": "disable owned stream window",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamGetAttribute",
+      "purpose": "disabled window readback",
+      "return_code": 0
+    },
+    {
+      "api": "cuMemFree_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuStreamDestroy_v2",
+      "return_code": 0
+    },
+    {
+      "api": "cuModuleUnload",
+      "return_code": 0
+    },
+    {
+      "api": "cuCtxSetCurrent",
+      "purpose": "restore original thread binding",
+      "return_code": 0
+    },
+    {
+      "api": "cuDevicePrimaryCtxRelease_v2",
+      "purpose": "release owned retained reference",
+      "return_code": 0
+    }
+  ],
+  "candidate_accepted": false,
+  "capture_status_immediately_before_launch": 1,
+  "captured_kernel_launch_calls": 1,
+  "cleanup": {
+    "context_restore": 0,
+    "disabled_window": {
+      "base_ptr": 0,
+      "hit_property": 0,
+      "hit_ratio_bits": 0,
+      "miss_property": 0,
+      "num_bytes": 0
+    },
+    "exec_destroy": 0,
+    "graph_destroy": 0,
+    "mem_free": 0,
+    "module_unload": 0,
+    "policy_disable": 0,
+    "primary_release": 0,
+    "stream_destroy": 0
+  },
+  "context_scope": "This isolated process's retained primary context only.",
+  "device_ordinal": 0,
+  "eager_kernel_launches": 0,
+  "errors": [],
+  "finished_at": "2026-10-16T19:45:34.060217+00:00",
+  "graph_node_count": 1,
+  "graph_node_type": 0,
+  "graph_replays": 0,
+  "id": "D064",
+  "initial_stream_window": {
+    "base_ptr": 0,
+    "hit_property": 0,
+    "hit_ratio_bits": 0,
+    "miss_property": 0,
+    "num_bytes": 0
+  },
+  "interpretation": "Retained graph-node policy metadata after capture and instantiation only; no executable replay, physical cache, numerical or speed proof.",
+  "performance_measurement": false,
+  "pid": 49580,
+  "ptx_sha256": "5bcf5832f6e52ab195efbfafea6013273f64066c9620cdeaa02e0be081ec7dc4",
+  "requested_window": {
+    "base_ptr": 107818778624,
+    "hit_property": 2,
+    "hit_ratio_bits": 1065353216,
+    "miss_property": 0,
+    "num_bytes": 128
+  },
+  "retained_node_window_after_instantiation": {
+    "base_ptr": 107818778624,
+    "hit_property": 2,
+    "hit_ratio_bits": 1065353216,
+    "miss_property": 0,
+    "num_bytes": 128
+  },
+  "solver_graph_tested": false,
+  "started_at": "2026-10-16T19:45:33.934399+00:00",
+  "status": "PASS_CAPTURED_NODE_ATTRIBUTE",
+  "stream_window": {
+    "base_ptr": 107818778624,
+    "hit_property": 2,
+    "hit_ratio_bits": 1065353216,
+    "miss_property": 0,
+    "num_bytes": 128
+  },
+  "values": {
+    "compute_capability_major": 12,
+    "compute_capability_minor": 0,
+    "current_context_persisting_l2_limit_bytes": 18874368,
+    "device_count": 1,
+    "device_handle": 0,
+    "driver_version": 13030,
+    "l2_cache_bytes": 100663296,
+    "max_access_policy_window_bytes": 134217728,
+    "max_persisting_l2_cache_bytes": 62914560,
+    "name": "NVIDIA GeForce RTX 5090",
+    "uuid_hex": "a5459b5a632b3e73d7f1a06e167102ee"
+  }
+}

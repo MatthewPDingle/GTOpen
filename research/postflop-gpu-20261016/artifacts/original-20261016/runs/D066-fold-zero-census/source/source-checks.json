@@ -1,0 +1,27 @@
+{
+  "id": "D066",
+  "all162_accepted_source_entries_verified": true,
+  "production_mod_exact_after_removing_cfg_test_append": true,
+  "kernels_and_evaluator_unchanged": true,
+  "one_new_ignored_test": true,
+  "expected_native_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 88
+  },
+  "literal_anchors_exact": true,
+  "D045_admission_helpers_identical_except_diagnostic_label": true,
+  "D045_compare_cpu_check_exploit_and_fingerprint_helpers_byte_identical": true,
+  "no_new_event_capture_launch_or_compiler_calls": true,
+  "patch_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  "source_parse": "syntax-checks.json; no Rust typecheck or native run",
+  "preserved_draft": "draft-r1: wrong wrapper cleanup check corrected before seal; no numerical/schedule changes",
+  "preparation_read_only_error": "Initial exploratory report read assumed result.fixture and raised KeyError; corrected to actual fixture_id/iteration schema before anchor extraction. No artifact/native outcome changed.",
+  "compiler_native_gpu_executed": false
+}

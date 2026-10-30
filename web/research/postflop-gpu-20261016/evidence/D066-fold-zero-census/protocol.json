@@ -1,0 +1,307 @@
+{
+  "id": "D066-fold-zero-census",
+  "candidate": "D066",
+  "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+  "base": "accepted E020",
+  "actual_run": "D066R1",
+  "test_filter": "gpu::fold_zero_census::fold_zero_reach_census",
+  "marker": "D066_FOLD_ZERO_CENSUS ",
+  "cleanup_error_marker": "D066_SOLVER_CLEANUP_ERROR",
+  "expected_marker_count": 39,
+  "expected_stage_order": [
+    {
+      "fixture_id": "rainbow",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 80
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 100
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 120
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 140
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 160
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 180
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "snapshot",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "checkpoint",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "rainbow",
+      "stage": "final_anchor_exact",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 80
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 100
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 120
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 140
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 160
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 180
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "snapshot",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "checkpoint",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "two-tone",
+      "stage": "final_anchor_exact",
+      "iteration": 200
+    },
+    {
+      "fixture_id": "river",
+      "stage": "admission"
+    },
+    {
+      "fixture_id": "river",
+      "stage": "geometry"
+    },
+    {
+      "fixture_id": "river",
+      "stage": "snapshot",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 20
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 40
+    },
+    {
+      "fixture_id": "river",
+      "stage": "snapshot",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "river",
+      "stage": "checkpoint",
+      "iteration": 60
+    },
+    {
+      "fixture_id": "river",
+      "stage": "final_anchor_exact",
+      "iteration": 60
+    },
+    {
+      "stage": "complete"
+    }
+  ],
+  "expected_files": [
+    "rainbow-fold-mapping.u32le",
+    "two-tone-fold-mapping.u32le",
+    "river-fold-mapping.u32le",
+    "rainbow-iteration20-reach0.rowflags",
+    "rainbow-iteration20-reach1.rowflags",
+    "rainbow-iteration200-reach0.rowflags",
+    "rainbow-iteration200-reach1.rowflags",
+    "two-tone-iteration20-reach0.rowflags",
+    "two-tone-iteration20-reach1.rowflags",
+    "two-tone-iteration200-reach0.rowflags",
+    "two-tone-iteration200-reach1.rowflags",
+    "river-iteration20-reach0.rowflags",
+    "river-iteration20-reach1.rowflags",
+    "river-iteration60-reach0.rowflags",
+    "river-iteration60-reach1.rowflags"
+  ],
+  "expected_native_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered_out": 88
+  },
+  "owned_sources": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/fold_zero_census.rs"
+  ],
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+    "crates/solver/src/gpu/fold_zero_census.rs": "14574cf4d66ab6d4a35fe795968c4f37d8258e7f98efa43f9bcf395048138cf7"
+  },
+  "source_entries": 163,
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\source-manifest.json",
+  "source_archive_sha256": "0df9774c514a3ad3260b96ee219e6154ac8f402307912dd6130f84e8111e2748",
+  "schema_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\output-schema.json",
+  "schema_sha256": "a2be88380ec9881899da23d08f5c451293537701b5ebc18bfda667e1ae76b3dc",
+  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\design\\manifest.json",
+  "design_sha256": "f0bdbcc516ef324388b108acfc8596ec213d58933ec87c38d88cb3213c58d3f9",
+  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-root-decisions\\preparation.json",
+  "root_preparation_sha256": "7c937402b32eb345c65c54967f47fe674af7d444f33c5c5aec3b426352819063",
+  "registered_source_base_sha256": {
+    "gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+  },
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "snapshot_iterations": {
+    "rainbow": [
+      20,
+      200
+    ],
+    "two-tone": [
+      20,
+      200
+    ],
+    "river": [
+      20,
+      60
+    ]
+  },
+  "expected_checkpoint_records": 23,
+  "expected_snapshots": 6,
+  "expected_reach_array_snapshots": 12,
+  "expected_final_full_state_checks": 3,
+  "census_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution\\census",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d066-fold-zero-census",
+  "build_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-build",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D066-solver.exe",
+  "execution_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-execution",
+  "assessment_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D066-fold-zero-census",
+  "build_timeout_seconds": 1800,
+  "native_child_timeout_seconds": 900,
+  "build_free_disk_bytes": 57982058496,
+  "native_free_disk_bytes": 53687091200,
+  "preexisting_target_artifacts": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "memory_admission": "Frozen native source enforces two ordinary solver payloads plus2GiB GPU reserve;16GiB host pre-Spot; two full CPU stores,two pinned buffers,8MiB paired chunk,compact geometry/rowflags and8GiB host reserve. No fallback smaller workload.",
+  "iteration_order": "Per fixture ordinary20 paired iterations, observed20 paired iterations; at20/final snapshot both complete reaches before either exploitability. Ordinary then observed exploitability at every20 checkpoint; final full CPU readback/equality. Fixtures sequential.",
+  "reach_semantics": "Exact positive-zero bits only. q=1-p reach is the retained last paired training fold input under E015, not arbitrary current-policy reach. Every finalized fold mapping entry counts once; no unique-slot assumption.",
+  "evidence": "Retain3 mapping files of20-byte little-endian records and12 one-byte-per-row flag files, full39 markers. SHA256 and native FNV/length pins; independently recompute every per-level/traverser CTA incidence and finite selected payout eligibility. Paired raw reach bits and full CPU q/scales are compared natively; float payloads not retained.",
+  "exactness": "All23 convergence anchors in both arms and3 full final fingerprints against B065/E020C1;6 paired pre-evaluation reach comparisons,3 complete CPU q/scales comparisons. Cleanup failures/partial files/nonzero exit/invalid records fail.",
+  "performance_measurement": false,
+  "performance_acceptance": false,
+  "usefulness_threshold": null,
+  "incidence_threshold": null,
+  "outcome_triggered_extensions": false,
+  "deployment_changed": false,
+  "exclusions": [],
+  "restore": "After terminal evidence/custody, root removes only exact temporary helper and reverses append-only mod declaration; verify162 accepted sources and2PTX leftovers unchanged. Preserve all logs/artifacts and failure partials.",
+  "interpretation": "Six snapshots are incidence evidence only, not dynamic all-iteration shares, kernel cost, predicted speed or fast-path correctness. No graph/event instrumentation, new kernel, optimization or evaluator changes."
+}

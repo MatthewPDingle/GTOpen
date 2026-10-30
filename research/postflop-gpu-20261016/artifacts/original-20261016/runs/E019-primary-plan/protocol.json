@@ -1,0 +1,49 @@
+{
+  "id": "E019-primary-plan",
+  "at": "2026-10-16T09:52:13Z",
+  "status": "prospective; contingent on independent D036 numerical/compiler probe pass and reviewed frozen candidate source",
+  "candidate": "E019",
+  "reference": "accepted E015",
+  "production_scope": "Only up_fold reduction block in crates/solver/src/gpu/kernels.cu; exact D036 candidate bytes after numerical validation. No host, workload, evaluator, precision or launch-shape changes.",
+  "accepted_kernel_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+  "reference_binary_sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+  "reference_manifest_sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "order": [
+    "V019-unit",
+    "B059",
+    "E019R1",
+    "E019R2",
+    "B060",
+    "B061",
+    "E019R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B059",
+      "candidate": "E019R1"
+    },
+    {
+      "baseline": "B060",
+      "candidate": "E019R2"
+    },
+    {
+      "baseline": "B061",
+      "candidate": "E019R3"
+    }
+  ],
+  "unit_screen": "GPU-only solver library ordinary tests; exact current accepted inventory84 passed and4 ignored. No primary timings if this screen fails.",
+  "aggregate_gate": "At least2 percent reduction in the sum of complete-cycle fixture medians across all3 alternating pairs.",
+  "fixture_guard": "Reject if a fixture median is more than3 percent slower and a strict majority (minimum2) of paired repetitions are more than3 percent slower.",
+  "exactness": "All complete non-timing result and configuration fields, full fingerprints, stopping iterations and exploitability bits match. Every raw run remains preserved.",
+  "broader_qualification_if_pass": "Original-baseline full F32 comparison; frozen saved-state/menu/lock/resume controls; GPU integration and relevant continuation controls; fresh original-baseline cumulative cohort with unchanged gates. A primary pass is provisional only.",
+  "measurement_boundaries": "Frozen compressed3-fixture native complete cycles include construction/allocation, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo, final fingerprinting/destruction, browser/API latency and disk saving excluded. Warm driver cache disclosed.",
+  "exclusions": [],
+  "builds_before_timing": true,
+  "concurrent_gpu_or_build_work": false,
+  "first_physical_run": "E019R1",
+  "logical_dashboard_row": "E019",
+  "outcome_triggered_extensions": false,
+  "acceptance_from_probe": false,
+  "script_freeze": "Execution scripts and candidate/source identities will be sealed and independently checked before build/native launch; this prospective measurement order and gates must remain unchanged."
+}

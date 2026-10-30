@@ -1,0 +1,1066 @@
+{
+  "id": "D215",
+  "at": "2026-10-28T23:39:53.857611+00:00",
+  "status": "pass_scoped_nullable_lock_load_bypass",
+  "protocol_sha256": "f1ae653233868532378bbdedcdbdae2cf9b769940c63fda65d4087ec01d9e877",
+  "cases": [
+    {
+      "architecture": "compute_120",
+      "kernel": "down_action",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd123"
+          ],
+          "pointer_alias_registers": [
+            "%rd123",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 83,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd336];"
+            },
+            {
+              "pc": 250,
+              "instruction": "ld.global.nc.u64 \t%rd41, [%rd251];"
+            },
+            {
+              "pc": 470,
+              "instruction": "ld.global.nc.u64 \t%rd63, [%rd145];"
+            },
+            {
+              "pc": 734,
+              "instruction": "ld.global.nc.u64 \t%rd88, [%rd401];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 83,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd336];"
+            },
+            {
+              "pc": 250,
+              "instruction": "ld.global.nc.u64 \t%rd41, [%rd251];"
+            },
+            {
+              "pc": 470,
+              "instruction": "ld.global.nc.u64 \t%rd63, [%rd145];"
+            },
+            {
+              "pc": 734,
+              "instruction": "ld.global.nc.u64 \t%rd88, [%rd401];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 1353,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1353,
+          "direct_CFG_edges": 1458,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd121",
+            "%rd663",
+            "%rd664",
+            "%rd665",
+            "%rd666"
+          ],
+          "pointer_alias_registers": [
+            "%rd121",
+            "%rd663",
+            "%rd664",
+            "%rd665",
+            "%rd666",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 86,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd344];"
+            },
+            {
+              "pc": 256,
+              "instruction": "ld.global.nc.u64 \t%rd41, [%rd259];"
+            },
+            {
+              "pc": 481,
+              "instruction": "ld.global.nc.u64 \t%rd63, [%rd153];"
+            },
+            {
+              "pc": 755,
+              "instruction": "ld.global.nc.u64 \t%rd88, [%rd409];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 82,
+              "instruction": "setp.eq.s64 \t%p47, %rd665, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 252,
+              "instruction": "setp.eq.s64 \t%p29, %rd664, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 477,
+              "instruction": "setp.eq.s64 \t%p8, %rd663, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 751,
+              "instruction": "setp.eq.s64 \t%p61, %rd666, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 866,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1371,
+          "direct_CFG_edges": 937,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd121",
+            "%rd663",
+            "%rd664",
+            "%rd665",
+            "%rd666"
+          ],
+          "pointer_alias_registers": [
+            "%rd121",
+            "%rd663",
+            "%rd664",
+            "%rd665",
+            "%rd666",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 86,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd344];"
+            },
+            {
+              "pc": 256,
+              "instruction": "ld.global.nc.u64 \t%rd41, [%rd259];"
+            },
+            {
+              "pc": 481,
+              "instruction": "ld.global.nc.u64 \t%rd63, [%rd153];"
+            },
+            {
+              "pc": 755,
+              "instruction": "ld.global.nc.u64 \t%rd88, [%rd409];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 86,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd344];"
+            },
+            {
+              "pc": 256,
+              "instruction": "ld.global.nc.u64 \t%rd41, [%rd259];"
+            },
+            {
+              "pc": 481,
+              "instruction": "ld.global.nc.u64 \t%rd63, [%rd153];"
+            },
+            {
+              "pc": 755,
+              "instruction": "ld.global.nc.u64 \t%rd88, [%rd409];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 82,
+              "instruction": "setp.eq.s64 \t%p47, %rd665, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 252,
+              "instruction": "setp.eq.s64 \t%p29, %rd664, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 477,
+              "instruction": "setp.eq.s64 \t%p8, %rd663, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 751,
+              "instruction": "setp.eq.s64 \t%p61, %rd666, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 1371,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1371,
+          "direct_CFG_edges": 1476,
+          "null_argument": false
+        }
+      }
+    },
+    {
+      "architecture": "compute_120",
+      "kernel": "up_action",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd128"
+          ],
+          "pointer_alias_registers": [
+            "%rd128",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 70,
+              "instruction": "ld.global.nc.u64 \t%rd19, [%rd457];"
+            },
+            {
+              "pc": 296,
+              "instruction": "ld.global.nc.u64 \t%rd38, [%rd336];"
+            },
+            {
+              "pc": 589,
+              "instruction": "ld.global.nc.u64 \t%rd60, [%rd185];"
+            },
+            {
+              "pc": 947,
+              "instruction": "ld.global.nc.u64 \t%rd82, [%rd675];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 70,
+              "instruction": "ld.global.nc.u64 \t%rd19, [%rd457];"
+            },
+            {
+              "pc": 296,
+              "instruction": "ld.global.nc.u64 \t%rd38, [%rd336];"
+            },
+            {
+              "pc": 589,
+              "instruction": "ld.global.nc.u64 \t%rd60, [%rd185];"
+            },
+            {
+              "pc": 947,
+              "instruction": "ld.global.nc.u64 \t%rd82, [%rd675];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 2266,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2266,
+          "direct_CFG_edges": 2374,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd1155",
+            "%rd1156",
+            "%rd1157",
+            "%rd1158",
+            "%rd124"
+          ],
+          "pointer_alias_registers": [
+            "%rd1155",
+            "%rd1156",
+            "%rd1157",
+            "%rd1158",
+            "%rd124",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 74,
+              "instruction": "ld.global.nc.u64 \t%rd21, [%rd463];"
+            },
+            {
+              "pc": 307,
+              "instruction": "ld.global.nc.u64 \t%rd39, [%rd342];"
+            },
+            {
+              "pc": 604,
+              "instruction": "ld.global.nc.u64 \t%rd60, [%rd191];"
+            },
+            {
+              "pc": 966,
+              "instruction": "ld.global.nc.u64 \t%rd82, [%rd681];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 70,
+              "instruction": "setp.eq.s64 \t%p38, %rd1157, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 303,
+              "instruction": "setp.eq.s64 \t%p24, %rd1156, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 600,
+              "instruction": "setp.eq.s64 \t%p9, %rd1155, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 962,
+              "instruction": "setp.eq.s64 \t%p59, %rd1158, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 1646,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2265,
+          "direct_CFG_edges": 1734,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd1155",
+            "%rd1156",
+            "%rd1157",
+            "%rd1158",
+            "%rd124"
+          ],
+          "pointer_alias_registers": [
+            "%rd1155",
+            "%rd1156",
+            "%rd1157",
+            "%rd1158",
+            "%rd124",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 74,
+              "instruction": "ld.global.nc.u64 \t%rd21, [%rd463];"
+            },
+            {
+              "pc": 307,
+              "instruction": "ld.global.nc.u64 \t%rd39, [%rd342];"
+            },
+            {
+              "pc": 604,
+              "instruction": "ld.global.nc.u64 \t%rd60, [%rd191];"
+            },
+            {
+              "pc": 966,
+              "instruction": "ld.global.nc.u64 \t%rd82, [%rd681];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 74,
+              "instruction": "ld.global.nc.u64 \t%rd21, [%rd463];"
+            },
+            {
+              "pc": 307,
+              "instruction": "ld.global.nc.u64 \t%rd39, [%rd342];"
+            },
+            {
+              "pc": 604,
+              "instruction": "ld.global.nc.u64 \t%rd60, [%rd191];"
+            },
+            {
+              "pc": 966,
+              "instruction": "ld.global.nc.u64 \t%rd82, [%rd681];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 70,
+              "instruction": "setp.eq.s64 \t%p38, %rd1157, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 303,
+              "instruction": "setp.eq.s64 \t%p24, %rd1156, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 600,
+              "instruction": "setp.eq.s64 \t%p9, %rd1155, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 962,
+              "instruction": "setp.eq.s64 \t%p59, %rd1158, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 2265,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2265,
+          "direct_CFG_edges": 2373,
+          "null_argument": false
+        }
+      }
+    },
+    {
+      "architecture": "compute_120",
+      "kernel": "up_action_eval",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd30"
+          ],
+          "pointer_alias_registers": [
+            "%rd188",
+            "%rd30"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 308,
+              "instruction": "ld.global.nc.u64 \t%rd10, [%rd190];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 308,
+              "instruction": "ld.global.nc.u64 \t%rd10, [%rd190];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 1475,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1475,
+          "direct_CFG_edges": 1533,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd30"
+          ],
+          "pointer_alias_registers": [
+            "%rd188",
+            "%rd30"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 310,
+              "instruction": "ld.global.nc.u64 \t%rd10, [%rd190];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 305,
+              "instruction": "setp.eq.s64 \t%p13, %rd30, 0;",
+              "pointer_parameter": 11,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 1104,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1462,
+          "direct_CFG_edges": 1151,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd30"
+          ],
+          "pointer_alias_registers": [
+            "%rd188",
+            "%rd30"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 310,
+              "instruction": "ld.global.nc.u64 \t%rd10, [%rd190];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 310,
+              "instruction": "ld.global.nc.u64 \t%rd10, [%rd190];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 305,
+              "instruction": "setp.eq.s64 \t%p13, %rd30, 0;",
+              "pointer_parameter": 11,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 1462,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1462,
+          "direct_CFG_edges": 1520,
+          "null_argument": false
+        }
+      }
+    },
+    {
+      "architecture": "compute_75",
+      "kernel": "down_action",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd112"
+          ],
+          "pointer_alias_registers": [
+            "%rd112",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 74,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd130];"
+            },
+            {
+              "pc": 180,
+              "instruction": "ld.global.nc.u64 \t%rd64, [%rd273];"
+            },
+            {
+              "pc": 257,
+              "instruction": "ld.global.nc.u64 \t%rd45, [%rd209];"
+            },
+            {
+              "pc": 349,
+              "instruction": "ld.global.nc.u64 \t%rd78, [%rd327];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 74,
+              "instruction": "ld.global.nc.u64 \t%rd23, [%rd130];"
+            },
+            {
+              "pc": 180,
+              "instruction": "ld.global.nc.u64 \t%rd64, [%rd273];"
+            },
+            {
+              "pc": 257,
+              "instruction": "ld.global.nc.u64 \t%rd45, [%rd209];"
+            },
+            {
+              "pc": 349,
+              "instruction": "ld.global.nc.u64 \t%rd78, [%rd327];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 1242,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1242,
+          "direct_CFG_edges": 1323,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd117"
+          ],
+          "pointer_alias_registers": [
+            "%rd117",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 80,
+              "instruction": "ld.global.nc.u64 \t%rd621, [%rd146];"
+            },
+            {
+              "pc": 193,
+              "instruction": "ld.global.nc.u64 \t%rd623, [%rd293];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd622, [%rd227];"
+            },
+            {
+              "pc": 375,
+              "instruction": "ld.global.nc.u64 \t%rd92, [%rd349];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 75,
+              "instruction": "setp.eq.s64 \t%p7, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 188,
+              "instruction": "setp.eq.s64 \t%p30, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 272,
+              "instruction": "setp.eq.s64 \t%p19, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            },
+            {
+              "pc": 370,
+              "instruction": "setp.eq.s64 \t%p40, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 1256,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1268,
+          "direct_CFG_edges": 1337,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 12,
+          "base_parameter_registers": [
+            "%rd117"
+          ],
+          "pointer_alias_registers": [
+            "%rd117",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 80,
+              "instruction": "ld.global.nc.u64 \t%rd621, [%rd146];"
+            },
+            {
+              "pc": 193,
+              "instruction": "ld.global.nc.u64 \t%rd623, [%rd293];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd622, [%rd227];"
+            },
+            {
+              "pc": 375,
+              "instruction": "ld.global.nc.u64 \t%rd92, [%rd349];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 80,
+              "instruction": "ld.global.nc.u64 \t%rd621, [%rd146];"
+            },
+            {
+              "pc": 193,
+              "instruction": "ld.global.nc.u64 \t%rd623, [%rd293];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd622, [%rd227];"
+            },
+            {
+              "pc": 375,
+              "instruction": "ld.global.nc.u64 \t%rd92, [%rd349];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 75,
+              "instruction": "setp.eq.s64 \t%p7, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 188,
+              "instruction": "setp.eq.s64 \t%p30, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 272,
+              "instruction": "setp.eq.s64 \t%p19, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            },
+            {
+              "pc": 370,
+              "instruction": "setp.eq.s64 \t%p40, %rd117, 0;",
+              "pointer_parameter": 12,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 1268,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 1268,
+          "direct_CFG_edges": 1349,
+          "null_argument": false
+        }
+      }
+    },
+    {
+      "architecture": "compute_75",
+      "kernel": "up_action",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd180"
+          ],
+          "pointer_alias_registers": [
+            "%rd180",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 78,
+              "instruction": "ld.global.nc.u64 \t%rd30, [%rd233];"
+            },
+            {
+              "pc": 182,
+              "instruction": "ld.global.nc.u64 \t%rd95, [%rd436];"
+            },
+            {
+              "pc": 259,
+              "instruction": "ld.global.nc.u64 \t%rd65, [%rd348];"
+            },
+            {
+              "pc": 342,
+              "instruction": "ld.global.nc.u64 \t%rd117, [%rd566];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 78,
+              "instruction": "ld.global.nc.u64 \t%rd30, [%rd233];"
+            },
+            {
+              "pc": 182,
+              "instruction": "ld.global.nc.u64 \t%rd95, [%rd436];"
+            },
+            {
+              "pc": 259,
+              "instruction": "ld.global.nc.u64 \t%rd65, [%rd348];"
+            },
+            {
+              "pc": 342,
+              "instruction": "ld.global.nc.u64 \t%rd117, [%rd566];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 2129,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2129,
+          "direct_CFG_edges": 2241,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd178"
+          ],
+          "pointer_alias_registers": [
+            "%rd178",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 84,
+              "instruction": "ld.global.nc.u64 \t%rd1016, [%rd241];"
+            },
+            {
+              "pc": 194,
+              "instruction": "ld.global.nc.u64 \t%rd1018, [%rd446];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd1017, [%rd357];"
+            },
+            {
+              "pc": 363,
+              "instruction": "ld.global.nc.u64 \t%rd124, [%rd577];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 79,
+              "instruction": "setp.eq.s64 \t%p9, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 189,
+              "instruction": "setp.eq.s64 \t%p43, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 272,
+              "instruction": "setp.eq.s64 \t%p27, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            },
+            {
+              "pc": 358,
+              "instruction": "setp.eq.s64 \t%p64, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 2136,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2148,
+          "direct_CFG_edges": 2248,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 13,
+          "base_parameter_registers": [
+            "%rd178"
+          ],
+          "pointer_alias_registers": [
+            "%rd178",
+            "%rd7"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 84,
+              "instruction": "ld.global.nc.u64 \t%rd1016, [%rd241];"
+            },
+            {
+              "pc": 194,
+              "instruction": "ld.global.nc.u64 \t%rd1018, [%rd446];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd1017, [%rd357];"
+            },
+            {
+              "pc": 363,
+              "instruction": "ld.global.nc.u64 \t%rd124, [%rd577];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 84,
+              "instruction": "ld.global.nc.u64 \t%rd1016, [%rd241];"
+            },
+            {
+              "pc": 194,
+              "instruction": "ld.global.nc.u64 \t%rd1018, [%rd446];"
+            },
+            {
+              "pc": 277,
+              "instruction": "ld.global.nc.u64 \t%rd1017, [%rd357];"
+            },
+            {
+              "pc": 363,
+              "instruction": "ld.global.nc.u64 \t%rd124, [%rd577];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 79,
+              "instruction": "setp.eq.s64 \t%p9, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 189,
+              "instruction": "setp.eq.s64 \t%p43, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 272,
+              "instruction": "setp.eq.s64 \t%p27, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            },
+            {
+              "pc": 358,
+              "instruction": "setp.eq.s64 \t%p64, %rd178, 0;",
+              "pointer_parameter": 13,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 2148,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 2148,
+          "direct_CFG_edges": 2260,
+          "null_argument": false
+        }
+      }
+    },
+    {
+      "architecture": "compute_75",
+      "kernel": "up_action_eval",
+      "gates": {
+        "baseline_lock_reads_detected": true,
+        "candidate_zero_lock_reads": true,
+        "candidate_null_guard_detected": true,
+        "candidate_present_lock_reads_detected": true
+      },
+      "analyses": {
+        "original_zero_argument_positive_control": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd42"
+          ],
+          "pointer_alias_registers": [
+            "%rd129",
+            "%rd42"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 49,
+              "instruction": "ld.global.nc.u64 \t%rd12, [%rd131];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 49,
+              "instruction": "ld.global.nc.u64 \t%rd12, [%rd131];"
+            }
+          ],
+          "known_pointer_guards": [],
+          "reachable_instruction_count": 846,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 846,
+          "direct_CFG_edges": 897,
+          "null_argument": true
+        },
+        "candidate_null": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd43"
+          ],
+          "pointer_alias_registers": [
+            "%rd131",
+            "%rd43"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 52,
+              "instruction": "ld.global.nc.u64 \t%rd13, [%rd133];"
+            }
+          ],
+          "reachable_lock_load_sites": [],
+          "known_pointer_guards": [
+            {
+              "pc": 46,
+              "instruction": "setp.eq.s64 \t%p12, %rd43, 0;",
+              "pointer_parameter": 11,
+              "known_predicate": true
+            }
+          ],
+          "reachable_instruction_count": 846,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 850,
+          "direct_CFG_edges": 897,
+          "null_argument": true
+        },
+        "candidate_present": {
+          "parameter": 11,
+          "base_parameter_registers": [
+            "%rd43"
+          ],
+          "pointer_alias_registers": [
+            "%rd131",
+            "%rd43"
+          ],
+          "all_static_lock_load_sites": [
+            {
+              "pc": 52,
+              "instruction": "ld.global.nc.u64 \t%rd13, [%rd133];"
+            }
+          ],
+          "reachable_lock_load_sites": [
+            {
+              "pc": 52,
+              "instruction": "ld.global.nc.u64 \t%rd13, [%rd133];"
+            }
+          ],
+          "known_pointer_guards": [
+            {
+              "pc": 46,
+              "instruction": "setp.eq.s64 \t%p12, %rd43, 0;",
+              "pointer_parameter": 11,
+              "known_predicate": false
+            }
+          ],
+          "reachable_instruction_count": 850,
+          "conservative_unknown_branches_take_both_successors": true,
+          "total_instructions": 850,
+          "direct_CFG_edges": 901,
+          "null_argument": false
+        }
+      }
+    }
+  ],
+  "calibrations": {
+    "static_cases": 7,
+    "positive_null_and_present": true,
+    "inverted_guard_unknown_guard_wrong_pointer_and_unguarded_alias_load_detected": true,
+    "opaque_call_rejected": true,
+    "scope": "Conservative pointer alias closure and direct CFG/null-predicate model only. Numeric memory values/FP predicates/general pointer bounds are not simulated."
+  },
+  "application_kernels": 0,
+  "native_or_compiler_repeats": 0,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Static direct PTX CFG with conservative alias origins and known null/nonzero pointer predicates. Unknown other branches take both successors. No numerical memory or floating-point dataflow equivalence, SASS/full device liveness, locks/graph/lifecycle/capacity/material/complete speed or universal pointer-safety proof. Direct/engine/full raw states still required."
+}

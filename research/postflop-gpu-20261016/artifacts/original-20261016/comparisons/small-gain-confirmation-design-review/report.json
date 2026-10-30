@@ -1,0 +1,70 @@
+{
+  "id": "small-gain-confirmation-design-review",
+  "at": "2026-10-16T22:20:34.412331+00:00",
+  "verdict": "PASS_SCOPED_DESIGN_WITH_FINALIZATION_HOLD",
+  "independent_design_review_pass": true,
+  "execution_authorized": false,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\manifest.json": "066d917509793f760fb858ccc509e0c41fb934a1cdfa2022ba432437657397aa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\protocol.json": "e3df1e4193bdc497cd361a05ab9b1e1df75e4f1fcabd937c26e074ccf7bad0ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\applicability.json": "063268a5052840fbf59f83d59f1a835edaf910acae97add659ccfdc0f56cbdea",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\amendment-positive-gain\\manifest.json": "7e6cd08ef67ba58ce05be37c522edd0fb421c9ac1266994ae695b877f1c18331",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\amendment-positive-gain\\proposal.json": "fbbd752f7b2cd2e0177e05a6b6f2dbc586fd919fd76c568865e62d1b7be3a615"
+  },
+  "source_applicability": {
+    "reference": "immutable accepted E020",
+    "E007": "Original launch-bounds patch hunk matches exactly once in accepted E020 CUDA. Fresh reviewed E020 candidate archive and compilation remain required.",
+    "E008": "Original ordered prefix-carry patch hunk matches exactly once in accepted E020 CUDA. Fresh reviewed E020 candidate archive and exactness remain required.",
+    "E032": "Archived accepted bases and candidate hashes verified; independent terminal-consolidation change remains source-compatible.",
+    "E036": "Archived accepted bases and candidate hashes verified; retain exact closed candidate and its 34-pair/68-launch unit. Do not substitute E037.",
+    "scope": "Source applicability is not compiled validity, numerical equivalence or performance evidence."
+  },
+  "schedule_checks": {
+    "family": [
+      "E007",
+      "E008",
+      "E032",
+      "E036"
+    ],
+    "family_size": 4,
+    "pairs_per_candidate": 16,
+    "blocks": 4,
+    "pairs_per_candidate_per_block": 4,
+    "BC_per_candidate_per_block": 2,
+    "CB_per_candidate_per_block": 2,
+    "total_pairs": 64,
+    "unique_benchmark_processes": 128,
+    "fixture_results": 384,
+    "convergence_records": 2944,
+    "adjacent_pair_order_consistent": true,
+    "within_round_candidate_positions_balanced": true,
+    "randomized_amendment_schedule_drawn": false
+  },
+  "recommended_gates": "Adopt the amendment: strictly positive aggregate and median paired gain; at least 13/16 strict positive pairs with ties as nonwins; positive median in every block and both order strata. Preserve all full non-timing/state/config/stopping/checkpoint exactness and the conjunctive fixture guard (>3% median slowdown AND at least 9/16 paired slowdowns >3%). No minimum percentage or calibrated confidence claim.",
+  "finalization_hold": [
+    "Root must explicitly adopt the amendment and supersede v1 minimum 1%/0.5% gates and nominal-alpha fields in the eventual executable protocol; frozen historical files remain untouched.",
+    "Choose ordering policy once and freeze the complete explicit balanced schedule before execution. If randomizing, record seed/algorithm and do not reroll.",
+    "Wait for E037 outcome. If it qualifies, reconsider baseline and source applicability, especially E036 subsumption, before any small-gain source/build freeze.",
+    "Fresh source archives, reviews, unit/build provenance and separate root runtime authorization remain required. A screen pass only advances to separately authorized broader qualification."
+  ],
+  "caveats": [
+    "Old samples selected these four hypotheses but must contribute zero new decision samples; preserve every candidate outcome and the four-candidate selection history.",
+    "No pooling, replacements, exclusions, optional stopping, extensions, candidate stacking or outcome-driven metric changes.",
+    "Positive-only gates can admit tiny systematic bias; 13/16 signs and block/order consistency do not establish independence or calibrated statistical confidence.",
+    "Real small gains can fail finite-sample consistency rules. Report absolute milliseconds, unrounded gains, all pairs, win/tie/loss counts, block/order summaries, ranges and median absolute deviation as descriptive evidence.",
+    "E037 retains its unchanged 2% primary gate; this design does not reopen or revise historical rejected outcomes."
+  ],
+  "official_reference": {
+    "url": "https://www.itl.nist.gov/div898/handbook/pri/section3/pri332.htm",
+    "scope": "Blocking/randomization rationale only; not a guarantee for serial GPU measurements."
+  },
+  "findings": [],
+  "reviewer_execution": {
+    "file_hash_text_checks_only": true,
+    "candidate_or_runtime_scripts_executed": false,
+    "compiler_native_gpu_executed": false,
+    "checkout_status_modified": false,
+    "report_write_only": true
+  },
+  "reviewer_note": "An exploratory read initially requested nonexistent report.json in the design folder; corrected to the frozen protocol/applicability/proposal files before review. No input changed."
+}

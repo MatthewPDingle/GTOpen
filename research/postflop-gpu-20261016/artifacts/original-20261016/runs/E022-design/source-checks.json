@@ -1,0 +1,14 @@
+{
+  "scope": "Source only; no compiler/GPU",
+  "status": "pass",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "single_exact_byte_replacement": true,
+  "reversal_recovers_accepted_E020": true,
+  "original_recurrence_statement_unchanged": true,
+  "all_barrier_statements_unchanged": true,
+  "host_shared_reservations_unchanged": true,
+  "candidate_sha256": "d961dc3717314e3eef5fa6ab19caf857048f8f35b1efee6ef0bdc5cbfc30b8f3",
+  "accepted_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b"
+}

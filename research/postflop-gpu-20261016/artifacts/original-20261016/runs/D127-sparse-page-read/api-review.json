@@ -1,0 +1,24 @@
+{
+  "at": "2026-10-18T05:21:48.015296+00:00",
+  "primary_sources": {
+    "process_times": "https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes",
+    "system_info": "https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info",
+    "volatile_read": "https://doc.rust-lang.org/std/ptr/fn.read_volatile.html",
+    "memory_counters": "https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters"
+  },
+  "local_rayon_source": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\rayon-1.12.0\\src\\iter\\mod.rs",
+  "contract": "GetSystemInfo read-only OS page-size query. GetProcessTimes current process only, kernel+user summed over all its threads,100ns units; creation/exit values ignored. Basic process memory counters, whole-process faults not isolated hard faults. Win64 repr(C) SYSTEM_INFO48/FILETIME8/PROCESS_MEMORY_COUNTERS72. Volatile reads address existing initialized borrowed immutable arrays, no concurrent writes, values discarded; cannot prove all other q values zero, so every original full scan follows. No memory hints/settings/privileges/working-set changes/locking/eviction/driver changes.",
+  "novelty_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "read_volatile|touch_pages|sparse.*page|page.*touch",
+    "--",
+    "crates/solver/src/gpu",
+    "crates/solver/src/store.rs"
+  ],
+  "all_ref_matches": [],
+  "closed_forms_remain_closed": "D126 PrefetchVirtualMemory, E045 parallel full OR, D090 SIMD OR, E049 zero provenance/omission, D123 initialization and E077 prefix stores remain closed. Sparse read-only first-touch changes no validation reduction and is not composed with those sources."
+}

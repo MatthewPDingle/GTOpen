@@ -1,0 +1,72 @@
+{
+  "id": "D245",
+  "at": "2026-10-29T03:52:28.145841+00:00",
+  "status": "pass_actual_cluster_capability_query",
+  "protocol_sha256": "52d69b965bb2b4f70c696a5411506aecdfe22bb3cba17b3b326429a789c766cc",
+  "GPU_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "GPU_name": "NVIDIA GeForce RTX 5090",
+  "driver_API_version": 13030,
+  "device_count": 1,
+  "device_ordinal": 0,
+  "attributes": {
+    "COMPUTE_CAPABILITY_MAJOR": 12,
+    "COMPUTE_CAPABILITY_MINOR": 0,
+    "CLUSTER_LAUNCH": 1
+  },
+  "all_queries_successful": true,
+  "API_trace": [
+    {
+      "API": "cuInit",
+      "returncode": 0
+    },
+    {
+      "API": "cuCtxGetCurrent",
+      "returncode": 0
+    },
+    {
+      "API": "cuDriverGetVersion",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetCount",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGet",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetName",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetUuid_v2",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "API": "cuDeviceGetAttribute",
+      "returncode": 0
+    },
+    {
+      "API": "cuCtxGetCurrent",
+      "returncode": 0
+    }
+  ],
+  "current_context_before_after": [
+    null,
+    null
+  ],
+  "decision": "Cluster launch supported onactualdevice; nextonlystandaloneDSM/lifetime/graph correctness/resource feasibility, no solver optimization orspeedadmitted.",
+  "context_creates_retains_modules_allocations_kernels_compilers_counters_solves_speed_samples": 0,
+  "source_main_live_protected_PTX_unchanged": true,
+  "candidate_accepted": false,
+  "limits": "Actualdriverfeaturequery isnotmaximumclustersize/occupancy/remoteFPDSM/kernel/graphcorrectness/latency/speed/materialcost proof."
+}

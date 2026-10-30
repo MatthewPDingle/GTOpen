@@ -1,0 +1,34 @@
+{
+  "id": "D085-ability",
+  "at": "2026-10-17T05:14:39.279691+00:00",
+  "status": "FROZEN_BEFORE_NATIVE",
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\ability.exe",
+  "collector": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\D085Collector.dll",
+  "private_dll_dirs": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib"
+  ],
+  "output_dir": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\ability-execution",
+  "expected_kernel_records": 13,
+  "expected_eager_records": 1,
+  "expected_graph_records": 12,
+  "expected_distinct_graph_nodes": 3,
+  "expected_each_graph_node_executions": 4,
+  "expected_data_words": 257,
+  "expected_value": 13,
+  "row_bytes": 176,
+  "no_drops_errors_missing_timestamps_or_outstanding_buffers": true,
+  "same_GPU": "RTX5090compute120",
+  "diagnostic_only": true,
+  "performance_measured": false,
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\D085Collector.dll": "2c41e5954016b8562de7603f8bc30b65af4e04e1c25ea95c7a29dec476c132fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\D085Collector.lib": "bff6b087c6c9725e1b851b78cab532ade00ab4e8ad03b29ca95c2356b473a24b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\ability.exe": "8f96b8e1799f455361991dfba24ba0e0a4f3ee21636560fddc235623bd1afa6c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-r3\\complete.json": "74110d9976413e1d13eee2303097a7a51deaf27102752f0fd1f868d3af850d93",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\build-plan-r3.json": "af9bc7e9671acb6048555ce7228dca56aeaa517bd54876426431e447345613ca",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\collector.cpp": "91673f32d1aab8fc22acbacf2fc84924f3195a198296dcbe94094f5cbb2be87f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\ability.rs": "37b7331b40510bcfb9060ad03abdad751a852cb32657ce73304892a5e212536a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\run-ability.py": "6ca47d86ac9cb5986767a64819a6dc0e8d8d75f210eae617a737c7f520deb653"
+  }
+}

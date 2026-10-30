@@ -1,0 +1,182 @@
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:20:1
+   |
+20 | //! Complete postflop CUDA lifecycle benchmark for the 2026-10-16 research pass.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+20 - //! Complete postflop CUDA lifecycle benchmark for the 2026-10-16 research pass.
+20 + // Complete postflop CUDA lifecycle benchmark for the 2026-10-16 research pass.
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:21:1
+   |
+21 | //! Freeze this evaluator and bench_spot.json before recording the first baseline.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+21 - //! Freeze this evaluator and bench_spot.json before recording the first baseline.
+21 + // Freeze this evaluator and bench_spot.json before recording the first baseline.
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:22:1
+   |
+22 | //! Run with --ignored --nocapture --test-threads=1. Every progress line is flushed.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+22 - //! Run with --ignored --nocapture --test-threads=1. Every progress line is flushed.
+22 + // Run with --ignored --nocapture --test-threads=1. Every progress line is flushed.
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:23:1
+   |
+23 | //! POSTFLOP_AUTORESEARCH_FIXTURE=rainbow|two-tone|river selects a smoke test only.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+23 - //! POSTFLOP_AUTORESEARCH_FIXTURE=rainbow|two-tone|river selects a smoke test only.
+23 + // POSTFLOP_AUTORESEARCH_FIXTURE=rainbow|two-tone|river selects a smoke test only.
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:24:1
+   |
+24 | //! POSTFLOP_AUTORESEARCH_STORAGE=f32 selects secondary coverage (default compressed).
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+24 - //! POSTFLOP_AUTORESEARCH_STORAGE=f32 selects secondary coverage (default compressed).
+24 + // POSTFLOP_AUTORESEARCH_STORAGE=f32 selects secondary coverage (default compressed).
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:25:1
+   |
+25 | //! POSTFLOP_AUTORESEARCH_PROFILE=1 adds one diagnostic iteration AFTER scoring.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   |
+   = note: inner doc comments like this (starting with `//!` or `/*!`) can only appear before items
+help: you might have meant to write a regular comment
+   |
+25 - //! POSTFLOP_AUTORESEARCH_PROFILE=1 adds one diagnostic iteration AFTER scoring.
+25 + // POSTFLOP_AUTORESEARCH_PROFILE=1 adds one diagnostic iteration AFTER scoring.
+   |
+
+error[E0753]: expected outer doc comment
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:26:1
+   |
+26 | //! No saved games or historical research artifacts are read or written.
+   | ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+27 |
+28 | use serde_json::{json, Value};
+   | ------------------------------ the inner doc comment doesn't annotate this `use` import
+   |
+help: to annotate the `use` import, change the doc comment from inner to outer style
+   |
+26 - //! No saved games or historical research artifacts are read or written.
+26 + /// No saved games or historical research artifacts are read or written.
+   |
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:30:21
+   |
+30 | use solver::store::{Storage, Store};
+   |                     ^^^^^^^
+   |
+note: the name `Storage` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:30:21
+   |
+30 | use solver::store::{Storage, Store};
+   |                     ^^^^^^^
+   = note: `#[warn(hidden_glob_reexports)]` on by default
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:14
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |              ^^^^^^^^^
+   |
+note: the name `Algorithm` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:14
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |              ^^^^^^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:25
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                         ^^^^^^
+   |
+note: the name `Solver` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:25
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                         ^^^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:33
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                 ^^^^
+   |
+note: the name `Spot` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:33
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                 ^^^^
+
+warning: private item shadows public glob re-export
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:39
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                       ^^^^^^^^^^
+   |
+note: the name `SpotConfig` in the type namespace is supposed to be publicly re-exported here
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:2:9
+   |
+ 2 | pub use solver::*;
+   |         ^^^^^^^^^
+note: but the private item here shadows it
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D144-incidence\probe.rs:31:39
+   |
+31 | use solver::{Algorithm, Solver, Spot, SpotConfig};
+   |                                       ^^^^^^^^^^
+
+error: aborting due to 7 previous errors; 5 warnings emitted
+
+For more information about this error, try `rustc --explain E0753`.

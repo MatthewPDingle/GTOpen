@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-18T08:56:00.154657+00:00",
+  "trace_sha256": "c3103df8aef1d4aa6e247e14ec80ae61468b99a3f417300f788b402817481d4d",
+  "metadata_sha256": "7a119e755a4b7d333cb32542167e4c1a2f0740ebfbfbe80b018db3e455eb76aa",
+  "source": "Exact E080 graph-control candidate, subsequently accepted. This observation was already inspected during exploratory source selection; not a newly frozen timing sample.",
+  "solve_phase_span_ms": 4509.9908,
+  "families": {
+    "up_action": {
+      "count": 5200,
+      "summed_kernel_ms": 1596.3674270000006
+    },
+    "up_show": {
+      "count": 2520,
+      "summed_kernel_ms": 1329.515402999996
+    },
+    "down_action": {
+      "count": 5330,
+      "summed_kernel_ms": 772.1082600000025
+    },
+    "up_fold": {
+      "count": 5040,
+      "summed_kernel_ms": 380.8736360000019
+    },
+    "up_chance": {
+      "count": 3780,
+      "summed_kernel_ms": 255.4494060000009
+    },
+    "down_chance": {
+      "count": 3690,
+      "summed_kernel_ms": 119.26990800000004
+    },
+    "up_action_eval": {
+      "count": 260,
+      "summed_kernel_ms": 27.766596000000007
+    },
+    "copy_root": {
+      "count": 410,
+      "summed_kernel_ms": 0.5389109999999988
+    }
+  },
+  "largest_family": "up_action",
+  "new_native_processes": 0,
+  "limits": "Summed traced family intervals can overlap and have observer effects; these are neither uninstrumented wall attribution nor removable headroom or speed forecasts. Used only to focus a distinct hypothesis."
+}

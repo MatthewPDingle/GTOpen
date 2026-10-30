@@ -1,0 +1,33 @@
+{
+  "id": "D234-kernel-control",
+  "at": "2026-10-29T02:46:50.426864+00:00",
+  "status": "pass_scoped_chance_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 2508695,
+  "cases": 425,
+  "kernel_launches": 850,
+  "family_cases": {
+    "0": 157,
+    "1": 268
+  },
+  "output_words_both_arms": 18950844,
+  "actual_immutable_words_both_arms": 3951272,
+  "guard_words_both_arms": 13112256,
+  "independent_cpu_down_relations_both_arms": 1840420,
+  "individual_up_dealt_cards_full_canonical_hands": 52,
+  "full_raw_files_equal": true,
+  "actual_immutable_images_preserved": true,
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D234-stride-chance\\output\\baseline.bin": "bec0eecf9a9f886ffea7c9e71e0610099b9934e2edc4880f7c18ae36bbdcc5e2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D234-stride-chance\\output\\candidate.bin": "bec0eecf9a9f886ffea7c9e71e0610099b9934e2edc4880f7c18ae36bbdcc5e2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D234-stride-chance\\output\\inputs.bin": "a10fb9212bedb159a5147c5dd5719a9db899d03f3d2ce4c80a6ff448048677ad"
+  },
+  "protocol_sha256": "8adbfc17de30eceb703c9498ef1f798b4a4d3e6f4562ccd7d3c826148b0a51f0",
+  "corpus_sha256": "166210e856f8665e192053f6a9da8cd42ffe3a35503de2f157cea7cbcfaacff0",
+  "complete_sha256": "9329cdba5ecc76a28a42b093e0f5da816531309a18d1b5c6ed3d8daa592e4a90",
+  "audit_script_sha256": "214c75fb67686cd3b143d7b1ebbf41ac44cb35343b47cd8c27f99ab7897554ed",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite canonical card/float corpus and small physical offsets; not malformed custom HandInfo or >2^32 span equivalence. Root decoder is not external independent review. No full solver or speed claim."
+}

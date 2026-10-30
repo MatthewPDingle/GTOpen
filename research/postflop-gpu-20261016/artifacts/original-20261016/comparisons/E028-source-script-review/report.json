@@ -1,0 +1,59 @@
+{
+  "id": "E028-source-script-review",
+  "at": "2026-10-16T16:51:08.867106+00:00",
+  "verdict": "PASS_SCOPED_SOURCE_AND_PROSPECTIVE_SCRIPTS",
+  "source_review_pass": true,
+  "script_review_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "source_manifest_sha256": "627f8db47dd751bc489814dbebef2447adeaadfdfbab5e299b282317faa23cd2",
+  "scripts_manifest_sha256": "eff861ea7be802dbbfc07e2982a976757c9b4dbe2d60aa9c5dfaa90afdac48ac",
+  "protocol_sha256": "d9bbdbd6a267699966de6aa24df60049e19820c3198a8f4e0a0348aef4b69453",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "89bccd9b55cd8d57be4faeaa5739ef1e94e692ec894fc90865f7be0b265ccc1d",
+    "crates/solver/src/gpu/mod.rs": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+    "crates/solver/src/gpu/plan.rs": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+    "crates/solver/src/gpu/continuation_paging.rs": "de02a25550e4167ebd9deb5f5d0a3b968325dce604920ec43e66e5f556cd7700",
+    "crates/solver/src/gpu/continuation_storage.rs": "16e966e7cea7e01213ba4a8cf24958c18369ac3d596b258e479a300893345312",
+    "crates/solver/src/gpu/continuation_capacity.rs": "94d38bf7ed1241aa93c0fde614cdc9645a546206c522d4ce551ccf967735d966",
+    "crates/solver/src/gpu/continuation_host_paging_tests.rs": "eeab4c40bc07e7d33d36bafc0bc84b702e1f0c3227cf25621fbb00114acc98ee",
+    "crates/solver/src/gpu/continuation_ssd_paging_tests.rs": "dd3315a9c1818f3051ac86a026556cbedaf43747ed19737a3a00b4f9f9046a3b",
+    "crates/solver/src/game.rs": "660363146a5ddd050277d4297efee92069b7bf5e1bba69b3ed881f7d382833d2"
+  },
+  "candidate_auxiliary_sha256": {
+    "crates/solver/examples/continuation_storage_capacity.rs": "c2d7f36a175f518f7962ac21076a6f2f4cfd06e3af8e38a7d3faf49ada5f7442",
+    "crates/solver/examples/hu_context_capacity.rs": "2643457e1051544c8b25785d790e3ad7ab5d3528e16056ada322ff0d16fb960e"
+  },
+  "checks": {
+    "source_artifact_pins": 27,
+    "source_reference_pins": 7,
+    "script_and_protocol_pins": 5,
+    "script_support_pins": 7,
+    "script_reference_pins": 15,
+    "current_accepted_source_entries": 162,
+    "unchanged_auxiliary_bases": 2,
+    "changed_accepted_map_sources": 9,
+    "seven_unchanged_CUDA_entries_exact": true,
+    "original_actor0_and_opponent_up_body_exact": true,
+    "one_new_unignored_test": true,
+    "expected_gpu_unit_passed": 85,
+    "expected_gpu_unit_ignored": 4,
+    "four_final_scripts_match_reviewed_draft_r2_except_protocol_hash": true,
+    "four_python_AST_checks": true,
+    "fixed_seven_run_ids_and_order": true,
+    "fresh_targets_outputs_and_binary_names_unused": true
+  },
+  "resolved_draft_finding": "Draft-r1 compile_check.py/build.py assumed flat archive bases. Draft-r2/final use nested base/<repo-relative path> for auxiliary and accepted CUDA reads; both drafts and correction evidence are preserved. No execution occurred.",
+  "limitations": [
+    "Source-only review does not establish Rust type checking, NVRTC compilation, numerical equivalence or speed. Root executes the separate feature compile checks, fresh gpu-only build, ordinary85/4 unit screen and fixed primary cohort.",
+    "The new unit independently checks cache normalization/lifetime, not immutable-old end-to-end outputs. Full original/candidate raw, threshold/generic/locks, actual workspace/capacity/board-swap, F32/state/menu/resume/continuation, wide-turn and cumulative controls remain mandatory only if primary qualifies.",
+    "One actor1 cache adds real finalized-layout allocation/zeroing and traffic; no performance prediction or resource nonregression assumption."
+  ],
+  "compiler_executed": false,
+  "native_tests_executed": false,
+  "gpu_executed": false,
+  "production_modified": false,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

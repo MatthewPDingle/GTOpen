@@ -1,0 +1,23 @@
+{
+  "id": "E055-raw-control-source-review",
+  "at": "2026-10-17T06:27:44.347509+00:00",
+  "root_review_only": true,
+  "resource_root_sha256": "3611f718539788ade29b5c670a6e5b0c09e353cebe3ce28f665039dc6dbaa015",
+  "source_review_sha256": "7b87d32e3392cc7f9de697c37f3e4ce735407ff1716d11510b6479f282c6abe0",
+  "cases": 819,
+  "launches": 1638,
+  "changed_path_cases": 264,
+  "scope": "Same819case matrix, complete actual output/input/guard words and disjoint owned device addresses. Bothactors, own/locked/opponent, arities1-17,hands0-1326,alternateblocks,algorithms/iterations,signedzero/subnormal/quietNaN/infinity/finiteoverflow/count0. No dropped cases.",
+  "discount_buffer_contract": "Exact3float device buffer initialized before eachlaunch; actual immutable device words captured and compared to original production-derived discounts. Supported ordinary/continuation stream dependencies prevent concurrent writes during launch. Own-unlocked arithmetic reads same3values; locked/opponent paths use none. Invalid/trapping custom buffers are outside supported kernel-call contract.",
+  "production_proof": "Only placement of3readonly discount loads changes. Resource and conservative PTX reachability gate passes: opponent/locked read0words, each declaredarity unlocked reads3words. Same arithmetic/reduction/store order, host/ABI/graphs/allocations/quality. Existing raw parent/child row and learning/CFV allocation disjointness checks retained unchanged, although this transform does not move a CFVstore.",
+  "caller_source_sha256": {
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/gpu/continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "crates/solver/src/gpu/continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "crates/solver/src/gpu/continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "limits": "Finite direct raw matrix and root source/PTX review only. No external independent audit or universal malformed-input guarantee. Full solver, broader/F32/lifetime/capacity/saves/holdout/cumulative/performance qualification remains required."
+}

@@ -1,0 +1,94 @@
+"""Freeze sparse read-only page first-touch before any compiler/native observation."""
+from pathlib import Path
+import ast,json,shutil,subprocess,sys,urllib.request
+R=Path(r'S:\GTOpen-research\postflop-gpu-20261016');C=R/'runs/accepted-E051-live-20261018';sys.path.insert(0,str(C));import common_e051_live as old
+old.custody();assert not(R/'gpu-run.lock').exists();old.ar.refuse_active(old.ar.live_status());assert shutil.disk_usage(R).free>=66*1024**3 and shutil.disk_usage('T:\\').free>=53687091200
+H=R/'runs/D127-sparse-page-read';assert not H.exists();H.mkdir();A=R/'runs/D092-action-arity-order'
+history=subprocess.run(['git','log','--all','--format=%H','-G','read_volatile|touch_pages|sparse.*page|page.*touch','--','crates/solver/src/gpu','crates/solver/src/store.rs'],cwd=old.REPO,text=True,capture_output=True,check=True);assert not history.stdout.strip()
+arena=(old.REPO/'crates/solver/src/gpu/arena.rs').read_text(encoding='utf-8');a=arena.index('        let zero = match store {');b=arena.index('        // Keep previously captured',a);body=arena[a:b].strip();assert body.startswith('let zero = ')and body.endswith(';');body=body[len('let zero = '):-1]
+checks=0;visits=0
+for page in [4096,8192,65536]:
+ for offset in range(0,page,2):
+  start=page*7+offset
+  for length in [0,1,2,2047,2048,2049,4095,4096,4097,8192,8193]:
+   end=start+length*2;first=start//page;count=0 if length==0 else (end-1)//page-first+1
+   addresses=[start if p==0 else (first+p)*page for p in range(count)]
+   expected=set(range(start//page,(end-1)//page+1))if length else set()
+   assert len(addresses)==len(expected)==count and {x//page for x in addresses}==expected
+   assert all(start<=x<end and (x-start)%2==0 and (x-start)//2<length for x in addresses)
+   checks+=1;visits+=count
+old.save(H/'address-model.json',{'at':old.now(),'status':'pass_integer_page_address_model','page_sizes':[4096,8192,65536],'offsets':'every two-byte-aligned offset within each page','lengths':[0,1,2,2047,2048,2049,4095,4096,4097,8192,8193],'cases':checks,'checked_page_addresses':visits,'proof':'Independent expected page-ID set equals computed one-read-per-page set, no duplicate/gap, all typed indices aligned and strictly inside initialized borrowed slice. Checked arithmetic for byte/end setup. Production page size is queried, not this test constant. Model covers declared finite domain, not arbitrary integer proof.','native_or_compiler_executions':0})
+old.save(H/'api-review.json',{'at':old.now(),'primary_sources':{'process_times':'https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getprocesstimes','system_info':'https://learn.microsoft.com/en-us/windows/win32/api/sysinfoapi/ns-sysinfoapi-system_info','volatile_read':'https://doc.rust-lang.org/std/ptr/fn.read_volatile.html','memory_counters':'https://learn.microsoft.com/en-us/windows/win32/api/psapi/ns-psapi-process_memory_counters'},'local_rayon_source':r'C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-1.12.0\src\iter\mod.rs','contract':'GetSystemInfo read-only OS page-size query. GetProcessTimes current process only, kernel+user summed over all its threads,100ns units; creation/exit values ignored. Basic process memory counters, whole-process faults not isolated hard faults. Win64 repr(C) SYSTEM_INFO48/FILETIME8/PROCESS_MEMORY_COUNTERS72. Volatile reads address existing initialized borrowed immutable arrays, no concurrent writes, values discarded; cannot prove all other q values zero, so every original full scan follows. No memory hints/settings/privileges/working-set changes/locking/eviction/driver changes.','novelty_query':history.args,'all_ref_matches':history.stdout.splitlines(),'closed_forms_remain_closed':'D126 PrefetchVirtualMemory, E045 parallel full OR, D090 SIMD OR, E049 zero provenance/omission, D123 initialization and E077 prefix stores remain closed. Sparse read-only first-touch changes no validation reduction and is not composed with those sources.'})
+for i in range(3):shutil.copyfile(A/f'fixture-{i}.json',H/f'fixture-{i}.json')
+probe=r'''#![cfg(all(target_os="windows",target_pointer_width="64"))]
+use solver::{Solver,Spot,SpotConfig,store::{Store,Storage},gpu::plan::GpuPlan};
+use std::{ffi::c_void,io::{self,Write,BufWriter},sync::Arc,time::Instant};
+use rayon::prelude::*;
+use serde_json::{json,Value};
+#[repr(C)]#[derive(Default)]struct SystemInfo{architecture:u32,page_size:u32,min:*mut c_void,max:*mut c_void,mask:usize,processors:u32,processor_type:u32,allocation_granularity:u32,processor_level:u16,processor_revision:u16}
+#[repr(C)]#[derive(Default)]struct FileTime{low:u32,high:u32}
+#[repr(C)]#[derive(Default)]struct MemoryCounters{cb:u32,faults:u32,peak_ws:usize,ws:usize,quota_peak_paged:usize,quota_paged:usize,quota_peak_nonpaged:usize,quota_nonpaged:usize,commit:usize,peak_commit:usize}
+#[link(name="kernel32")]extern "system"{
+ fn GetCurrentProcess()->*mut c_void;
+ fn GetSystemInfo(info:*mut SystemInfo);
+ fn GetProcessTimes(process:*mut c_void,creation:*mut FileTime,exit:*mut FileTime,kernel:*mut FileTime,user:*mut FileTime)->i32;
+ fn K32GetProcessMemoryInfo(process:*mut c_void,counters:*mut MemoryCounters,bytes:u32)->i32;
+}
+fn emit(value:Value){let mut out=io::stdout().lock();writeln!(out,"D127 {value}").unwrap();out.flush().unwrap();}
+fn page_size()->usize{let mut info=SystemInfo::default();unsafe{GetSystemInfo(&mut info)};let p=info.page_size as usize;assert!(p>=2&&p.is_power_of_two()&&p%2==0);p}
+fn cpu_ticks()->u64{let(mut creation,mut exit,mut kernel,mut user)=(FileTime::default(),FileTime::default(),FileTime::default(),FileTime::default());assert_ne!(unsafe{GetProcessTimes(GetCurrentProcess(),&mut creation,&mut exit,&mut kernel,&mut user)},0);let cvt=|v:FileTime|((v.high as u64)<<32)|v.low as u64;cvt(kernel).checked_add(cvt(user)).unwrap()}
+fn counters()->MemoryCounters{let mut m=MemoryCounters::default();m.cb=std::mem::size_of::<MemoryCounters>()as u32;assert_ne!(unsafe{K32GetProcessMemoryInfo(GetCurrentProcess(),&mut m,m.cb)},0);assert_eq!(m.cb,72);assert!(m.ws>0&&m.peak_ws>=m.ws);m}
+fn counter_json(m:&MemoryCounters)->Value{json!({"page_faults":m.faults,"working_set_bytes":m.ws,"peak_working_set_bytes":m.peak_ws,"commit_bytes":m.commit,"peak_commit_bytes":m.peak_commit})}
+#[inline(never)]fn original_zero_predicate(store:&Store)->bool{BODY}
+fn positive_zero_scales(stores:[&Store;4])->bool{stores.into_iter().all(|store|match store{Store::I16{scale,..}|Store::U16{scale,..}=>scale.as_slice().iter().all(|v|v.to_bits()==0),Store::F32(_)=>false})}
+fn quantized_bytes(stores:[&Store;4])->Option<usize>{let mut total=0usize;for store in stores{let n=match store{Store::I16{q,..}=>q.len(),Store::U16{q,..}=>q.len(),Store::F32(_)=>return None};if n==0{return None;}total=total.checked_add(n.checked_mul(2).unwrap()).unwrap();}Some(total)}
+fn touch_pages<T:Copy+Sync+Send>(data:&[T],page:usize)->usize{
+ assert_eq!(std::mem::size_of::<T>(),2);assert!(page>=2&&page.is_power_of_two());if data.is_empty(){return 0;}
+ let start=data.as_ptr()as usize;let end=start.checked_add(data.len().checked_mul(2).unwrap()).unwrap();let first=start/page;let count=(end-1)/page-first+1;
+ (0..count).into_par_iter().with_min_len(64).for_each(|p|{let address=if p==0{start}else{(first+p).checked_mul(page).unwrap()};let index=(address-start)/2;assert!(index<data.len());std::hint::black_box(unsafe{std::ptr::read_volatile(data.as_ptr().add(index))});});count
+}
+fn touch_if_eligible(stores:[&Store;4])->(usize,usize){let Some(bytes)=quantized_bytes(stores)else{return(0,0);};if bytes<64*1024*1024||!positive_zero_scales(stores){return(0,0);}let page=page_size();let mut pages=0;for store in stores{pages+=match store{Store::I16{q,..}=>touch_pages(q.as_slice(),page),Store::U16{q,..}=>touch_pages(q.as_slice(),page),Store::F32(_)=>unreachable!()};}(pages,bytes)}
+fn write_words(out:&mut impl Write,values:&[u16]){out.write_all(&(values.len()as u64).to_le_bytes()).unwrap();for x in values{out.write_all(&x.to_le_bytes()).unwrap();}}
+fn ability(){
+ assert_eq!(std::mem::size_of::<SystemInfo>(),48);assert_eq!(std::mem::align_of::<SystemInfo>(),8);assert_eq!(std::mem::size_of::<FileTime>(),8);assert_eq!(std::mem::size_of::<MemoryCounters>(),72);let page=page_size();let cpu_before=cpu_ticks();let before=counters();
+ let raw=std::path::Path::new(RAW_PATH);let mut out=BufWriter::new(std::fs::File::create_new(raw).unwrap());out.write_all(b"D127-PAGE-RAW1\0\0").unwrap();let mut case=0u32;let mut total_pages=0usize;
+ for signed in [false,true]{for length in [0usize,1,2,2047,2048,2049,4095,4096,4097,8192,8193]{for offset in [0usize,1,15,2047]{let n=offset+length+17;let input:Vec<u16>=(0..n).map(|i|((i*73+17)&65535)as u16).collect();
+  let(after,pages,start)=if signed{let v:Vec<i16>=input.iter().map(|&x|x as i16).collect();let data=&v[offset..offset+length];let start=data.as_ptr()as usize;let p=touch_pages(data,page);(v.iter().map(|&x|x as u16).collect::<Vec<_>>(),p,start)}else{let v=input.clone();let data=&v[offset..offset+length];let start=data.as_ptr()as usize;let p=touch_pages(data,page);(v,p,start)};
+  let expected=if length==0{0}else{(start+length*2-1)/page-start/page+1};assert_eq!(pages,expected);assert_eq!(after,input);total_pages+=pages;
+  for x in [case,signed as u32,offset as u32,length as u32,page as u32,pages as u32]{out.write_all(&x.to_le_bytes()).unwrap();}out.write_all(&(start as u64).to_le_bytes()).unwrap();write_words(&mut out,&input);write_words(&mut out,&after);case+=1;
+ }}}
+ out.flush().unwrap();let mut controls=0;
+ for signed in [false,true]{let mut s=if signed{Store::i16(257,4)}else{Store::u16(257,4)};assert!(original_zero_predicate(&s));assert!(positive_zero_scales([&s;4]));assert_eq!(touch_if_eligible([&s;4]),(0,0));controls+=1;
+  match &mut s{Store::I16{q,..}=>q.as_mut_slice()[256]=-1,Store::U16{q,..}=>q.as_mut_slice()[256]=1,_=>unreachable!()};assert!(!original_zero_predicate(&s));controls+=1;
+  match &mut s{Store::I16{q,..}=>q.as_mut_slice()[256]=0,Store::U16{q,..}=>q.as_mut_slice()[256]=0,_=>unreachable!()};
+  for bits in [0x8000_0000,0x7f80_0000,0xff80_0000,0x7fc0_1234,1]{match &mut s{Store::I16{scale,..}|Store::U16{scale,..}=>scale.as_mut_slice()[3]=f32::from_bits(bits),_=>unreachable!()};assert!(!original_zero_predicate(&s));assert!(!positive_zero_scales([&s;4]));controls+=1;}
+ }
+ let s=Store::f32(257);assert!(!original_zero_predicate(&s));assert!(!positive_zero_scales([&s;4]));assert_eq!(quantized_bytes([&s;4]),None);assert_eq!(touch_if_eligible([&s;4]),(0,0));controls+=1;
+ let after=counters();let cpu_after=cpu_ticks();assert!(cpu_after>=cpu_before);emit(json!({"stage":"ability","raw_path":raw,"native_cases":case,"touched_pages":total_pages,"all_full_owned_words_and_guards_exact":true,"predicate_eligibility_controls":controls,"system_info_bytes":48,"filetime_bytes":8,"memory_counter_bytes":72,"page_size":page,"rayon_threads":rayon::current_num_threads(),"cpu_before_ticks100ns":cpu_before,"cpu_after_ticks100ns":cpu_after,"before":counter_json(&before),"after":counter_json(&after),"GPU_executions":0}));
+}
+fn run(arm:&str){
+ let fixtures=[include_str!("fixture-0.json"),include_str!("fixture-1.json"),include_str!("fixture-2.json")];
+ for(case,config)in fixtures.iter().enumerate(){let cfg:SpotConfig=serde_json::from_str(config).unwrap();let mut s=Solver::with_storage(Arc::new(Spot::new(cfg).unwrap()),Storage::Compressed);s.use_isomorphism=true;let plan=GpuPlan::build(&s.spot,s.use_isomorphism);std::hint::black_box(&plan);
+  let stores=[&s.regrets[0],&s.regrets[1],&s.strat[0],&s.strat[1]];let q_bytes=quantized_bytes(stores).unwrap();assert!(q_bytes<4*1024*1024*1024usize);let before=counters();let cpu_before=cpu_ticks();let t=Instant::now();let mut pages=0;let mut touched_bytes=0;
+  if arm=="touch"{(pages,touched_bytes)=touch_if_eligible(stores);}let mid=counters();let checked=stores.map(original_zero_predicate);std::hint::black_box(checked);let elapsed=t.elapsed().as_secs_f64()*1000.0;let after=counters();let cpu_after=cpu_ticks();assert!(cpu_after>=cpu_before);assert_eq!(checked,[true;4]);
+  emit(json!({"stage":"CPU_zero_scan","fixture_index":case,"board":s.spot.config.board,"arm":arm,"q_bytes":q_bytes,"cpu_arena_bytes":s.arena_bytes(),"nodes":s.spot.tree.nodes.len(),"plan_levels":plan.num_levels,"component_ms":elapsed,"process_cpu_ms":(cpu_after-cpu_before)as f64/10000.0,"cpu_before_ticks100ns":cpu_before,"cpu_after_ticks100ns":cpu_after,"page_size":page_size(),"rayon_threads":rayon::current_num_threads(),"touched_pages":pages,"touched_q_bytes":touched_bytes,"all4_original_full_checks_pass":checked,"before":counter_json(&before),"mid":counter_json(&mid),"after":counter_json(&after),"process_page_fault_delta":after.faults.wrapping_sub(before.faults),"pre_scan_page_fault_delta":mid.faults.wrapping_sub(before.faults),"original_scan_page_fault_delta":after.faults.wrapping_sub(mid.faults),"GPU_executions":0,"full_solve_performance_measured":false}));
+ }
+ emit(json!({"stage":"complete","arm":arm,"fixtures":3,"GPU_executions":0,"full_solve_performance_measured":false}));
+}
+fn main(){let args:Vec<_>=std::env::args().collect();assert_eq!(args.len(),2);match args[1].as_str(){"ability"=>ability(),"baseline"=>run("baseline"),"touch"=>run("touch"),_=>panic!("invalid mode")}}
+'''
+assert probe.count('BODY')==1 and probe.count('RAW_PATH')==1;probe=probe.replace('BODY',body).replace('RAW_PATH','r"'+str(H/'execution/ability-images.bin')+'"');(H/'probe.rs').write_text(probe,encoding='utf-8',newline='\n')
+old.save(H/'source-review.json',{'at':old.now(),'original_arena_sha256':old.BASE['crates/solver/src/gpu/arena.rs'],'original_predicate_body_exact':body,'mechanism':'Read one owned initialized i16/u16 per actual OS page using existing Rayon16 pool, fixed with_min_len64 pages, discard values, then all4 original serial full scale/q scans in original order. Candidate requires compressed four buffers,>=64MiB total q,all scale bits positive zero. Tiny fallback before extra scale checks. No validation omission/parallel reduction/cache/provenance/data writes/new buffer/ISA/kernel/GPU/solver source activation.','scope':'CPU-only source component, accepted RLIB/mimalloc/Spot/Solver/GpuPlan. No CUDA context, pinning, device allocation or actual private ArenaLayout; not complete solve or production upload.','resource_guard':'Per applicable fixture candidate median summed process CPU ms <=baseline median*1.10+5.0ms. Includes all threads, not CPU-core average; component screen only, actual no-tradeoff qualification still required.'})
+P0=old.read(R/'runs/D123-node-array-initialization/protocol.json');command=[x.replace(str(R/'runs/D123-node-array-initialization'),str(H)).replace('d123_plan_probe','d127_sparse_page_probe')for x in P0['compile_commands']['rustc']]
+deps={p:h for p,h in P0['input_sha256'].items()if Path(p).suffix in['.rlib','.rmeta','.lib','.dll']}
+for p,h in deps.items():old.pin(p,h)
+paths=[Path(__file__),*[p for p in H.iterdir()if p.is_file()],old.REPO/'crates/solver/src/gpu/arena.rs',old.REPO/'crates/solver/src/store.rs',old.REPO/'crates/solver/src/lib.rs',R/'runs/D126-owned-memory-prefetch/report.json',C/'common_e051_live.py',C/'protected-main.json',Path(r'C:\Users\there\.cargo\registry\src\index.crates.io-1949cf8c6b5b557f\rayon-1.12.0\src\iter\mod.rs')]
+P={'id':'D127','at':old.now(),'status':'FROZEN_PRE_COMPILER_NATIVE','rustc_command':command,'input_sha256':deps|{str(p):old.sha(p)for p in paths},'order':[{'id':'D127B1','arm':'baseline'},{'id':'D127T1','arm':'touch'},{'id':'D127T2','arm':'touch'},{'id':'D127B2','arm':'baseline'},{'id':'D127B3','arm':'baseline'},{'id':'D127T3','arm':'touch'}],'component_admission':{'minimum_sum_fixture_median_saving_ms':95.825124,'minimum_total_touch_bytes':64*1024*1024,'fixed_min_rayon_pages':64,'fixed_rayon_threads':16,'maximum_CPU_median_ratio':1.10,'CPU_median_allowance_ms':5.0,'guard':'Applicable large fixtures: positive wall median saving and>=2/3 improving pairs; median all-thread CPU cost <=baseline*1.10+5ms. Tiny fallback retained, full-cycle strict fixture rule later.','meaning':'Historical9582.5124ms*1% is only a fixed prospective component screen budget; no sample pooling or full-solve/no-tradeoff claim.'},'scope':'One compiler, one owned full-before/after image+guard/ABI/CPU-counter/predicate eligibility ability process. Then exactly6 fresh CPU-only processes fixedBC/CB/BC, each3 fixtures, no warmup/repeats/extensions/tuning. Same binary and original4serialpredicates. Both arms midcounter included. Stop on ability/native/invariant failure, preserve all observations. No source/thread/chunk/threshold/scan/helper/API/placement rescue after actual failed component admission.','candidate_accepted':False};old.save(H/'protocol.json',P)
+for p in H.iterdir():
+ if not p.is_file():continue
+ key=H.name+'/'+p.name;dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True);assert not dst.exists();shutil.copyfile(p,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+old.save(H/'pre-execution-publication.json',{'at':old.now(),'protocol_sha256':old.sha(H/'protocol.json'),'all_prepared_artifacts_HTTP_byte_verified':True,'compiler_or_native_executions':0})
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(old.ar.STATUS);assert not any(x['id']=='D127'for x in s['experiments']);s['experiments'].append({'id':'D127','at':old.now(),'title':'Sparse parallel page reads before original serial zero scans','kind':'diagnostic','status':'running','correctness':'Frozen address model, full owned image and original-predicate controls','fixture':'3 CPU fixtures per6 fresh processes after ability control','stage':'CPU-only sparse page first-touch screen','reason':'Test one word per actual OS page using existing Rayon16 pool, then retain every original serial validation scan. Fixed page chunk64/64MiB eligibility/95.825124ms wall budget and all-thread CPU guard. No complete-solve claim or source activation.','accepted':False,'evidence':[{'label':'Integer address and page coverage controls','url':'evidence/D127-sparse-page-read/address-model.json'},{'label':'Official API and source contract','url':'evidence/D127-sparse-page-read/api-review.json'},{'label':'Frozen component protocol','url':'evidence/D127-sparse-page-read/protocol.json'}]});s.update(updated_at=old.now(),state='running',goal_status='active',active_experiment='D127',stage='D127 sparse page first-touch CPU screen',activity='D126 prefetch hint closed. Testing distinct sparse actual reads while all original validation remains. All-thread CPU cost measured; no accepted new gain. E051 cumulative12.44% and last primaryB246 unchanged.');old.ar.atomic_json(old.ar.STATUS,s)
+print('D127 protocol',old.sha(H/'protocol.json'),'address cases',checks,flush=True)

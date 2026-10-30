@@ -1,0 +1,143 @@
+{
+  "at": "2026-10-29T18:43:26.401514+00:00",
+  "fields": {
+    "card1": {
+      "bits": [
+        0,
+        5
+      ],
+      "mask": 63,
+      "domain": [
+        0,
+        51
+      ]
+    },
+    "card2": {
+      "bits": [
+        6,
+        11
+      ],
+      "mask": 63,
+      "domain": [
+        0,
+        51
+      ]
+    },
+    "same": {
+      "bits": [
+        12,
+        22
+      ],
+      "mask": 2047,
+      "valid_index_domain": [
+        0,
+        1325
+      ],
+      "absent_original": 4294967295,
+      "absent_encoded": 2047
+    }
+  },
+  "boundary_examples": [
+    [
+      0,
+      1,
+      0,
+      64
+    ],
+    [
+      0,
+      1,
+      1,
+      4160
+    ],
+    [
+      0,
+      1,
+      1325,
+      5427264
+    ],
+    [
+      0,
+      1,
+      4294967295,
+      8384576
+    ],
+    [
+      0,
+      51,
+      0,
+      3264
+    ],
+    [
+      0,
+      51,
+      1,
+      7360
+    ],
+    [
+      0,
+      51,
+      1325,
+      5430464
+    ],
+    [
+      0,
+      51,
+      4294967295,
+      8387776
+    ],
+    [
+      25,
+      26,
+      0,
+      1689
+    ],
+    [
+      25,
+      26,
+      1,
+      5785
+    ],
+    [
+      25,
+      26,
+      1325,
+      5428889
+    ],
+    [
+      25,
+      26,
+      4294967295,
+      8386201
+    ],
+    [
+      50,
+      51,
+      0,
+      3314
+    ],
+    [
+      50,
+      51,
+      1,
+      7410
+    ],
+    [
+      50,
+      51,
+      1325,
+      5430514
+    ],
+    [
+      50,
+      51,
+      4294967295,
+      8387826
+    ]
+  ],
+  "legal_tuple_count": 1759602,
+  "injectivity": "Three disjointbitfields; exactdecode recovers every legalc1/c2/same tuple. Sentinel2047 is outside all1326possibleopponentindices. Allhigh9bits zero. No float conversion or rounding operation. A private11bitsame domain isnot publicGpuPlan narrowing.",
+  "physical_changes": "Only d_same[0]andd_same[1] values become packedwords; sameu32type/length/allocation. Otherphysicalarraysincludinglegacyd_hand_c1/c2 remain identical. Direct/rawengine readers must independently decode every changedword; no field/padding exceptions or blanket comparison omission. EntireCFV/solver state requiredexact.",
+  "host_cost": "Two constructor-local Vecu32(ownhandcounts<=1326 each), nominalpayload<=10608B plusheaders/allocatoroverhead. No persistentnewCPU/GPUfield/globalallocation/graphnode/kernel/ABIparam. Allpacking/allocation/drop/upload/runtimecompile costs included in completecycles; actualmaterialqualificationstillrequired.",
+  "required_before_numerical": "Compiled actual resources and both27/21ABIs; intendedonehandwordload/decode andabsencepc1/pc2globaldependencies; original floatinginstructions/order,barriers/widths. Actual compiledhosthelper fulllegalintegerdomain andmixedvectors. Original allfold/show directcorpora with onlyindependentlyspecifiedmetadataencoding changed perarm. Full rawengine/canonical/broad/material/fresh16/holdout/cumulative/app beforeadoption."
+}

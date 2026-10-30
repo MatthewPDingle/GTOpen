@@ -1,0 +1,66 @@
+{
+  "id": "E104-readonly-postmortem",
+  "at": "2026-10-28T23:06:13.091850+00:00",
+  "retained_primary_report_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B317\\report.json": "dbc637c70df646f290dae1df868c6f6d9a9bddfaa6e6678abb5d4cef86266515",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B318\\report.json": "936c3a1de719733f0a27c80c26b98b1bf47b463497be256556cfe73a970c5582",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B319\\report.json": "a23d6b82fecc8f0773cb2d2e3bbbd716a2d3ce0889131cfdbba30e563d4f647f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104R1\\report.json": "b026b92ade112e9896baf30b2e0bb182b8b45117c314b8ef313580b6e7454a27",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104R2\\report.json": "ad07914321748d5afc69149cd6927a375677190a136377e02f002e3e297c4a63",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104R3\\report.json": "8dc44db1f1b220bf14b2fbdccb1a443dc241cbe88d84da2e10a228f32425761d"
+  },
+  "stage_median_ms": {
+    "baseline": {
+      "rainbow": {
+        "build_ms": 79.4247,
+        "init_ms": 532.8299,
+        "solve_ms": 4771.7732000000005,
+        "readback_ms": 320.1944,
+        "full_cycle_ms": 5778.255999999999
+      },
+      "two-tone": {
+        "build_ms": 363.3914,
+        "init_ms": 398.9567,
+        "solve_ms": 2948.3732,
+        "readback_ms": 235.3501,
+        "full_cycle_ms": 3950.8070000000002
+      },
+      "river": {
+        "build_ms": 0.3375,
+        "init_ms": 99.428,
+        "solve_ms": 15.801099999999998,
+        "readback_ms": 0.8241,
+        "full_cycle_ms": 116.2666
+      }
+    },
+    "candidate": {
+      "rainbow": {
+        "build_ms": 75.12639999999999,
+        "init_ms": 1362.8753,
+        "solve_ms": 6351.1832,
+        "readback_ms": 327.3827,
+        "full_cycle_ms": 8145.729299999999
+      },
+      "two-tone": {
+        "build_ms": 372.03540000000004,
+        "init_ms": 390.6762,
+        "solve_ms": 3996.4381,
+        "readback_ms": 229.1242,
+        "full_cycle_ms": 5002.586
+      },
+      "river": {
+        "build_ms": 0.2722,
+        "init_ms": 131.3841,
+        "solve_ms": 16.3711,
+        "readback_ms": 0.8535,
+        "full_cycle_ms": 148.9041
+      }
+    }
+  },
+  "diagnostic_only": true,
+  "new_native_or_compiler_runs": 0,
+  "limitations": "Each stage median is descriptive and medians need not add to the complete-cycle median. No hardware counter, per-kernel timing, causal attribution, new headroom or significance claim. These data cannot rescue the rejected form.",
+  "finding": "Both large solve/check stages are slower, so the complete-cycle loss is not explained by initialization alone. Rainbow initialization and the fallback river initialization also increase. The fixed resident traversal is closed, including source/helper/phase/block width/threshold/flags/quality/sample variants.",
+  "history_guards": "Further scouting must not reopen cached module/context lifetime (D109/D041), CPU quantization function/vector forms (D019/E012/E013), GPU packet readback (E092), readback overlap (E040), or any other closed form. Literal absence is insufficient novelty evidence.",
+  "next_action": "Continue source/history inspection for a distinct mechanism. Require a bounded correctness/cost contract and original complete-cycle same-quality acceptance gates before admission. No next candidate is admitted by this postmortem."
+}

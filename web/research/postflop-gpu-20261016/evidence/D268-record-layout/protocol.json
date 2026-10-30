@@ -1,0 +1,34 @@
+{
+  "id": "D268",
+  "at": "2026-10-29T07:32:59.687720+00:00",
+  "status": "FROZEN_PRE_RUST_RECORD_LAYOUT_ONLY",
+  "source_sha256": "93c8e736b94bc89f22956d056d3d0dbf0b2c1090f1f8fd20cb985c9e81d0f785",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D268-prepare-record-layout.py": "812e6d8bb38bd4070c7e6e7d131cc124d94aa940da7b21030f2833717c6a8de9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D268-execute-record-layout.py": "645982e67b8011817b59b1723a74641ec595fa2ecce0bd81a561c008421f6eeb",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\protocol.json": "aa0dd7589a50c020663469ac6ca354476a5684977281e30ac1ece73f3cf65266",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267b-node-order-model\\root-report.json": "302b77c326cb8b460e500df0095b871640a980cf39c7f542d03bbad7dadaf4b5"
+  },
+  "compile_command": [
+    "rustc",
+    "--edition=2021",
+    "-O",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D268-record-layout\\layout.rs",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D268-record-layout\\layout.exe"
+  ],
+  "required_free_bytes": 70866960384,
+  "prospective_gate": {
+    "baseline_sizes": {
+      "ActiveBlock": 32,
+      "InactiveBlock": 40
+    },
+    "allowed_proposed_size_growth_bytes": 0,
+    "alignment": 8,
+    "node_and_device_node_distinct_u32_in_bounds": true
+  },
+  "scope": "Verbatim accepted private record definitions and one proposed additional u32 device_node field; Rust native default layout on actual compiler. One standalone compiler and one CPU-only layout helper. No cargo, solver construction, CUDA API/context/kernel/solve, timing or production source changes. This proves record padding only, not complete GpuSolver/ArenaLayout type sizes, material cost, locks/all callers or candidate feasibility.",
+  "failure_rule": "Record growth or alignment/overlap failure declines this exact field form before any solver prototype. No alternate field placement or packing rescue."
+}

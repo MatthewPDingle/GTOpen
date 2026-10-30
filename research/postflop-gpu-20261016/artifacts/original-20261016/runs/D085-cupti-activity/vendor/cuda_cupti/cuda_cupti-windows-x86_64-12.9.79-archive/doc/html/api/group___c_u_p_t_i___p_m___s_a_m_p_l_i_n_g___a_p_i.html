@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.8. CUPTI PM Sampling API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.9. CUPTI Profiler Host API" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html" />
+    <link rel="prev" title="5.7. CUPTI PC Sampling Utility API" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i.html">5.6. CUPTI PC Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.8. CUPTI PM Sampling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.8.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.8.2. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.8.3. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.8.4. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.8. </span>CUPTI PM Sampling API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-pm-sampling-api">
+<h1><span class="section-number">5.8. </span>CUPTI PM Sampling API<a class="headerlink" href="#cupti-pm-sampling-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i">Functions to enable, disable, start, stop, and decode PM sampling. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data_image___initialize___params.html#struct_c_upti___pm_sampling___counter_data_image___initialize___params"><span class="std std-ref">CUpti_PmSampling_CounterDataImage_Initialize_Params</span></a></dt><dd><p>Params for cuptiPmSamplingCounterDataImageInitialize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data___get_sample_info___params.html#struct_c_upti___pm_sampling___counter_data___get_sample_info___params"><span class="std std-ref">CUpti_PmSampling_CounterData_GetSampleInfo_Params</span></a></dt><dd><p>Params for cuptiPmSamplingCounterDataGetSampleInfo.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___decode_data___params.html#struct_c_upti___pm_sampling___decode_data___params"><span class="std std-ref">CUpti_PmSampling_DecodeData_Params</span></a></dt><dd><p>Params for cuptiPmSamplingDecodeData.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___disable___params.html#struct_c_upti___pm_sampling___disable___params"><span class="std std-ref">CUpti_PmSampling_Disable_Params</span></a></dt><dd><p>Params for cuptiPmSamplingDisable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___enable___params.html#struct_c_upti___pm_sampling___enable___params"><span class="std std-ref">CUpti_PmSampling_Enable_Params</span></a></dt><dd><p>Params for cuptiPmSamplingEnable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_availability___params.html#struct_c_upti___pm_sampling___get_counter_availability___params"><span class="std std-ref">CUpti_PmSampling_GetCounterAvailability_Params</span></a></dt><dd><p>Params for cuptiPmSamplingGetCounterData.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_info___params.html#struct_c_upti___pm_sampling___get_counter_data_info___params"><span class="std std-ref">CUpti_PmSampling_GetCounterDataInfo_Params</span></a></dt><dd><p>Params for cuptiPmSamplingGetCounterDataInfo.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_size___params.html#struct_c_upti___pm_sampling___get_counter_data_size___params"><span class="std std-ref">CUpti_PmSampling_GetCounterDataSize_Params</span></a></dt><dd><p>Params for cuptiPmSamplingGetCounterDataSize.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#struct_c_upti___pm_sampling___set_config___params"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params</span></a></dt><dd><p>Params for cuptiPmSamplingSetConfig.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___start___params.html#struct_c_upti___pm_sampling___start___params"><span class="std std-ref">CUpti_PmSampling_Start_Params</span></a></dt><dd><p>Params for cuptiPmSamplingStart.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___pm_sampling___stop___params.html#struct_c_upti___pm_sampling___stop___params"><span class="std std-ref">CUpti_PmSampling_Stop_Params</span></a></dt><dd><p>Params for cuptiPmSamplingStop.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gad11d2b9dfa11fcd94a90cdfb3ec8fc5a"><span class="std std-ref">CUpti_PmSampling_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga123eaa0d2d3cd10e383cf92559ab3137"><span class="std std-ref">CUpti_PmSampling_CounterData_GetSampleInfo_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga6d5e44c84d76bab17f286c1de2bfb4c0"><span class="std std-ref">CUpti_PmSampling_DecodeData_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga096908b1c57b19bfd4dabaa04a12d780"><span class="std std-ref">CUpti_PmSampling_Disable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaaf7fec97616a34fa846022079d1886f9"><span class="std std-ref">CUpti_PmSampling_Enable_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gae9addd087ae488faedba340ff0c136a1"><span class="std std-ref">CUpti_PmSampling_GetCounterAvailability_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga2bc56051d14807db5c0f48d02e005acf"><span class="std std-ref">CUpti_PmSampling_GetCounterDataInfo_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gab01b3bc2d06e5bc8fa70a427a32c7157"><span class="std std-ref">CUpti_PmSampling_GetCounterDataSize_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gafba9c7156922bb8a725038a14219b1b2"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga297aae8430bf60191e7c1eefa560272c"><span class="std std-ref">CUpti_PmSampling_Start_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1193b3c5b93d002ba75d5d46cdf9e490"><span class="std std-ref">CUpti_PmSampling_Stop_Params_STRUCT_SIZE</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gab437d0c24da6b17a1effdc144a9473dd"><span class="std std-ref">CUpti_PmSampling_DecodeStopReason</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaa2fc823119c9dd5d58e64374ca71ab8a"><span class="std std-ref">CUpti_PmSampling_HardwareBuffer_AppendMode</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga5f3975d220c766869e53561fd1ea8a41"><span class="std std-ref">CUpti_PmSampling_TriggerMode</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga3c38a9c0143e8bfc8e2ee095ecc3fc17"><span class="std std-ref">cuptiPmSamplingCounterDataGetSampleInfo</span></a>(CUpti_PmSampling_CounterData_GetSampleInfo_Params *pParams)</dt><dd><p>Get the sample info (start and end time stamp) for the given sample index.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1040c72a2d49cc84d4ed50e881321162"><span class="std std-ref">cuptiPmSamplingCounterDataImageInitialize</span></a>(CUpti_PmSampling_CounterDataImage_Initialize_Params *pParams)</dt><dd><p>Initialize the counter data to CUPTI record format for storing the metric data.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1e0f1d1e28911b48feca1013ce7e8b2f"><span class="std std-ref">cuptiPmSamplingDecodeData</span></a>(CUpti_PmSampling_DecodeData_Params *pParams)</dt><dd><p>Decode the metrics data stored in the hardware buffer to the counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gac1ac579527ecb597b0bc93c94afea46b"><span class="std std-ref">cuptiPmSamplingDisable</span></a>(CUpti_PmSampling_Disable_Params *pParams)</dt><dd><p>Disable PM sampling on the CUDA device and destroy the PM sampling object.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga45cbdf31b186142549243cb527d75bd1"><span class="std std-ref">cuptiPmSamplingEnable</span></a>(CUpti_PmSampling_Enable_Params *pParams)</dt><dd><p>Create a PM sampling object and enable PM sampling on the CUDA device.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaedd567fb5a0c2ad11c8b22ec43d78928"><span class="std std-ref">cuptiPmSamplingGetCounterAvailability</span></a>(CUpti_PmSampling_GetCounterAvailability_Params *pParams)</dt><dd><p>Query counter availibility information in a buffer which can be used to filter unavailable raw metrics on host.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga89b6ff5cc9570cb7059271d13e474aba"><span class="std std-ref">cuptiPmSamplingGetCounterDataInfo</span></a>(CUpti_PmSampling_GetCounterDataInfo_Params *pParams)</dt><dd><p>Get the counter data info like number of samples, number of populated samples and number of completed samples in a counter data image.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga4009c1c98fc72c30c4c0be60eb98f23f"><span class="std std-ref">cuptiPmSamplingGetCounterDataSize</span></a>(CUpti_PmSampling_GetCounterDataSize_Params *pParams)</dt><dd><p>Query the size of the counter data image which will be used to store the metrics data.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gabf81ed3dcee860a444e8e2e1e2e92e1b"><span class="std std-ref">cuptiPmSamplingSetConfig</span></a>(CUpti_PmSampling_SetConfig_Params *pParams)</dt><dd><p>Set the configuration for PM sampling like sampling interval, maximum number of samples filled in HW buffer, trigger mode and the config image which has scheduling info for metric collection.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaffbd0feb903fc251064a4d5e0a1a567e"><span class="std std-ref">cuptiPmSamplingStart</span></a>(CUpti_PmSampling_Start_Params *pParams)</dt><dd><p>Start the PM sampling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga553c2d78d8fb6658cb6c667d2308be30"><span class="std std-ref">cuptiPmSamplingStop</span></a>(CUpti_PmSampling_Stop_Params *pParams)</dt><dd><p>Stop the PM sampling.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga6136043dec79b930fa6fd2c16fc03a70"><span class="std std-ref">CUpti_PmSampling_Object</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.8.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_CounterDataImage_Initialize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gad11d2b9dfa11fcd94a90cdfb3ec8fc5a"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_CounterDataImage_Initialize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_CounterDataImage_Initialize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_CounterData_GetSampleInfo_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga123eaa0d2d3cd10e383cf92559ab3137"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_CounterData_GetSampleInfo_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_CounterData_GetSampleInfo_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_DecodeData_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga6d5e44c84d76bab17f286c1de2bfb4c0"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_DecodeData_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_DecodeData_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_Disable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga096908b1c57b19bfd4dabaa04a12d780"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_Disable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_Disable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_Enable_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaaf7fec97616a34fa846022079d1886f9"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_Enable_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_Enable_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_GetCounterAvailability_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gae9addd087ae488faedba340ff0c136a1"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterAvailability_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_GetCounterAvailability_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_GetCounterDataInfo_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga2bc56051d14807db5c0f48d02e005acf"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterDataInfo_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_GetCounterDataInfo_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_GetCounterDataSize_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gab01b3bc2d06e5bc8fa70a427a32c7157"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterDataSize_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_GetCounterDataSize_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_SetConfig_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gafba9c7156922bb8a725038a14219b1b2"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_SetConfig_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_SetConfig_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_Start_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga297aae8430bf60191e7c1eefa560272c"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_Start_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_Start_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PmSampling_Stop_Params_STRUCT_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1193b3c5b93d002ba75d5d46cdf9e490"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_Stop_Params_STRUCT_SIZE</span></span></span><a class="headerlink" href="#c.CUpti_PmSampling_Stop_Params_STRUCT_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="enumerations">
+<h2><span class="section-number">5.8.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv433CUpti_PmSampling_DecodeStopReason">
+<span id="_CPPv333CUpti_PmSampling_DecodeStopReason"></span><span id="_CPPv233CUpti_PmSampling_DecodeStopReason"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gab437d0c24da6b17a1effdc144a9473dd"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_DecodeStopReason</span></span></span><a class="headerlink" href="#_CPPv433CUpti_PmSampling_DecodeStopReason" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_OTHERE">
+<span id="_CPPv3N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_OTHERE"></span><span id="_CPPv2N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_OTHERE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggab437d0c24da6b17a1effdc144a9473ddabbc39bb199e3527168848d6c16b8b81f"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_DECODE_STOP_REASON_OTHER</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_OTHERE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_PmSampling_DecodeStopReason54CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTER_DATA_FULLE">
+<span id="_CPPv3N33CUpti_PmSampling_DecodeStopReason54CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTER_DATA_FULLE"></span><span id="_CPPv2N33CUpti_PmSampling_DecodeStopReason54CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTER_DATA_FULLE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggab437d0c24da6b17a1effdc144a9473ddadea340e8171ab13eec17d17b1d38f367"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTER_DATA_FULL</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_PmSampling_DecodeStopReason54CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTER_DATA_FULLE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Counter data image is full. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_PmSampling_DecodeStopReason51CUPTI_PM_SAMPLING_DECODE_STOP_REASON_END_OF_RECORDSE">
+<span id="_CPPv3N33CUpti_PmSampling_DecodeStopReason51CUPTI_PM_SAMPLING_DECODE_STOP_REASON_END_OF_RECORDSE"></span><span id="_CPPv2N33CUpti_PmSampling_DecodeStopReason51CUPTI_PM_SAMPLING_DECODE_STOP_REASON_END_OF_RECORDSE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggab437d0c24da6b17a1effdc144a9473dda9a26883a445dbbc197e70bdc320035dd"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_DECODE_STOP_REASON_END_OF_RECORDS</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_PmSampling_DecodeStopReason51CUPTI_PM_SAMPLING_DECODE_STOP_REASON_END_OF_RECORDSE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>All the records in the hardware buffer is decoded. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTE">
+<span id="_CPPv3N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTE"></span><span id="_CPPv2N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggab437d0c24da6b17a1effdc144a9473dda1de0c35a01ad9fd1a9f8465152eabb71"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N33CUpti_PmSampling_DecodeStopReason42CUPTI_PM_SAMPLING_DECODE_STOP_REASON_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv442CUpti_PmSampling_HardwareBuffer_AppendMode">
+<span id="_CPPv342CUpti_PmSampling_HardwareBuffer_AppendMode"></span><span id="_CPPv242CUpti_PmSampling_HardwareBuffer_AppendMode"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaa2fc823119c9dd5d58e64374ca71ab8a"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_HardwareBuffer_AppendMode</span></span></span><a class="headerlink" href="#_CPPv442CUpti_PmSampling_HardwareBuffer_AppendMode" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_OLDESTE">
+<span id="_CPPv3N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_OLDESTE"></span><span id="_CPPv2N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_OLDESTE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggaa2fc823119c9dd5d58e64374ca71ab8aadebc45808d68e04f5787d478575fb2c4"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_OLDEST</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_OLDESTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Keep the oldest records in the hardware buffer. CUPTI will report error for overflow in case hardware buffer is getting filled up. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_LATESTE">
+<span id="_CPPv3N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_LATESTE"></span><span id="_CPPv2N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_LATESTE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ggaa2fc823119c9dd5d58e64374ca71ab8aacc40822147f41e54bf031233da1c3085"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_LATEST</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PmSampling_HardwareBuffer_AppendMode57CUPTI_PM_SAMPLING_HARDWARE_BUFFER_APPEND_MODE_KEEP_LATESTE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Keep the latest records in the hardware buffer. Note: This mode is not supported on Turing GPU architecture. It is supported on Ampere and later GPU architectures. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv428CUpti_PmSampling_TriggerMode">
+<span id="_CPPv328CUpti_PmSampling_TriggerMode"></span><span id="_CPPv228CUpti_PmSampling_TriggerMode"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga5f3975d220c766869e53561fd1ea8a41"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_TriggerMode</span></span></span><a class="headerlink" href="#_CPPv428CUpti_PmSampling_TriggerMode" title="Permalink to this definition"></a><br /></dt>
+<dd><p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_PmSampling_TriggerMode50CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_SYSCLK_INTERVALE">
+<span id="_CPPv3N28CUpti_PmSampling_TriggerMode50CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_SYSCLK_INTERVALE"></span><span id="_CPPv2N28CUpti_PmSampling_TriggerMode50CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_SYSCLK_INTERVALE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gga5f3975d220c766869e53561fd1ea8a41a785a82668400b34dfe7f75c6b91b247b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_SYSCLK_INTERVAL</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_PmSampling_TriggerMode50CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_SYSCLK_INTERVALE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The trigger is based off of the SYSCLK frequency, note SYS frequency by default is variable. the sample interval (set in the struct <a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#struct_c_upti___pm_sampling___set_config___params"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params</span></a>) is in terms of clocks. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_PmSampling_TriggerMode48CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVALE">
+<span id="_CPPv3N28CUpti_PmSampling_TriggerMode48CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVALE"></span><span id="_CPPv2N28CUpti_PmSampling_TriggerMode48CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVALE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gga5f3975d220c766869e53561fd1ea8a41a095888fdfafec751aeee9f0305bc1a3d"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVAL</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_PmSampling_TriggerMode48CUPTI_PM_SAMPLING_TRIGGER_MODE_GPU_TIME_INTERVALE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The trigger is based off of a fixed frequency source. The sample interval (set in the struct <a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#struct_c_upti___pm_sampling___set_config___params"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params</span></a>) is in terms of nanoseconds. Note: This trigger mode is not supported on Turing GPU architecture and GA100 GPU. It is supported on Ampere GA10x and later GPU architectures. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N28CUpti_PmSampling_TriggerMode36CUPTI_PM_SAMPLING_TRIGGER_MODE_COUNTE">
+<span id="_CPPv3N28CUpti_PmSampling_TriggerMode36CUPTI_PM_SAMPLING_TRIGGER_MODE_COUNTE"></span><span id="_CPPv2N28CUpti_PmSampling_TriggerMode36CUPTI_PM_SAMPLING_TRIGGER_MODE_COUNTE"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gga5f3975d220c766869e53561fd1ea8a41a7afcea87e4555a1fd418352ae6537459"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PM_SAMPLING_TRIGGER_MODE_COUNT</span></span></span><a class="headerlink" href="#_CPPv4N28CUpti_PmSampling_TriggerMode36CUPTI_PM_SAMPLING_TRIGGER_MODE_COUNTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.8.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv439cuptiPmSamplingCounterDataGetSampleInfoP49CUpti_PmSampling_CounterData_GetSampleInfo_Params">
+<span id="_CPPv339cuptiPmSamplingCounterDataGetSampleInfoP49CUpti_PmSampling_CounterData_GetSampleInfo_Params"></span><span id="_CPPv239cuptiPmSamplingCounterDataGetSampleInfoP49CUpti_PmSampling_CounterData_GetSampleInfo_Params"></span><span id="cuptiPmSamplingCounterDataGetSampleInfo__CUpti_PmSampling_CounterData_GetSampleInfo_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga3c38a9c0143e8bfc8e2ee095ecc3fc17"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingCounterDataGetSampleInfo</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data___get_sample_info___params.html#_CPPv449CUpti_PmSampling_CounterData_GetSampleInfo_Params" title="CUpti_PmSampling_CounterData_GetSampleInfo_Params"><span class="n"><span class="pre">CUpti_PmSampling_CounterData_GetSampleInfo_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv439cuptiPmSamplingCounterDataGetSampleInfoP49CUpti_PmSampling_CounterData_GetSampleInfo_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the sample info (start and end time stamp) for the given sample index. </p>
+<p>Each sample is distinguished by the start and end time stamp.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___counter_data___get_sample_info___params.html#struct_c_upti___pm_sampling___counter_data___get_sample_info___params"><span class="std std-ref">CUpti_PmSampling_CounterData_GetSampleInfo_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv441cuptiPmSamplingCounterDataImageInitializeP51CUpti_PmSampling_CounterDataImage_Initialize_Params">
+<span id="_CPPv341cuptiPmSamplingCounterDataImageInitializeP51CUpti_PmSampling_CounterDataImage_Initialize_Params"></span><span id="_CPPv241cuptiPmSamplingCounterDataImageInitializeP51CUpti_PmSampling_CounterDataImage_Initialize_Params"></span><span id="cuptiPmSamplingCounterDataImageInitialize__CUpti_PmSampling_CounterDataImage_Initialize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1040c72a2d49cc84d4ed50e881321162"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingCounterDataImageInitialize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data_image___initialize___params.html#_CPPv451CUpti_PmSampling_CounterDataImage_Initialize_Params" title="CUpti_PmSampling_CounterDataImage_Initialize_Params"><span class="n"><span class="pre">CUpti_PmSampling_CounterDataImage_Initialize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv441cuptiPmSamplingCounterDataImageInitializeP51CUpti_PmSampling_CounterDataImage_Initialize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Initialize the counter data to CUPTI record format for storing the metric data. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___counter_data_image___initialize___params.html#struct_c_upti___pm_sampling___counter_data_image___initialize___params"><span class="std std-ref">CUpti_PmSampling_CounterDataImage_Initialize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling CounterDataInitialize is called without enabling PM sampling </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv425cuptiPmSamplingDecodeDataP34CUpti_PmSampling_DecodeData_Params">
+<span id="_CPPv325cuptiPmSamplingDecodeDataP34CUpti_PmSampling_DecodeData_Params"></span><span id="_CPPv225cuptiPmSamplingDecodeDataP34CUpti_PmSampling_DecodeData_Params"></span><span id="cuptiPmSamplingDecodeData__CUpti_PmSampling_DecodeData_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga1e0f1d1e28911b48feca1013ce7e8b2f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingDecodeData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___decode_data___params.html#_CPPv434CUpti_PmSampling_DecodeData_Params" title="CUpti_PmSampling_DecodeData_Params"><span class="n"><span class="pre">CUpti_PmSampling_DecodeData_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv425cuptiPmSamplingDecodeDataP34CUpti_PmSampling_DecodeData_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Decode the metrics data stored in the hardware buffer to the counter data image. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___decode_data___params.html#struct_c_upti___pm_sampling___decode_data___params"><span class="std std-ref">CUpti_PmSampling_DecodeData_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling DecodeData is called without enabling PM sampling </p></li>
+<li><p><strong>CUPTI_ERROR_OUT_OF_MEMORY</strong> – if there is record overflow in the hardware buffer </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiPmSamplingDisableP31CUpti_PmSampling_Disable_Params">
+<span id="_CPPv322cuptiPmSamplingDisableP31CUpti_PmSampling_Disable_Params"></span><span id="_CPPv222cuptiPmSamplingDisableP31CUpti_PmSampling_Disable_Params"></span><span id="cuptiPmSamplingDisable__CUpti_PmSampling_Disable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gac1ac579527ecb597b0bc93c94afea46b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingDisable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___disable___params.html#_CPPv431CUpti_PmSampling_Disable_Params" title="CUpti_PmSampling_Disable_Params"><span class="n"><span class="pre">CUpti_PmSampling_Disable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiPmSamplingDisableP31CUpti_PmSampling_Disable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Disable PM sampling on the CUDA device and destroy the PM sampling object. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___disable___params.html#struct_c_upti___pm_sampling___disable___params"><span class="std std-ref">CUpti_PmSampling_Disable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiPmSamplingEnableP30CUpti_PmSampling_Enable_Params">
+<span id="_CPPv321cuptiPmSamplingEnableP30CUpti_PmSampling_Enable_Params"></span><span id="_CPPv221cuptiPmSamplingEnableP30CUpti_PmSampling_Enable_Params"></span><span id="cuptiPmSamplingEnable__CUpti_PmSampling_Enable_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga45cbdf31b186142549243cb527d75bd1"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingEnable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___enable___params.html#_CPPv430CUpti_PmSampling_Enable_Params" title="CUpti_PmSampling_Enable_Params"><span class="n"><span class="pre">CUpti_PmSampling_Enable_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiPmSamplingEnableP30CUpti_PmSampling_Enable_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Create a PM sampling object and enable PM sampling on the CUDA device. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___enable___params.html#struct_c_upti___pm_sampling___enable___params"><span class="std std-ref">CUpti_PmSampling_Enable_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_OUT_OF_MEMORY</strong> – if memory allocation fails while creating the PM sampling object </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling is already enabled on the device </p></li>
+<li><p><strong>CUPTI_ERROR_INSUFFICIENT_PRIVILEGES</strong> – if the user does not have sufficient privileges to perform the operation </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv437cuptiPmSamplingGetCounterAvailabilityP46CUpti_PmSampling_GetCounterAvailability_Params">
+<span id="_CPPv337cuptiPmSamplingGetCounterAvailabilityP46CUpti_PmSampling_GetCounterAvailability_Params"></span><span id="_CPPv237cuptiPmSamplingGetCounterAvailabilityP46CUpti_PmSampling_GetCounterAvailability_Params"></span><span id="cuptiPmSamplingGetCounterAvailability__CUpti_PmSampling_GetCounterAvailability_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaedd567fb5a0c2ad11c8b22ec43d78928"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingGetCounterAvailability</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_availability___params.html#_CPPv446CUpti_PmSampling_GetCounterAvailability_Params" title="CUpti_PmSampling_GetCounterAvailability_Params"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterAvailability_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv437cuptiPmSamplingGetCounterAvailabilityP46CUpti_PmSampling_GetCounterAvailability_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query counter availibility information in a buffer which can be used to filter unavailable raw metrics on host. </p>
+<p>Note: This API may fail, if any profiling or sampling session is active on the specified device.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_availability___params.html#struct_c_upti___pm_sampling___get_counter_availability___params"><span class="std std-ref">CUpti_PmSampling_GetCounterAvailability_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INSUFFICIENT_PRIVILEGES</strong> – if the user does not have sufficient privileges to perform the operation </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv433cuptiPmSamplingGetCounterDataInfoP42CUpti_PmSampling_GetCounterDataInfo_Params">
+<span id="_CPPv333cuptiPmSamplingGetCounterDataInfoP42CUpti_PmSampling_GetCounterDataInfo_Params"></span><span id="_CPPv233cuptiPmSamplingGetCounterDataInfoP42CUpti_PmSampling_GetCounterDataInfo_Params"></span><span id="cuptiPmSamplingGetCounterDataInfo__CUpti_PmSampling_GetCounterDataInfo_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga89b6ff5cc9570cb7059271d13e474aba"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingGetCounterDataInfo</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_info___params.html#_CPPv442CUpti_PmSampling_GetCounterDataInfo_Params" title="CUpti_PmSampling_GetCounterDataInfo_Params"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterDataInfo_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433cuptiPmSamplingGetCounterDataInfoP42CUpti_PmSampling_GetCounterDataInfo_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the counter data info like number of samples, number of populated samples and number of completed samples in a counter data image. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_info___params.html#struct_c_upti___pm_sampling___get_counter_data_info___params"><span class="std std-ref">CUpti_PmSampling_GetCounterDataInfo_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv433cuptiPmSamplingGetCounterDataSizeP42CUpti_PmSampling_GetCounterDataSize_Params">
+<span id="_CPPv333cuptiPmSamplingGetCounterDataSizeP42CUpti_PmSampling_GetCounterDataSize_Params"></span><span id="_CPPv233cuptiPmSamplingGetCounterDataSizeP42CUpti_PmSampling_GetCounterDataSize_Params"></span><span id="cuptiPmSamplingGetCounterDataSize__CUpti_PmSampling_GetCounterDataSize_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga4009c1c98fc72c30c4c0be60eb98f23f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingGetCounterDataSize</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_size___params.html#_CPPv442CUpti_PmSampling_GetCounterDataSize_Params" title="CUpti_PmSampling_GetCounterDataSize_Params"><span class="n"><span class="pre">CUpti_PmSampling_GetCounterDataSize_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433cuptiPmSamplingGetCounterDataSizeP42CUpti_PmSampling_GetCounterDataSize_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Query the size of the counter data image which will be used to store the metrics data. </p>
+<p>User need to allocate the memory for the counter data image based on the size returned by this API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_size___params.html#struct_c_upti___pm_sampling___get_counter_data_size___params"><span class="std std-ref">CUpti_PmSampling_GetCounterDataSize_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling GetCounterDataSize is called without enabling PM sampling </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv424cuptiPmSamplingSetConfigP33CUpti_PmSampling_SetConfig_Params">
+<span id="_CPPv324cuptiPmSamplingSetConfigP33CUpti_PmSampling_SetConfig_Params"></span><span id="_CPPv224cuptiPmSamplingSetConfigP33CUpti_PmSampling_SetConfig_Params"></span><span id="cuptiPmSamplingSetConfig__CUpti_PmSampling_SetConfig_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gabf81ed3dcee860a444e8e2e1e2e92e1b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingSetConfig</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#_CPPv433CUpti_PmSampling_SetConfig_Params" title="CUpti_PmSampling_SetConfig_Params"><span class="n"><span class="pre">CUpti_PmSampling_SetConfig_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv424cuptiPmSamplingSetConfigP33CUpti_PmSampling_SetConfig_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Set the configuration for PM sampling like sampling interval, maximum number of samples filled in HW buffer, trigger mode and the config image which has scheduling info for metric collection. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#struct_c_upti___pm_sampling___set_config___params"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – for config image which require multiple passes for data collection </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiPmSamplingStartP29CUpti_PmSampling_Start_Params">
+<span id="_CPPv320cuptiPmSamplingStartP29CUpti_PmSampling_Start_Params"></span><span id="_CPPv220cuptiPmSamplingStartP29CUpti_PmSampling_Start_Params"></span><span id="cuptiPmSamplingStart__CUpti_PmSampling_Start_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1gaffbd0feb903fc251064a4d5e0a1a567e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingStart</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___start___params.html#_CPPv429CUpti_PmSampling_Start_Params" title="CUpti_PmSampling_Start_Params"><span class="n"><span class="pre">CUpti_PmSampling_Start_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiPmSamplingStartP29CUpti_PmSampling_Start_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Start the PM sampling. </p>
+<p>The GPU will start collecting the metrics data periodically based on trigger type and sampling interval passed in <a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html#struct_c_upti___pm_sampling___set_config___params"><span class="std std-ref">CUpti_PmSampling_SetConfig_Params</span></a>. The collected data will be stored in the hardware buffer.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___start___params.html#struct_c_upti___pm_sampling___start___params"><span class="std std-ref">CUpti_PmSampling_Start_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling Start is called without enabling PM sampling, and PM sampling is already started </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419cuptiPmSamplingStopP28CUpti_PmSampling_Stop_Params">
+<span id="_CPPv319cuptiPmSamplingStopP28CUpti_PmSampling_Stop_Params"></span><span id="_CPPv219cuptiPmSamplingStopP28CUpti_PmSampling_Stop_Params"></span><span id="cuptiPmSamplingStop__CUpti_PmSampling_Stop_ParamsP"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga553c2d78d8fb6658cb6c667d2308be30"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPmSamplingStop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___pm_sampling___stop___params.html#_CPPv428CUpti_PmSampling_Stop_Params" title="CUpti_PmSampling_Stop_Params"><span class="n"><span class="pre">CUpti_PmSampling_Stop_Params</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419cuptiPmSamplingStopP28CUpti_PmSampling_Stop_Params" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stop the PM sampling. </p>
+<p>The GPU will stop collecting the metrics data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___pm_sampling___stop___params.html#struct_c_upti___pm_sampling___stop___params"><span class="std std-ref">CUpti_PmSampling_Stop_Params</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if PM sampling Stop is called without enabling PM sampling, and PM sampling is already stopped </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – for any internal error </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.8.4. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv423CUpti_PmSampling_Object">
+<span id="_CPPv323CUpti_PmSampling_Object"></span><span id="_CPPv223CUpti_PmSampling_Object"></span><span id="CUpti_PmSampling_Object"></span><span class="target" id="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i_1ga6136043dec79b930fa6fd2c16fc03a70"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv423CUpti_PmSampling_Object" title="CUpti_PmSampling_Object"><span class="n"><span class="pre">CUpti_PmSampling_Object</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PmSampling_Object</span></span></span><a class="headerlink" href="#_CPPv423CUpti_PmSampling_Object" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

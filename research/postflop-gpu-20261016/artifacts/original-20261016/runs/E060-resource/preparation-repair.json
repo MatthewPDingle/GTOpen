@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-17T08:23:42.026504+00:00",
+  "native_runs": 0,
+  "solver_builds": 0,
+  "candidate_regenerated_or_changed": false,
+  "candidate_sha256": "50ad4559ca5b30bb961f4f74d41df1e050bed2bcd33441e76decac8dd3de547e",
+  "original_prepare_script_sha256": "10e4bc102cfb7c178d0a4230b7896ef7c8c5c131aac44911f4113df1a28e525d",
+  "preserved_original_runner_sha256": "97ffc59fcaec6e28d38c79e2b251300701ee48a9a77883eee73f65572aa63743",
+  "fixed_runner_sha256": "200e316d79717216afbbf9d451554a8def0b178fbb460a2fc793fd7134d4cae3",
+  "repairs": [
+    "Preparation stopped at mistaken expected21ABI count; accepted PTX actually20, matching source signature. No compiler or native run had started.",
+    "AST preflight found copied reporter indentation after removing previous candidate branch-analysis hook; preserve original and indent report save inside lock in execute-r2.py. Fixed runner AST parses."
+  ],
+  "observed_abi": [
+    "u64",
+    "u32",
+    "u32",
+    "u32",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u64",
+    "u32",
+    "u32"
+  ],
+  "outcome_selection_or_variant": false
+}

@@ -1,0 +1,518 @@
+{
+  "id": "D287",
+  "at": "2026-10-29T17:24:02.690093+00:00",
+  "status": "FROZEN_PRE_COMPILER_AND_REAL_TERMINAL_COMPONENT",
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\probe.rs",
+    "--edition=2021",
+    "--test",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps",
+    "--extern",
+    "solver=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "cudarc=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "rayon=X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\probe.exe"
+  ],
+  "fixture_order": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "players": [
+    0,
+    1
+  ],
+  "cohort_tags": [
+    "W0B",
+    "W0C",
+    "W1C",
+    "W1B",
+    "B1",
+    "C1",
+    "C2",
+    "B2",
+    "B3",
+    "C3"
+  ],
+  "unscored_warmup_pairs": 2,
+  "scored_pairs": [
+    {
+      "baseline": "B1",
+      "candidate": "C1"
+    },
+    {
+      "baseline": "B2",
+      "candidate": "C2"
+    },
+    {
+      "baseline": "B3",
+      "candidate": "C3"
+    }
+  ],
+  "poison_per_pair": [
+    2143363909,
+    2139169605,
+    1259484246
+  ],
+  "component_cases": 60,
+  "GPU_frames": 63,
+  "CPU_raw_files": 6,
+  "original_full_science_records": 3,
+  "original_full_checkpoints": 23,
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "graph_replays_per_case": "Samefullqualitystoppingiterationcount, eachplaysoneoriginalterminal-onlysweepforoneplayer atstablefinalaverage-policyreach. DoesnotrunCFRupdates; not complete-solve speed ortrainingcriticalpath attribution.",
+  "raw_input_plans": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-on-baseline.plan.bin",
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "fixture": {
+        "id": "rainbow-iso-on",
+        "fixture": "rainbow",
+        "config": {
+          "board": "Ks7h2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.0,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-on-baseline.plan.bin",
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "fixture": {
+        "id": "two-tone-iso-on",
+        "fixture": "two-tone",
+        "config": {
+          "board": "Ks7s2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-on-baseline.plan.bin",
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "fixture": {
+        "id": "river-iso-on",
+        "fixture": "river",
+        "config": {
+          "board": "Ks7h2dQhTc",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 33
+      }
+    }
+  ],
+  "schema_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\schema.json",
+  "source_review_sha256": "908407ceae7be39e87b45e7ac7a608d10de9e5b5de5140e571ef620584104d96",
+  "limits": {
+    "raw_reservation_bytes": 549755813888,
+    "disk_headroom_bytes": 68719476736,
+    "required_free_bytes": 618475290624,
+    "available_RAM_before_bytes": 68719476736,
+    "available_RAM_during_bytes": 34359738368,
+    "process_reported_peak_max_bytes": 34359738368,
+    "native_timeout_seconds": 2400,
+    "poll_interval_ms": 200
+  },
+  "conservative_raw_output_upper_bytes": 216849549016,
+  "fixed_effort_reference_ms": 9597.276500000002,
+  "minimum_component_saving_ms": 95.97276500000002,
+  "component_aggregate": "Sumofsix(fixture/player) unrounded3samplemedians, actual inclusive graphreplay batch clocks. No extra iteration weighting or old/observer timing pooling.",
+  "fixture_guard": "Reject positivemedian and>=2/3matchedpairs slower foranyfixture/player ORfixtureaggregatedplayers. No minimumslowdownpercentage.",
+  "CPU_cost_guard": "Perfixture/player allthreadprocessCPUmedian mustnotincrease morethan1%; zero baseline requireszero candidate. GetProcessTimes resolution isfinite andno significance claim.",
+  "current_memory_guard": "Median percall PrivateUsage orWorkingSet increase candidate minusbaseline<=64MiB perfixture/player; reportedwholeprocessWS/commit<=32GiB. Currentcounters/lifetimepeaks are not percomponent instantaneousphysical/GPUpeaks.",
+  "no_exclusions_extensions_or_old_timing_pooling": true,
+  "prospective_eligibility_nodes": 65536,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-prepare-component.py": "5e5ebd75a4abd8dc5b9f716e893fe1beafc93570567c8f47d86e4e53724c5934",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-component-addon.rs": "8e8b35457ef8e2ae417b2edc10747a13c091d0d3f796ef53dac326830baeb59c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-component-controller.rs": "c77cb435eef2da127b0947cd143b703bf9bcf8e512edbfb32c1af7c84559c16a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-audit-component.py": "0fbec4b0d99e3c4a0d29f94c780bc1edfc5f719b48cd8d32de9da7e648d25bea",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-execute-component.py": "da17e2b3cd234ecc538d49ade13afba9d7e40756dbe7c50b20f534b4a8a091b3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component-design\\design.json": "e06942c006be4bc7e3a026844426300348cd53d7c45993b546cd9e476eccb3e4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D285-terminal-concurrency-scout\\report.json": "7323a4c4f391d48743d8e3cc2268da3d135830957a5d6495585a82bb6ffd5e80",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D286-fork-join-primitive\\report.json": "db8a4f7b8cd6c2f4144d4e656d0fb612379e3f33ebccefa02efa701734ced4f7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\exact-anchor.json": "f37067f252068f7094196e3ff0a6e77c4ffe45a9bfc98fc399cde07622936245",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D284-zero-tie-canonical\\protocol.json": "b7aa3a49363dc1b7a619d826ae292639f5511ad5127acd25a7b079a28e260492",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D284-zero-tie-canonical\\baseline-probe.rs": "f5f2b62f1941aecad6bedc078f196d4bb16a2bebbb273c3124e93d353d415df4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D284-zero-tie-canonical\\baseline\\mod.rs": "40449927b9615f33d8df0a01096751bf9551e8bfd434167dbddbe2387bbc7202",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D284-zero-tie-canonical\\source-review.json": "bcb9c1173d3f5c3d2d1265669ac269e76f75fd8219d88eb60533d43530e5607b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\audit.py": "0fbec4b0d99e3c4a0d29f94c780bc1edfc5f719b48cd8d32de9da7e648d25bea",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\bounded_child.py": "9a4ca33107d0682cf3b7f5150c3842d27646c02b07c6fdc4d730ecebefbce882",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\probe.rs": "399df42ebe41fb2b3eb89052d8405afa5c96d819b6f4e2f48e88595d2166890b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\sampler.py": "0cd4ff305843c96321b6d331997f2b014067df13a61f27b458436873b6cf7d8c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\source-review.json": "908407ceae7be39e87b45e7ac7a608d10de9e5b5de5140e571ef620584104d96",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D287-terminal-component\\gpu\\mod.rs": "71749cfa478a7eb96f8b3ca831c8343130c0118cca55db81cbccaba960e77ec4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcc-47cbe2715a82d6dc.rlib": "2177f3eb37d163800753bf8e4bb5cf6a3cd5dd045e168356234ba18f92e6f7da",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcc-47cbe2715a82d6dc.rmeta": "63c89db00004e27e20ea7f51bc7a1a6c765cc6a827d5a991c7bd320b5e22a6f5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_deque-1a1d6578b74865e7.rlib": "d02166d41f1d7e94dc5645eedaf57de820e18b17572022e0c5a7bee63cd20b51",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_deque-1a1d6578b74865e7.rmeta": "2763faa92da796539b65f88959c539feede4207b9419331e09cea7e5bf369f22",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_epoch-83f0dcc2dba25447.rlib": "8be3fb3a0fa036b3083b1a2b822437488fab54ffda1390cc0c90ac4346ed82a6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_epoch-83f0dcc2dba25447.rmeta": "8318a01427f6b99a9bb34b5f8cf3944b9ba58953efe6474dba7afd049028b765",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_utils-f12feddf568a8de6.rlib": "0213e1cbca469f6c77fda43a8dc46733a88c9f76dabd99c757731ed281bf8ee6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcrossbeam_utils-f12feddf568a8de6.rmeta": "03d6fd2d0e13b12e57e41ad688b31fced1f8032cd684ebb9b54cebb7228a0a56",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libcudarc-ba3140064b5903a3.rmeta": "c130b3e383dfb24adcd58ca8e92d476c52251af8452ada1a9a46b3dc312b5224",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libeither-4baf58b0742f8bd6.rlib": "4ef82757c3fe5d6efd6c88c18a38e0753c63a483c97f4831a335c619bd50caa6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libeither-4baf58b0742f8bd6.rmeta": "7214a79c32423e3fc8f3b8b65c35865a84b320f16ca02c6200af0762a29975a3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libfind_msvc_tools-50bafbacf9e2acf8.rlib": "e8a198265161b5e388d38e996374fccd256b6b914a4015e816a137a99e101af4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libfind_msvc_tools-50bafbacf9e2acf8.rmeta": "11b8e5288ec8ae6dc9e448a60f4bfe2cf578974b41aea31cf25ca39293e22912",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libitoa-74a051154152f23d.rlib": "d2633a672f7ec1f86c34dfc1ef08eb09d803c689e00c54a4a31c99163ffdcce6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libitoa-74a051154152f23d.rmeta": "ab45a2874f069f7c310ae2bc1fd6e6f354e854650f3f2ae58ee99b9265b93bba",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibloading-8d2068e2bf38a2f1.rlib": "f0ec6e05540ac2927203e498facedafbf2cc9bb4d3cceae3e992fd600863bb1c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibloading-8d2068e2bf38a2f1.rmeta": "0b9168eb9f2bb482ab192a2696834fc892666d8b893e389582421b1dd7f24d11",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rlib": "5650f70c22405b2e0976f77b0956e4b4b76044d5b4974af1c2f1b1fa38a88dd1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\liblibmimalloc_sys-2985a07e6ecfdd19.rmeta": "d90c8cc2cd4c931a469b3304f1fcd8b38a3f95f1f8f205043fa8427efe4c9f60",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmemchr-863cd9a4723da2aa.rlib": "75e2fd3759fc303aa73149097286c98d3964ba6201948fee3e01bd116ce27095",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmemchr-863cd9a4723da2aa.rmeta": "0d58be3c92eb0e6ab92fd5f21dca37f5e507e8f6ceae8008c9195544a914b566",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rlib": "3fb4e5350de37c8791f50e84864068a1a5da078677e43dd28b3ec8c727763c0c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libmimalloc-d1aa14d2a520d303.rmeta": "2b2a09abca5f11fb0d0f47dfbbc7fe8be1d242eab3cc8dc7fb5c91d88926727b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libproc_macro2-270112166e35f5e1.rlib": "6649f7c16910d0f34543ee996315458613995f68eb8dca728acbc82d51e41cde",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libproc_macro2-270112166e35f5e1.rmeta": "0a583bdedeff64075a65f1a6159d135db3dba4876b6af086ba5c44a24fbd3523",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libquote-fe2f21b86a966e3a.rlib": "40e648f79c4578ee719cb9a30b578450f54ac8739308b3bd079dab809f5add81",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libquote-fe2f21b86a966e3a.rmeta": "078a7c44f5f9700b113cfb7bbf427b7fa0f5c29855977bf0657b97e6011ed23a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rlib": "2a1339eeec5fa4417ba824dd425f52ae1aebaa4d06e488f3273f2b8769473be9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon-8ab48cfec9cf00f9.rmeta": "af841bb76869e24769e23dbc8c9ad0f727555d549a1c2f1435ec6a04865c7e75",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon_core-0787e97421794457.rlib": "3411c2b88e10b4bc416f8140695ba5c7e55683f3f3fcb10e62a7ca710e75c30b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\librayon_core-0787e97421794457.rmeta": "520a1b7da8946d9c45cb1c62f64888c69f6b7ff809b94fa1cf8149af4a6a031b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rlib": "1aff1aee92c314f890733948cdccf675c28f83ca0b7a9851af888372de797974",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde-47b4d5f55b04d3b5.rmeta": "5470f3bdd2f2a59bf6f2b377ff19d7eee95b8b90e8764e9f035368eef7215266",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_core-94e9cc654b950df9.rlib": "e7951f0b3905194114f2abc65a0f1b401dfe3ab4b2c5b21f4cd4bc4f1fecda01",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_core-94e9cc654b950df9.rmeta": "cacb4fb3eeec0bcc57918b3f69e8fc265b41a033cadeb606adb7f0cd720e4b64",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rlib": "1198bd7f593e9c60787894d6c5dc4c3b6308f2f98edfcab5ad8dba9320ee116d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libserde_json-83a0670a02a34a4d.rmeta": "3cdf7c1be8fe2fb9004b33b662e308f2acfb67e5b9b347245bdbd2528a6de693",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libshlex-f6524cb5e4bd3a31.rlib": "909159493a963a321926084dde05a3456a865c5b7929f021c738bde4c3168a9d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libshlex-f6524cb5e4bd3a31.rmeta": "24adb849c458c23b29d18bd37dbe438c1bc602226268f8021c83333e01409337",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rlib": "732e7ce60c2a47fe2e88c3b471e3ceb601e95f6635d123272c01b2ef51a6e318",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsolver-e2d3113d740308c1.rmeta": "ca6c7e79449d74f86fedbcdc1750273aca9c9b494ed267bf0f182a1165e9043d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsyn-10acf42acce28688.rlib": "f6c7ff103d5ee103160d1b86ba780a30b6e9a1a14242a3bc91a1e9e4e1d1500c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libsyn-10acf42acce28688.rmeta": "8a7767d82d58f1e1cbd2c0f0df946c6f528885afc62a0e4cc88c488173e7ebc8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libunicode_ident-0252c41d2e9f2d1c.rlib": "0590f88bebe92bc8e1aca05748b8799755cd0e6050ac75167159606cd1ee81fb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libunicode_ident-0252c41d2e9f2d1c.rmeta": "34aa0023afc9819f9e7f0098fb3306ce9c1a2e03e78728f412adb22dac3e4f8a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libwindows_link-b52ec09ce44eaf82.rlib": "1edf850d4debee91f4e612ba0a85f79cc4e3a54dd5a809bd5fed06ae133c8573",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libwindows_link-b52ec09ce44eaf82.rmeta": "2d60884cdfadf66cc567b208c2c20b4b681bcc93d1beb3364292bbecfca85ed3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libzmij-421e3e50aa0a9d3e.rlib": "0de97588e6b6e787650894c7225ea73be63e51bc8df82fcc84a9dd1cd9d9c0c0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\libzmij-421e3e50aa0a9d3e.rmeta": "be8a98261370be72c006200123ec2b4494d6f1c47dc9dc906992c65b22663327",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\serde_derive-1314214cb8b4b16d.dll": "a2c9222b21383f9858b2981a599106a3640f510740f7b450cbf16856819f829a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\reference\\accepted-e080-deps\\serde_derive-1314214cb8b4b16d.dll.lib": "cb8f063fa47f1eaa262b8afbdd9339467bd13d6c8575893350defa4819e77b21"
+  },
+  "optimizer_source_created_or_accepted": false,
+  "scope": "OnefreshRustcompiler/onefullnativeprocess/onewhole rawreader. Alloriginalfullsize solvedscience/config/quality/stops/metadata retained. Sameactualaccepted GpuSolver object andsame sealed kernelsbotharms, no newNVRTC/hostoptimizer. Passing only admits considerationofonefixedproductionhostcandidate; no adopted gain."
+}

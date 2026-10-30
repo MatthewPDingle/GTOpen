@@ -1,0 +1,1220 @@
+{
+  "id": "E101-bypass-control-review",
+  "at": "2026-10-28T20:27:12.050961+00:00",
+  "status": "rejected_required_NVRTC_bypass_not_emitted",
+  "resource_stage1_sha256": "e763f0210a43c1fe316c203bb781d1f072902c07c0ca4a9a9528a8ccdcafe144",
+  "protocol_sha256": "c7bddda839da4b78bf2f3db2602354a9717502e6c66ffcafb51659d3bcea9cac",
+  "checks": 128,
+  "candidate_entry_counterexamples": {
+    "compute_120": {
+      "down_action": {
+        "entry_sha256": "12b8132c3cdb06c66c46d96e8c104d1b591cad6c0ed617f93511bbfbb34506e4",
+        "unpredicated_quotient_then_select_patterns": 16,
+        "every_matching_site": [
+          {
+            "compare_line_1based": 223,
+            "division_line_1based": 224,
+            "select_line_1based": 225,
+            "instructions": [
+              "setp.gt.f32 \t%p55, %f4, 0f00000000;",
+              "div.rn.f32 \t%f150, %f4, %f6;",
+              "selp.f32 \t%f188, %f150, 0f00000000, %p55;"
+            ],
+            "numerator_register": "%f4",
+            "denominator_register": "%f6",
+            "predicate_register": "%p55",
+            "quotient_register": "%f150",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 209,
+                "instruction": "ld.global.nc.f32 \t%f4, [%rd345];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 244,
+            "division_line_1based": 245,
+            "select_line_1based": 246,
+            "instructions": [
+              "setp.gt.f32 \t%p58, %f5, 0f00000000;",
+              "div.rn.f32 \t%f153, %f5, %f6;",
+              "selp.f32 \t%f189, %f153, 0f00000000, %p58;"
+            ],
+            "numerator_register": "%f5",
+            "denominator_register": "%f6",
+            "predicate_register": "%p58",
+            "quotient_register": "%f153",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 213,
+                "instruction": "ld.global.nc.f32 \t%f5, [%rd347];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 452,
+            "division_line_1based": 453,
+            "select_line_1based": 454,
+            "instructions": [
+              "setp.gt.f32 \t%p35, %f17, 0f00000000;",
+              "div.rn.f32 \t%f138, %f17, %f20;",
+              "selp.f32 \t%f139, %f138, 0f00000000, %p35;"
+            ],
+            "numerator_register": "%f17",
+            "denominator_register": "%f20",
+            "predicate_register": "%p35",
+            "quotient_register": "%f138",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 433,
+                "instruction": "ld.global.nc.f32 \t%f17, [%rd263];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 472,
+            "division_line_1based": 473,
+            "select_line_1based": 474,
+            "instructions": [
+              "setp.gt.f32 \t%p38, %f18, 0f00000000;",
+              "div.rn.f32 \t%f140, %f18, %f20;",
+              "selp.f32 \t%f141, %f140, 0f00000000, %p38;"
+            ],
+            "numerator_register": "%f18",
+            "denominator_register": "%f20",
+            "predicate_register": "%p38",
+            "quotient_register": "%f140",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 437,
+                "instruction": "ld.global.nc.f32 \t%f18, [%rd265];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 491,
+            "division_line_1based": 492,
+            "select_line_1based": 493,
+            "instructions": [
+              "setp.gt.f32 \t%p41, %f19, 0f00000000;",
+              "div.rn.f32 \t%f142, %f19, %f20;",
+              "selp.f32 \t%f143, %f142, 0f00000000, %p41;"
+            ],
+            "numerator_register": "%f19",
+            "denominator_register": "%f20",
+            "predicate_register": "%p41",
+            "quotient_register": "%f142",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 441,
+                "instruction": "ld.global.nc.f32 \t%f19, [%rd266];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 734,
+            "division_line_1based": 735,
+            "select_line_1based": 736,
+            "instructions": [
+              "setp.gt.f32 \t%p11, %f34, 0f00000000;",
+              "div.rn.f32 \t%f120, %f34, %f38;",
+              "selp.f32 \t%f193, %f120, 0f00000000, %p11;"
+            ],
+            "numerator_register": "%f34",
+            "denominator_register": "%f38",
+            "predicate_register": "%p11",
+            "quotient_register": "%f120",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 712,
+                "instruction": "ld.global.nc.f32 \t%f34, [%rd160];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 754,
+            "division_line_1based": 755,
+            "select_line_1based": 756,
+            "instructions": [
+              "setp.gt.f32 \t%p14, %f35, 0f00000000;",
+              "div.rn.f32 \t%f123, %f35, %f38;",
+              "selp.f32 \t%f194, %f123, 0f00000000, %p14;"
+            ],
+            "numerator_register": "%f35",
+            "denominator_register": "%f38",
+            "predicate_register": "%p14",
+            "quotient_register": "%f123",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 716,
+                "instruction": "ld.global.nc.f32 \t%f35, [%rd162];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 774,
+            "division_line_1based": 775,
+            "select_line_1based": 776,
+            "instructions": [
+              "setp.gt.f32 \t%p17, %f36, 0f00000000;",
+              "div.rn.f32 \t%f126, %f36, %f38;",
+              "selp.f32 \t%f195, %f126, 0f00000000, %p17;"
+            ],
+            "numerator_register": "%f36",
+            "denominator_register": "%f38",
+            "predicate_register": "%p17",
+            "quotient_register": "%f126",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 793,
+            "division_line_1based": 794,
+            "select_line_1based": 795,
+            "instructions": [
+              "setp.gt.f32 \t%p20, %f37, 0f00000000;",
+              "div.rn.f32 \t%f129, %f37, %f38;",
+              "selp.f32 \t%f196, %f129, 0f00000000, %p20;"
+            ],
+            "numerator_register": "%f37",
+            "denominator_register": "%f38",
+            "predicate_register": "%p20",
+            "quotient_register": "%f129",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1261,
+            "division_line_1based": 1262,
+            "select_line_1based": 1263,
+            "instructions": [
+              "setp.gt.f32 \t%p87, %f201, 0f00000000;",
+              "div.rn.f32 \t%f167, %f201, %f200;",
+              "selp.f32 \t%f168, %f167, 0f00000000, %p87;"
+            ],
+            "numerator_register": "%f201",
+            "denominator_register": "%f200",
+            "predicate_register": "%p87",
+            "quotient_register": "%f167",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1256,
+                "instruction": "ld.global.nc.f32 \t%f201, [%rd449];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1304,
+            "division_line_1based": 1305,
+            "select_line_1based": 1306,
+            "instructions": [
+              "setp.gt.f32 \t%p91, %f203, 0f00000000;",
+              "div.rn.f32 \t%f169, %f203, %f200;",
+              "selp.f32 \t%f170, %f169, 0f00000000, %p91;"
+            ],
+            "numerator_register": "%f203",
+            "denominator_register": "%f200",
+            "predicate_register": "%p91",
+            "quotient_register": "%f169",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1297,
+                "instruction": "ld.global.nc.f32 \t%f203, [%rd465];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1346,
+            "division_line_1based": 1347,
+            "select_line_1based": 1348,
+            "instructions": [
+              "setp.gt.f32 \t%p95, %f205, 0f00000000;",
+              "div.rn.f32 \t%f171, %f205, %f200;",
+              "selp.f32 \t%f172, %f171, 0f00000000, %p95;"
+            ],
+            "numerator_register": "%f205",
+            "denominator_register": "%f200",
+            "predicate_register": "%p95",
+            "quotient_register": "%f171",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1339,
+                "instruction": "ld.global.nc.f32 \t%f205, [%rd481];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1387,
+            "division_line_1based": 1388,
+            "select_line_1based": 1389,
+            "instructions": [
+              "setp.gt.f32 \t%p99, %f207, 0f00000000;",
+              "div.rn.f32 \t%f173, %f207, %f200;",
+              "selp.f32 \t%f174, %f173, 0f00000000, %p99;"
+            ],
+            "numerator_register": "%f207",
+            "denominator_register": "%f200",
+            "predicate_register": "%p99",
+            "quotient_register": "%f173",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1380,
+                "instruction": "ld.global.nc.f32 \t%f207, [%rd497];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1438,
+            "division_line_1based": 1439,
+            "select_line_1based": 1440,
+            "instructions": [
+              "setp.gt.f32 \t%p105, %f209, 0f00000000;",
+              "div.rn.f32 \t%f175, %f209, %f200;",
+              "selp.f32 \t%f176, %f175, 0f00000000, %p105;"
+            ],
+            "numerator_register": "%f209",
+            "denominator_register": "%f200",
+            "predicate_register": "%p105",
+            "quotient_register": "%f175",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1430,
+                "instruction": "ld.global.nc.f32 \t%f209, [%rd513];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1481,
+            "division_line_1based": 1482,
+            "select_line_1based": 1483,
+            "instructions": [
+              "setp.gt.f32 \t%p110, %f211, 0f00000000;",
+              "div.rn.f32 \t%f177, %f211, %f200;",
+              "selp.f32 \t%f178, %f177, 0f00000000, %p110;"
+            ],
+            "numerator_register": "%f211",
+            "denominator_register": "%f200",
+            "predicate_register": "%p110",
+            "quotient_register": "%f177",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1474,
+                "instruction": "ld.global.nc.f32 \t%f211, [%rd529];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1522,
+            "division_line_1based": 1523,
+            "select_line_1based": 1524,
+            "instructions": [
+              "setp.gt.f32 \t%p115, %f213, 0f00000000;",
+              "div.rn.f32 \t%f179, %f213, %f200;",
+              "selp.f32 \t%f180, %f179, 0f00000000, %p115;"
+            ],
+            "numerator_register": "%f213",
+            "denominator_register": "%f200",
+            "predicate_register": "%p115",
+            "quotient_register": "%f179",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1516,
+                "instruction": "ld.global.nc.f32 \t%f213, [%rd545];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          }
+        ],
+        "baseline_native_division_sites": 18,
+        "candidate_native_division_sites": 18
+      },
+      "up_action": {
+        "entry_sha256": "3ce3b8f722c0bfbf2a09c628a13f3d6d35f0c8946bbc3b1d429439a5c28086f6",
+        "unpredicated_quotient_then_select_patterns": 16,
+        "every_matching_site": [
+          {
+            "compare_line_1based": 221,
+            "division_line_1based": 222,
+            "select_line_1based": 223,
+            "instructions": [
+              "setp.gt.f32 \t%p51, %f4, 0f00000000;",
+              "div.rn.f32 \t%f309, %f4, %f6;",
+              "selp.f32 \t%f476, %f309, 0f00000000, %p51;"
+            ],
+            "numerator_register": "%f4",
+            "denominator_register": "%f6",
+            "predicate_register": "%p51",
+            "quotient_register": "%f309",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 207,
+                "instruction": "ld.global.f32 \t%f4, [%rd33];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 238,
+            "division_line_1based": 239,
+            "select_line_1based": 240,
+            "instructions": [
+              "setp.gt.f32 \t%p53, %f5, 0f00000000;",
+              "div.rn.f32 \t%f314, %f5, %f6;",
+              "selp.f32 \t%f477, %f314, 0f00000000, %p53;"
+            ],
+            "numerator_register": "%f5",
+            "denominator_register": "%f6",
+            "predicate_register": "%p53",
+            "quotient_register": "%f314",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 211,
+                "instruction": "ld.global.f32 \t%f5, [%rd34];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 498,
+            "division_line_1based": 499,
+            "select_line_1based": 500,
+            "instructions": [
+              "setp.gt.f32 \t%p33, %f17, 0f00000000;",
+              "div.rn.f32 \t%f268, %f17, %f20;",
+              "selp.f32 \t%f478, %f268, 0f00000000, %p33;"
+            ],
+            "numerator_register": "%f17",
+            "denominator_register": "%f20",
+            "predicate_register": "%p33",
+            "quotient_register": "%f268",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 480,
+                "instruction": "ld.global.f32 \t%f17, [%rd59];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 514,
+            "division_line_1based": 515,
+            "select_line_1based": 516,
+            "instructions": [
+              "setp.gt.f32 \t%p35, %f18, 0f00000000;",
+              "div.rn.f32 \t%f273, %f18, %f20;",
+              "selp.f32 \t%f479, %f273, 0f00000000, %p35;"
+            ],
+            "numerator_register": "%f18",
+            "denominator_register": "%f20",
+            "predicate_register": "%p35",
+            "quotient_register": "%f273",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 484,
+                "instruction": "ld.global.f32 \t%f18, [%rd60];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 530,
+            "division_line_1based": 531,
+            "select_line_1based": 532,
+            "instructions": [
+              "setp.gt.f32 \t%p37, %f19, 0f00000000;",
+              "div.rn.f32 \t%f278, %f19, %f20;",
+              "selp.f32 \t%f480, %f278, 0f00000000, %p37;"
+            ],
+            "numerator_register": "%f19",
+            "denominator_register": "%f20",
+            "predicate_register": "%p37",
+            "quotient_register": "%f278",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 488,
+                "instruction": "ld.global.f32 \t%f19, [%rd61];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 843,
+            "division_line_1based": 844,
+            "select_line_1based": 845,
+            "instructions": [
+              "setp.gt.f32 \t%p12, %f35, 0f00000000;",
+              "div.rn.f32 \t%f212, %f35, %f39;",
+              "selp.f32 \t%f481, %f212, 0f00000000, %p12;"
+            ],
+            "numerator_register": "%f35",
+            "denominator_register": "%f39",
+            "predicate_register": "%p12",
+            "quotient_register": "%f212",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 821,
+                "instruction": "ld.global.f32 \t%f35, [%rd90];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 859,
+            "division_line_1based": 860,
+            "select_line_1based": 861,
+            "instructions": [
+              "setp.gt.f32 \t%p14, %f36, 0f00000000;",
+              "div.rn.f32 \t%f217, %f36, %f39;",
+              "selp.f32 \t%f482, %f217, 0f00000000, %p14;"
+            ],
+            "numerator_register": "%f36",
+            "denominator_register": "%f39",
+            "predicate_register": "%p14",
+            "quotient_register": "%f217",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 825,
+                "instruction": "ld.global.f32 \t%f36, [%rd91];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 875,
+            "division_line_1based": 876,
+            "select_line_1based": 877,
+            "instructions": [
+              "setp.gt.f32 \t%p16, %f37, 0f00000000;",
+              "div.rn.f32 \t%f222, %f37, %f39;",
+              "selp.f32 \t%f483, %f222, 0f00000000, %p16;"
+            ],
+            "numerator_register": "%f37",
+            "denominator_register": "%f39",
+            "predicate_register": "%p16",
+            "quotient_register": "%f222",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 829,
+                "instruction": "ld.global.f32 \t%f37, [%rd92];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 891,
+            "division_line_1based": 892,
+            "select_line_1based": 893,
+            "instructions": [
+              "setp.gt.f32 \t%p18, %f38, 0f00000000;",
+              "div.rn.f32 \t%f227, %f38, %f39;",
+              "selp.f32 \t%f484, %f227, 0f00000000, %p18;"
+            ],
+            "numerator_register": "%f38",
+            "denominator_register": "%f39",
+            "predicate_register": "%p18",
+            "quotient_register": "%f227",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1606,
+            "division_line_1based": 1607,
+            "select_line_1based": 1608,
+            "instructions": [
+              "setp.gt.f32 \t%p108, %f499, 0f00000000;",
+              "div.rn.f32 \t%f396, %f499, %f496;",
+              "selp.f32 \t%f500, %f396, 0f00000000, %p108;"
+            ],
+            "numerator_register": "%f499",
+            "denominator_register": "%f496",
+            "predicate_register": "%p108",
+            "quotient_register": "%f396",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1598,
+                "instruction": "ld.global.f32 \t%f499, [%rd813];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1654,
+            "division_line_1based": 1655,
+            "select_line_1based": 1656,
+            "instructions": [
+              "setp.gt.f32 \t%p113, %f501, 0f00000000;",
+              "div.rn.f32 \t%f400, %f501, %f496;",
+              "selp.f32 \t%f502, %f400, 0f00000000, %p113;"
+            ],
+            "numerator_register": "%f501",
+            "denominator_register": "%f496",
+            "predicate_register": "%p113",
+            "quotient_register": "%f400",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1647,
+                "instruction": "ld.global.f32 \t%f501, [%rd832];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1700,
+            "division_line_1based": 1701,
+            "select_line_1based": 1702,
+            "instructions": [
+              "setp.gt.f32 \t%p118, %f503, 0f00000000;",
+              "div.rn.f32 \t%f404, %f503, %f496;",
+              "selp.f32 \t%f504, %f404, 0f00000000, %p118;"
+            ],
+            "numerator_register": "%f503",
+            "denominator_register": "%f496",
+            "predicate_register": "%p118",
+            "quotient_register": "%f404",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1693,
+                "instruction": "ld.global.f32 \t%f503, [%rd851];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1762,
+            "division_line_1based": 1763,
+            "select_line_1based": 1764,
+            "instructions": [
+              "setp.gt.f32 \t%p90, %f507, 0f00000000;",
+              "div.rn.f32 \t%f380, %f507, %f496;",
+              "selp.f32 \t%f508, %f380, 0f00000000, %p90;"
+            ],
+            "numerator_register": "%f507",
+            "denominator_register": "%f496",
+            "predicate_register": "%p90",
+            "quotient_register": "%f380",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1757,
+                "instruction": "ld.global.f32 \t%f507, [%rd737];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1810,
+            "division_line_1based": 1811,
+            "select_line_1based": 1812,
+            "instructions": [
+              "setp.gt.f32 \t%p94, %f509, 0f00000000;",
+              "div.rn.f32 \t%f384, %f509, %f496;",
+              "selp.f32 \t%f510, %f384, 0f00000000, %p94;"
+            ],
+            "numerator_register": "%f509",
+            "denominator_register": "%f496",
+            "predicate_register": "%p94",
+            "quotient_register": "%f384",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1803,
+                "instruction": "ld.global.f32 \t%f509, [%rd756];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1854,
+            "division_line_1based": 1855,
+            "select_line_1based": 1856,
+            "instructions": [
+              "setp.gt.f32 \t%p98, %f511, 0f00000000;",
+              "div.rn.f32 \t%f388, %f511, %f496;",
+              "selp.f32 \t%f512, %f388, 0f00000000, %p98;"
+            ],
+            "numerator_register": "%f511",
+            "denominator_register": "%f496",
+            "predicate_register": "%p98",
+            "quotient_register": "%f388",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1847,
+                "instruction": "ld.global.f32 \t%f511, [%rd775];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1898,
+            "division_line_1based": 1899,
+            "select_line_1based": 1900,
+            "instructions": [
+              "setp.gt.f32 \t%p102, %f513, 0f00000000;",
+              "div.rn.f32 \t%f392, %f513, %f496;",
+              "selp.f32 \t%f514, %f392, 0f00000000, %p102;"
+            ],
+            "numerator_register": "%f513",
+            "denominator_register": "%f496",
+            "predicate_register": "%p102",
+            "quotient_register": "%f392",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1891,
+                "instruction": "ld.global.f32 \t%f513, [%rd794];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          }
+        ],
+        "baseline_native_division_sites": 16,
+        "candidate_native_division_sites": 16
+      },
+      "up_action_eval": {
+        "entry_sha256": "53b7f5522bb24ab5a18718f6e76b6d75113a62816bdc1cc5211641f4a0d00c3f",
+        "unpredicated_quotient_then_select_patterns": 7,
+        "every_matching_site": [
+          {
+            "compare_line_1based": 1354,
+            "division_line_1based": 1355,
+            "select_line_1based": 1356,
+            "instructions": [
+              "setp.gt.f32 \t%p29, %f210, 0f00000000;",
+              "div.rn.f32 \t%f211, %f210, %f339;",
+              "selp.f32 \t%f341, %f211, 0f00000000, %p29;"
+            ],
+            "numerator_register": "%f210",
+            "denominator_register": "%f339",
+            "predicate_register": "%p29",
+            "quotient_register": "%f211",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1353,
+                "instruction": "ld.global.nc.f32 \t%f210, [%rd325];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1380,
+            "division_line_1based": 1381,
+            "select_line_1based": 1382,
+            "instructions": [
+              "setp.gt.f32 \t%p31, %f213, 0f00000000;",
+              "div.rn.f32 \t%f214, %f213, %f339;",
+              "selp.f32 \t%f342, %f214, 0f00000000, %p31;"
+            ],
+            "numerator_register": "%f213",
+            "denominator_register": "%f339",
+            "predicate_register": "%p31",
+            "quotient_register": "%f214",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1379,
+                "instruction": "ld.global.nc.f32 \t%f213, [%rd338];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1406,
+            "division_line_1based": 1407,
+            "select_line_1based": 1408,
+            "instructions": [
+              "setp.gt.f32 \t%p33, %f216, 0f00000000;",
+              "div.rn.f32 \t%f217, %f216, %f339;",
+              "selp.f32 \t%f343, %f217, 0f00000000, %p33;"
+            ],
+            "numerator_register": "%f216",
+            "denominator_register": "%f339",
+            "predicate_register": "%p33",
+            "quotient_register": "%f217",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1405,
+                "instruction": "ld.global.nc.f32 \t%f216, [%rd351];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1432,
+            "division_line_1based": 1433,
+            "select_line_1based": 1434,
+            "instructions": [
+              "setp.gt.f32 \t%p35, %f219, 0f00000000;",
+              "div.rn.f32 \t%f220, %f219, %f339;",
+              "selp.f32 \t%f344, %f220, 0f00000000, %p35;"
+            ],
+            "numerator_register": "%f219",
+            "denominator_register": "%f339",
+            "predicate_register": "%p35",
+            "quotient_register": "%f220",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1431,
+                "instruction": "ld.global.nc.f32 \t%f219, [%rd364];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1467,
+            "division_line_1based": 1468,
+            "select_line_1based": 1469,
+            "instructions": [
+              "setp.gt.f32 \t%p40, %f223, 0f00000000;",
+              "div.rn.f32 \t%f224, %f223, %f339;",
+              "selp.f32 \t%f347, %f224, 0f00000000, %p40;"
+            ],
+            "numerator_register": "%f223",
+            "denominator_register": "%f339",
+            "predicate_register": "%p40",
+            "quotient_register": "%f224",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1466,
+                "instruction": "ld.global.nc.f32 \t%f223, [%rd377];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1493,
+            "division_line_1based": 1494,
+            "select_line_1based": 1495,
+            "instructions": [
+              "setp.gt.f32 \t%p42, %f226, 0f00000000;",
+              "div.rn.f32 \t%f227, %f226, %f339;",
+              "selp.f32 \t%f348, %f227, 0f00000000, %p42;"
+            ],
+            "numerator_register": "%f226",
+            "denominator_register": "%f339",
+            "predicate_register": "%p42",
+            "quotient_register": "%f227",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1492,
+                "instruction": "ld.global.nc.f32 \t%f226, [%rd390];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          },
+          {
+            "compare_line_1based": 1523,
+            "division_line_1based": 1524,
+            "select_line_1based": 1525,
+            "instructions": [
+              "setp.gt.f32 \t%p45, %f229, 0f00000000;",
+              "div.rn.f32 \t%f230, %f229, %f339;",
+              "selp.f32 \t%f351, %f230, 0f00000000, %p45;"
+            ],
+            "numerator_register": "%f229",
+            "denominator_register": "%f339",
+            "predicate_register": "%p45",
+            "quotient_register": "%f230",
+            "division_is_unpredicated": true,
+            "no_intervening_branch_or_label": true,
+            "nearby_actual_global_numerator_loads": [
+              {
+                "line": 1522,
+                "instruction": "ld.global.nc.f32 \t%f229, [%rd402];"
+              }
+            ],
+            "symbolic_zero_numerator_witness": {
+              "numerator_bits": "00000000",
+              "positive_sum_bits": "3f800000",
+              "predicate": false,
+              "div_instruction_reached_before_result_selection": true,
+              "selected_result_bits": "00000000",
+              "is_GPU_execution": false
+            }
+          }
+        ],
+        "baseline_native_division_sites": 7,
+        "candidate_native_division_sites": 7
+      }
+    },
+    "compute_75": {
+      "down_action": {
+        "entry_sha256": "1560cc75efdc4bcc4b95acea968cf1bda0d4e03a9fb55e9eb71a155eb524dc00",
+        "unpredicated_quotient_then_select_patterns": 0,
+        "every_matching_site": [],
+        "baseline_native_division_sites": 25,
+        "candidate_native_division_sites": 25
+      },
+      "up_action": {
+        "entry_sha256": "a7d291b97df23e6968ebab0c92972b4823d3aa3986ac04328cea29817c619e67",
+        "unpredicated_quotient_then_select_patterns": 0,
+        "every_matching_site": [],
+        "baseline_native_division_sites": 23,
+        "candidate_native_division_sites": 23
+      },
+      "up_action_eval": {
+        "entry_sha256": "c78425499837b65ff4392414ae38dadc0f97534cc9ae51c21d59fec1a54c07d7",
+        "unpredicated_quotient_then_select_patterns": 0,
+        "every_matching_site": [],
+        "baseline_native_division_sites": 7,
+        "candidate_native_division_sites": 7
+      }
+    }
+  },
+  "decision": "All three actual target entries contain reachable positive-sum/zero-numerator cases where an unpredicated div.rn.f32 executes between setp.gt and selp. The predicate selects the result only; it does not bypass quotient work at this NVRTC PTX stage. The required full-entry compiler bypass prerequisite is therefore not established. Close exact form without numerical or speed trials.",
+  "limits": "Read-only static NVRTC PTX analysis and symbolic local zero/one witness, not a dynamic execution, final driver SASS proof, complete entry equivalence or speed prediction. Later driver transformations were not collected. Unchanged static division counts alone were not used as the rejection proof.",
+  "additional_NVRTC_compilers_module_queries_appkernels_solvers_or_timing_samples": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "closure": "No conditional syntax, predicate, denominator, placement, helper, arity, entry-subset, flags, source or sample rescue. Original candidate/protocol/resource pass and all PTX retained unchanged."
+}

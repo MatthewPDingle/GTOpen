@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-29T00:52:33.633008+00:00",
+  "returncode": 1,
+  "failure": "Mechanical copy retained validation ID V106-unit from prior candidate; existing-ID guard refused before protocol publication or new ordinary/timing native runs. All proposed B323-B325/E107R1-R3/V107-unit remain unused.",
+  "original_script_sha256": "526f7ae0ec35e4f9984cc116806306151edadb0330cd33d59c7d019cc2632ff9",
+  "primary_plan_was_empty": true,
+  "candidate_or_gate_change": false,
+  "new_primary_native_or_speed_runs": 0,
+  "repair": "Rename only V106-unit to V107-unit; verify and reuse already-written byte-identical generated scripts and empty unsealed plan folder. Preserve failed preparation bytes; no repeated native case."
+}

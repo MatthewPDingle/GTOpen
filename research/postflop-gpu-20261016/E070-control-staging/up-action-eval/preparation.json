@@ -1,0 +1,38 @@
+{
+  "id": "E070-up-action-eval-preparation",
+  "stage": "Unexecuted correctness control source",
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "cases": 1638,
+  "ABI": "Baseline17arguments/candidate16; packed-u16 pointer replaces player/arity pair. Best-response(mode0) and average-strategy(mode1), full CFV outputs, all guard/strategy/regret words,13immutable images.",
+  "GPUexecutions": 0,
+  "raw_output_must_be_on_S": true,
+  "host_integration_implemented": false,
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\up-action-eval\\probe.exe"
+  ],
+  "input_sha256": {
+    "audit.py": "692588eda636cc4ab2415c275ccbec739c291af42abe7d05c289023dde556229",
+    "baseline.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate.ptx": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "corpus.json": "895cda8641964f5d34343e99c9ba95f063c18e342d804cd2a4c4fc371f696867",
+    "discounts.rs": "ebd9caba01145065cdf77ac363bc2b0d5fef0334ecc3e75ffc62d64e75f2c94f",
+    "probe.rs": "4a3a1da5de02895b490bafa93551320379a521fd323aa551996ac1ebeb153362"
+  },
+  "scope": "Small compiler preparation within the writable project root; does not authorize a GPU execution or off-workspace write."
+}

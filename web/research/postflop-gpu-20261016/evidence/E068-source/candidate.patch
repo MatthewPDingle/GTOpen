@@ -1,0 +1,18 @@
+--- accepted-E051/kernels.cu
++++ E068-original-E059/kernels.cu
+@@ -317,10 +317,13 @@
+         float acc = 0.f;
+         for (u32 t = t0; t < t1; t++) {
+             u64 cm = 1ull << cc_card[t];
+-            if (hm & cm) continue;
++            u32 keep = (hm & cm) ? 0xffffffffu : 0u;
+             u32 k = cc_perm[t];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+-            acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
++            float next = acc + cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
++            u32 old_bits = __float_as_uint(acc);
++            u32 next_bits = __float_as_uint(next);
++            acc = __uint_as_float((old_bits & keep) | (next_bits & ~keep));
+         }
+         cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
+     }

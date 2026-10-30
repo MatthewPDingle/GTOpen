@@ -1,0 +1,104 @@
+{
+  "id": "D042-zero-proof-diagnostic",
+  "at": "2026-10-16T12:27:41.643470+00:00",
+  "status": "prospective diagnostic only",
+  "candidate": "D042",
+  "reference": "accepted E020",
+  "order": [
+    "D042B1",
+    "D042P1",
+    "D042P2",
+    "D042B2",
+    "D042B3",
+    "D042P3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D042B1",
+      "candidate": "D042P1"
+    },
+    {
+      "baseline": "D042B2",
+      "candidate": "D042P2"
+    },
+    {
+      "baseline": "D042B3",
+      "candidate": "D042P3"
+    }
+  ],
+  "owned_sources": [
+    "crates/solver/src/gpu/arena.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/arena.rs": "88ea21b2522102fdbcacd867b2460f97d862fc0b9dd840ba381283362fd6fcd2"
+  },
+  "source_entry_count": 162,
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\source-manifest.json",
+  "source_archive_sha256": "6e44699394b00b81d426cf88ffc21f7eb1437fb916cb53dd0e1957fd21919fbc",
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "expected_profile_records_per_run": 12,
+  "profile_order_per_fixture": [
+    [
+      0,
+      0
+    ],
+    [
+      1,
+      0
+    ],
+    [
+      0,
+      1
+    ],
+    [
+      1,
+      1
+    ]
+  ],
+  "marker": "ZERO_UPLOAD_PROFILE",
+  "compiled_diagnostic_markers": true,
+  "runtime_flag": null,
+  "storage": "compressed",
+  "profile_eager_path": "disabled",
+  "fixture_filter": "explicitly removed",
+  "RAYON_NUM_THREADS": "16",
+  "exactness": "All18 complete result/configuration records and138 convergence checks exact across all6 runs; one native test passed each; no ignored/missing/filtered fixture permitted. All q/scale counts matched to actual full state descriptors.",
+  "usefulness_guard": {
+    "metric": "absolute percentage change in sum of per-fixture full-cycle medians, instrumented versus ordinary",
+    "maximum_percent": 10.0,
+    "fixture_and_pair_changes": "all reported separately; no exclusions",
+    "failure_status": "inconclusive diagnostic usefulness; retain all evidence and do not infer savings"
+  },
+  "predicate_interpretation": "Whole U16 predicate host span is an upper bound on U16 q scan; scales and existing snapshot checks remain. Device alloc/zero host call and existing wait reported separately; no component gain or GPU duration claim.",
+  "component_aggregation": "For each fixture/variant, sum both players spans per run, then take median of3 profiled runs; report every raw record and ranges. Sum fixture medians only as diagnostic upper bound.",
+  "exclusions": [],
+  "outcome_triggered_extensions": false,
+  "performance_acceptance": false,
+  "deployment_changed": false,
+  "live_server_mutations": false,
+  "new_cuda_syncs": 0,
+  "duplicate_predicate_calls": 0,
+  "extra_device_or_arena_allocations": 0,
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d042-zero-proof",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "restore": "Only reverse exact instrumentation patch after all fixed runs and raw audit, verify arena hash restored; no pre-existing source or artifact deletion."
+}

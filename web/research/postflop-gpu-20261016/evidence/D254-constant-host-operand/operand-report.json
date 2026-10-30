@@ -1,0 +1,341 @@
+{
+  "id": "D254-operand",
+  "at": "2026-10-29T05:11:35.649983+00:00",
+  "protocol_sha256": "2d1c435410d6ee6c108f83e985a46ae8c60dafb9be90bb5a91015894511e9e3c",
+  "actual_compiled_constant_operands": {
+    "120": [
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f1",
+        "single_definition": "ld.const.f32 %f1, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f302, %f1, %f2, %p38;",
+          "selp.f32 %f305, %f1, %f2, %p39;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f2",
+        "single_definition": "ld.const.f32 %f2, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f302, %f1, %f2, %p38;",
+          "selp.f32 %f305, %f1, %f2, %p39;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f3",
+        "single_definition": "ld.const.f32 %f3, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f293, %f3, %f292;",
+          "mul.f32 %f300, %f3, %f299;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f4",
+        "single_definition": "ld.const.f32 %f4, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f260, %f4, %f5, %p25;",
+          "selp.f32 %f263, %f4, %f5, %p26;",
+          "selp.f32 %f266, %f4, %f5, %p27;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f5",
+        "single_definition": "ld.const.f32 %f5, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f260, %f4, %f5, %p25;",
+          "selp.f32 %f263, %f4, %f5, %p26;",
+          "selp.f32 %f266, %f4, %f5, %p27;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f6",
+        "single_definition": "ld.const.f32 %f6, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f244, %f6, %f243;",
+          "mul.f32 %f251, %f6, %f250;",
+          "mul.f32 %f258, %f6, %f257;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f7",
+        "single_definition": "ld.const.f32 %f7, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f200, %f7, %f8, %p11;",
+          "selp.f32 %f203, %f7, %f8, %p12;",
+          "selp.f32 %f206, %f7, %f8, %p13;",
+          "selp.f32 %f209, %f7, %f8, %p14;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f8",
+        "single_definition": "ld.const.f32 %f8, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f200, %f7, %f8, %p11;",
+          "selp.f32 %f203, %f7, %f8, %p12;",
+          "selp.f32 %f206, %f7, %f8, %p13;",
+          "selp.f32 %f209, %f7, %f8, %p14;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f9",
+        "single_definition": "ld.const.f32 %f9, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f177, %f9, %f176;",
+          "mul.f32 %f184, %f9, %f183;",
+          "mul.f32 %f191, %f9, %f190;",
+          "mul.f32 %f198, %f9, %f197;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f10",
+        "single_definition": "ld.const.f32 %f10, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f390, %f10, %f11, %p102;",
+          "selp.f32 %f393, %f10, %f11, %p104;",
+          "selp.f32 %f396, %f10, %f11, %p106;",
+          "selp.f32 %f399, %f10, %f11, %p107;",
+          "selp.f32 %f402, %f10, %f11, %p112;",
+          "selp.f32 %f405, %f10, %f11, %p115;",
+          "selp.f32 %f408, %f10, %f11, %p117;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f11",
+        "single_definition": "ld.const.f32 %f11, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f390, %f10, %f11, %p102;",
+          "selp.f32 %f393, %f10, %f11, %p104;",
+          "selp.f32 %f396, %f10, %f11, %p106;",
+          "selp.f32 %f399, %f10, %f11, %p107;",
+          "selp.f32 %f402, %f10, %f11, %p112;",
+          "selp.f32 %f405, %f10, %f11, %p115;",
+          "selp.f32 %f408, %f10, %f11, %p117;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f12",
+        "single_definition": "ld.const.f32 %f12, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f380, %f12, %f379;",
+          "mul.f32 %f384, %f12, %f383;",
+          "mul.f32 %f388, %f12, %f387;",
+          "mul.f32 %f364, %f12, %f363;",
+          "mul.f32 %f368, %f12, %f367;",
+          "mul.f32 %f372, %f12, %f371;",
+          "mul.f32 %f376, %f12, %f375;"
+        ]
+      }
+    ],
+    "75": [
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f1",
+        "single_definition": "ld.const.f32 %f1, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f166, %f1, %f165;",
+          "mul.f32 %f170, %f1, %f169;",
+          "mul.f32 %f174, %f1, %f173;",
+          "mul.f32 %f178, %f1, %f177;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f51",
+        "single_definition": "ld.const.f32 %f51, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f251, %f51, %f250;",
+          "mul.f32 %f255, %f51, %f254;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f29",
+        "single_definition": "ld.const.f32 %f29, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f215, %f29, %f214;",
+          "mul.f32 %f219, %f29, %f218;",
+          "mul.f32 %f223, %f29, %f222;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f67",
+        "single_definition": "ld.const.f32 %f67, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f466, %f67, %f68, %p116;",
+          "selp.f32 %f469, %f67, %f68, %p117;",
+          "selp.f32 %f472, %f67, %f68, %p118;",
+          "selp.f32 %f475, %f67, %f68, %p119;",
+          "selp.f32 %f479, %f67, %f68, %p123;",
+          "selp.f32 %f484, %f67, %f68, %p125;",
+          "selp.f32 %f489, %f67, %f68, %p126;",
+          "selp.f32 %f416, %f67, %f68, %p104;",
+          "selp.f32 %f421, %f67, %f68, %p105;",
+          "selp.f32 %f426, %f67, %f68, %p106;",
+          "selp.f32 %f431, %f67, %f68, %p107;",
+          "selp.f32 %f436, %f67, %f68, %p111;",
+          "selp.f32 %f441, %f67, %f68, %p113;",
+          "selp.f32 %f446, %f67, %f68, %p114;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f68",
+        "single_definition": "ld.const.f32 %f68, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f466, %f67, %f68, %p116;",
+          "selp.f32 %f469, %f67, %f68, %p117;",
+          "selp.f32 %f472, %f67, %f68, %p118;",
+          "selp.f32 %f475, %f67, %f68, %p119;",
+          "selp.f32 %f479, %f67, %f68, %p123;",
+          "selp.f32 %f484, %f67, %f68, %p125;",
+          "selp.f32 %f489, %f67, %f68, %p126;",
+          "selp.f32 %f416, %f67, %f68, %p104;",
+          "selp.f32 %f421, %f67, %f68, %p105;",
+          "selp.f32 %f426, %f67, %f68, %p106;",
+          "selp.f32 %f431, %f67, %f68, %p107;",
+          "selp.f32 %f436, %f67, %f68, %p111;",
+          "selp.f32 %f441, %f67, %f68, %p113;",
+          "selp.f32 %f446, %f67, %f68, %p114;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 8,
+        "producer_register": "%f69",
+        "single_definition": "ld.const.f32 %f69, [gto_postflop_discounts+8];",
+        "direct_arithmetic_consumers": [
+          "mul.f32 %f377, %f69, %f376;",
+          "mul.f32 %f383, %f69, %f382;",
+          "mul.f32 %f389, %f69, %f388;",
+          "mul.f32 %f395, %f69, %f394;",
+          "mul.f32 %f401, %f69, %f400;",
+          "mul.f32 %f407, %f69, %f406;",
+          "mul.f32 %f413, %f69, %f412;",
+          "mul.f32 %f332, %f69, %f331;",
+          "mul.f32 %f338, %f69, %f337;",
+          "mul.f32 %f344, %f69, %f343;",
+          "mul.f32 %f350, %f69, %f349;",
+          "mul.f32 %f356, %f69, %f355;",
+          "mul.f32 %f362, %f69, %f361;",
+          "mul.f32 %f368, %f69, %f367;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f2",
+        "single_definition": "ld.const.f32 %f2, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f180, %f2, %f3, %p15;",
+          "selp.f32 %f183, %f2, %f3, %p16;",
+          "selp.f32 %f186, %f2, %f3, %p17;",
+          "selp.f32 %f189, %f2, %f3, %p18;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f3",
+        "single_definition": "ld.const.f32 %f3, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f180, %f2, %f3, %p15;",
+          "selp.f32 %f183, %f2, %f3, %p16;",
+          "selp.f32 %f186, %f2, %f3, %p17;",
+          "selp.f32 %f189, %f2, %f3, %p18;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f52",
+        "single_definition": "ld.const.f32 %f52, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f257, %f52, %f53, %p45;",
+          "selp.f32 %f260, %f52, %f53, %p46;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f53",
+        "single_definition": "ld.const.f32 %f53, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f257, %f52, %f53, %p45;",
+          "selp.f32 %f260, %f52, %f53, %p46;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 0,
+        "producer_register": "%f30",
+        "single_definition": "ld.const.f32 %f30, [gto_postflop_discounts];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f225, %f30, %f31, %p31;",
+          "selp.f32 %f228, %f30, %f31, %p32;",
+          "selp.f32 %f231, %f30, %f31, %p33;"
+        ]
+      },
+      {
+        "constant_offset_bytes": 4,
+        "producer_register": "%f31",
+        "single_definition": "ld.const.f32 %f31, [gto_postflop_discounts+4];",
+        "direct_arithmetic_consumers": [
+          "selp.f32 %f225, %f30, %f31, %p31;",
+          "selp.f32 %f228, %f30, %f31, %p32;",
+          "selp.f32 %f231, %f30, %f31, %p33;"
+        ]
+      }
+    ]
+  },
+  "source_training_caller_old_args": [
+    "&self.d_action_nodes",
+    "&start",
+    "&count",
+    "&pi",
+    "&self.d_node_player",
+    "&self.d_node_na",
+    "&self.d_node_data_off",
+    "&self.d_node_children_start",
+    "&self.d_children",
+    "&mut self.d_regrets[p]",
+    "&mut self.d_strat[p]",
+    "&self.d_rsrc[p]",
+    "&self.d_reach[p]",
+    "&self.d_lock_off",
+    "&self.d_lock_sigma",
+    "&self.d_cfv_slot",
+    "&mut self.d_cfv",
+    "&self.d_disc",
+    "&nh_p",
+    "&nh_max"
+  ],
+  "source_training_caller_new_args": [
+    "&self.d_action_nodes",
+    "&start",
+    "&count",
+    "&pi",
+    "&self.d_node_player",
+    "&self.d_node_na",
+    "&self.d_node_data_off",
+    "&self.d_node_children_start",
+    "&self.d_children",
+    "&mut self.d_regrets[p]",
+    "&mut self.d_strat[p]",
+    "&self.d_rsrc[p]",
+    "&self.d_reach[p]",
+    "&self.d_lock_off",
+    "&self.d_lock_sigma",
+    "&self.d_cfv_slot",
+    "&mut self.d_cfv",
+    "&nh_p",
+    "&nh_max"
+  ],
+  "three_negative_fixtures_caught_each_architecture": true,
+  "limits": "Staticlocalcompiledproducer/directconsumer andsourcecaller witnesses plusoneRustcompiler/oneCPUsizeof-onlyprocess. Not fullCFG/FPDAG/nativeCFR/IEEE/liveness/actualcapacity/processpeak/performance proof. Constructor size12query wasreal inresourceprocess, but fullrealhostconstructor/allpayload/raw/F32/graph/lifecycle/multisession/fallback tests remain beforeperformance. No CUDA APIs/constructors from sizeofprocess."
+}

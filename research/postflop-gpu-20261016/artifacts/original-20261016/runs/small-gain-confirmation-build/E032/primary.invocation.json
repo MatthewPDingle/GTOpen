@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-16T23:11:34.926674+00:00",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "solver",
+    "--features",
+    "gpu",
+    "--lib",
+    "--test",
+    "postflop_autoresearch",
+    "--no-run",
+    "--message-format=json"
+  ]
+}

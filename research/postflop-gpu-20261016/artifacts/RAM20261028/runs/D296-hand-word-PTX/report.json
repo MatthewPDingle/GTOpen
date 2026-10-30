@@ -1,0 +1,142 @@
+{
+  "id": "D296",
+  "at": "2026-10-29T18:51:58.518941+00:00",
+  "status": "pass_scoped_terminal_hand_word_PTX_load_decode_FP_topology_and_host_address_domain",
+  "protocol_sha256": "eb2fd47504642adf85e4ac196cd89769d734b91fea83b0be415694e0c9275af8",
+  "entry_witnesses": {
+    "compute_120:up_fold": {
+      "packed_word_register": "%r35",
+      "packed_global_load_address": "%rd151",
+      "same_param_index": 15,
+      "legacy_card_param_indices_unused": [
+        11,
+        12
+      ],
+      "same_decode_shift": 12,
+      "absent_sentinel": 2047,
+      "same_shared_load_branch": "setp.eq.s32 \t%p25, %r36, 2047;\n\tmov.f32 \t%f111, 0f00000000;\n\t@%p25 bra \t$L__BB3_39;\n\tmul.wide.u32 \t%rd152, %r36, 4;\n\tadd.s64 \t%rd154, %rd153, %rd152;\n\tld.shared.f32 \t%f111, [%rd154];\n",
+      "card1_byte_expression": {
+        "left_shift": 2,
+        "mask": 252,
+        "PTX": "shl.b32 \t%r85, %r35, 2;\n\tcvt.u64.u32 \t%rd155, %r85;\n\tand.b64  \t%rd156, %rd155, 252;"
+      },
+      "card2_byte_expression": {
+        "right_shift": 4,
+        "mask": 252,
+        "PTX": "shr.u32 \t%r86, %r35, 4;\n\tcvt.u64.u32 \t%rd159, %r86;\n\tand.b64  \t%rd160, %rd159, 252;"
+      },
+      "ordered_FP_math_select_register_topology_exact": true,
+      "FP_math_select_instructions": 43,
+      "FP_math_select_signature_sha256": "f6950a7461b8d791f23307b2135327d4a5494af9c8fd7b27567dbf7799e6a214",
+      "static_barrier_inventory_exact": true,
+      "limits": "Canonicalmath/select-registertopology omits memoryaddresses and integerpredicateprovenance; individualhandwordload/decode/sentinelbinds themonlypartially. Not afullPTXinterpreter/universalFPproof. Source/callers/privateencoding/rawGPU/fullengine/canonical/broadgates remain required."
+    },
+    "compute_120:up_show": {
+      "packed_word_register": "%r53",
+      "packed_global_load_address": "%rd133",
+      "same_param_index": 19,
+      "legacy_card_param_indices_unused": [
+        20,
+        21
+      ],
+      "same_decode_shift": 12,
+      "absent_sentinel": 2047,
+      "same_shared_load_branch": "setp.eq.s32 \t%p107, %r88, 2047;\n\tmov.f32 \t%f393, 0f00000000;\n\t@%p107 bra \t$L__BB4_67;\n\tmul.wide.u32 \t%rd260, %r88, 4;\n\tmov.u64 \t%rd261, shraw;\n\tadd.s64 \t%rd262, %rd261, %rd260;\n\tld.shared.f32 \t%f393, [%rd262];\n",
+      "card1_byte_expression": {
+        "left_shift": 2,
+        "mask": 252,
+        "PTX": "shl.b32 \t%r129, %r53, 2;\n\tcvt.u64.u32 \t%rd134, %r129;\n\tand.b64  \t%rd135, %rd134, 252;"
+      },
+      "card2_byte_expression": {
+        "right_shift": 4,
+        "mask": 252,
+        "PTX": "shr.u32 \t%r177, %r53, 4;\n\tcvt.u64.u32 \t%rd197, %r177;\n\tand.b64  \t%rd198, %rd197, 252;"
+      },
+      "ordered_FP_math_select_register_topology_exact": true,
+      "FP_math_select_instructions": 219,
+      "FP_math_select_signature_sha256": "aad903965869eb7250c16095282bba49a6caf29eca8363ecc08ebdfa7cf52c90",
+      "static_barrier_inventory_exact": true,
+      "limits": "Canonicalmath/select-registertopology omits memoryaddresses and integerpredicateprovenance; individualhandwordload/decode/sentinelbinds themonlypartially. Not afullPTXinterpreter/universalFPproof. Source/callers/privateencoding/rawGPU/fullengine/canonical/broadgates remain required."
+    },
+    "compute_75:up_fold": {
+      "packed_word_register": "%r26",
+      "packed_global_load_address": "%rd98",
+      "same_param_index": 15,
+      "legacy_card_param_indices_unused": [
+        11,
+        12
+      ],
+      "same_decode_shift": 12,
+      "absent_sentinel": 2047,
+      "same_shared_load_branch": "setp.eq.s32 \t%p20, %r27, 2047;\n\tmov.f32 \t%f49, 0f00000000;\n\t@%p20 bra \t$L__BB3_25;\n\n\tmul.wide.u32 \t%rd99, %r27, 4;\n\tmov.u64 \t%rd100, local_reach;\n\tadd.s64 \t%rd101, %rd100, %rd99;\n\tld.shared.f32 \t%f49, [%rd101];\n\n",
+      "card1_byte_expression": {
+        "left_shift": 2,
+        "mask": 252,
+        "PTX": "shl.b32 \t%r56, %r26, 2;\n\tcvt.u64.u32 \t%rd102, %r56;\n\tand.b64  \t%rd103, %rd102, 252;"
+      },
+      "card2_byte_expression": {
+        "right_shift": 4,
+        "mask": 252,
+        "PTX": "shr.u32 \t%r57, %r26, 4;\n\tcvt.u64.u32 \t%rd106, %r57;\n\tand.b64  \t%rd107, %rd106, 252;"
+      },
+      "ordered_FP_math_select_register_topology_exact": true,
+      "FP_math_select_instructions": 17,
+      "FP_math_select_signature_sha256": "b1250de9e78010c11dd17296c4701da0b10c9affe6f72c3934878a7165e5508d",
+      "static_barrier_inventory_exact": true,
+      "limits": "Canonicalmath/select-registertopology omits memoryaddresses and integerpredicateprovenance; individualhandwordload/decode/sentinelbinds themonlypartially. Not afullPTXinterpreter/universalFPproof. Source/callers/privateencoding/rawGPU/fullengine/canonical/broadgates remain required."
+    },
+    "compute_75:up_show": {
+      "packed_word_register": "%r53",
+      "packed_global_load_address": "%rd151",
+      "same_param_index": 19,
+      "legacy_card_param_indices_unused": [
+        20,
+        21
+      ],
+      "same_decode_shift": 12,
+      "absent_sentinel": 2047,
+      "same_shared_load_branch": "setp.eq.s32 \t%p86, %r72, 2047;\n\tmov.f32 \t%f218, 0f00000000;\n\t@%p86 bra \t$L__BB4_59;\n\n\tmov.u64 \t%rd248, shraw;\n\tmul.wide.u32 \t%rd242, %r72, 4;\n\tadd.s64 \t%rd244, %rd248, %rd242;\n\tld.shared.f32 \t%f218, [%rd244];\n\n",
+      "card1_byte_expression": {
+        "left_shift": 2,
+        "mask": 252,
+        "PTX": "shl.b32 \t%r124, %r53, 2;\n\tcvt.u64.u32 \t%rd152, %r124;\n\tand.b64  \t%rd153, %rd152, 252;"
+      },
+      "card2_byte_expression": {
+        "right_shift": 4,
+        "mask": 252,
+        "PTX": "shr.u32 \t%r145, %r53, 4;\n\tcvt.u64.u32 \t%rd197, %r145;\n\tand.b64  \t%rd198, %rd197, 252;"
+      },
+      "ordered_FP_math_select_register_topology_exact": true,
+      "FP_math_select_instructions": 107,
+      "FP_math_select_signature_sha256": "e4b9cc0cfec9f4c899f0f4bdabb9a3402c5cfdcb8ec9a2f2e6e7b01a5bec7021",
+      "static_barrier_inventory_exact": true,
+      "limits": "Canonicalmath/select-registertopology omits memoryaddresses and integerpredicateprovenance; individualhandwordload/decode/sentinelbinds themonlypartially. Not afullPTXinterpreter/universalFPproof. Source/callers/privateencoding/rawGPU/fullengine/canonical/broadgates remain required."
+    }
+  },
+  "negative_reader_fixtures": [
+    "compute_120:up_fold:sentinel",
+    "compute_120:up_fold:card_mask",
+    "compute_120:up_fold:card_shift",
+    "compute_120:up_fold:FP_operation",
+    "compute_120:up_fold:legacy_load",
+    "compute_120:up_show:sentinel",
+    "compute_120:up_show:card_mask",
+    "compute_120:up_show:card_shift",
+    "compute_120:up_show:FP_operation",
+    "compute_120:up_show:legacy_load",
+    "compute_75:up_fold:sentinel",
+    "compute_75:up_fold:card_mask",
+    "compute_75:up_fold:card_shift",
+    "compute_75:up_fold:FP_operation",
+    "compute_75:up_fold:legacy_load",
+    "compute_75:up_show:sentinel",
+    "compute_75:up_show:card_mask",
+    "compute_75:up_show:card_shift",
+    "compute_75:up_show:FP_operation",
+    "compute_75:up_show:legacy_load"
+  ],
+  "compiled_host_records_address_replayed": 1763580,
+  "compiled_expression_checks": 21162960,
+  "new_compiler_GPU_applicationkernels_solver_or_speed_samples": 0,
+  "candidate_adopted": false
+}

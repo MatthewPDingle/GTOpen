@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-17T09:54:59.971665+00:00",
+  "baseline": {
+    "entry_lines": 980,
+    "register_threshold_unsigned_lt_sites": 60,
+    "global11bit_masks": 0,
+    "local6bit_masks": 0,
+    "local11shifts": 0,
+    "local17shifts": 0
+  },
+  "candidate": {
+    "entry_lines": 1464,
+    "register_threshold_unsigned_lt_sites": 0,
+    "global11bit_masks": 2,
+    "local6bit_masks": 4,
+    "local11shifts": 2,
+    "local17shifts": 2
+  },
+  "ptx_sha256": {
+    "baseline": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate": "2ed74df8a7da221dce55784691d1997f3084902ad156f2793f64eb45181c025a"
+  },
+  "resource_report_sha256": "6cd5037ae4c12b14289ab8a35214230e088e699b9c38d929f1cc66e66a8e55d6",
+  "status": "expected_packed_cutoff_mechanism_emitted",
+  "root_review_only": true,
+  "observation": "Original register-threshold unsigned less-than sites disappear;2global masks and4local count extractions emitted. Three-loop code has a larger static PTX body.",
+  "limits": "Static virtual-code sites/line counts are not dynamic branches, machine instruction bytes, instruction-cache counters or speed. Current actual driver resource/occupancy filters pass,38to40nominal registers same allocated bucket."
+}

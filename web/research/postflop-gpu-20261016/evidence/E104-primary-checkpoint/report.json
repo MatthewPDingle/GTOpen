@@ -1,0 +1,153 @@
+{
+  "id": "E104-primary-checkpoint",
+  "at": "2026-10-28T23:03:44.692817+00:00",
+  "status": "rejected_closed_frozen_resident_form",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9845.329600000001,
+    "candidate_full_cycle_ms": 13297.219399999998,
+    "observed_gain_pct": -35.061190841188264,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": 40.97210819319878,
+        "slower_pairs": 3,
+        "failed": true
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 26.621877505026184,
+        "slower_pairs": 3,
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 28.071260361961222,
+        "slower_pairs": 3,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "primary_report_sha256": "50e218b34cbd4b6aedd8fd21f18a37f940d7a218198f221f1cc8ffd4db285df7",
+  "full_log_replay_sha256": "ae67d9a2c295c23dfe53a24f44acc8e36b613d648274d907db923d21f1cacad6",
+  "shader_resource_report_sha256": "f814d047836afb4242408e8dc818bb7ad9ea9d69712bcf9fb441cff7844621fe",
+  "host_layout_role_report_sha256": "4cb30cc87db071dca4830744fa6ec09483ed52dcf8559e3b5c1083940605fce0",
+  "engine_report_sha256": "9ae30f8abde09c3c3301e03adfcd78ff623be534bf0bb77885ff6c8d3cf3741c",
+  "canonical_raw_report_sha256": "5026ea1d71f4fb0dc289bdf08b841ce38e01a960e1e61d490a612c80ea3e2b9c",
+  "all66_retained_raw_file_extents_verified": true,
+  "raw_files_not_rehashed_after_original_full_comparison": true,
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\V104-unit.exit.json",
+      "sha256": "dc79acc2d44475fa04ae84962e079cc813296200eebe1bdd268d18bf6d419355",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\B317.exit.json",
+      "sha256": "f331568a89a785cfca2a0d6f260bce70ea2433986d8f0b2db857a2a4f13fccaa",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\E104R1.exit.json",
+      "sha256": "39b88e9242f6ac74948eb30bbd82557799e1f4c9f90fcf246b738e2a8b38f74a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\E104R2.exit.json",
+      "sha256": "d2703b588c783d1fee761bd03d4237e30882e891643e4411350677cbe2377aa8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\B318.exit.json",
+      "sha256": "24a6116705e0ce76225d2f31af9bfb4a58d2c8ce9be8c80cf21054a1e264c4a1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\B319.exit.json",
+      "sha256": "ca8e942eb9437608bb9f16d4368b91255503d0acdef1cf9e202cdae19016706b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-primary-execution\\E104R3.exit.json",
+      "sha256": "7ab41a4bd26d6d2b962dba7763cf59a4f8d4f98960ed4c785cecae31dd7d4f3b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D207-resident-resource\\execution\\probe.exit.json",
+      "sha256": "9d3e01562b2de7d7bbe2989063b11bf0e2bed537b47ca815959c58d066528b58",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D207-resident-resource\\execution\\rustc.exit.json",
+      "sha256": "da9647f2024ab80219ab30b50dcd047282cd15252eea52d20c2c74a16a96329d",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D208-resident-host-layout\\execution\\layout.exit.json",
+      "sha256": "f3d1881aeb5a95d00f4ba8354677f5751c4659361f330ad879ae3d89b201cf94",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D208-resident-host-layout\\execution\\rustc.exit.json",
+      "sha256": "3facd508d51b64ad78b8650fadda0e84656a21a6c9ab872f420a286c1c4ad5aa",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\execution\\audit.exit.json",
+      "sha256": "6e542533902eede944c2a9db05251458da57af2b436d33a48d370db8c3dee176",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\execution\\baseline.exit.json",
+      "sha256": "d03f26acb0815d1be8e0e35621f3caef5b5dcbc5d94203f67784ca3a7e65a483",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\execution\\candidate.exit.json",
+      "sha256": "31fbdfacaab11bca936a31ebb3e9ddf0704dfbc896f0d3fc4fd8eac8b705391b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\execution\\rustc-baseline.exit.json",
+      "sha256": "7e2fbf72cf3431ce300847c6f01366454b3f10d5f2fd05dac08b3c6ae55a7d6c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\execution\\rustc-candidate.exit.json",
+      "sha256": "1d7fde2bac3876bd748de105520ec60f170b799de19f9fca9e0aee0b91f8becc",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\execution\\rustc.exit.json",
+      "sha256": "de7ebe4fcbd253fe306b1ed831b1de8f10d629d189bdc980cc66cc176c6883cf",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\execution\\probe.exit.json",
+      "sha256": "53b4a854ffdc8d2f0bd11e6d58c5535ac214a1ea6d45ef0cad1f1a7bfe920917",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\execution\\audit-r2.exit.json",
+      "sha256": "29c36f1c69bcf757d7193073944e0d80f1335232b57647a512c3175f6c2b9070",
+      "returncode": 0
+    }
+  ],
+  "original_D209_reader_log_path_failure_preserved": true,
+  "native_or_compiler_repeats_for_reader_repair": 0,
+  "all_owned_compilers_native_readers_terminal": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "new_gain_accepted_or_deployed": false,
+  "extra_or_rescue_samples": 0,
+  "source_helper_phase_width_threshold_flags_quality_or_sample_rescue_allowed": false,
+  "qualification_limits": "Finite engine and large canonical raw state passed. Broad direct exceptional/zero/arity/full-reuse/F32/menu/paging/capacity/material/holdout/portable headers/fresh16/cumulative/application are still required before adoption. No universal or significance claim. A failed timing screen closes this exact resident form without rescue.",
+  "original_current_RAM_reference_ms": 10456.4109,
+  "samecohort_reference_ms": 9845.329600000001,
+  "historical_or_RAM_reference_samples_scored": 0,
+  "last_primary_baseline_id": "B319",
+  "best_qualified_config": "E080 / GPU / compressed / 16 workers / default affinity",
+  "goal_active": true
+}

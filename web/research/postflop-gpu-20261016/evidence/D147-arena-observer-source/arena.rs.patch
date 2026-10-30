@@ -1,0 +1,69 @@
+--- accepted-E080/arena.rs
++++ D147-diagnostic/arena.rs
+@@ -205,9 +205,36 @@
+         Ok(device)
+     }
+ 
++    // Diagnostic host wall clocks only; all original writes and joins remain.
++    fn d147_emit_profile(&self, started: Option<std::time::Instant>,
++        split: Option<std::time::Instant>, player: usize, which: usize, mode: &str) {
++        if let Some(started) = started {
++            let ended = std::time::Instant::now();
++            let full_ms = ended.duration_since(started).as_secs_f64() * 1e3;
++            let active_ms = split.map(|s| s.duration_since(started).as_secs_f64() * 1e3);
++            let inactive_ms = split.map(|s| ended.duration_since(s).as_secs_f64() * 1e3);
++            use std::io::Write;
++            let mut stderr = std::io::stderr().lock();
++            let _ = writeln!(stderr, "CPU_ARENA_PROFILE {}", serde_json::json!({
++                "schema_version": 1, "player": player, "which": which,
++                "mode": mode, "full_wall_ms_before_logging": full_ms,
++                "active_wall_ms": active_ms, "inactive_wall_ms": inactive_ms,
++                "active_blocks": self.active.len(), "inactive_blocks": self.inactive.len(),
++                "copy_spans": self.copies.len(), "device_f32_elements": self.len,
++                "diagnostic_only": true, "extra_gpu_operations": 0,
++                "scope": "Host wall around unchanged CPU write stages; includes Rayon scheduling. Logging perturbs enclosing readback. No isolated encoder, removed-work or speed claim."
++            }));
++        }
++    }
++
+     pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
++        let d147_started = (std::env::var_os("POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE")
++            .as_deref() == Some(std::ffi::OsStr::new("1")))
++            .then(std::time::Instant::now);
++
+         if !self.compact {
+             write_arena(solver, which != 0, p, data);
++            self.d147_emit_profile(d147_started, None, p, which, "full");
+             return;
+         }
+         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+@@ -217,12 +244,14 @@
+                 unsafe { buf.slice(span.host, span.len) }
+                     .copy_from_slice(&data[span.device..span.device + span.len]);
+             });
++            let d147_split = d147_started.map(|_| std::time::Instant::now());
+             self.inactive.par_iter().for_each(|block| {
+                 let dst = unsafe { buf.slice(block.host, block.len) };
+                 let start = block.initial[which];
+                 if start == usize::MAX { dst.fill(0.0); }
+                 else { dst.copy_from_slice(&self.initial[which][start..start + block.len]); }
+             });
++            self.d147_emit_profile(d147_started, d147_split, p, which, "compact_f32");
+             return;
+         }
+         self.active.par_iter().for_each(|block| {
+@@ -231,12 +260,14 @@
+                     &data[block.device..block.device + block.len]);
+             }
+         });
++        let d147_split = d147_started.map(|_| std::time::Instant::now());
+         self.inactive.par_iter().for_each(|block| {
+             let start = block.initial[which];
+             let values = if start == usize::MAX { &self.zeros[..block.len] }
+                 else { &self.initial[which][start..start + block.len] };
+             unsafe { store.write_f32(block.node, block.host, block.len, values); }
+         });
++        self.d147_emit_profile(d147_started, d147_split, p, which, "compact_compressed");
+     }
+ }
+ 

@@ -1,0 +1,82 @@
+{
+  "id": "D308",
+  "at": "2026-10-29T21:01:10.178400+00:00",
+  "status": "DECLINE_CLOSE_FIXED_PACKED_ACTION_ARITHMETIC_NATIVE_SCALARIZATION",
+  "history_sha256": "ece8214ac3abb02b4e455b63e0d2016b4dda63ee8b408ee8c3103da927063a34",
+  "source_contract_sha256": "8de0ba3cb823fbb56740c68894f0324733132f9a32200721ab7b0c69dfe33718",
+  "module_source_sha256": "5ad86bdbc89610307539115b27ce76e5f418a1e40f157578167a1374f764439e",
+  "original9kernel_source_prefix_byteexact": true,
+  "resource_report_sha256": "e7de90542c0a8279adcf8271a8711a38c808d284c72f35ad880620c1d434cf5e",
+  "native_report_sha256": "32561221d53fe22f74e0b386d3c15d6272b85cf7603a1011a6ecde54a6f6166e",
+  "independent_native_FP_inventory": {
+    "scalar_regret_pair": {
+      "FP_inventory": {
+        "FADD": 2,
+        "FFMA": 2
+      },
+      "all_native_FP_instructions": [
+        "FADD R17, -R2.reuse, R17",
+        "FADD R21, -R2, R21",
+        "FFMA R15, R0, R15, R17",
+        "FFMA R19, R12, R19, R21"
+      ],
+      "same4_scalar_arithmetic_sites": true,
+      "all_native_function_FP_sites_accounted": true
+    },
+    "packed_regret_pair": {
+      "FP_inventory": {
+        "FADD": 2,
+        "FFMA": 2
+      },
+      "all_native_FP_instructions": [
+        "FADD R19, R14, -R9.reuse",
+        "FADD R21, R16, -R9",
+        "FFMA R15, R0, R15, R19",
+        "FFMA R17, R12, R17, R21"
+      ],
+      "same4_scalar_arithmetic_sites": true,
+      "all_native_function_FP_sites_accounted": true
+    }
+  },
+  "resource_summary": "All9originalnormalizedPTX/bodies/resources unchanged. Scalar/packed diagnostics each24registers/local0/static0/dynamic0/constant0/max1024/occupancy64,128,256=24,12,6/stack1024.",
+  "decision": "VirtualFP32x2sub/FMA accepted byNVRTC12.9 forcompute120, buttestedRTX5090/driver610.88 emits2scalarFADD+2scalarFFMA inbothprimitiveentries. RequiredfewerissuedFParithmetic sites perpair notestablished. Closebefore solverprototype/applicationkernels/numerical/speedtests. Notmeasuredregression/universal scalarization/throughputclaim.",
+  "numerical_scope": "No GPU outputs evaluated; CPU169specialwordpair packing checks only. Native subtraction operand order differs; no IEEE/NaNpayload equivalence claimed. OriginalCFR/live source unchanged.",
+  "reader_preflight": "V1 positive parser strips reusehints but negative literalmutation wouldretainhint in rawtext; detectedbefore V1execution. AdditiveV2 normalizesonlynegativefixturetext,allpositiveoriginalfiles/gatesunchanged. Originalscript/protocol/preflightretained; V2passes4corruptionfixtures; no native/compiler repeat.",
+  "full_solver_candidate_admitted": false,
+  "next_unused_candidate": "E125",
+  "closed_form": "Fixedtwo-action packedFP32SUB/FMA, no width/handpair/placement/guard/helper/flags/scope/source/precision/sample rescue. No FP16/BF16/TF32 substitution.",
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D308-packed-arithmetic\\execution\\probe.exit.json",
+      "sha256": "4817ad54819277536568c8ea2073da5decd7bd23b26ae3e2d31caf62b74ae030",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D308-packed-arithmetic\\execution\\rustc.exit.json",
+      "sha256": "fba83b3d7682aec3ee2e4199d26c8ea73ef8818d42704848012d58ef29a14c05",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D308-packed-arithmetic\\execution\\capture\\capture.exit.json",
+      "sha256": "ae3d74732c832fe44e6ec40313123061c591d8213b77349394044565640e1e39",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D308-packed-arithmetic\\execution\\capture\\disassemble.exit.json",
+      "sha256": "cb6c0808840a5207c4bfd8c7200b502c975b4a5b793832b74b36267999e711c4",
+      "returncode": 0
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "new_Rust_compilers": 1,
+  "new_NVRTC_compiles": 1,
+  "application_kernel_launches": 0,
+  "explicit_device_array_allocations": 0,
+  "solver_or_speed_samples": 0,
+  "accepted_main_live_protected_PTX_D304_HTML_unchanged": true,
+  "last_primary_baseline": "B377",
+  "next_unused_primary_baseline": "B378",
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "candidate_adopted": false,
+  "goal_active": true
+}

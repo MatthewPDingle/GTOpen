@@ -1,0 +1,49 @@
+{
+  "id": "E127-host",
+  "at": "2026-10-29T22:55:09.026645+00:00",
+  "status": "FROZEN_FULL_HOST_SOURCE_PRE_COMPILER_APPKERNEL",
+  "owned": {
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\baseline-mod.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\candidate-mod.rs",
+      "base_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "candidate_sha256": "8d59935846861133e25fba5e5047f7d275a93f1d4b5c63d18b9694fe570ceea5"
+    },
+    "crates/solver/src/gpu/action_stars.rs": {
+      "base": null,
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\candidate-action_stars.rs",
+      "base_sha256": null,
+      "candidate_sha256": "4bef695656515cbb61040e266f0ea06982a0cfc6e30509da3f2771fe99524efe"
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\baseline-kernels.cu",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\candidate-kernels.cu",
+      "base_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate_sha256": "983d662554cb0558c749a5c10bf43ca2306858d19d24b5bb223273a12843a367"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\baseline-continuation_capacity.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-host-source\\candidate-continuation_capacity.rs",
+      "base_sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "candidate_sha256": "47a2ac86568545614c480440d688036a5f78996f5dfc350547bac223035514ba"
+    }
+  },
+  "tracked_owned_paths": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/continuation_capacity.rs"
+  ],
+  "new_owned_paths": [
+    "crates/solver/src/gpu/action_stars.rs"
+  ],
+  "all_original_host_files_inverse_exact": true,
+  "new_shader_bytes_identical_to_resource_control": true,
+  "new_CPU_builder_sha256": "4bef695656515cbb61040e266f0ea06982a0cfc6e30509da3f2771fe99524efe",
+  "design_sha256": "13f10e3ba2646d58d494a15b7e912771769e0875aee6a06c565103a176918626",
+  "native_control_report_sha256": "a157d70899169b31e8b34f2019a4f48ee7eec13b7c2ba9eab15bd2b42bf927ec",
+  "original_CPU_plan_source_unchanged": true,
+  "old_GPU_arrays_and_CFV_map_unchanged": true,
+  "new_source_without_new_compilers_or_appkernels": true,
+  "raw_metadata_CPU_typecheck_direct_engine_canonical_and_all_adoption_gates_pending": true,
+  "failure": "Fixed4filehost+shaderform/D313matching/onebuffer/twophaseLaunchs/oneCTAbarrier. No source/helper/phase/guard/group/layout/width/quality/sample rescue after genuinefailure."
+}

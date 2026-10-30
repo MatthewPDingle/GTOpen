@@ -1,0 +1,72 @@
+--- accepted-E051/plan.rs
++++ D110/profiled-plan.rs
+@@ -110,8 +110,12 @@
+     pub riv_max_cnt: [usize; 2],
+ }
+ 
++thread_local! { static D110_TIMES: std::cell::Cell<[f64; 8]> = const { std::cell::Cell::new([0.0; 8]) }; }
++pub fn d110_times() -> [f64; 8] { D110_TIMES.with(|v| v.get()) }
+ impl GpuPlan {
+     pub fn build(spot: &Spot, use_iso: bool) -> GpuPlan {
++        let d110_start = std::time::Instant::now();
++        let mut d110_times = [0.0; 8];
+         let n = spot.tree.nodes.len();
+         let nh = [spot.hands[0].len(), spot.hands[1].len()];
+         let iso_active = use_iso && spot.suit_perms.len() > 1;
+@@ -211,6 +215,7 @@
+             }
+         }
+ 
++        d110_times[0] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // Terminal CFVs stay resident for repeated BR/average evaluations.
+         // Action/chance CFVs live only from their up-sweep level until the
+         // immediately preceding level consumes them. Reuse those scratch
+@@ -241,6 +246,7 @@
+             }
+         }
+ 
++        d110_times[1] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // --- Level-ordered work lists (representative branches only) --------
+         let num_levels = max_level as usize + 1;
+         let mut action_by_level: Vec<Vec<u32>> = vec![Vec::new(); num_levels];
+@@ -297,6 +303,7 @@
+             }
+         }
+ 
++        d110_times[2] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // --- River slot assignment + flattened tables ----------------------
+         let mut slot_of_key = std::collections::HashMap::new();
+         let mut node_river_slot = vec![-1i32; n];
+@@ -355,6 +362,7 @@
+             }
+         }
+ 
++        d110_times[3] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // --- Per-node scalar arrays -----------------------------------------
+         let mut node_player = vec![0i32; n];
+         let mut node_na = vec![0i32; n];
+@@ -393,6 +401,7 @@
+             }
+         }
+ 
++        d110_times[4] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // --- Per-hand arrays + flattened permutation tables ------------------
+         let mut hand_c1 = [Vec::new(), Vec::new()];
+         let mut hand_c2 = [Vec::new(), Vec::new()];
+@@ -409,6 +418,7 @@
+             }
+         }
+ 
++        d110_times[5] = d110_start.elapsed().as_secs_f64() * 1000.0;
+         // Node IDs describe ownership; only distinct owners need storage.
+         // Visiting node zero first reserves physical slot zero for root weights.
+         let mut reach_slot = [Vec::with_capacity(n), Vec::with_capacity(n)];
+@@ -425,6 +435,8 @@
+             }
+         }
+ 
++        d110_times[6] = d110_start.elapsed().as_secs_f64() * 1000.0;
++        D110_TIMES.with(|v| v.set(d110_times));
+         GpuPlan {
+             num_levels,
+             nh,

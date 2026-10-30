@@ -1,0 +1,11 @@
+{
+  "id": "E076-alias-source-review",
+  "at": "2026-10-18T03:51:01.716074+00:00",
+  "candidate_plan_sha256": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+  "plan_report_sha256": "fb947e6d5af4a5122952117864eb531d95d61609eb452e3da947b92f3291545e",
+  "kernel_source_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "kernel_PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "source_reasoning": "Only one-action parents can share their unique action child. Existing learning path reads child CFV into vc[0], computes regret before final CFV store; locked and opponent paths read the same hand before final store. No cross-hand reads in up_action, and cfv is a single non-restrict mutable pointer. Disjoint pairs require child arity>=2; actual lifetime and graph controls exclude all other same-stage row collisions and any chance-orbit reference to the shared child. No CUDA recompilation, resource/counter query, early store, dispatch, float, update or schedule change.",
+  "compiled_resource_scope": "Exact accepted CUDA/PTX reused. Per-kernel registers/local/shared/ABI/launch unchanged by host allocator. Aggregate graph/device/host peak/capacity and CPU costs still require integrated measurement.",
+  "raw_control_scope": "819 disjoint/aliased cases. Full logical parent CFV, whole regret/strategy arrays, full expected physical output/guard images and all actual input bytes. Arity>1 remains disjoint, na1 in-place. No claim that distinct physical CFV layouts are byte-identical."
+}

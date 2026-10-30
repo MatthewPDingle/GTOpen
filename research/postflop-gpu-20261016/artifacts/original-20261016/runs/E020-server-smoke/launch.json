@@ -1,0 +1,37 @@
+{
+  "started_at": "2026-10-16T11:56:05.889976+00:00",
+  "passed": false,
+  "binary": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-gto-server.exe",
+  "binary_sha256": "7c90005b3a74a7e46d0ea5a57b0fb20e1ab1278916f0c89e9435dbbca989a742",
+  "manifest_sha256": "8c91f3a593d12dc57da01bce35c982dde5b49a218d6a4b88b350345c395690c5",
+  "authorization_sha256": "6b1f29ba296d2dc6b369565e8cfd38fe8834f318bec7312761b12bdda384cdb2",
+  "acceptance": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+    "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+  },
+  "port": 43736,
+  "working_directory": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "unit_gate": {
+    "report_sha256": "0e6f3bc03624f959667cf90eec112b05ccfbb251902abddb00388ebe9c428ca2",
+    "stdout_sha256": "d427a1eaefb4a3311b5c4dac9370fa7f3771ca55ea7de00d6f1920b95a03ade9",
+    "binary_sha256": "6ab4e0fd2d3ed47b0ce68fa591b48be1847ea9ab48148d8e7a6601cedb59a1b0",
+    "manifest_sha256": "9cef5908ac46bc45bf5e5ad176ad7d94daa8b76a561dc550d8bac294a48e8181"
+  },
+  "scope": "Isolated API correctness smoke only; no performance/deployment claim",
+  "owned_pid": 52732,
+  "live_exclusion": {
+    "pid": 37268,
+    "port": 43735,
+    "executable": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "sha256": "b7b808b8baff6b3a92c4f3cc8c54ee74ee2c0bb079a8ca68be4da9703f6b84bd",
+    "process_creation_observed": "2026-10-16T13:28:55.078438+10:30",
+    "restriction": "Never replace/restart this live server or perform an equivalent retry through another tool/path. Only owned isolated43736 process may be stopped."
+  },
+  "environment": {
+    "PORT": "43736",
+    "SOLVER_GPU": "1",
+    "SOLVER_COMPRESS": "1",
+    "RAYON_NUM_THREADS": "16",
+    "NVRTC": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin"
+  }
+}

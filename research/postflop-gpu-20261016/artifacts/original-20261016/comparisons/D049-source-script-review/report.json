@@ -1,0 +1,127 @@
+{
+  "id": "D049-source-script-review",
+  "at": "2026-10-16T15:00:58.564376+00:00",
+  "status": "PASS_SOURCE_AND_PROSPECTIVE_RESOURCE_SCRIPT",
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "prepared_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\prepared-manifest.json",
+    "sha256": "e8f8a736e52031ca63c98e7cfcb5ca906306d9e70384f9840eea64b95158b80d"
+  },
+  "artifact_sha256": {
+    "README.md": "95f1268ec7ad0051aa3a68d8465ce086c110603e2461e344f8698aab284e91c5",
+    "baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate.cu": "aa7c5d83b610b94ca3b722312cfe977d235c2f286333453bbbe5b68c1a7762fb",
+    "candidate.patch": "64f4deecff0837cdf1681f1675bac34c0ccc7480f6727a61542f8eb0017d9484",
+    "commands.json": "d5743d8381070de39e2c866b54082a7eaf508ce7f901fac31c85892c67cfe97d",
+    "preparation-checks.json": "73459bcf4c2a229226eafb0ef07ba16b71efba1cc0705d5e19ed1809ca4262ca",
+    "probe.rs": "5fa9986b72903ebe105eae095b597991ebe47470973c7b47e535cc37c441d2c6",
+    "protocol.json": "34dc5c109323a20cf56b289b1d1bdb98eab8f99adbb8c63aea0add7831d3d977",
+    "run.py": "386f6cd0f8a482bf46711abb774136397cea4d839ac5a081c84ad944ee853366",
+    "runner-primitives-source.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "draft-patch-crlf-rejected.patch": "38b9ce528dc93852396a5c8a9e4c0531fe772b2e22f89cd2a986332e941a9d3d",
+    "draft-preparation-note.json": "a98e60e40c5dc626270f6a3c2436669aba6a173a6cbfb9dee4606b7b487a1adf"
+  },
+  "reference_pins": {
+    "D048_source_audit": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D048-down-action-pointer-source-audit\\report.json",
+      "sha256": "cbcd7e2784961b7773bee82c3cda09fd143d697d78b21ac17c6516839aa95616"
+    },
+    "D048_source_audit_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D048-down-action-pointer-source-audit\\manifest.json",
+      "sha256": "f9e3a70ba6b48beddcc3feb71f2ed3be22e26be35508ceb8dc9b4f35c95d32fb"
+    },
+    "D046_prepared_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\prepared-manifest.json",
+      "sha256": "8e8ec64a83b744eb75c60156e610b0dbc3185c5b9615759a8194ab1c465e1146"
+    },
+    "D046_probe": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\probe.rs",
+      "sha256": "2eefbd98586b1ef1d01ffcf4fd44190c64c4c1e89d7a35d2c9b170473dc0cbb5"
+    },
+    "D046_runner": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\run.py",
+      "sha256": "c64da6eae7a4fc6422f5594b0ad883f0e9881233bc27067272215f97ccd0f690"
+    },
+    "D046_baseline_ptx": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\baseline.ptx",
+      "sha256": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4"
+    },
+    "E020_binary_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json",
+      "sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+    },
+    "E025_cleanup": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-source\\cleanup.json",
+      "sha256": "d090d05257a0374698d59143cc6d227caa9d5db249a9d6896d3fedbab10c13e1"
+    },
+    "E025_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-independent-review\\validation.json",
+      "sha256": "dc5ad0a2fb29a09c20ed2387bc8a4eb4be1c865ebb6487cac5b64165a5d0eb20"
+    },
+    "runner_primitives": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D046-generic-cache-resource\\runner-primitives-source.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+    }
+  },
+  "dependency_rlibs": {
+    "cudarc": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+      "sha256": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+      "bytes": 7170642
+    },
+    "serde_json": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+      "sha256": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532",
+      "bytes": 2069500
+    }
+  },
+  "checks": {
+    "artifact_hashes_exact": 12,
+    "reference_hashes_exact": 10,
+    "dependency_rlib_hashes_exact": 2,
+    "protected_checkout_complete_map_exact": 162,
+    "python_ast_parse_only": [
+      "run.py",
+      "runner-primitives-source.py"
+    ],
+    "source_byte_reverse_exact": true,
+    "source_fnv_and_length_exact": true,
+    "execution_outputs_absent_at_review": [
+      "execution-started.json",
+      "probe.exe",
+      "report.json",
+      "baseline.ptx",
+      "candidate.ptx",
+      "failure.json"
+    ],
+    "accepted_cuda_and_evaluator_unchanged": true,
+    "source_scope": "Only down_action_impl selects one const integer-map pointer and uses it for the parent and the two existing locked/unlocked child-map reads. The original dispatcher, ABI, guards, float expressions, operand order, loops, cache, host code and launch shape are unchanged.",
+    "address_equivalence": "For actor==0 every rsrc_a index resolves to the same rsrc0 index; otherwise it resolves to the same rsrc1 index. No new restrict promise or source-level speculative child dereference is introduced. Parent and child offsets retain the same u64 cast and nh_a stride. Both locked and unlocked paths are covered.",
+    "probe_scope": "Exactly one baseline/candidate NVRTC compilation in one context; only down_action resource attributes and theoretical occupancy at128 threads/zero dynamic shared are queried. No kernel-launch, solver, stream or device-arena API is present. The successful D046 query/API path is retained.",
+    "runner_scope": "One-shot exclusive outputs, pinned inputs/dependencies/current full162 source identity, terminal E025 rejection/restoration prerequisites, shared GPU lock, readonly live-session refusal,51GiB free-space requirement, hidden owned children,600s timeout and cleanup before lock release. Raw output, command records, complete PTX and failures are retained.",
+    "ptx_scope": "Requires exactly nine matching entry names, byte-identical eight non-down_action entries, and unchanged down_action signature. Archives full target entry/diff/opcode inventory. Resource gate is non-increasing local bytes/registers, non-decreasing128-thread occupancy and max_threads>=128.",
+    "independent_gate_preserved": "A resource pass leaves source_ptx_prerequisite_pass null and eligible_for_native_candidate false. Each NA2/3/4 must independently show actual actor-branch removal and/or selected map-load hoisting with original guards/float dependencies. Static aggregate opcode counts cannot satisfy this gate; no useful reduction means stop without rescue.",
+    "preparation_failure_preserved": "The rejected CRLF draft patch and repair note remain pinned separately; final candidate CUDA stayed unchanged. Final LF patch is reviewed with exact source reversal."
+  },
+  "limits": [
+    "Read-only source/prospective-script review. Reviewer did not execute rustc, NVRTC, probe, kernel, solver or candidate script, and made no checkout edits.",
+    "Compilation, resource values and actual generated PTX remain unmeasured at this review. A future root execution and independent per-arity PTX audit are required before considering a native candidate.",
+    "Source equivalence is not compiled numerical validation. Any later native experiment requires exact-state qualification and the existing complete-cycle gates.",
+    "No timing, throughput, complete-solve share, performance acceptance or deployment claim. The selected D045 intervals do not establish those claims."
+  ],
+  "resource_prerequisite_pass": null,
+  "source_ptx_prerequisite_pass": null,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "reviewer_executions": {
+    "compiler": 0,
+    "native_probe": 0,
+    "kernel": 0,
+    "solver": 0,
+    "checkout_edits": 0
+  }
+}

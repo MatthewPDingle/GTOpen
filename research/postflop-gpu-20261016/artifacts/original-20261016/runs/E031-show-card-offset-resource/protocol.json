@@ -1,0 +1,119 @@
+{
+  "id": "E031-resource",
+  "status": "prospective_before_execution",
+  "resource_shapes": [
+    {
+      "id": "rainbow_p0",
+      "nh_o": 319,
+      "m_max": 314,
+      "dynamic_shared_bytes": 6300,
+      "provenance": "observed accepted rainbow graph allocation"
+    },
+    {
+      "id": "rainbow_p1",
+      "nh_o": 257,
+      "m_max": 252,
+      "dynamic_shared_bytes": 5060,
+      "provenance": "observed accepted rainbow graph allocation"
+    },
+    {
+      "id": "two_tone_p0",
+      "nh_o": 320,
+      "m_max": 315,
+      "dynamic_shared_bytes": 6320,
+      "provenance": "observed accepted two-tone graph dynamic bytes and frozen opponent count"
+    },
+    {
+      "id": "two_tone_p1",
+      "nh_o": 258,
+      "m_max": 253,
+      "dynamic_shared_bytes": 5080,
+      "provenance": "observed accepted two-tone graph dynamic bytes and frozen opponent count"
+    },
+    {
+      "id": "river_p0",
+      "nh_o": 280,
+      "m_max": 280,
+      "dynamic_shared_bytes": 5600,
+      "provenance": "derived final-board allocation from frozen hands; no extra cards"
+    },
+    {
+      "id": "river_p1",
+      "nh_o": 233,
+      "m_max": 233,
+      "dynamic_shared_bytes": 4660,
+      "provenance": "derived final-board allocation from frozen hands; no extra cards"
+    },
+    {
+      "id": "wide_turn",
+      "nh_o": 1128,
+      "m_max": 1081,
+      "dynamic_shared_bytes": 21808,
+      "provenance": "accepted wide-turn holdout allocation"
+    },
+    {
+      "id": "full_hand_upper_bound",
+      "nh_o": 1326,
+      "m_max": 1326,
+      "dynamic_shared_bytes": 26520,
+      "provenance": "conservative capacity bound, not a real river plan"
+    },
+    {
+      "id": "empty_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 0,
+      "dynamic_shared_bytes": 1276,
+      "provenance": "synthetic resource edge, no numerical execution"
+    },
+    {
+      "id": "single_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 1,
+      "dynamic_shared_bytes": 1292,
+      "provenance": "synthetic resource edge, no numerical execution"
+    }
+  ],
+  "resource_rows": 20,
+  "raw_markers": 22,
+  "same_context": true,
+  "block_threads": 128,
+  "architecture": "compute_120",
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "compile_options": "architecture only; other defaults matching production",
+  "default_shared_opt_in_mutations": 0,
+  "capacity_conditions": [
+    "queried default shared/thread capacity",
+    "positive theoretical occupancy"
+  ],
+  "other_entry_ptx_byte_equality_required": 8,
+  "up_show_abi_unchanged": true,
+  "per_stage_timeout_seconds": 600,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "root_executes_only_after_separate_review_and_decision": true,
+  "resource_screen": {
+    "decision_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-root-decisions\\resource-screen.json",
+    "decision_sha256": "b92cc0a93b3a80521f57a5060c81c3c862dc5ce0788212f1c8c4b7363173435e",
+    "all_registered_shapes_require": [
+      "no new local bytes vsbaseline",
+      "defaultshared/thread fit",
+      "same dynamic bytes and128threads",
+      "positive theoretical occupancy",
+      "no activeblocks/SM decrease"
+    ],
+    "other8entriesexact": true,
+    "register_count_gate": false,
+    "static_shared": "one added53-u32 array; actualallocation delta may include changed padding",
+    "failure": "stop this variant; no primary progression or outcome-driven rescue",
+    "pass": "compiler resource feasibility only; no numerical or speed proof"
+  },
+  "source_manifest_sha256": "88fd1fdca4a1eba7deffb3563540b35d46a87f42d9485774c25a05de29c47662",
+  "source_variants_sha256": {
+    "baseline": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate": "75defdd19a144924e41d1ca36e166161c2e097ec22843905444376e9a561079b"
+  },
+  "immutable_acceptance_source_count": 162
+}

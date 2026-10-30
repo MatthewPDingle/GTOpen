@@ -1,0 +1,42 @@
+{
+  "source": "Six current server files are byte-identical to E015 server build; expected inventory is the successful E015 native log. Verify compiled E020 --list before running tests.",
+  "expected_test_names": [
+    "evidence_tests::model_evidence_needs_no_live_session_and_returns_a_direct_object",
+    "evidence_tests::model_evidence_rejects_bad_input_without_building_a_game",
+    "evidence_tests::sizing_capabilities_are_explicit_and_old_profiles_use_their_existing_rule",
+    "postflop_context_tests::contextual_evidence_survives_browse_and_report_requests",
+    "postflop_context_tests::invalid_pot_context_is_rejected_instead_of_silently_dropped",
+    "postflop_context_tests::legacy_browse_and_reports_do_not_invent_context",
+    "preflop_preview_tests::a_gap_is_tied_to_its_snapshot_and_limit_is_not_convergence",
+    "preflop_preview_tests::changed_models_and_loaded_native_saves_do_not_inherit_a_gap_claim",
+    "preflop_preview_tests::completed_finish_preserves_measured_accuracy_and_clears_attached_stop",
+    "preflop_preview_tests::detached_running_session_reads_snapshot_but_rejects_policy_mutations",
+    "preflop_preview_tests::early_preview_is_opt_in_and_skips_uniform_first_pass",
+    "preflop_preview_tests::failed_snapshot_keeps_host_generation_and_readers_see_one_successful_commit",
+    "preflop_preview_tests::fresh_build_model_query_is_strict_and_defaults_to_reference",
+    "preflop_preview_tests::live_counter_never_claims_a_newer_published_strategy",
+    "preflop_preview_tests::production_capabilities_do_not_offer_experimental_payoff_models",
+    "preflop_preview_tests::publication_is_additive_to_existing_node_export_json",
+    "preflop_preview_tests::rejected_model_does_not_even_access_session_or_stop_path",
+    "preflop_preview_tests::terminal_stop_publication_clears_cancellation_before_waiting_reader_evaluates",
+    "report_tests::report_adaptation_benchmark",
+    "report_tests::report_gpu_continuation_uses_additional_budget_and_keeps_locks",
+    "scenario_filename_tests::scenario_names_cannot_create_windows_alternate_streams"
+  ],
+  "expected_default_passed": 20,
+  "expected_ignored_names": [
+    "report_tests::report_adaptation_benchmark"
+  ],
+  "expected_summary": "test result: ok. 20 passed; 0 failed; 1 ignored; 0 measured; 0 filtered out;",
+  "ordinary_cuda_test": "report_tests::report_gpu_continuation_uses_additional_budget_and_keeps_locks",
+  "prior_log": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-server-unit\\stdout.log",
+  "prior_log_sha256": "c499bb0cb5fdb4f674b652e2d3bd35ee8b9dcc84d70ac053d775aac9f6ff3acd",
+  "server_source_sha256": {
+    "crates/server/Cargo.toml": "39ab6768d3cf4f1b23d9f4a31efc53029182ded3cf25d70f6d291936b3a89d3b",
+    "crates/server/src/evidence_tests.rs": "e3d5c0e3b0d4c802bb16e019473fa7ee7d2221f4b9e2f0a57551381a8fa5a1ab",
+    "crates/server/src/main.rs": "1029ba654b95b72eced812ab79fc930f0a1591013d5941c9ba7cf1b655749ea8",
+    "crates/server/src/postflop_context_tests.rs": "bd06de82fba8e50f44dd4a668dd3a2504a7d1f515eb2e2c3547aee5f4d63ceea",
+    "crates/server/src/preflop_preview_tests.rs": "f3b1329783ccccf48c2ced18468b14e723b7f05827a92b8f1b7fbcdc4069ba83",
+    "crates/server/src/report_tests.rs": "5c6cfeb8599d66d3667fe57284c16eae1c89b95ffc590fb10ca259f472c1135b"
+  }
+}

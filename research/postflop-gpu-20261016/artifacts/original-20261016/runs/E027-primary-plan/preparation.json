@@ -1,0 +1,59 @@
+{
+  "candidate": "E027",
+  "at": "2026-10-16T16:09:07.142734+00:00",
+  "status": "FROZEN_PREPARATION_ONLY",
+  "python_ast_only": true,
+  "source_archive_sha256": "68884e160241e8cff078f5709458158a3f05c5376183bedeb1dc57a17c95684a",
+  "all162_accepted_sources_exact": true,
+  "owned_source_count": 5,
+  "unowned_source_count": 157,
+  "test_declaration_counts": {
+    "crates/solver/src/game.rs": {
+      "base": 0,
+      "candidate": 0
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "base": 0,
+      "candidate": 0
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": 0,
+      "candidate": 0
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": 4,
+      "candidate": 4
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "base": 1,
+      "candidate": 1
+    }
+  },
+  "expected_unit_inventory": "84/0/4/0/0; not executed",
+  "fixed_primary_order": [
+    "V027-unit",
+    "B089",
+    "E027R1",
+    "E027R2",
+    "B090",
+    "B091",
+    "E027R3"
+  ],
+  "unused_ids": true,
+  "fresh_build_and_output_paths_absent": true,
+  "no_authorization_file": true,
+  "unresolved_executable_placeholders": false,
+  "raw_exactness_requirements": {
+    "results": 18,
+    "convergence_records": 138
+  },
+  "changed_cuda_guard_rejects_reference_binary": true,
+  "D050_D051_prerequisites_removed": true,
+  "conditional_raw_reach_and_accounting_required_but_unimplemented": true,
+  "preserved_draft_sha256": "64488cb3cd3579f380ca6b57f7e3445e447890f6315101e4e1529bc027a3ad3d",
+  "compiler_executions": 0,
+  "native_tests": 0,
+  "gpu_executions": 0,
+  "production_edits": 0,
+  "status_edits": 0
+}

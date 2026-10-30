@@ -1,0 +1,1 @@
+D066 prospective scripts pass independent review. Final seal, exact source/schema, fixed one-run lifecycle and retained compact count parser are bound. No timing or optimization acceptance is inferred. No compiler/native/GPU execution was performed; root execution remains separate.

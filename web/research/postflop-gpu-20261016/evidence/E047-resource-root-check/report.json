@@ -1,0 +1,34 @@
+{
+  "id": "E047-resource-root-check",
+  "at": "2026-10-17T02:33:09.868187+00:00",
+  "status": "pass_resource_feasibility_only",
+  "checks": 123,
+  "root_cross_check_only": true,
+  "resource_report_sha256": "6d5838edc17a498b23219e000e21dc31e62bcf7e33a74f57e0486e226bfe8177",
+  "same_resources": {
+    "registers": 66,
+    "local_bytes_per_thread": 64,
+    "max_threads": 896,
+    "occupancy": [
+      [
+        64,
+        14
+      ],
+      [
+        128,
+        7
+      ],
+      [
+        256,
+        3
+      ]
+    ]
+  },
+  "same_abi_other8_exact": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Root input/receipt/resource/rawPTX verification, not an external independent review or numerical/speed proof."
+}

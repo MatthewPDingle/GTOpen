@@ -1,0 +1,24 @@
+warning: unused imports: `CompileOptions` and `compile_ptx_with_opts`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\E089-kernel-control\probe.rs:3:13
+  |
+3 |     nvrtc::{compile_ptx_with_opts, CompileOptions}};
+  |             ^^^^^^^^^^^^^^^^^^^^^  ^^^^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `category` is never used
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\E089-kernel-control\accepted-evaluator.rs:178:8
+    |
+178 | pub fn category(value: u32) -> u32 {
+    |        ^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `category_name` is never used
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\E089-kernel-control\accepted-evaluator.rs:182:8
+    |
+182 | pub fn category_name(value: u32) -> &'static str {
+    |        ^^^^^^^^^^^^^
+
+warning: 3 warnings emitted
+

@@ -1,0 +1,46 @@
+{
+  "id": "E025-source-script-review",
+  "at": "2026-10-16T14:46:29.436827+00:00",
+  "status": "PASS_SOURCE_AND_PROSPECTIVE_SCRIPTS",
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "source_manifest_sha256": "84f3d6c43af847475c29dd41e4fe608f1d2991dd866ea056cfc37e943de74ab3",
+  "scripts_manifest_sha256": "c276190d4f1282198e729ad9f5bbfa89c05ad5f2b16900f272bf7fe4a9ee293e",
+  "protocol_sha256": "9cadcf6dd20f1ccb16a061bcc5707a506bdc7a058435b4d3b7de58ff8d02e937",
+  "validation_sha256": "9a2a7bd42323a2897b86670ea4e0cc7ba18c42d1393208bec1cee613da629d49",
+  "source_verdict": "Two production expressions round max logical hands to32 only for physical CFV/evaluation-root stride and the corresponding public VRAM estimate. Field documentation and assertions extend one existing test; no test added. Non-test reversal recovers exact E020, with all162 current checkout inputs still accepted E020.",
+  "address_and_numeric_contract": [
+    "CUDA uses nh_max only as CFV row addressing stride; all training/evaluation hand loops and permutation indexing retain logical nh_p/nh_o. Row slots, order, child mapping, reaches and learning arenas are unchanged. With stride>=logical max, parent/child/same-level disjointness is preserved, and padding is never consumed as a hand.",
+    "Root downloads and continuation results slice0..nh[p]; eval-root slots are spaced by nh_max but copies and dot products consume nh[p]. Existing raked/unraked/captured evaluations retain operation order. Save/readback arrays are unchanged.",
+    "Valid two-card ranges have at most1326 entries; div_ceil(32)*32 cannot overflow for valid inputs. The u64 public estimate rounds identically to usize plan stride."
+  ],
+  "memory_and_lifecycle_contract": [
+    "GpuSolver allocates cfv_blocks*plan.nh_max floats and4*plan.nh_max eval-root floats; staging_bytes includes padded CFVs. Exact-budget constructor/compact selection therefore use padded CFV cost. game.rs estimate remains conservative over all nodes/reach writers plus existing metadata slack.",
+    "Additional device payload is4*cfv_blocks*delta+16*delta. The retained 512MiB constructor slack still covers auxiliary metadata/eval roots; do not describe staging_bytes alone as every allocation.",
+    "Continuation capacity metadata derives eval roots from padded nh_max and workspace[6] derives padded CFVs. Paging/stored constructors retain actual allocation lengths, absorb max-sized buffers and check capacity before swap; no new owner, pointer, lifetime or serialization field is introduced.",
+    "Near-limit admission or F32 compact selection can change, and narrow ranges can incur a larger percentage padding cost. These disclosed effects require the existing tight-budget/warm checks if qualification proceeds."
+  ],
+  "test_scope": [
+    "Existing river_bounds test now asserts actual counts, alignment, logical-row bounds, CFV extent, four-root spacing, exact staging delta and conservative estimate across three boards/two isomorphism choices; ordinary GPU-only expected inventory remains84passed/4ignored.",
+    "Existing shared_evaluation_matches_independent_sweeps covers budget-minus-one/exact budget; tight_f32_budget_preserves_warm_and_queried_inactive_state covers compact selection. No runtime success is claimed here.",
+    "The conditional stored720 test validates state/values and reports workspace bytes, but does not itself compare planned/observed capacity. The protocol's explicit planned/observed continuation-capacity obligation remains a separate future qualification check, not a result inferred from720passes."
+  ],
+  "script_verdict": [
+    "Build verifies immutable root authorization plus accepted E020/server/feasibility and combined review pins. It locks/refuses active work, demands unused target/output paths, exact two owned source hashes and160 unchanged inputs, full source-set equality, absent compiler overrides, and pre/post source identity.",
+    "Cargo is release/locked/offline/no-run. Owned child cleanup stays inside lock; heartbeat failures are nonfatal. Successful terminal compiler records, fresh solver+test artifacts, exact source/manifest paths and target-contained outputs are required before frozen executable manifests are written.",
+    "Both binaries must embed complete accepted CUDA because CUDA is unchanged. Source copies, fresh build artifacts and full source hashes establish the Rust stride change; accepted CUDA is correctly not forbidden. The inherited manifest key name probe_authorization has no D046 prerequisite semantics.",
+    "Primary requires both frozen binary/manifest identities and terminal build exit with no remaining lock, unused IDs,84/0/4/0/0 unit summary before fixedB083/R1,R2/B084,B085/R3 order. Serialized runner owns each native process; bounded waits/owned cleanup and pre/post binary/source pins remain.",
+    "Assessment requires all6 runs,18 raw/report result records and138 convergence checks. It excludes only6 named timing fields; complete other fields, exact stops/targets and ordered checks must match. Existing sum-of-fixture-medians2% and strict-majority3% guard remain, with no exclusions/extensions/adoption. Physical-run patch alias is exact and documented.",
+    "No D046/generic-cache gate remains in executable scripts. Existing broad/F32/GPU/continuation controls, unchanged fixed wide-turn holdout and fresh-original cumulative remain conditional. No live server mutation is present."
+  ],
+  "limits": "This source/script verdict permits considering root-owned execution only. It proves neither native numerical equivalence nor complete-cycle benefit. CUDA launch shape/math are unchanged; structural alignment and selected D045 intervals cannot establish a speedup.",
+  "execution_counts": {
+    "candidate_scripts_executed": 0,
+    "builds": 0,
+    "native_tests": 0,
+    "gpu_runs": 0,
+    "production_edits": 0,
+    "status_edits": 0
+  }
+}

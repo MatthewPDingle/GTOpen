@@ -1,0 +1,743 @@
+{
+  "id": "D108",
+  "at": "2026-10-17T11:06:37.211894+00:00",
+  "status": "prospective_feasibility_policy_and_fixed_docket_frozen",
+  "policy_sha256": "eaa3f168c57a1f390510ac21454fcce3ac0bc454e1ef9a49f73876ec9cda393c",
+  "helper_sha256": "51c75d4a01e22feaa7c03aa7461ac59b1accd913e49cb19b2c814774925bf3c3",
+  "prior_strict_helper_preserved": true,
+  "canonical_parents": 64,
+  "resource_reports": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\report.json",
+      "sha256": "275631d98386a203173dd1e49037cd18c385c5cefd2eb98c36a7b8d0abf22cda",
+      "status": "completed_compiler_resource_diagnostic",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E042-resource\\report.json",
+      "sha256": "165c946cfa6c41ad11440502fdc8ce57ecb37132a0dbef8c42d3c530e5ac1fa9",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E043-resource-r2\\report.json",
+      "sha256": "a396c3da4819d210b9abd10a4bb989d56e89922eec552725bc8c5851d9fbe6b8",
+      "status": "rejected_resource_gate",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "registers_not_increased",
+        "occupancy_not_reduced"
+      ]
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E046-resource\\report.json",
+      "sha256": "2086fbb064b8956c300b28f562ef79751bdf8a3e1d59d7b1489c1272ef0504b6",
+      "status": "rejected_resource_gate",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "registers_not_increased",
+        "baseline_abi_exact",
+        "candidate_abi_exact"
+      ]
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-resource\\report.json",
+      "sha256": "6d5838edc17a498b23219e000e21dc31e62bcf7e33a74f57e0486e226bfe8177",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E048-resource\\report.json",
+      "sha256": "11d2a50b1f77834360ccea390764c9911cc56e917dbf9023c95804d726419197",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E050-resource\\report.json",
+      "sha256": "16bb9e2f2cc3e7d6e8db38793a176f580b47f821066a7c4c19ae5590049c5ceb",
+      "status": "rejected_resource_gate",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "rainbow_p0:registers_not_increased",
+        "rainbow_p1:registers_not_increased",
+        "two_tone_p0:registers_not_increased",
+        "two_tone_p1:registers_not_increased",
+        "river_p0:registers_not_increased",
+        "river_p1:registers_not_increased",
+        "wide_turn:registers_not_increased",
+        "full_hand_upper_bound:registers_not_increased",
+        "empty_sorted_opponent:registers_not_increased",
+        "single_sorted_opponent:registers_not_increased"
+      ]
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-resource\\report.json",
+      "sha256": "fff2b59de6b9162142efe8abfefc5e9c0f52238cd2e1788ab55d6537711bff4e",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E052-resource\\report.json",
+      "sha256": "fb1b89b9246767a5097c168a78ff0596f25d319d31260770ab068e00eab74f99",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E053-resource\\report.json",
+      "sha256": "420eb935e580dac7528c9b9917dc626c076899981f5f5b963836081b3f20bf08",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E054-resource\\report.json",
+      "sha256": "7bda4cf60cb773de59e5a3b6620f2f62f328f7cf6fbeaf576b2253a35662e391",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E055-resource\\report.json",
+      "sha256": "f2fb3fa159cb39295c8290a6aa4a52de0a9ad9d70eb6a1b26dd33f15c670b168",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E057-resource\\report.json",
+      "sha256": "1cefd323fc5c61bab9a05f344f86ba343ea3a3af18a2a727b92d94f0ed70d8a4",
+      "status": "rejected_resource_gate",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "rainbow_p0:registers_not_increased",
+        "rainbow_p1:registers_not_increased",
+        "two_tone_p0:registers_not_increased",
+        "two_tone_p1:registers_not_increased",
+        "river_p0:registers_not_increased",
+        "river_p1:registers_not_increased",
+        "wide_turn:registers_not_increased",
+        "full_hand_upper_bound:registers_not_increased",
+        "empty_sorted_opponent:registers_not_increased",
+        "single_sorted_opponent:registers_not_increased"
+      ]
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E058-resource\\report.json",
+      "sha256": "dcfa91bc88baea206ff4724bd96598669c1c620f0b7bff121bb9fe7722b3d9b5",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E059-resource\\report.json",
+      "sha256": "e8e2c62eef80010ee73156e08b2911f2a2c2fe97fa46f6741f0934270f606398",
+      "status": "rejected_compiled_prerequisite",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "up_chance:allocated_registers_not_increased"
+      ]
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-resource\\report.json",
+      "sha256": "2eee1efab17d0d1ca8b858806306dfb36a0e13fec08cc4235f4144ae8d7f9691",
+      "status": "pass_resource_prerequisite",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\report.json",
+      "sha256": "87011e01921b661e28b26d13a2604433453305de9dfcbdcbe00bc284b8e29fa7",
+      "status": "completed_compiler_resource_diagnostic",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E061-resource\\report.json",
+      "sha256": "2a2803a0e58a9ce3ee5a9c60d4c91a9b434103fd1729ddf1af06be9857598416",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E062-resource\\report.json",
+      "sha256": "2a5e028953670147347429096b6c916436d09e9684e8b7e9a6f65dc216514a03",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-resource\\report.json",
+      "sha256": "6cd5037ae4c12b14289ab8a35214230e088e699b9c38d929f1cc66e66a8e55d6",
+      "status": "pass_resource_feasibility_only",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E064-resource\\report.json",
+      "sha256": "74b77a810f29596c3428638d8ad09613b371ba04a254dbca9eee9ed89cbea827",
+      "status": "rejected_compiled_prerequisite",
+      "kernel_launches": 0,
+      "solver_executions": 0,
+      "performance_measured": false,
+      "failed_gates": [
+        "up_action:allocated_registers_not_increased",
+        "up_action:max_threads_not_reduced",
+        "up_action:driver_occupancy_not_reduced"
+      ]
+    }
+  ],
+  "candidate_decisions": [
+    {
+      "id": "E001",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected after the initial screen: all three complete-cycle measurements were slower than B001, with no promising gain. Full arena fingerprints, exploitability bits and stopping iterations match on all three fixtures. One run per binary does not establish a statistically proven regression; broader correctness qualification was not performed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E002",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected after the initial screen: serialized complete-cycle sum was 7.28% slower than B002, with no promising aggregate gain. Full arena fingerprints, exploitability bits and stopping iterations match on all three fixtures. One run per binary does not establish a statistically proven regression; isolated fixture changes may be timing noise. Broader correctness qualification was not performed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E003",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 10757.0015 -> 10690.4739 ms (0.6185% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E004",
+      "old_status": "accepted",
+      "original_registry_reason": "Validated 5.3832% aggregate complete-cycle improvement across three alternating pairs; individual pairs improved 5.08-5.92%. Gain comes from initialization. Broad accuracy checks passed; deployment pending.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E005",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected after the initial screen: serialized complete-cycle sum was 0.09% slower than B010, with no promising aggregate gain. Full arena fingerprints, exploitability bits and stopping iterations match on all three fixtures. One run per binary does not establish a statistically proven regression; isolated fixture changes may be timing noise. Broader correctness qualification was not performed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E006",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11143.9813 -> 11041.0797 ms (0.9234% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E007",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 10188.8390 -> 10057.1178 ms (1.2928% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E008",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11291.3518 -> 11099.8155 ms (1.6963% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E009",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11150.6615 -> 10995.9118 ms (1.3878% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed. The river fixture also exceeded the 3% median-regression guard. All 89 solver unit tests, including focused readback integration checks, passed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E010",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11130.2839 -> 10871.3492 ms (2.3264% observed gain). Repeatable material fixture regression: river: median regression 79.8807%; 3/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions). Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E012",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11306.9722 -> 11308.4885 ms (-0.0134% observed gain). Below the registered 2% aggregate gate; no reproducible aggregate benefit established. Repeatable material fixture regression: river: median regression 4.8657%; 2/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions). Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E013",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 10990.0495 -> 11026.1506 ms (-0.3285% observed gain). Below the registered 2% aggregate gate; no reproducible aggregate benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E014",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected: 3 measurements per binary; sum of fixture medians 11361.8588 -> 11451.4847 ms (-0.7888% observed gain). Below the registered 2% aggregate gate; no reproducible aggregate benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E015",
+      "old_status": "accepted",
+      "original_registry_reason": "Validated 3.9828% incremental improvement versus E004; fresh original-baseline comparison gives 9.6192% cumulative complete-cycle improvement. All accuracy controls passed. Main source integrated; live deployment blocked.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E016",
+      "old_status": "rejected",
+      "original_registry_reason": "Initial river guard failed. The sole extension retained all nine pairs: aggregate 12.7872% faster, but river median 3.7093% slower and 5/9 pairs exceeded 3%. Pooled gate fails; no further extension. Exact state checks passed. Source restored to accepted E015.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E017",
+      "old_status": "rejected",
+      "original_registry_reason": "0.3492% complete-cycle gain fails the 2% gate. All 18 complete non-timing records exact; 86 library tests and the capacity check passed. Broader F32/save/menu/resume qualification was not run after the failed speed screen. Every timing was retained. Three source files restored to E015.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E018",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected and independently audited: 9739.3074 to 9800.7838ms, 0.6312% slower complete-cycle aggregate. All 18 raw complete non-timing records match; 86 unit tests and 1 capacity test passed. 65 evidence artifacts verified. Broader original F32/menu/resume/paging controls not run after failed speed screen; no acceptance or deployment.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E019",
+      "old_status": "rejected",
+      "original_registry_reason": "Rejected and independently audited: 9981.6832 to 9910.0980 ms, 0.7172% observed complete-cycle improvement, below the 2% gate. All 18 complete non-timing records and 138 convergence checks match exactly; 84 unit tests passed. No fixture guard failed. Broader qualification was not run after the failed speed screen. Accepted E015 source restored; no integration or deployment.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E020",
+      "old_status": "accepted",
+      "original_registry_reason": "Accepted 2.2141% incremental gain versus E015; fresh-original cumulative 10.3798% complete-cycle reduction. All accuracy/holdout gates passed. River median 0.7128% slower, repeated-regression guard passes. Main source integrated; E020 isolated server validation passed; live deployment blocked.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E021",
+      "old_status": "rejected",
+      "original_registry_reason": "Only 0.0674% lower complete-cycle time versus E020, below the fixed 2% gate. All complete non-timing results and convergence records match; no fixture triggers the repeated-regression guard. Independent audit passed (901 assertions); both owned files restored and all 162 sources match accepted E020. No broader qualification or extension.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E022",
+      "old_status": "rejected",
+      "original_registry_reason": "0.7850% lower complete-cycle time versus E020, below the fixed 2% gate. All complete non-timing results and convergence records match; no fixture triggers the repeated-regression guard. Independent audit passed (893 assertions); the CUDA file was restored and all 162 sources match accepted E020. No broader qualification or extension.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E023",
+      "old_status": "rejected",
+      "original_registry_reason": "86 unit tests passed; all 18 complete results and 138 convergence checks are exact. Complete-cycle gain of 1.1982% fails the 2% gate; river median is 4.8054% slower with 2/3 pairs above 3%, also failing its guard. No extension or broader tests were run. All 162 accepted E020 source hashes are restored; live executable unchanged.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E024",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9735.4443 -> 9784.3827 ms: 0.5027% slower, failing the 2% gain gate. All 18 complete results and 138 convergence checks exact; 84 unit tests passed with 4 ignored. No fixture fails its conjunctive regression guard. All samples retained; no extensions or broader tests. All 162 accepted E020 source hashes restored; live executable unchanged.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E025",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians: 9920.3617 -> 10013.3950 ms, or 0.9378% slower, failing the 2% gain gate. All 18 complete results and 138 convergence checks exact; 84 unit tests passed with 4 ignored. No fixture fails its repeated-regression guard. All samples retained; no broader tests or extensions. All 162 accepted E020 source hashes restored; live executable unchanged.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E026",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9520.4104 -> 10051.9586 ms: 5.5832% slower. Both flop fixtures fail the repeated regression guard, with all three pairs over 3% slower. All 18 full non-timing results and 138 convergence checks exact; 84 unit tests passed with 4 ignored. All samples retained and all 162 accepted E020 sources restored. No broader tests, extension or rescue; live executable unchanged.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E027",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9525.4943 -> 9535.9049 ms: 0.1093% slower, missing the fixed 2% gain requirement. No fixture guard failed. All 18 complete non-timing results and 138 convergence records exact; 84 unit tests passed with 4 ignored. All 162 accepted E020 source hashes restored. No broader tests, extension or rescue. Independent terminal and cleanup audit confirmed the result and restoration; failed R1 build and reviewer path correction remain preserved.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E028",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians9581.6885 ->9747.6885ms:1.7325% slower, missing the fixed2% gain requirement. No fixture guard failed. All18 non-timing results and138 convergence records exact;85unit tests passed,4ignored. All162 accepted E020 hashes and both auxiliary examples restored. No broader tests, extension or rescue. Independent numerical and source/build/auxiliary custody audits confirmed rejection and restoration.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E029",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9575.9403 -> 9609.9709 ms: 0.3554% slower, below the fixed 2% gain requirement. River failed the repeated regression guard: median 7.3093% slower, 2/3 pairs above 3%. All 18 results and 138 convergence checks exact; 84 unit tests passed, 4 ignored. Independent numerical and source/build custody audits confirm rejection, all 162 accepted E020 sources restored, and the live executable unchanged. No extra samples or broader qualification.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E030",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9544.2144 -> 9499.5777 ms: 0.4677% gain, below the fixed 2% requirement. River failed the repeated regression guard: median 39.9259% slower, all 3 pairs above 3%. All 18 results and 138 convergence checks exact; 85 unit tests passed, 4 ignored. Independent numerical and source/build custody audits confirm rejection, all 162 accepted E020 sources restored, and the live executable unchanged. No extra samples or broader qualification.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E031",
+      "old_status": "rejected",
+      "original_registry_reason": "The compiler/resource probe completed with zero kernel or solver launches. Theoretical active blocks per SM fell from 12 to 11 for the larger rainbow and two-tone allocations, failing the predeclared screen. Registers changed from 38 to 39, local bytes stayed at 0, and static shared bytes rose from 1,040 to 1,248. The other eight PTX entries are unchanged. This is resource evidence, not a measured slowdown or numerical qualification. No solver tests or rescue variant will run. All 162 accepted source hashes and the live executable remain unchanged.",
+      "eligible": true,
+      "decision": "Eligible for separately attributed fresh feasibility/mechanism/ABI review, exact numerical controls and fixed solve-speed qualification; no original application execution."
+    },
+    {
+      "id": "E032",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle medians 9569.5273 to 9459.8572 ms: 1.1460% gain, below the fixed 2% requirement. All fixture regression guards passed. Independent audits confirm all 18 results and 138 convergence checkpoints matched, 85 unit tests passed with 4 ignored, every sample was retained, and all 162 accepted source hashes were restored. Main source and live executable remain unchanged. No extra samples, rescue or broader qualification.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E033",
+      "old_status": "rejected",
+      "original_registry_reason": "86 tests passed, one failed, four were ignored. An added assertion incorrectly required a cache hint for a 36-byte fixture, below the 128-byte minimum. No speed measurements ran. The accepted source was restored, and the failure was preserved.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E034",
+      "old_status": "rejected",
+      "original_registry_reason": "All 87 unit tests passed; four were ignored. All 18 benchmark results and 138 convergence checks matched exactly. Complete-cycle time fell from 9567.70 to 9518.90 ms (0.51%), below the 2% gate. No fixture guard failed. The accepted source was restored.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E035",
+      "old_status": "rejected",
+      "original_registry_reason": "All 85 unit tests passed with four ignored, including 26 exact original-kernel comparisons. All 18 results and 138 checkpoints matched. Complete-cycle time changed from 9552.01 to 9549.18 ms (0.03%), below the 2% gate. No fixture guard failed. Independent audit passed; accepted source restored. No extra samples or broader qualification.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E036",
+      "old_status": "rejected",
+      "original_registry_reason": "All 85 unit tests passed with four ignored, including 34 exact original/candidate GPU pairs. All 18 results and 138 checkpoints matched. Complete-cycle time improved from 9541.90 to 9431.64 ms (1.16%), below the 2% gate. No fixture guard failed. Independent audits passed; accepted source restored. No extra samples or broader qualification.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E037",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle time was 10378.00 to 10275.18 ms, a 0.99068355% observed gain, below the user-directed 1% cutoff. All 18 complete results and 138 checkpoints matched; units passed 85 with 4 ignored and the focused GPU check passed 34 pairs/68 launches. No fixture slowdown guard failed. Independent numerical and custody audits passed, and accepted source was restored. No extra samples or adoption.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E038",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle performance was 0.2813% slower, below the 1% gain cutoff. Rainbow slowed 1.0728% and was slower in all three pairs. Units passed 85/4; all 26 upload/query/save files, 18 complete results and 138 checkpoints were exact. Root raw-log crosscheck passed. No extra samples or adoption; E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E039",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate improved 1.3401%, but river median slowed 15.8884% with two of three pairs slower. Rejected by the no-repeatable-slowdown guard. All 18 full results, 138 checkpoints, 84 ordinary units and the 175-case direct GPU comparison passed. No extra samples, confirmation or adoption; accepted E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E040",
+      "old_status": "rejected",
+      "original_registry_reason": "Complete-cycle aggregate was0.8159% slower. Two-tone median slowed2.1439%, with allthree pairs slower. All18 full non-timing results/138 checkpoints,86 ordinary tests and four exact GPU readback/drain cases passed. No extra samples, confirmation, adoption or live change; accepted E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E041",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate improved0.3439%, below1%; river median slowed5.8393% with2/3 pairs slower. Exact18 full results/138 checkpoints,86 ordinary tests,208 CPU restore cases and four GPU lifecycle cases/68 raw pairs passed. No extra samples, confirmation or adoption; E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E042",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate improved0.8155%, below1%; no repeatable fixture guard failed. Exact18 full results/138 checkpoints,84 ordinary tests and717 direct GPU cases/1434launches passed. No extra samples, confirmation or adoption; accepted E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E043",
+      "old_status": "rejected",
+      "original_registry_reason": "Registers40 to48; theoretical128-thread blocks/SM12 to10. Local32bytes unchanged, other8 PTX entries exact. Fixed resource gate failed; no numerical/kernel/solver/timing work or rescue. Accepted E020 retained. History correction: exact repeat of earlier rejected D049; not a new hypothesis.",
+      "eligible": true,
+      "decision": "Eligible for separately attributed fresh feasibility/mechanism/ABI review, exact numerical controls and fixed solve-speed qualification; no original application execution."
+    },
+    {
+      "id": "E044",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate1.6823% slower; rainbow/two-tone/river fixture slowdown guards all failed. Exact18 results/138 checkpoints;84 ordinary tests and14 GPU lifecycle cases/308 raw pairs passed. No extra samples, slot-count sweep, confirmation or adoption. Accepted E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E045",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate gain1.3355% clears1%, but river median5.7183% slower with2/3 slower pairs fails the strict fixture guard. Exact18 results/138 checkpoints,86 ordinary tests and4092 integer/predicate comparisons passed. No extra samples, chunk/threshold sweep, confirmation or adoption. E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E046",
+      "old_status": "rejected",
+      "original_registry_reason": "Registers30 to40 violates fixed no-increase gate; occupancy unchanged24/12/6 blocks per SM. Other8 entries exact; corrected raw PTX decoder verifies15-to13 expected arguments. Original ABI regex error preserved. No numerical/kernel/solver/timing work or rescue. E020 retained.",
+      "eligible": false,
+      "decision": "Recorded ABI failure; integrated caller/layout contract incomplete; excluded rather than waived or redesigned."
+    },
+    {
+      "id": "E047",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate gain-1.5138% below1%. Strict fixture guards failed: rainbow, two-tone. No extra samples, arity sweep, confirmation or adoption. Exact18 full results/138 checkpoints,84 ordinary tests and819 directGPU cases passed. E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E048",
+      "old_status": "rejected",
+      "original_registry_reason": "Aggregate gain-1.3134% below1%. Strict fixture guards failed: rainbow, two-tone, river. No extra samples, partial-kernel/packing/factor rescue, confirmation or adoption. Exact18 full results/138 checkpoints,84 ordinary tests and425 directGPU cases passed. E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E049",
+      "old_status": "rejected",
+      "original_registry_reason": "Observed aggregate 3.411411% passes initial1% gate. Strict fixture guards failed: river. Rejected without extra samples, tracking/access variant rescue or confirmation. cpu 46 passed/1 ignored, gpu 86 passed/4 ignored; 5600 original predicate comparisons and18fullresults/138checkpoints exact. E020 retained.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E050",
+      "old_status": "rejected",
+      "original_registry_reason": "Registers38 to40 fails fixed no-increase gate. Local0,shared1040,dynamic bytes and all10shape64/128/256occupancies equal; maxthreads1024. No numerical, solver or speed test. No async/width variant rescue. E020 retained.",
+      "eligible": false,
+      "decision": "Original source now has failed measured timing via E061/E062; closed including aliases."
+    },
+    {
+      "id": "E051",
+      "old_status": "accepted",
+      "original_registry_reason": "Fresh16pairs:2.175173%gain,16/16improving; strict fixture guards pass. Exact raw/state/F32/continuation/capacity checks and fixed holdout pass. Fresh original cumulative12.437227%; no percentages added. Live executable unchanged.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E052",
+      "old_status": "rejected",
+      "original_registry_reason": "Exact84unit/328rawGPU/18full-result/138checkpoint checks pass, but overall0.637509%slower. Two-tone1.330815%andriver3.773309%median slowdowns each occur in2/3pairs. No confirmation, broad qualification or source adoption.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E053",
+      "old_status": "rejected",
+      "original_registry_reason": "Exact84unit/364rawGPU/18full-result/138checkpoint checks pass. Aggregate0.136981%gain misses1%; two-tone median0.514343%slower with3/3slower pairs. No confirmation, broad qualification, source adoption or rescue.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E054",
+      "old_status": "rejected",
+      "original_registry_reason": "84units/819raw GPU cases/18full results/138checkpoints exact. aggregate gain below1%; rainbow median slower with2/3slower pairs. No confirmation, broader qualification, adoption or rescue.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E055",
+      "old_status": "rejected",
+      "original_registry_reason": "84 tests, 819 raw GPU cases, 18 full-state results and 138 convergence checks passed. No fixture guard failed. Below the unrounded 1% threshold; no extra runs or adoption.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E056",
+      "old_status": "rejected",
+      "original_registry_reason": "Initial aggregate gain -0.148610%. All18 full results,138 checkpoints,84 units and12 CPU metadata/ownership cases passed. Rejected: below the unrounded1% cutoff; repeatable fixture slowdown: rainbow, river. No extra samples, ordering-key/arity/threshold variant rescue or adoption.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E057",
+      "old_status": "rejected",
+      "original_registry_reason": "Fixed no-launch resource gate failed: up_show registers38 to40. Local/shared/dynamic bytes, maxthreads, same-shape occupancy queries, ABI and other8entry bodies match. No kernels, numerical controls, timed solves, variants or adoption. Accepted E051 retained.",
+      "eligible": false,
+      "decision": "Original source now has failed measured timing via E061/E062; closed including aliases."
+    },
+    {
+      "id": "E058",
+      "old_status": "rejected",
+      "original_registry_reason": "Resource gate passes40/40nominal registers, same1,280allocated registers per warp and32local bytes. Exact PTX differs only by an independent adjacent compare/divide swap; all18division sites remain. Intended saving absent. No kernel, numerical controls, timed solve, variant or adoption.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E059",
+      "old_status": "rejected",
+      "original_registry_reason": "Compiler removes7blocker-dependent PTX branches; all12CPU layouts/address invariants pass. Reported registers30to40 increase modeled allocation1,024to1,280perwarp, failing the fixed D094 resource gate. Occupancy/maxthreads/local/shared unchanged. No direct GPU numerical test, timed solve, variant or adoption.",
+      "eligible": true,
+      "decision": "Eligible for separately attributed fresh feasibility/mechanism/ABI review, exact numerical controls and fixed solve-speed qualification; no original application execution."
+    },
+    {
+      "id": "E060",
+      "old_status": "rejected",
+      "original_registry_reason": "Allocated resources,2,130,758scalar cases,819whole-kernel cases,84units and18full payloads/138checks passed. Aggregate1.2170441078%clears1%, but river median3.1675893974%slower,2/3slower pairs. No fresh16or variants; rejected.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E061",
+      "old_status": "rejected",
+      "original_registry_reason": "Current allocated-resource filter and364raw pairs/84GPU units/18complete payloads/138checks passed. First speed result0.742959%slower overall; two-tone median2.220006%slower with2/3slower pairs. Exact original E050form now has a known measured failure. No variants/extensions/adoption.",
+      "eligible": false,
+      "decision": "Original source now has failed measured timing via E061/E062; closed including aliases."
+    },
+    {
+      "id": "E062",
+      "old_status": "rejected",
+      "original_registry_reason": "Resources,364raw pairs,84GPU units,18complete payloads and138checkpoints passed. Three fixed speed pairs:0.993863%slower aggregate;rainbow0.515039%slower2/3pairs and river7.896681%slower3/3pairs. Exact original E057form now has a measured failure. D101docket exhausted; no variants/extensions/adoption.",
+      "eligible": false,
+      "decision": "Original source now has failed measured timing via E061/E062; closed including aliases."
+    },
+    {
+      "id": "E063",
+      "old_status": "rejected",
+      "original_registry_reason": "CPU integer proof, current resources,364raw pairs,84GPU units,18complete payloads/138checkpoints exact. Complete-cycle5.391759%slower;rainbow5.143968%andtwo-tone5.911754%slower,3/3pairs each. Reject without variants/resampling/adoption. Extra temporary host cost remains recorded; no materially-free claim.",
+      "eligible": false,
+      "decision": "No eligible resource-only unmeasured form in bounded indexed inventory; accepted, known timed/numerical/mechanism failure or no resource-only candidate. Original registry reason retained."
+    },
+    {
+      "id": "E064",
+      "old_status": "rejected",
+      "original_registry_reason": "Nominal62to68registers; rounded perwarp2,048to2,304/per128CTA8,192to9,216. Maxthreads1,024to896; theoretical blocks/SMat128threads8to7. Local64bytes same, other8entries and20parameter ABI exact. Reject before actual machine/numerical/solver/timing stages, no source variants.",
+      "eligible": false,
+      "decision": "Intended static integer reduction absent (64-bit sites779to788), maxthreads1024to896; excluded, no source variant."
+    },
+    {
+      "id": "E065",
+      "old_status": "rejected",
+      "original_registry_reason": "Exact tree layouts and capacities passed. The fixed CPU screen saved 45.4 ms, below its 107.8 ms admission threshold; the river component also failed the slowdown guard. No full-solve benchmark or adoption.",
+      "eligible": false,
+      "decision": "Frozen CPU component screen failed; closed without additional samples/source variants."
+    }
+  ],
+  "eligible_in_fixed_order": [
+    {
+      "original_id": "E031",
+      "alias": null,
+      "entry": "up_show",
+      "baseline": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-design\\base\\kernels.cu",
+      "baseline_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-design\\candidate\\kernels.cu",
+      "candidate_sha256": "75defdd19a144924e41d1ca36e166161c2e097ec22843905444376e9a561079b",
+      "original_resource_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E031-show-card-offset-resource\\report.json",
+      "original_resource_report_sha256": "275631d98386a203173dd1e49037cd18c385c5cefd2eb98c36a7b8d0abf22cda",
+      "original_application_kernels": 0,
+      "original_solver_executions": 0,
+      "original_performance_samples": 0,
+      "no_primary_cohort_directory": true,
+      "candidate_full_hash_absent_from_integrated_binary_manifest_registry": true,
+      "fresh_intended_mechanism_review_required": true
+    },
+    {
+      "original_id": "E043",
+      "alias": "D049 exact same full candidate",
+      "entry": "down_action",
+      "baseline": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E043-design\\baseline.cu",
+      "baseline_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E043-design\\candidate.cu",
+      "candidate_sha256": "aa7c5d83b610b94ca3b722312cfe977d235c2f286333453bbbe5b68c1a7762fb",
+      "original_resource_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E043-resource-r2\\report.json",
+      "original_resource_report_sha256": "a396c3da4819d210b9abd10a4bb989d56e89922eec552725bc8c5851d9fbe6b8",
+      "original_application_kernels": 0,
+      "original_solver_executions": 0,
+      "original_performance_samples": 0,
+      "no_primary_cohort_directory": true,
+      "candidate_full_hash_absent_from_integrated_binary_manifest_registry": true,
+      "fresh_intended_mechanism_review_required": true
+    },
+    {
+      "original_id": "E059",
+      "alias": null,
+      "entry": "up_chance",
+      "baseline": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E059-source\\baseline.cu",
+      "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E059-source\\candidate.cu",
+      "candidate_sha256": "479d18af23b0666278bb751df4e0169edd001f88404a0ab0ff369c119c9e5c1e",
+      "original_resource_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E059-resource\\report.json",
+      "original_resource_report_sha256": "e8e2c62eef80010ee73156e08b2911f2a2c2fe97fa46f6741f0934270f606398",
+      "original_application_kernels": 0,
+      "original_solver_executions": 0,
+      "original_performance_samples": 0,
+      "no_primary_cohort_directory": true,
+      "candidate_full_hash_absent_from_integrated_binary_manifest_registry": true,
+      "fresh_intended_mechanism_review_required": true
+    }
+  ],
+  "known_runtime_or_numerical_failures_reopened": false,
+  "new_native_executions": 0,
+  "source_activated": false,
+  "speed_gain_claimed": false,
+  "limits": "Bounded canonical registry/indexed-resource/source-hash audit; not exhaustive semantic uniqueness across all external/unindexed work. No physical allocation counters. Changed resource risk needs actual qualification; this audit cannot establish speed or no material cost. Root review only."
+}

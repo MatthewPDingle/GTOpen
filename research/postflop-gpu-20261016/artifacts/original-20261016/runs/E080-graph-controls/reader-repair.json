@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-18T08:31:49.122767+00:00",
+  "original_protocol_sha256": "5dd8d6d165494fa3e0479a274505f8e6ae4cf5d34f1e2e93d5f98c7c9be8809c",
+  "original_reader_sha256": "d9a9e5a8282d3efb9eb307bb6bc675665457eaa40a399d63b4cda78410e9a9b2",
+  "original_failed_receipt_sha256": "f76684c2b5c9bb30585ef46f14176b496c419c49129c9e85ad127516de4aa0ee",
+  "corrected_reader_sha256": "8a4b9a41bb334b4aacf9ff452baae403fc9c4d978f42dd3662c49057c7d8c994",
+  "cause": "Original reader wrongly demanded zero dynamic shared memory for every launched kernel, although original application passes dynamic bytes to up_fold/up_show. It also required copy_span to launch in this fixture, but copy_span is a compiled unlaunched function here.",
+  "repair": "Match the original protocol: full launched descriptors including dynamic shared counts must be exactly equal across arms; cross-check driver register/static shared attributes for each actually launched family. All nine compiled resources and full PTX still exactly equal.",
+  "native_processes_rerun": 0,
+  "protocol_subject_or_declared_guards_changed": false,
+  "original_reader_failure_preserved": true
+}

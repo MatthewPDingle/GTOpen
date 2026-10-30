@@ -1,0 +1,33 @@
+{
+  "id": "E059-resource-root-check",
+  "at": "2026-10-17T08:13:45.277061+00:00",
+  "status": "pass_fixed_allocation_rejection",
+  "checks": 102,
+  "resource_report_sha256": "e8e2c62eef80010ee73156e08b2911f2a2c2fe97fa46f6741f0934270f606398",
+  "branch_proof_sha256": "f4bc1b86eba7bda91eb5236d861ec8c13661bfed9af419f60a4a96a47d1bd73a",
+  "address_proof_sha256": "bf3bf1633aff9cfd08fc025d8607979907558515a56fbb7f5c1576996012c499",
+  "compiled_nominal_registers": [
+    30,
+    40
+  ],
+  "modeled_allocated_registers_per_warp": [
+    1024,
+    1280
+  ],
+  "driver_occupancy_queries_equal": true,
+  "blocker_branch_sites": [
+    7,
+    0
+  ],
+  "static_fp_add_sites": [
+    7,
+    7
+  ],
+  "same_abi_other8entries_exact": true,
+  "source_activated": false,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root raw attributes, integer allocation rounding and PTX witness/hash replay, not external independent review. Allocation is the calibrated NVIDIA SDK model, not hardware counters. No numerical or runtime performance qualification."
+}

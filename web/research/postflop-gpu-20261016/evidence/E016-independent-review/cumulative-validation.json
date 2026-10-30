@@ -1,0 +1,857 @@
+{
+  "schema_version": 1,
+  "candidate": "E016",
+  "status": "cumulative_comparison_fails_repeatable_river_regression_guard_not_accepted",
+  "all_18_complete_nontiming_records_exact": true,
+  "score": {
+    "aggregation": "sum of per-fixture medians",
+    "baseline_ms": 11386.981300000001,
+    "candidate_ms": 10009.4903,
+    "observed_gain_pct": 12.097069132799943,
+    "aggregate_gate_met": true,
+    "repeatable_material_fixture_guard_failed": true,
+    "affected_fixtures": [
+      "river"
+    ],
+    "qualification_pass": false
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "raw_ms": {
+        "baseline": {
+          "build_ms": [
+            80.85929999999999,
+            83.291,
+            87.3697
+          ],
+          "init_ms": [
+            967.1042,
+            982.9959,
+            977.2857
+          ],
+          "solve_ms": [
+            4977.858,
+            5284.565500000001,
+            5472.5815999999995
+          ],
+          "readback_ms": [
+            359.15970000000004,
+            335.6891,
+            365.8018
+          ],
+          "full_cycle_ms": [
+            6385.026,
+            6686.5913,
+            6903.0921
+          ]
+        },
+        "candidate": {
+          "build_ms": [
+            95.7267,
+            88.5791,
+            81.6472
+          ],
+          "init_ms": [
+            628.8312999999999,
+            615.9405999999999,
+            655.0215000000001
+          ],
+          "solve_ms": [
+            4747.8514000000005,
+            4837.2661,
+            4899.3468
+          ],
+          "readback_ms": [
+            422.918,
+            346.7582,
+            341.68530000000004
+          ],
+          "full_cycle_ms": [
+            5895.3724999999995,
+            5888.5914,
+            5977.750099999999
+          ]
+        }
+      },
+      "medians_ms": {
+        "baseline": {
+          "build_ms": 83.291,
+          "init_ms": 977.2857,
+          "solve_ms": 5284.565500000001,
+          "readback_ms": 359.15970000000004,
+          "full_cycle_ms": 6686.5913
+        },
+        "candidate": {
+          "build_ms": 88.5791,
+          "init_ms": 628.8312999999999,
+          "solve_ms": 4837.2661,
+          "readback_ms": 346.7582,
+          "full_cycle_ms": 5895.3724999999995
+        }
+      },
+      "paired_candidate_minus_baseline_ms": [
+        {
+          "build_ms": 14.867400000000004,
+          "init_ms": -338.27290000000005,
+          "solve_ms": -230.0065999999997,
+          "readback_ms": 63.75829999999996,
+          "full_cycle_ms": -489.65350000000035
+        },
+        {
+          "build_ms": 5.2881,
+          "init_ms": -367.0553000000001,
+          "solve_ms": -447.2994000000008,
+          "readback_ms": 11.069099999999992,
+          "full_cycle_ms": -797.9998999999998
+        },
+        {
+          "build_ms": -5.722499999999997,
+          "init_ms": -322.26419999999996,
+          "solve_ms": -573.2347999999993,
+          "readback_ms": -24.116499999999974,
+          "full_cycle_ms": -925.3420000000006
+        }
+      ],
+      "median_candidate_minus_baseline_ms": {
+        "build_ms": 5.2881,
+        "init_ms": -348.4544000000001,
+        "solve_ms": -447.2994000000008,
+        "readback_ms": -12.401500000000055,
+        "full_cycle_ms": -791.2188000000006
+      },
+      "paired_regression_pct": [
+        -7.668778482656147,
+        -11.93433042632649,
+        -13.40474654828958
+      ],
+      "median_regression_pct": -11.832917020066724,
+      "repeat_count_above_3pct": 0,
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "raw_ms": {
+        "baseline": {
+          "build_ms": [
+            355.717,
+            430.7978,
+            387.4453
+          ],
+          "init_ms": [
+            665.3147,
+            674.3069,
+            732.8643999999999
+          ],
+          "solve_ms": [
+            3041.1041999999998,
+            3240.418,
+            3253.1407
+          ],
+          "readback_ms": [
+            238.4894,
+            246.305,
+            256.1893
+          ],
+          "full_cycle_ms": [
+            4300.6794,
+            4591.8842,
+            4629.7126
+          ]
+        },
+        "candidate": {
+          "build_ms": [
+            456.4912,
+            384.8047,
+            354.2176
+          ],
+          "init_ms": [
+            451.9399,
+            442.95390000000003,
+            388.6284
+          ],
+          "solve_ms": [
+            2923.6794,
+            2906.9599,
+            2913.3391
+          ],
+          "readback_ms": [
+            250.2109,
+            253.5693,
+            247.1427
+          ],
+          "full_cycle_ms": [
+            4082.3796,
+            3988.3680999999997,
+            3903.3855
+          ]
+        }
+      },
+      "medians_ms": {
+        "baseline": {
+          "build_ms": 387.4453,
+          "init_ms": 674.3069,
+          "solve_ms": 3240.418,
+          "readback_ms": 246.305,
+          "full_cycle_ms": 4591.8842
+        },
+        "candidate": {
+          "build_ms": 384.8047,
+          "init_ms": 442.95390000000003,
+          "solve_ms": 2913.3391,
+          "readback_ms": 250.2109,
+          "full_cycle_ms": 3988.3680999999997
+        }
+      },
+      "paired_candidate_minus_baseline_ms": [
+        {
+          "build_ms": 100.77420000000001,
+          "init_ms": -213.3748,
+          "solve_ms": -117.42479999999978,
+          "readback_ms": 11.72150000000002,
+          "full_cycle_ms": -218.29979999999978
+        },
+        {
+          "build_ms": -45.99309999999997,
+          "init_ms": -231.353,
+          "solve_ms": -333.4581000000003,
+          "readback_ms": 7.2642999999999915,
+          "full_cycle_ms": -603.5161000000007
+        },
+        {
+          "build_ms": -33.22769999999997,
+          "init_ms": -344.23599999999993,
+          "solve_ms": -339.8015999999998,
+          "readback_ms": -9.046600000000012,
+          "full_cycle_ms": -726.3271
+        }
+      ],
+      "median_candidate_minus_baseline_ms": {
+        "build_ms": -2.6405999999999494,
+        "init_ms": -231.353,
+        "solve_ms": -327.0789,
+        "readback_ms": 3.9059000000000026,
+        "full_cycle_ms": -603.5161000000007
+      },
+      "paired_regression_pct": [
+        -5.075937536752906,
+        -13.14310365230902,
+        -15.68838419905374
+      ],
+      "median_regression_pct": -13.14310365230902,
+      "repeat_count_above_3pct": 0,
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "river",
+      "raw_ms": {
+        "baseline": {
+          "build_ms": [
+            0.20829999999999999,
+            0.2064,
+            0.2033
+          ],
+          "init_ms": [
+            87.4432,
+            98.06869999999999,
+            89.4131
+          ],
+          "solve_ms": [
+            16.7317,
+            20.3562,
+            18.1379
+          ],
+          "readback_ms": [
+            0.6356,
+            1.0899,
+            0.7181000000000001
+          ],
+          "full_cycle_ms": [
+            105.0458,
+            119.75420000000001,
+            108.5058
+          ]
+        },
+        "candidate": {
+          "build_ms": [
+            0.1847,
+            0.20579999999999998,
+            0.22790000000000002
+          ],
+          "init_ms": [
+            94.42649999999999,
+            105.2535,
+            108.266
+          ],
+          "solve_ms": [
+            17.3304,
+            19.444699999999997,
+            16.250400000000003
+          ],
+          "readback_ms": [
+            0.8578,
+            0.8166,
+            1.0251
+          ],
+          "full_cycle_ms": [
+            112.8334,
+            125.74969999999999,
+            125.80369999999999
+          ]
+        }
+      },
+      "medians_ms": {
+        "baseline": {
+          "build_ms": 0.2064,
+          "init_ms": 89.4131,
+          "solve_ms": 18.1379,
+          "readback_ms": 0.7181000000000001,
+          "full_cycle_ms": 108.5058
+        },
+        "candidate": {
+          "build_ms": 0.20579999999999998,
+          "init_ms": 105.2535,
+          "solve_ms": 17.3304,
+          "readback_ms": 0.8578,
+          "full_cycle_ms": 125.74969999999999
+        }
+      },
+      "paired_candidate_minus_baseline_ms": [
+        {
+          "build_ms": -0.023599999999999982,
+          "init_ms": 6.983299999999986,
+          "solve_ms": 0.5987000000000009,
+          "readback_ms": 0.22219999999999995,
+          "full_cycle_ms": 7.787599999999998
+        },
+        {
+          "build_ms": -0.0006000000000000172,
+          "init_ms": 7.18480000000001,
+          "solve_ms": -0.9115000000000038,
+          "readback_ms": -0.2733000000000001,
+          "full_cycle_ms": 5.9954999999999785
+        },
+        {
+          "build_ms": 0.02460000000000001,
+          "init_ms": 18.852900000000005,
+          "solve_ms": -1.8874999999999957,
+          "readback_ms": 0.30699999999999983,
+          "full_cycle_ms": 17.2979
+        }
+      ],
+      "median_candidate_minus_baseline_ms": {
+        "build_ms": -0.0006000000000000172,
+        "init_ms": 15.840400000000002,
+        "solve_ms": -0.8074999999999974,
+        "readback_ms": 0.13969999999999994,
+        "full_cycle_ms": 17.243899999999996
+      },
+      "paired_regression_pct": [
+        7.413528194368557,
+        5.0065049910566595,
+        15.941912782542488
+      ],
+      "median_regression_pct": 15.892145857640783,
+      "repeat_count_above_3pct": 3,
+      "guard_failed": true
+    }
+  ],
+  "pairs": [
+    {
+      "baseline": "B044",
+      "candidate": "E016C1",
+      "observed_cycle_gain_pct": 6.488572361857448,
+      "whole_test_and_process_saved_ms": {
+        "test_ms": 490.0,
+        "runner_process_ms": 438.00000000192085,
+        "sum_fixture_cycles_ms": 700.1657000000014,
+        "sum_fingerprint_ms": -153.56420000000026,
+        "test_minus_cycles_and_fingerprints_ms": -56.601500000001124
+      },
+      "suite_component_saved_ms": {
+        "build_ms": -115.61800000000001,
+        "init_ms": 544.6644000000001,
+        "solve_ms": 346.8326999999995,
+        "readback_ms": -75.70199999999998,
+        "full_cycle_ms": 700.1657000000001
+      }
+    },
+    {
+      "baseline": "B045",
+      "candidate": "E016C2",
+      "observed_cycle_gain_pct": 12.243309151771175,
+      "whole_test_and_process_saved_ms": {
+        "test_ms": 1440.0,
+        "runner_process_ms": 1437.999999994645,
+        "sum_fixture_cycles_ms": 1395.5205000000005,
+        "sum_fingerprint_ms": 23.06110000000035,
+        "test_minus_cycles_and_fingerprints_ms": 21.41839999999911
+      },
+      "suite_component_saved_ms": {
+        "build_ms": 40.70559999999997,
+        "init_ms": 591.2235000000001,
+        "solve_ms": 781.6690000000011,
+        "readback_ms": -18.060099999999984,
+        "full_cycle_ms": 1395.5205000000005
+      }
+    },
+    {
+      "baseline": "B046",
+      "candidate": "E016C3",
+      "observed_cycle_gain_pct": 14.039409051068608,
+      "whole_test_and_process_saved_ms": {
+        "test_ms": 1620.0,
+        "runner_process_ms": 1639.999999999418,
+        "sum_fixture_cycles_ms": 1634.3711999999996,
+        "sum_fingerprint_ms": -4.3434000000002015,
+        "test_minus_cycles_and_fingerprints_ms": -10.027799999999388
+      },
+      "suite_component_saved_ms": {
+        "build_ms": 38.92559999999997,
+        "init_ms": 647.6472999999999,
+        "solve_ms": 914.9238999999991,
+        "readback_ms": 32.856099999999984,
+        "full_cycle_ms": 1634.3712000000005
+      }
+    }
+  ],
+  "whole_lifetime_diagnostic": {
+    "runs": {
+      "B044": {
+        "test_ms": 13360.0,
+        "runner_process_ms": 13641.00000000326,
+        "sum_fixture_cycles_ms": 10790.7512,
+        "sum_fingerprint_ms": 2383.9739999999997,
+        "test_minus_cycles_and_fingerprints_ms": 185.2747999999997
+      },
+      "B045": {
+        "test_ms": 14100.0,
+        "runner_process_ms": 14343.999999997322,
+        "sum_fixture_cycles_ms": 11398.2297,
+        "sum_fingerprint_ms": 2487.6882,
+        "test_minus_cycles_and_fingerprints_ms": 214.08210000000008
+      },
+      "B046": {
+        "test_ms": 14320.0,
+        "runner_process_ms": 14609.000000000378,
+        "sum_fixture_cycles_ms": 11641.3105,
+        "sum_fingerprint_ms": 2467.7046,
+        "test_minus_cycles_and_fingerprints_ms": 210.98490000000038
+      },
+      "E016C1": {
+        "test_ms": 12870.0,
+        "runner_process_ms": 13203.000000001339,
+        "sum_fixture_cycles_ms": 10090.5855,
+        "sum_fingerprint_ms": 2537.5382,
+        "test_minus_cycles_and_fingerprints_ms": 241.8763000000008
+      },
+      "E016C2": {
+        "test_ms": 12660.0,
+        "runner_process_ms": 12906.000000002678,
+        "sum_fixture_cycles_ms": 10002.7092,
+        "sum_fingerprint_ms": 2464.6270999999997,
+        "test_minus_cycles_and_fingerprints_ms": 192.66370000000097
+      },
+      "E016C3": {
+        "test_ms": 12700.0,
+        "runner_process_ms": 12969.00000000096,
+        "sum_fixture_cycles_ms": 10006.9393,
+        "sum_fingerprint_ms": 2472.0480000000002,
+        "test_minus_cycles_and_fingerprints_ms": 221.01269999999977
+      }
+    },
+    "medians": {
+      "test_ms": {
+        "baseline": 14100.0,
+        "candidate": 12700.0
+      },
+      "runner_process_ms": {
+        "baseline": 14343.999999997322,
+        "candidate": 12969.00000000096
+      },
+      "sum_fixture_cycles_ms": {
+        "baseline": 11398.2297,
+        "candidate": 10006.9393
+      },
+      "sum_fingerprint_ms": {
+        "baseline": 2467.7046,
+        "candidate": 2472.0480000000002
+      },
+      "test_minus_cycles_and_fingerprints_ms": {
+        "baseline": 210.98490000000038,
+        "candidate": 221.01269999999977
+      }
+    },
+    "all_three_whole_test_and_runner_envelopes_faster": true,
+    "scope": "Whole-test includes fingerprinting, result logging and scoped destruction; rounded to 10ms. Runner process envelope additionally includes output/dashboard/polling delay and later process exit, with timer starting after Popen. Neither is pure application end-to-end timing; these aggregate diagnostics do not excuse a fixture guard failure."
+  },
+  "telemetry": {
+    "B044": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:53:43Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2390,
+        "memory_free_mb": 29798,
+        "utilization_pct": 0,
+        "temperature_c": 44,
+        "power_w": 72.45,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:53:57Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2451,
+        "memory_free_mb": 29737,
+        "utilization_pct": 0,
+        "temperature_c": 44,
+        "power_w": 74.18,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    },
+    "B045": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:54:25Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2602,
+        "memory_free_mb": 29586,
+        "utilization_pct": 2,
+        "temperature_c": 46,
+        "power_w": 83.44,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:54:40Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2584,
+        "memory_free_mb": 29604,
+        "utilization_pct": 3,
+        "temperature_c": 46,
+        "power_w": 82.77,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    },
+    "B046": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:54:40Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2584,
+        "memory_free_mb": 29604,
+        "utilization_pct": 3,
+        "temperature_c": 46,
+        "power_w": 83.92,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:54:55Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2551,
+        "memory_free_mb": 29637,
+        "utilization_pct": 4,
+        "temperature_c": 47,
+        "power_w": 83.18,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    },
+    "E016C1": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:53:57Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2451,
+        "memory_free_mb": 29737,
+        "utilization_pct": 0,
+        "temperature_c": 44,
+        "power_w": 74.06,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:54:11Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2614,
+        "memory_free_mb": 29574,
+        "utilization_pct": 2,
+        "temperature_c": 45,
+        "power_w": 82.82,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    },
+    "E016C2": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:54:11Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2613,
+        "memory_free_mb": 29575,
+        "utilization_pct": 1,
+        "temperature_c": 45,
+        "power_w": 82.69,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:54:25Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2603,
+        "memory_free_mb": 29585,
+        "utilization_pct": 18,
+        "temperature_c": 46,
+        "power_w": 83.33,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    },
+    "E016C3": {
+      "telemetry_before": {
+        "at": "2026-10-16T07:54:56Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2549,
+        "memory_free_mb": 29639,
+        "utilization_pct": 2,
+        "temperature_c": 47,
+        "power_w": 83.55,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      },
+      "telemetry_after": {
+        "at": "2026-10-16T07:55:09Z",
+        "gpu_name": "NVIDIA GeForce RTX 5090",
+        "uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+        "driver": "610.88",
+        "memory_total_mb": 32607,
+        "memory_used_mb": 2530,
+        "memory_free_mb": 29658,
+        "utilization_pct": 14,
+        "temperature_c": 48,
+        "power_w": 84.26,
+        "sm_clock_mhz": 2542,
+        "process_snapshot_lines": 31,
+        "process_snapshot_sha256": "1b3899a822b0f1d2347beea21889931ea4b5a008b78131fa8ad1372044c10618"
+      }
+    }
+  },
+  "telemetry_summary": {
+    "same_device_driver_memory_identity": true,
+    "sm_clock_mhz_values": [
+      2542
+    ],
+    "temperature_range_c": [
+      44,
+      48
+    ],
+    "utilization_range_pct": [
+      0,
+      18
+    ],
+    "scope": "Only process-boundary samples, not river/iteration traces; cannot attribute timing to clocks, thermal behavior, background scheduling or processes."
+  },
+  "provenance": {
+    "binary_manifest_log_hashes_verified": true,
+    "baseline_binary_sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+    "candidate_binary_sha256": "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf",
+    "original_baseline_recorded_source_count": 6,
+    "shared_recorded_source_differences": [
+      "crates/solver/src/gpu/arena.rs",
+      "crates/solver/src/gpu/mod.rs"
+    ],
+    "shared_kernel_plan_workload_and_frozen_harness_hashes_equal": true,
+    "runtime_runner_environment_identical": true,
+    "all_inputs_unchanged_on_rehash": true
+  },
+  "interpretation": [
+    "Cumulative median river 108.5058 -> 125.7497ms (+15.8921%); all three paired regressions exceed 3%, so the registered guard fails despite aggregate +12.0971%. No acceptance from this cohort.",
+    "River paired init increases +6.9833,+7.1848,+18.8529ms dominate its full-cycle increases +7.7876,+5.9955,+17.2979ms. Solve deltas are +0.5987,-0.9115,-1.8875ms; graph capture is timed in solve (iterate), not constructor init. This locates the regression but does not identify a cause.",
+    "Whole-test and runner-process times favor candidate in all pairs; this does not cancel the registered per-fixture regression. Extra graph destruction is not isolated by these clocks.",
+    "Earlier E015-reference primary cohort and fresh original-reference cumulative cohort have distinct controls, dates and timing ranges. Do not subtract percentages or selectively discard either cohort. Cumulative results are fresh direct comparisons to the original binary.",
+    "Comparison helper top-level decision is qualifying and correctness placeholders pending/not-run; its numeric fixture_regression_guard.failed is true. This independent status applies the protocol guard. Broader correctness was verified separately and does not override performance guard.",
+    "Original build manifest records six source hashes; newly listed hashes in candidate are additional provenance coverage, not evidence that those files were newly changed. Only mod.rs and arena.rs differ among common recorded files."
+  ],
+  "recommended_next_step": "Parent-prespecified D028 nine-run full-suite three-arm Latin ordering of original/E015/E016 can diagnose whether the river initialization shift is shared by E015 or incremental to E016 under current history. Preserve all failed cohort records and keep D028 diagnostic-only; no replacement of the failed registered comparison. If unresolved, an isolated-river preserved-binary follow-up can test dependence on earlier fixtures, with cold compiler/process differences disclosed.",
+  "no_execution_or_production_edits_by_reviewer": true,
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-cumulative-comparison\\report.json",
+      "sha256": "7388a33a1f00f965a8761bb1600b877e62c2048fc29d9b9242f8e328644511ff",
+      "bytes": 102773
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\baseline-manifest.json",
+      "sha256": "67d9b0aea75b8885521217c00673cb50687b5e847fd964748d43175afba256fa",
+      "bytes": 835
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe",
+      "sha256": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+      "bytes": 2063360
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+      "sha256": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411",
+      "bytes": 923
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B044\\stdout.log",
+      "sha256": "385785937e93571d4f674ca7cced9e99a19ad6ef0b4110d348b2a86ac6fbbc0f",
+      "bytes": 34161
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B045\\stdout.log",
+      "sha256": "fded066768c90da62dacedfdf9cf9bb16834cfb64b9c92990b7351d93a2720a6",
+      "bytes": 34108
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B046\\stdout.log",
+      "sha256": "69d75dcf00ad4c553b9c08aa9f2f22d9cb235792880816d770b6d09220fb5bf7",
+      "bytes": 34161
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.exe",
+      "sha256": "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf",
+      "bytes": 2065920
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.manifest.json",
+      "sha256": "fcf4fdaacbddc55154a79db7f2cad64b2c68190df5e096cc01148425ae541eee",
+      "bytes": 27013
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C1\\stdout.log",
+      "sha256": "dce3d8a88094e0490113b1c2e987ca0ad1d24496cabcd3cbbfef888fd8992c90",
+      "bytes": 34182
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C2\\stdout.log",
+      "sha256": "3f981777c9cbd8e49d8da553faf8f2f2be52f3ad48f9f0fbc596d04c009016a0",
+      "bytes": 34218
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C3\\stdout.log",
+      "sha256": "ec6b4eac3f797a61b273477158c46e34cbed3f8e3a8a60c3ba8b97250a65901d",
+      "bytes": 34228
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016.patch",
+      "sha256": "fccc3d2b8102cb113bbf701b74bf117caf02e4e2fd076569f86ce2578ee4c80d",
+      "bytes": 20640
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B044\\report.json",
+      "sha256": "2919ec84038408d1fc64292c4322a633fa050498e9137b9ff54ae6c4c93b2a05",
+      "bytes": 105494
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B045\\report.json",
+      "sha256": "0fe7f01470c2f098ab90b7f5c8747cdce682304e94d3c6244bb8c4844ed981ee",
+      "bytes": 105442
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B046\\report.json",
+      "sha256": "6e12ac4c72ca01a9bfcdc2fa963e58466f2579b81b0e06e6d653ee90f98e5122",
+      "bytes": 105495
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C1\\report.json",
+      "sha256": "4a8702066e5f5268b401f39f4815bf43b441513b75a07e6ab5b22b9e7769b5cf",
+      "bytes": 132639
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C2\\report.json",
+      "sha256": "67829b9922f013aab940112e4cec5030b30f1651220d2b148f48c1399714b739",
+      "bytes": 132676
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016C3\\report.json",
+      "sha256": "93d3608554601267374feeb9ca4eeca7c2a632a44f708d2e2db41c96c5676794",
+      "bytes": 132685
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\validation.json",
+      "sha256": "84b620daa89baf6d97eff6d9271429fcc53bc9e8dd4d42bd0fcce3ed9883c7c0",
+      "bytes": 24128
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\summary.md",
+      "sha256": "a02eccb11efb009259d7f87cddf4683a275dc616da6139c211c2aa4f30e4de61",
+      "bytes": 2646
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\broader-validation.json",
+      "sha256": "43794f6db4dfc72466f2fb7f6dd642b1aaafb79a7dbae591ed7415b125285f27",
+      "bytes": 22796
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\lifetime-boundary-validation.json",
+      "sha256": "8aab99b9f751e2390c48773c969973a4c72adfc23a2637c421b023f44d476cb7",
+      "bytes": 10361
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "bytes": 73402
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\program.md",
+      "sha256": "b9a715b9e4acda28dffb72b72b39b60655e6f7f924acdfec76c0b198de319e06",
+      "bytes": 5638
+    }
+  ]
+}

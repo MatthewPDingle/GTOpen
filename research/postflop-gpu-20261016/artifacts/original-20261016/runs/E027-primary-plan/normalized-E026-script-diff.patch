@@ -1,0 +1,155 @@
+--- normalized-E026/build.py
++++ E027/build.py
+@@ -14,35 +14,12 @@
+ assert authorization['candidate'] == 'E027' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'D050_terminal_review', 'direct_up_show_terminal_review', 'E027_source_review', 'E027_script_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'E027_source_review', 'E027_script_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-assert authorization['D050_terminal_ptx_pass'] is True
+-assert authorization['direct_up_show_exact_pass'] is True
+-for role in ['D050_terminal_review', 'direct_up_show_terminal_review']:
+-    pin=authorization['prerequisites'][role]
+-    assert ar.sha256(Path(pin['path']))==pin['sha256']
+-    assert authorization['evidence_sha256'][pin['path']]==pin['sha256']
+-d050_pin=authorization['prerequisites']['D050_terminal_review']
+-d050=json.loads(Path(d050_pin['path']).read_text(encoding='utf-8'))
+-assert d050['verdict']=='PASS_SCOPED_COMPILER_CAPACITY_AND_PTX'
+-assert d050['capacity_prerequisite_pass'] is True and d050['source_ptx_prerequisite_pass'] is True
+-assert d050['numerical_validation']=='not executed' and d050['candidate_accepted'] is False
+-assert Path(d050_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D050-independent-review/validation.json').resolve()
+-assert d050_pin['sha256']=='9aa099575d3ada3b00653fe5eddc88ed7a4b07d31fbedbd2b6b21a721c0eb8e5'
+-direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
+-assert Path(direct_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D051-independent-review/validation.json').resolve()
+-direct=json.loads(Path(direct_pin['path']).read_text(encoding='utf-8'))
+-assert direct['id']=='D051' and direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
+-assert direct['exactness_pass'] is True and direct['numerical_validation']=='executed'
+-assert direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
+-assert direct['candidate_cuda_sha256']=='01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558'
+-assert (direct['baseline_physical_threads'],direct['candidate_physical_threads'],direct['logical_scan_threads'])==(128,256,128)
+-assert direct['comparison_pairs']==148 and direct['kernel_launches']==296
+-assert direct['performance_measurement'] is False and direct['candidate_accepted'] is False
+-owned = ('crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs')
++owned = ('crates/solver/src/game.rs', 'crates/solver/src/gpu/continuation_capacity.rs', 'crates/solver/src/gpu/kernels.cu', 'crates/solver/src/gpu/mod.rs', 'crates/solver/src/gpu/plan.rs')
+ assert set(authorization['candidate_sources']) == set(owned)
+ protocol_hash = 'f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d'
+ out = ar.RESEARCH / 'runs/E027-build'
+@@ -83,7 +60,7 @@
+             assert current[name] == expected, name
+     expected_owned = json.loads((here / 'protocol.json').read_text(encoding='utf-8'))['accepted_owned_sha256']
+     assert {name: accepted[name] for name in owned} == expected_owned
+-    assert all(current[name] != accepted[name] for name in owned), 'Both reviewed showdown source files must change'
++    assert all(current[name] != accepted[name] for name in owned), 'All five reviewed reach-pitch source files must change'
+     changed = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+     assert changed == sorted(owned), changed
+ 
+@@ -92,8 +69,8 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen E027 physical256 logical128 showdown candidate', active_experiment='E027',
+-                          activity='Accepted E020 server qualification and source/script review passed. Building the two-file showdown candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
++            status.update(updated_at=ar.now(), stage='Building frozen E027 eight-float reach-pitch candidate', active_experiment='E027',
++                          activity='Accepted E020 server qualification and source/script review passed. Building the five-file reach-pitch candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+         # Dashboard trouble must never release the GPU lock around a live compiler.
+@@ -117,8 +94,8 @@
+     before = ar.source_identity()
+     ar.atomic_json(out / 'source-before.json', before)
+     source_copies = {}
+-    for name, output in zip(owned, ('candidate-kernels.cu', 'candidate-mod.rs')):
+-        destination = out / output
++    for name in owned:
++        destination = out / ('candidate-' + Path(name).name)
+         shutil.copyfile(repo / name, destination)
+         source_copies[name] = {'path': str(destination), 'sha256': ar.sha256(destination)}
+     patch = out / 'candidate.patch'
+@@ -196,8 +173,8 @@
+                     'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+                     'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020/server qualification, D050 capacity/source/PTX PASS, direct complete-up_show terminal exact PASS and independent E027 source/script review; full-solver qualification remains pending',
+-                    'change': 'Exact D050 logical128 scan CUDA plus both existing up_show block dimensions256. All grid/shared/arguments/other launches/allocations/evaluator bytes unchanged.'}
++                    'prerequisite_scope': 'Accepted E020/server qualification and independent E027 source/script review; full-solver and cross-layout reach qualification remain pending',
++                    'change': 'Eight-float physical reach-row pitch with matching plan, allocation, capacity and estimate accounting. Logical hand bounds, floating arithmetic, launch shapes and frozen evaluator remain unchanged.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+     print('E027 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
+--- normalized-E026/primary.py
++++ E027/primary.py
+@@ -11,29 +11,6 @@
+ assert ar.sha256(protocol_path) == 'f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+-assert authorization['D050_terminal_ptx_pass'] is True
+-assert authorization['direct_up_show_exact_pass'] is True
+-for role in ['D050_terminal_review', 'direct_up_show_terminal_review']:
+-    pin=authorization['prerequisites'][role]
+-    assert ar.sha256(Path(pin['path']))==pin['sha256']
+-    assert authorization['evidence_sha256'][pin['path']]==pin['sha256']
+-d050_pin=authorization['prerequisites']['D050_terminal_review']
+-d050=json.loads(Path(d050_pin['path']).read_text(encoding='utf-8'))
+-assert d050['verdict']=='PASS_SCOPED_COMPILER_CAPACITY_AND_PTX'
+-assert d050['capacity_prerequisite_pass'] is True and d050['source_ptx_prerequisite_pass'] is True
+-assert d050['numerical_validation']=='not executed' and d050['candidate_accepted'] is False
+-assert Path(d050_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D050-independent-review/validation.json').resolve()
+-assert d050_pin['sha256']=='9aa099575d3ada3b00653fe5eddc88ed7a4b07d31fbedbd2b6b21a721c0eb8e5'
+-direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
+-assert Path(direct_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D051-independent-review/validation.json').resolve()
+-direct=json.loads(Path(direct_pin['path']).read_text(encoding='utf-8'))
+-assert direct['id']=='D051' and direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
+-assert direct['exactness_pass'] is True and direct['numerical_validation']=='executed'
+-assert direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
+-assert direct['candidate_cuda_sha256']=='01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558'
+-assert (direct['baseline_physical_threads'],direct['candidate_physical_threads'],direct['logical_scan_threads'])==(128,256,128)
+-assert direct['comparison_pairs']==148 and direct['kernel_launches']==296
+-assert direct['performance_measurement'] is False and direct['candidate_accepted'] is False
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_source_review_pass'] is True and authorization['independent_script_review_pass'] is True
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==ar.sha256(here/'scripts-manifest.json')
+@@ -102,7 +79,7 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'E027 physical256 logical128 showdown candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E027 GPU solver unit screen'),
++               'E027 eight-float reach-row pitch candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E027 GPU solver unit screen'),
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+--- normalized-E026/assess.py
++++ E027/assess.py
+@@ -13,29 +13,6 @@
+ sys.path.insert(0, str(repo / 'tools'))
+ import postflop_autoresearch as ar
+ import postflop_compare as compare
+-assert authorization['D050_terminal_ptx_pass'] is True
+-assert authorization['direct_up_show_exact_pass'] is True
+-for role in ['D050_terminal_review', 'direct_up_show_terminal_review']:
+-    pin=authorization['prerequisites'][role]
+-    assert ar.sha256(Path(pin['path']))==pin['sha256']
+-    assert authorization['evidence_sha256'][pin['path']]==pin['sha256']
+-d050_pin=authorization['prerequisites']['D050_terminal_review']
+-d050=json.loads(Path(d050_pin['path']).read_text(encoding='utf-8'))
+-assert d050['verdict']=='PASS_SCOPED_COMPILER_CAPACITY_AND_PTX'
+-assert d050['capacity_prerequisite_pass'] is True and d050['source_ptx_prerequisite_pass'] is True
+-assert d050['numerical_validation']=='not executed' and d050['candidate_accepted'] is False
+-assert Path(d050_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D050-independent-review/validation.json').resolve()
+-assert d050_pin['sha256']=='9aa099575d3ada3b00653fe5eddc88ed7a4b07d31fbedbd2b6b21a721c0eb8e5'
+-direct_pin=authorization['prerequisites']['direct_up_show_terminal_review']
+-assert Path(direct_pin['path']).resolve()==(ar.RESEARCH/'comparisons/D051-independent-review/validation.json').resolve()
+-direct=json.loads(Path(direct_pin['path']).read_text(encoding='utf-8'))
+-assert direct['id']=='D051' and direct['verdict']=='PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON'
+-assert direct['exactness_pass'] is True and direct['numerical_validation']=='executed'
+-assert direct['baseline_cuda_sha256']=='075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b'
+-assert direct['candidate_cuda_sha256']=='01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558'
+-assert (direct['baseline_physical_threads'],direct['candidate_physical_threads'],direct['logical_scan_threads'])==(128,256,128)
+-assert direct['comparison_pairs']==148 and direct['kernel_launches']==296
+-assert direct['performance_measurement'] is False and direct['candidate_accepted'] is False
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+ protocol = base / 'runs/E027-primary-plan/protocol.json'

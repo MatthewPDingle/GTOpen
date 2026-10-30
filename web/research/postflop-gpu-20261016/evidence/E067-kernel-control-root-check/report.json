@@ -1,0 +1,42 @@
+{
+  "id": "E067-kernel-control-root-check",
+  "at": "2026-10-17T11:28:55.033175+00:00",
+  "status": "pass_scoped_down_action_full_raw_equivalence",
+  "checks": 13133554,
+  "cases": 1196,
+  "kernel_launches": 2392,
+  "full_output_words_both_arms": 30261968,
+  "full_actual_device_input_words_both_arms": 13853760,
+  "guard_word_checks_both_arms": 25889108,
+  "all_full_outputs_inputs_guards_exact": true,
+  "resource_and_raw_ptx_byte_identical": true,
+  "raw_files": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\baseline-inputs.bin": {
+      "sha256": "ac066dea96cb51b5cb9f27e46b5f2a4f3af34b67850cdf6b4d002ba8fa16ecf2",
+      "bytes": 27827136
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\baseline.bin": {
+      "sha256": "43957b12fe401b787db928c81bd64306c316535fc6cc82609fcae82e517b45f3",
+      "bytes": 60547872
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\candidate-inputs.bin": {
+      "sha256": "ac066dea96cb51b5cb9f27e46b5f2a4f3af34b67850cdf6b4d002ba8fa16ecf2",
+      "bytes": 27827136
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\candidate.bin": {
+      "sha256": "43957b12fe401b787db928c81bd64306c316535fc6cc82609fcae82e517b45f3",
+      "bytes": 60547872
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\inputs.bin": {
+      "sha256": "a50726af0e127b6d612047bff4e256e97fb6be59f667276f40e3aa0ae9263486",
+      "bytes": 88437184
+    }
+  },
+  "corpus_sha256": "ce3bdb5fda5a8194a0054864734675bb23f4d9d0ef6fbe8ced6165cb5062b1ab",
+  "original_source_form": "D049/E043",
+  "current_source_candidate": "E067",
+  "source_activated": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root separately parses retained raw files, reconstructs all integer metadata/argument dimensions/ownership, compares every actualinput and fulloutput/guard word. FPstress seeds are retained declared inputs, not an independent CPUfloat reference. Finite matrix, not fullsolver/graphs/compatibility/material/holdout/speed proof or external independent review. compute75compile is supplementary/unqualifiedforperformance; originalfailedextramechanismgate and pre-numericalscopeamendment retained."
+}

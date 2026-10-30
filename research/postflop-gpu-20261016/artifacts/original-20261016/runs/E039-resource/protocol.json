@@ -1,0 +1,42 @@
+{
+  "id": "E039-resource",
+  "at": "2026-10-17T00:22:20Z",
+  "status": "FROZEN_PRE_EXECUTION",
+  "source_manifest_sha256": "1e229d4211172920b6351fcb64b7bf30d108bc7af6cc784f46f4826f129557b4",
+  "rustc_command": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-design\\manifest.json": "1e229d4211172920b6351fcb64b7bf30d108bc7af6cc784f46f4826f129557b4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\candidate.cu": "efefc20695beaadfa2720f2c00d853a14e9ff22f41674f19749a977e3b8523ee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E039-resource\\probe.rs": "eb3e15bdff103f458e4f36a20e01e6062526a73854056150ce0e0b3cb8e3a0f3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532"
+  },
+  "kernel_launches": 0,
+  "resource_gates": [
+    "No new local-memory bytes per thread.",
+    "No reduction in theoretical active128-thread blocks per SM.",
+    "Fit queried default shared/thread limits; actual host launches use zero dynamic shared bytes.",
+    "Other eight PTX kernel bodies remain byte-identical."
+  ],
+  "numeric_validation": "Not executed by this probe.",
+  "performance_claim": "None; if resource checks pass, direct old/new GPU equivalence precedes fixed full-cycle timing."
+}

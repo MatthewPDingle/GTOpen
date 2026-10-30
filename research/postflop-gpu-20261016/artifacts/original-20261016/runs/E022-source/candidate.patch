@@ -1,0 +1,12 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -252,7 +252,8 @@
+         __syncthreads();
+         if (threadIdx.x == 0) {
+             chunk_sum[0] = 0.f;
+-            for (int t = 1; t <= (int)blockDim.x; t++) chunk_sum[t] += chunk_sum[t - 1];
++            int last_base = m_o > 0 ? (m_o - 1) / chunk : 0;
++            for (int t = 1; t <= last_base; t++) chunk_sum[t] += chunk_sum[t - 1];
+         }
+         __syncthreads();
+         float base = chunk_sum[threadIdx.x];

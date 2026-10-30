@@ -1,0 +1,65 @@
+{
+  "id": "E066",
+  "at": "2026-10-17T11:16:17.154714+00:00",
+  "original_form": "E031",
+  "decision": "rejected_complete_cycle_screen",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9957.4963,
+    "candidate_full_cycle_ms": 9987.4276,
+    "observed_gain_pct": -0.30059062135930886,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": 0.6236215951366033,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          -0.8296858636616211,
+          0.6755219087723893,
+          1.128689122134271
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -0.03043905902991806,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -0.30191983571369374,
+          -0.3441866042462327,
+          0.9270800737945957
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -4.2264549242528915,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -3.887266139327326,
+          -3.907347051428577,
+          -5.769854300615361
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "all18payloads_138checkpoints_exact": true,
+  "ordinary_gpu_units_passed": 84,
+  "direct_kernel_pairs": 364,
+  "direct_kernel_launches": 728,
+  "feasibility_passed": true,
+  "known_resource_warnings": "Static shared1040to1248, nominal registers38to39,128thread theoretical residency12to11in2registered shapes. Fit/default/1326bound passed. These are disclosed risks, not measured materially-free proof.",
+  "primary_report_sha256": "fd56265308f5360e70a85fcb0e7e296c6f78b1b0fe07aeaf78f1b9471f0d17de",
+  "root_report_sha256": "eaab51f61a09bedea9915040b38673a0d700ba6d5a230acbaa6dafbc7f5fa537",
+  "fresh16_broad_material_holdout_cumulative_not_run": true,
+  "no_exclusions_pooling_extensions_or_source_variants": true,
+  "source_restored_E051": true,
+  "main_live_protected_ptx_unchanged": true,
+  "candidate_accepted": false,
+  "goal_active": true,
+  "limits": "Observed three-pair registered whole-cycle screen, not universal slowdown or component-cause attribution. Primary full-arena equivalence uses deterministic fingerprints plus raw root/EV/stops/checkpoints, not all arena bytes. Direct kernel controls compare full raw words. Original E031rejection remains frozen; E066is first fresh numerical/speed qualification, now closed including aliases."
+}

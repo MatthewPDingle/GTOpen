@@ -1,0 +1,21 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -299,6 +299,7 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
++        let reach_len = [plan.reach_elements(0), plan.reach_elements(1)];
+         Ok(GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+@@ -363,8 +364,8 @@
+             d_strat,
+             arena_layout,
+             d_reach: [
+-                stream.alloc_zeros::<f32>(plan.reach_elements(0)).map_err(e)?,
+-                stream.alloc_zeros::<f32>(plan.reach_elements(1)).map_err(e)?,
++                stream.alloc_zeros::<f32>(reach_len[0]).map_err(e)?,
++                stream.alloc_zeros::<f32>(reach_len[1]).map_err(e)?,
+             ],
+             d_cfv_slot: up32(&plan.cfv_slot)?,
+             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,

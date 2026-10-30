@@ -1,0 +1,168 @@
+{
+  "id": "MC1",
+  "arm": "candidate",
+  "binary_sha256": "179304a988ccb4f5fdbd377206606dbdd1697563d19bbd496f2f71b9073913b9",
+  "PID": 215388,
+  "phase_CPU_ms": {
+    "rainbow": 10296.875,
+    "two-tone": 7218.75,
+    "river": 140.625
+  },
+  "phase_sum_CPU_ms": 17656.25,
+  "whole_process_CPU_ms": 20609.375,
+  "peak_working_bytes": 2613870592,
+  "peak_total_commit_bytes": 9049686016,
+  "GPU_dedicated_peak_bytes": 6359678976,
+  "GPU_shared_peak_bytes": 822083584,
+  "GPU_sample_count": 631,
+  "GPU_sampling_p99_gap_ms": 22.8897,
+  "GPU_sampling_max_gap_ms": 27.299,
+  "GPU_peak_coverage": {
+    "Dedicated Usage": {
+      "samples": 610,
+      "near_peak_samples": 302,
+      "near_peak_span_ms": 6156.0275
+    },
+    "Shared Usage": {
+      "samples": 610,
+      "near_peak_samples": 317,
+      "near_peak_span_ms": 6462.5112
+    }
+  },
+  "native_OS_snapshots": [
+    {
+      "cpu_delta_ticks100ns": 102968750,
+      "fixture_id": "rainbow",
+      "os_after_fingerprint": {
+        "cpu_ticks100ns": 115625000,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 649465,
+        "pagefile_bytes": 9049665536,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613841920,
+        "private_bytes": 9049665536,
+        "working_bytes": 2613841920
+      },
+      "os_begin": {
+        "cpu_ticks100ns": 156250,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1707,
+        "pagefile_bytes": 5570560,
+        "peak_commit_bytes": 5570560,
+        "peak_working_bytes": 6610944,
+        "private_bytes": 5570560,
+        "working_bytes": 6610944
+      },
+      "os_timing_complete": {
+        "cpu_ticks100ns": 103125000,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 649462,
+        "pagefile_bytes": 9049665536,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613829632,
+        "private_bytes": 9049665536,
+        "working_bytes": 2613829632
+      },
+      "performance_score": false,
+      "stage": "resource_fixture"
+    },
+    {
+      "cpu_delta_ticks100ns": 72187500,
+      "fixture_id": "two-tone",
+      "os_after_fingerprint": {
+        "cpu_ticks100ns": 201875000,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1207551,
+        "pagefile_bytes": 6334951424,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 6334951424,
+        "working_bytes": 2186444800
+      },
+      "os_begin": {
+        "cpu_ticks100ns": 116875000,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 649492,
+        "pagefile_bytes": 2067283968,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 2067283968,
+        "working_bytes": 1771851776
+      },
+      "os_timing_complete": {
+        "cpu_ticks100ns": 189062500,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1207541,
+        "pagefile_bytes": 6490808320,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 6490808320,
+        "working_bytes": 2335035392
+      },
+      "performance_score": false,
+      "stage": "resource_fixture"
+    },
+    {
+      "cpu_delta_ticks100ns": 1406250,
+      "fixture_id": "river",
+      "os_after_fingerprint": {
+        "cpu_ticks100ns": 204218750,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1237179,
+        "pagefile_bytes": 2438365184,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 2438365184,
+        "working_bytes": 1743810560
+      },
+      "os_begin": {
+        "cpu_ticks100ns": 202812500,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1207553,
+        "pagefile_bytes": 1927434240,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 1927434240,
+        "working_bytes": 1642139648
+      },
+      "os_timing_complete": {
+        "cpu_ticks100ns": 204218750,
+        "creation_filetime": 134367846487044857,
+        "memory_structure_bytes": 80,
+        "page_faults": 1237179,
+        "pagefile_bytes": 2438365184,
+        "peak_commit_bytes": 9049686016,
+        "peak_working_bytes": 2613870592,
+        "private_bytes": 2438365184,
+        "working_bytes": 1743810560
+      },
+      "performance_score": false,
+      "stage": "resource_fixture"
+    }
+  ],
+  "suite_OS": {
+    "cpu_ticks100ns": 204531250,
+    "creation_filetime": 134367846487044857,
+    "memory_structure_bytes": 80,
+    "page_faults": 1237180,
+    "pagefile_bytes": 1929080832,
+    "peak_commit_bytes": 9049686016,
+    "peak_working_bytes": 2613870592,
+    "private_bytes": 1929080832,
+    "working_bytes": 1642295296
+  },
+  "all_full_results_and_checkpoints_exact": true,
+  "fixtures": 3,
+  "checkpoints": 23,
+  "timing_score": false,
+  "stdout_sha256": "d5a574d7b877811966bdb11456cedf2c6ad3835aae52d5a20acadd0a6ad9648b",
+  "GPU_samples_sha256": "109373e568d3d032f98448b653d613ed12639a84e6743c085f5a2b827a93f9c4"
+}

@@ -1,0 +1,20 @@
+{
+  "id": "E070",
+  "at": "2026-10-17T22:28:43.664912+00:00",
+  "source_stage": "CUDAoff-tree only; host integration not yet implemented",
+  "accepted_source": "E051",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8"
+  },
+  "changed_entries": [
+    "down_action",
+    "up_fold",
+    "up_action",
+    "up_action_eval"
+  ],
+  "other5source_entries_exact": true,
+  "mechanical_reverse_pass": true,
+  "source_activated": false,
+  "gpu_application_launches": 0,
+  "solver_executions": 0
+}

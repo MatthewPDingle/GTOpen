@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CUPTI &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/mermaid-init.js"></script>
+        <script src="_static/design-tabs.js"></script>
+        <script src="_static/version.js"></script>
+        <script src="_static/social-media.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Overview" href="overview/overview.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="#">
+  <img src="_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview/overview.html">Overview</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="#" class="icon icon-home"></a> &raquo;</li>
+  
+<li>CUPTI</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti">
+<h1>CUPTI<a class="headerlink" href="#cupti" title="Permalink to this headline"></a></h1>
+<div class="toctree-wrapper compound">
+</div>
+<p>The API reference for CUPTI, the CUDA Profiling Tools Interface.
+The CUPTI API</p>
+<section id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline"></a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="overview/overview.html">Overview</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="release-notes/release-notes.html">1. Release Notes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="release-notes/release-notes.html#id1">1.1. Release Notes</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-9-update-1">1.1.1. Updates in CUDA 12.9 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-9">1.1.2. Updates in CUDA 12.9</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-8-update-1">1.1.3. Updates in CUDA 12.8 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-8">1.1.4. Updates in CUDA 12.8</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-6-update-2">1.1.5. Updates in CUDA 12.6 Update 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-6-update-1">1.1.6. Updates in CUDA 12.6 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-6">1.1.7. Updates in CUDA 12.6</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-5-update-1">1.1.8. Updates in CUDA 12.5 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-5">1.1.9. Updates in CUDA 12.5</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-4-update-1">1.1.10. Updates in CUDA 12.4 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-4">1.1.11. Updates in CUDA 12.4</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-3-update-1">1.1.12. Updates in CUDA 12.3 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-3">1.1.13. Updates in CUDA 12.3</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-2-update-2">1.1.14. Updates in CUDA 12.2 Update 2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-2-update-1">1.1.15. Updates in CUDA 12.2 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-2">1.1.16. Updates in CUDA 12.2</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-1-update-1">1.1.17. Updates in CUDA 12.1 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-1">1.1.18. Updates in CUDA 12.1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-0-update-1">1.1.19. Updates in CUDA 12.0 Update 1</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-12-0">1.1.20. Updates in CUDA 12.0</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#older-versions">1.1.21. Older Versions</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-8">1.1.21.1. Updates in CUDA 11.8</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-7-update-1">1.1.21.2. Updates in CUDA 11.7 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-7">1.1.21.3. Updates in CUDA 11.7</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-6-update-1">1.1.21.4. Updates in CUDA 11.6 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-6">1.1.21.5. Updates in CUDA 11.6</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-5-update-1">1.1.21.6. Updates in CUDA 11.5 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-5">1.1.21.7. Updates in CUDA 11.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-4-update-1">1.1.21.8. Updates in CUDA 11.4 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-4">1.1.21.9. Updates in CUDA 11.4</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-3">1.1.21.10. Updates in CUDA 11.3</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-2">1.1.21.11. Updates in CUDA 11.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-1">1.1.21.12. Updates in CUDA 11.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-11-0">1.1.21.13. Updates in CUDA 11.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-10-2">1.1.21.14. Updates in CUDA 10.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-10-1-update-2">1.1.21.15. Updates in CUDA 10.1 Update 2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-10-1-update-1">1.1.21.16. Updates in CUDA 10.1 Update 1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-10-1">1.1.21.17. Updates in CUDA 10.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-10-0">1.1.21.18. Updates in CUDA 10.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-9-2">1.1.21.19. Updates in CUDA 9.2</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-9-1">1.1.21.20. Updates in CUDA 9.1</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-9-0">1.1.21.21. Updates in CUDA 9.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-8-0">1.1.21.22. Updates in CUDA 8.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-7-5">1.1.21.23. Updates in CUDA 7.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-7-0">1.1.21.24. Updates in CUDA 7.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-6-5">1.1.21.25. Updates in CUDA 6.5</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-6-0">1.1.21.26. Updates in CUDA 6.0</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#updates-in-cuda-5-5">1.1.21.27. Updates in CUDA 5.5</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release-notes/release-notes.html#known-issues">1.2. Known Issues</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#profiling">1.2.1. Profiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#event-and-metric-api">1.2.1.1. Event and Metric API</a></li>
+<li class="toctree-l4"><a class="reference internal" href="release-notes/release-notes.html#profiling-and-range-profiling-api">1.2.1.2. Profiling and Range Profiling API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="release-notes/release-notes.html#support">1.3. Support</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#platform-support">1.3.1. Platform Support</a></li>
+<li class="toctree-l3"><a class="reference internal" href="release-notes/release-notes.html#gpu-support">1.3.2. GPU Support</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="main/main.html">2. Usage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-compatibility-and-requirements">2.1. CUPTI Compatibility and Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-initialization">2.2. CUPTI Initialization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-activity-api">2.3. CUPTI Activity API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#sass-source-correlation">2.3.1. SASS Source Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#activity-pc-sampling">2.3.2. PC Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#nvlink">2.3.3. NVLink</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#openacc">2.3.4. OpenACC</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#cuda-graphs">2.3.5. CUDA Graphs</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#external-correlation">2.3.6. External Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#dynamic-attach-and-detach">2.3.7. Dynamic Attach and Detach</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#device-memory-allocation-source-tracking">2.3.8. Device Memory Allocation Source Tracking</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-callback-api">2.4. CUPTI Callback API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#driver-and-runtime-api-callbacks">2.4.1. Driver and Runtime API Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#resource-callbacks">2.4.2. Resource Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#synchronization-callbacks">2.4.3. Synchronization Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#nvidia-tools-extension-callbacks">2.4.4. NVIDIA Tools Extension Callbacks</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#state-callbacks">2.4.5. State Callbacks</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-profiler-host-api">2.5. CUPTI Profiler Host API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#enumeration">2.5.1. Enumeration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#configuration">2.5.2. Configuration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#evaluation">2.5.3. Evaluation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-range-profiling-api">2.6. CUPTI Range Profiling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#range-profiling-usage">2.6.1. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#api-usage">2.6.2. API usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#sample-code">2.6.3. Sample code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-pc-sampling-api">2.7. CUPTI PC Sampling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#configuration-attributes">2.7.1. Configuration Attributes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#stall-reasons-mapping-table">2.7.2. Stall Reasons Mapping Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#data-structure-mapping-table">2.7.3. Data Structure Mapping Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#data-flushing">2.7.4. Data flushing</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#pc-sampling-api-source-correlation">2.7.5. SASS Source Correlation</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#pc-sampling-api-usage">2.7.6. API Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#limitations">2.7.7. Limitations</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-sass-metric-api">2.8. CUPTI SASS Metric API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#sass-metrics-usage">2.8.1. API usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#sass-metrics-samples">2.8.2. Sample code</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-pm-sampling-api">2.9. CUPTI PM Sampling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#pm-sampling-usage">2.9.1. API usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#pm-sampling-samples">2.9.2. Sample code</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#metrics-table">2.9.3. Metrics Table</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-checkpoint-api">2.10. CUPTI Checkpoint API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#id10">2.10.1. Usage</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#restrictions">2.10.2. Restrictions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#examples">2.10.3. Examples</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-profiling-api">2.11. CUPTI Profiling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#multi-pass-collection">2.11.1. Multi Pass Collection</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#range-profiling">2.11.2. Range Profiling</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#auto-range">2.11.2.1. Auto Range</a></li>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#user-range">2.11.2.2. User Range</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#cupti-profiler-definitions">2.11.3. CUPTI Profiler Definitions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#differences-from-event-and-metric-apis">2.11.4. Differences from event and metric APIs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#perfworks-metric-api">2.12. Perfworks Metric API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#derived-metrics">2.12.1. Derived metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#raw-metrics">2.12.2. Raw Metrics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#metrics-mapping-table">2.12.3. Metrics Mapping Table</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#events-mapping-table">2.12.4. Events Mapping Table</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-event-api">2.13. CUPTI Event API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#collecting-kernel-execution-events">2.13.1. Collecting Kernel Execution Events</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#sampling-events">2.13.2. Sampling Events</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-metric-api">2.14. CUPTI Metric API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#metrics-reference">2.14.1. Metrics Reference</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#metrics-for-capability-5-x">2.14.1.1. Metrics for Capability 5.x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#metrics-for-capability-6-x">2.14.1.2. Metrics for Capability 6.x</a></li>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#metrics-for-capability-7-0">2.14.1.3. Metrics for Capability 7.0</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#evolution-of-the-profiling-apis">2.15. Evolution of the profiling APIs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#cupti-overhead">2.16. CUPTI overhead</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#tracing-overhead">2.16.1. Tracing Overhead</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#execution-overhead">2.16.1.1. Execution overhead</a></li>
+<li class="toctree-l4"><a class="reference internal" href="main/main.html#memory-overhead">2.16.1.2. Memory overhead</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#profiling-overhead">2.16.2. Profiling Overhead</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#reproducibility">2.17. Reproducibility</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#fixed-clock-rate">2.17.1. Fixed Clock Rate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#serialization">2.17.2. Serialization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="main/main.html#other-issues">2.17.3. Other Issues</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="main/main.html#samples">2.18. Samples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="library-support/library-support.html">3. Library support</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="library-support/library-support.html#optix">3.1. OptiX</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="special-configurations/special-configurations.html">4. Special Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="special-configurations/special-configurations.html#multi-instance-gpu-mig">4.1. Multi-Instance GPU (MIG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special-configurations/special-configurations.html#nvidia-virtual-gpu-vgpu">4.2. NVIDIA Virtual GPU (vGPU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="special-configurations/special-configurations.html#windows-subsystem-for-linux-wsl">4.3. Windows Subsystem for Linux (WSL)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="api/modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="api/namespaces.html">7. Namespaces</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="copyright-and-licenses/index.html">Copyright and Licenses</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="copyright-and-licenses/index.html#nvidia-software-license-agreement">NVIDIA Software License Agreement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="copyright-and-licenses/index.html#third-party-licenses">Third Party Licenses</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#boost">Boost</a></li>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#flatbuffers">Flatbuffers</a></li>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#font-cascadia-mono">Font - Cascadia Mono</a></li>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#font-open-sans">Font - Open Sans</a></li>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#font-roboto">Font - Roboto</a></li>
+<li class="toctree-l3"><a class="reference internal" href="copyright-and-licenses/index.html#microsoft-detours">Microsoft Detours</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="notices-header/notices-header.html">Notices</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="notices-header/notices-header.html#notice">Notice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="notices-header/notices-header.html#trademarks">Trademarks</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

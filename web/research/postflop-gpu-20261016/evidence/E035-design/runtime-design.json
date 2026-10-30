@@ -1,0 +1,133 @@
+{
+  "id": "E035",
+  "kind": "frozen prospective source and focused-test design",
+  "implementation_activation_or_execution_authorized": false,
+  "base": "accepted E020",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "kernel_change": "In up_fold only, accumulate u32 OR of __float_as_uint(v) during existing reach shared-memory load; replace first __syncthreads with __syncthreads_or(bits!=0). Its uniform result both publishes shared data and proves whether every logical word is exact+0. Only all+0 and finite selected payout may write every logical output amount*0.0f then return uniformly. Original fallback suffix, including later amount load, remains exact.",
+  "payout_finiteness": "Selected f32 amount exponent bits !=0x7f800000; no assumed nonnegative reach or finite payout from f64 configuration.",
+  "unchanged": [
+    "kernel ABI",
+    "128-thread production launch",
+    "dynamic/static shared declarations",
+    "all fallback FP operations and order",
+    "card list order",
+    "logical hand bounds",
+    "all other kernels",
+    "host production code",
+    "evaluator/config/schedule",
+    "continuation implementation"
+  ],
+  "test_name": "gpu::tests::fold_positive_zero_matches_original_kernel",
+  "test_scope": "One actual GPU unit, direct full up_fold candidate vs pinned original up_fold-only fragment with renamed entry and minimal type/constants preamble. Both compiled with actual compute capability and the existing default CompileOptions, not a CPU arithmetic mirror. The full old CUDA string is not embedded.",
+  "test_geometry": {
+    "nh_o": 257,
+    "nh_p": 129,
+    "nh_max": 144,
+    "threads": 128,
+    "grid_blocks": 2,
+    "active_count": 1,
+    "worklist_start": 1,
+    "fold_node": 2,
+    "reach_slots": [
+      1,
+      2
+    ],
+    "cfv_slot": 2,
+    "same_combo": "mixed matching indices and SENTINEL, derived from actual synthetic two-card hands",
+    "guards": "poison whole output allocation, compare every output word between arms and require untouched rows/padding; each logical active word overwritten. All14 read-only buffers checked unchanged after each arm."
+  },
+  "cases": [
+    {
+      "name": "zero_positive",
+      "reach": "all+0",
+      "selected_amount": "+2.5",
+      "eligible": true
+    },
+    {
+      "name": "zero_negative",
+      "reach": "all+0",
+      "selected_amount": "-2.5",
+      "eligible": true
+    },
+    {
+      "name": "zero_positive_zero",
+      "reach": "all+0",
+      "selected_amount": "+0",
+      "eligible": true
+    },
+    {
+      "name": "zero_negative_zero",
+      "reach": "all+0",
+      "selected_amount": "-0",
+      "eligible": true
+    },
+    {
+      "name": "zero_positive_overflow",
+      "reach": "all+0",
+      "selected_amount": "f64::MAX as f32 (+Inf)",
+      "eligible": false
+    },
+    {
+      "name": "zero_negative_overflow",
+      "reach": "all+0",
+      "selected_amount": "-f64::MAX as f32 (-Inf)",
+      "eligible": false
+    },
+    {
+      "name": "zero_nan_payout",
+      "reach": "all+0",
+      "selected_amount": "quiet NaN 0x7fc12345",
+      "eligible": false
+    },
+    {
+      "name": "negative_zero_tail",
+      "reach": "-0 at index256, +0 elsewhere",
+      "selected_amount": "-2.5",
+      "eligible": false
+    },
+    {
+      "name": "positive_nonzero",
+      "reach": "+0.5 at index128, +0 elsewhere",
+      "selected_amount": "+2.5",
+      "eligible": false
+    },
+    {
+      "name": "signed_cancellation",
+      "reach": "+1 at index0, -1 at index129, +0 elsewhere",
+      "selected_amount": "-2.5",
+      "eligible": false
+    },
+    {
+      "name": "infinite_reach",
+      "reach": "+Inf at index256, +0 elsewhere",
+      "selected_amount": "+2.5",
+      "eligible": false
+    },
+    {
+      "name": "nan_reach",
+      "reach": "quiet NaN 0x7fc12345 at index128, +0 elsewhere",
+      "selected_amount": "-2.5",
+      "eligible": false
+    }
+  ],
+  "both_players_each_case": true,
+  "additional_count0_pairs": 2,
+  "comparison_pairs": 26,
+  "kernel_launches": 52,
+  "eligible_expected_output": "For all+0 with finite selected amount every logical output must equal the amount sign bit as an IEEE zero, including +/-0 payout. No pre-zeroed output assumption.",
+  "fallback_validation": "All observed output bits, including derived Inf/NaN, must match original GPU output exactly on executed cases. Nonzero and cancellation cases require a genuinely nonzero compatible output witness. Source review establishes exclusion predicate; equality tests do not independently prove branch traversal. No universal NaN payload/input guarantee.",
+  "expected_gpu_only_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "feature_only_test_additions": 0,
+  "resource_or_micro_timing_gate": false,
+  "performance_claim": false,
+  "counts_evidence": "D066 six pre-eval snapshots establish input incidence only, not time or predicted gains. Every other CTA pays added predicate cost; unchanged fixed complete-cycle primary decides later.",
+  "qualification": "Root-reviewed source and focused exact unit gate before fixed primary; >=2% and existing fixture guard remain unchanged. Broader qualification only after primary passes; no rescue/extension."
+}

@@ -1,0 +1,85 @@
+--- E080/mod.rs
++++ E106/mod.rs
+@@ -32,6 +32,22 @@
+ use rayon::prelude::*;
+ 
+ const BLOCK: u32 = 128;
++
++// The absent argument is a static host word; the nonempty argument delegates
++// cudarc's original slice lifetime/event handling without a raw-pointer cache.
++struct E106LockArg<'a>(&'a CudaSlice<i64>, bool);
++unsafe impl<'a, 'b: 'a> PushKernelArg<E106LockArg<'b>> for cudarc::driver::LaunchArgs<'a> {
++    #[inline(always)]
++    fn arg(&mut self, value: E106LockArg<'b>) -> &mut Self {
++        if value.1 {
++            static ABSENT: sys::CUdeviceptr = 0;
++            self.arg(&ABSENT)
++        } else {
++            self.arg(value.0)
++        }
++    }
++}
++
+ 
+ pub const KERNEL_NAMES: [&str; 7] = [
+     "copy_root",
+@@ -142,6 +158,7 @@
+     // device: locks (rebuilt via update_locks)
+     d_lock_off: CudaSlice<i64>,
+     d_lock_sigma: CudaSlice<f32>,
++    locks_absent: bool,
+     // device: solver state + staging
+     d_regrets: [CudaSlice<f32>; 2],
+     d_strat: [CudaSlice<f32>; 2],
+@@ -387,6 +404,7 @@
+             d_riv_card_pos: [up32(&plan.riv_card_pos[0])?, up32(&plan.riv_card_pos[1])?],
+             d_lock_off: stream.clone_htod(&lock_off).map_err(e)?,
+             d_lock_sigma: stream.clone_htod(&lock_sigma).map_err(e)?,
++            locks_absent: solver.locks.is_empty(),
+             d_regrets,
+             d_strat,
+             arena_layout,
+@@ -608,7 +626,7 @@
+                         .arg(&self.d_rsrc[1])
+                         .arg(&self.d_strat[0])
+                         .arg(&self.d_strat[1])
+-                        .arg(&self.d_lock_off)
++                        .arg(E106LockArg(&self.d_lock_off, self.locks_absent))
+                         .arg(&self.d_lock_sigma)
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+@@ -768,7 +786,7 @@
+                         .arg(&self.d_node_children_start)
+                         .arg(&self.d_children)
+                         .arg(&self.d_strat[p])
+-                        .arg(&self.d_lock_off)
++                        .arg(E106LockArg(&self.d_lock_off, self.locks_absent))
+                         .arg(&self.d_lock_sigma)
+                         .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+@@ -839,7 +857,7 @@
+                         .arg(&self.d_rsrc[1])
+                         .arg(&self.d_regrets[0])
+                         .arg(&self.d_regrets[1])
+-                        .arg(&self.d_lock_off)
++                        .arg(E106LockArg(&self.d_lock_off, self.locks_absent))
+                         .arg(&self.d_lock_sigma)
+                         .arg(&mut *reach0)
+                         .arg(&mut *reach1)
+@@ -1004,7 +1022,7 @@
+                         .arg(&mut self.d_strat[p])
+                         .arg(&self.d_rsrc[p])
+                         .arg(&self.d_reach[p])
+-                        .arg(&self.d_lock_off)
++                        .arg(E106LockArg(&self.d_lock_off, self.locks_absent))
+                         .arg(&self.d_lock_sigma)
+                         .arg(&self.d_cfv_slot)
+                         .arg(&mut self.d_cfv)
+@@ -1079,6 +1097,7 @@
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+         self.d_lock_off = self.stream.clone_htod(&lock_off).map_err(e)?;
+         self.d_lock_sigma = self.stream.clone_htod(&lock_sigma).map_err(e)?;
++        self.locks_absent = solver.locks.is_empty();
+         // captured graphs hold pointers to the old lock buffers
+         self.graphs = None;
+         self.eval_graphs = [None, None];

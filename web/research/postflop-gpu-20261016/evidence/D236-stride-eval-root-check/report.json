@@ -1,0 +1,30 @@
+{
+  "id": "D236-kernel-control",
+  "at": "2026-10-29T02:48:50.373519+00:00",
+  "status": "pass_scoped_up_action_eval_raw_equivalence",
+  "root_cross_check_only": true,
+  "checks": 129420,
+  "cases": 1638,
+  "kernel_launches": 3276,
+  "output_words_both_arms": 24751716,
+  "immutable_words_both_arms": 10398228,
+  "guard_words_both_arms": 24015792,
+  "full_raw_files_equal": true,
+  "actual_device_inputs_retained_both_arms": true,
+  "raw_file_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D236-stride-eval\\output\\baseline-inputs.bin": "a8fdbe3b532b93ef22e68977d906c74cdc63d4764b9b4594b923323b72a8968e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D236-stride-eval\\output\\baseline.bin": "8046815201837db803fcb2eb7a6d9b821f84816b27826b5d5b2103c3b753c806",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D236-stride-eval\\output\\candidate-inputs.bin": "a8fdbe3b532b93ef22e68977d906c74cdc63d4764b9b4594b923323b72a8968e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D236-stride-eval\\output\\candidate.bin": "8046815201837db803fcb2eb7a6d9b821f84816b27826b5d5b2103c3b753c806",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D236-stride-eval\\output\\inputs.bin": "90fd68e786110b3dc8d1bb6b347bec0dc2b6381a02e19f6a4870dfef4952cc27"
+  },
+  "protocol_sha256": "be28313b0eb4a4ce07c4bb23982e85814108af4391126e444d3355508b520ee1",
+  "corpus_sha256": "6bb922410043caefefa6676aa95ad117512e0d4a35774e42f35e596524630e73",
+  "complete_sha256": "f624bb01261d5eca9f9ceb1a9d71db5fe1fef2a172bcdd97272b99b3412e50ae",
+  "audit_script_sha256": "241b0ecdcbe88179589fea996ef400e9d8d1554cd205a985bcfccef11092da9c",
+  "accepted162_main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "all_parent_child_cfv_rows_disjoint": true,
+  "limits": "Finite declared corpus only, no universal NaN/layout or wide-address guarantee. Root decoder is not an external independent audit. Full solver accuracy and speed gates remain pending."
+}

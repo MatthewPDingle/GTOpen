@@ -1,0 +1,67 @@
+from pathlib import Path
+import sys,json,shutil,urllib.request,subprocess
+r=Path(r'S:\GTOpen-research\postflop-gpu-20261016');sys.path.insert(0,str(r/'runs/accepted-E051'));import common_e051 as old
+old.custody();assert not (r/'gpu-run.lock').exists();old.ar.refuse_active(old.ar.live_status())
+build=r/'runs/E069-final-build/complete.json';b=old.read(build);assert b['all_compilers_terminal'] and b['native_executions']==0
+for path,h in b['evidence_sha256'].items():old.pin(path,h)
+d=r/'runs/D112-showdown-order-control/report.json';control=old.read(d);assert control['status']=='pass_cpu_metadata_and_concrete_ownership' and len(control['cases'])==12 and control['nonorder_fields_exact'] and control['concrete_same_level_ownership_pass']
+h=r/'runs/E069-primary-plan';h.mkdir()
+for name in ['native.py','assess.py','root-check.py','run.py']:
+ code=(r/'runs/E056-primary-plan'/name).read_text(encoding='utf-8').replace('E056','E069').replace('e056','e069')
+ with (h/name).open('x',encoding='utf-8',newline='\n') as f:f.write(code)
+p=old.read(r/'runs/E056-primary-plan/protocol.json');p.update(id='E069-primary',at=old.now(),candidate_owned_sha256=old.read(r/'runs/E069-source/manifest.json')['candidate_owned_sha256'],build_protocol_sha256=old.sha(r/'runs/E069-build-plan/build-protocol.json'),ordinary_unit_id='V069-unit',control_ids=['V069-unit'],pairs=[{'baseline':'B223','candidate':'E069R1'},{'baseline':'B224','candidate':'E069R2'},{'baseline':'B225','candidate':'E069R3'}],measurement_order=['B223','E069R1','E069R2','B224','B225','E069R3'],cpu_control_report={'path':str(d),'sha256':old.sha(d)},source_scope='One in-place tuple(river_slot,node_id) sort of existing independent showdown nodes within unchanged level spans. All52other complete plan fields, capacities, physical maps and per-level output ownership unchanged across12CPU controls. CUDA, arithmetic, launch structure and quality controls unchanged. Full-cycle clocks include the added sort cost. GPU numerical/whole-state results, actual resources and material tradeoffs still require qualification.')
+paths=[Path(__file__),build,d,r/'runs/E069-build-plan/build-protocol.json',r/'runs/E069-source/source-review.json',r/'runs/E069-source/manifest.json',Path(p['baseline']['path']),Path(p['baseline_binary']['path']),Path(p['baseline_binary']['manifest']),old.REPO/'research/postflop-gpu-20261016/qualification-policy-20261017.md',*h.glob('*.py')]
+for stem in ['E069-solver','E069-postflop_autoresearch']:
+ exe=r/'binaries'/(stem+'.exe');mp=exe.with_suffix('.manifest.json');m=old.read(mp);old.pin(exe,m['binary_sha256']);assert m['source_sha256']==old.BASE|p['candidate_owned_sha256'];paths.extend([exe,mp])
+st=old.read(old.ar.STATUS)
+for identity in p['control_ids']+p['measurement_order']:assert not (r/'runs'/identity).exists() and not any(x['id']==identity for x in st['experiments'])
+for name in ['E069-native-execution','E069-primary-wrapper','E069-primary-manager']:assert not (r/'runs'/name).exists()
+for name in ['E069-three-pair-comparison','E069-root-crosscheck']:assert not (r/'comparisons'/name).exists()
+p['input_sha256']={str(x):old.sha(x) for x in paths};old.save(h/'protocol.json',p)
+
+def publish(src,key):
+ dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True)
+ if dst.exists():assert dst.read_bytes()==src.read_bytes()
+ else:shutil.copyfile(src,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15) as response:assert response.read()==src.read_bytes()
+ return {'path':str(src),'url':'evidence/'+key,'sha256':old.sha(src)}
+pub=[publish(x,h.name+'/'+x.name) for x in h.iterdir() if x.is_file()]
+old.save(h/'pre-timing-publication.json',{'at':old.now(),'protocol_sha256':old.sha(h/'protocol.json'),'all_compilers_terminal':True,'native_primary_executions':0,'http_byte_verified_artifacts':pub})
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ st=old.read(old.ar.STATUS);e=next(x for x in st['experiments'] if x['id']=='E069');e.update(stage='Ordinary units then fixed three-pair complete-solve screen',reason='Both isolated builds completed and accepted source is restored. Frozen BC/CB/BC screen includes all sort/init costs; no speed claim yet.');e['evidence'].append({'label':'Frozen three-pair1% complete-solve screen','url':'evidence/E069-primary-plan/protocol.json'});st.update(updated_at=old.now(),state='running',active_experiment='E069',stage='E069 fixed primary screen',activity='Permission block resolved through native escalation. Running84ordinary units, then exactly B223/E069R1,E069R2/B224,B225/E069R3. Same quality and unchanged strict fixture guard.');old.ar.atomic_json(old.ar.STATUS,st)
+manager=r/'runs/E069-primary-manager';manager.mkdir();ph=old.sha(h/'protocol.json');print('E069 frozen primary protocol',ph,flush=True)
+old.child([sys.executable,str(h/'run.py'),ph],manager,'primary',old.env(),2400)
+qpath=r/'comparisons/E069-three-pair-comparison/report.json';rootpath=r/'comparisons/E069-root-crosscheck/report.json';q=old.read(qpath);root=old.read(rootpath);perf=q['performance'];passed=perf['primary_timing_pass'];assert root['aggregate_gain_pct']==perf['observed_gain_pct'] and root['status']==('pass_initial_timing_only' if passed else 'pass_rejected')
+assert q['excluded_samples']==[] and q['extension_runs']==0 and q['historical_timing_samples_used']==0
+assert q['exactness']=={'fixture_results':18,'convergence_records':138,'all_exact':True};old.custody();assert not (r/'gpu-run.lock').exists()
+out=r/'runs/E069-initial-closure';out.mkdir()
+reason=f"Initial aggregate complete-solve gain {perf['observed_gain_pct']:.6f}%. All18 non-timing results,138 checkpoints,84ordinary units and12CPU metadata/ownership controls passed. "
+if passed:reason+='Initial gate passed; fresh16, broader exact compatibility, actual material resource/capacity and holdout/cumulative checks remain. No adoption.'
+else:
+ why=[]
+ if perf['observed_gain_pct']<1:why.append('below unrounded1% cutoff')
+ guards=[g['fixture_id'] for g in perf['fixture_regression_guard'] if g['failed']]
+ if guards:why.append('repeatable fixture slowdown: '+', '.join(guards))
+ reason+='Rejected: '+'; '.join(why)+'. No additional samples, sort-key/threshold/scope variants or rescue.'
+old.save(out/'decision.json',{'id':'E069','at':old.now(),'decision':q['decision'],'performance':perf,'ordinary_units_passed':84,'ignored_units':4,'exact_fixture_results':18,'exact_checkpoints':138,'cpu_control_report_sha256':old.sha(d),'cpu_full_fields_and_capacities_exact_except_declared_order':True,'cpu_root_checks':control['checks'],'primary_whole_arena_fingerprints_exact':True,'primary_raw_arena_bytes_compared':False,'assessment_sha256':old.sha(qpath),'root_replay_sha256':old.sha(rootpath),'source_adopted':False,'accepted_source':'E051','fresh16_broader_material_holdout_cumulative_run':False,'no_exclusions_extensions_pooling':True,'reason':reason})
+resolution=r/'runs/D113-execution-policy-diagnosis/resolution-20261018.json'
+old.save(resolution,{'at':old.now(),'status':'native_approval_path_operational','effective_approval_mode':'on-request','effective_sandbox':'restricted workspace-write','original8177character_preparation_succeeded_after_native_escalation':True,'D112_preparation_script_sha256':old.sha(r/'runs/D112-prepare.py'),'D112_protocol_sha256':old.sha(r/'runs/D112-showdown-order-control/protocol.json'),'D112_all12_cpu_native_processes_terminal':True,'E069_isolated_builds_terminal':True,'E069_fixed_primary_and_root_replay_terminal':True,'configuration_files_or_databases_modified':False,'internal_original_deny_rule_known':False,'scope':'The previously blocked preparation and subsequent research succeeded through real native approvals under on-request. This does not assert a particular internal deny rule or change security settings.'})
+published=[]
+for folder in [r/'runs/D112-showdown-order-control',r/'runs/E069-source',r/'runs/E069-build-plan',h,r/'runs/E069-primary-wrapper',r/'runs/E069-native-execution',out,r/'comparisons/E069-three-pair-comparison',r/'comparisons/E069-root-crosscheck']:
+ for x in folder.iterdir():
+  if x.is_file() and x.suffix in ['.json','.py','.rs','.patch','.log']:published.append(publish(x,folder.name+'/'+x.name))
+for phase in ['feature','primary']:
+ for x in (r/'runs/E069-final-build'/phase).iterdir():
+  if x.is_file() and x.suffix in ['.json','.log']:published.append(publish(x,'E069-final-build-'+phase+'/'+x.name))
+for stem in ['E069-feature-solver','E069-solver','E069-postflop_autoresearch']:published.append(publish(r/'binaries'/(stem+'.manifest.json'),'E069-binary-manifests/'+stem+'.manifest.json'))
+published.append(publish(resolution,'D113-execution-policy-diagnosis/'+resolution.name))
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ st=old.read(old.ar.STATUS);e=next(x for x in st['experiments'] if x['id']=='E069');e.update(status='measured' if passed else 'rejected',correctness='pass',stage='Initial pass; fresh16 and broader qualification pending' if passed else 'Closed: initial performance gate failed',reason=reason,observed_gain_pct=perf['observed_gain_pct'],updated_at=old.now(),accepted=False)
+ e['evidence'].extend([{'label':'Fixed three-pair complete-solve assessment','url':'evidence/E069-three-pair-comparison/report.json'},{'label':'Raw-record and arithmetic replay','url':'evidence/E069-root-crosscheck/report.json'},{'label':'Initial decision','url':'evidence/E069-initial-closure/decision.json'}]);st['evidence'].append({'label':'Native approval path verified operational','url':'evidence/D113-execution-policy-diagnosis/'+resolution.name});st.update(updated_at=old.now(),state='running',active_experiment='E069' if passed else None,stage='E069 fresh16 preparation' if passed else 'Next independent GPU mechanism investigation',activity=reason+' Accepted E051 source and cumulative benchmark gain remain unchanged.');old.ar.atomic_json(old.ar.STATUS,st)
+ledger=old.REPO/'research/postflop-gpu-20261016/experiments.md';raw=ledger.read_bytes();assert b'### D112 and E069 showdown-order' not in raw
+entry=f'''\n\n### D112 and E069 showdown-order controls and complete-solve screen\n\nThe native permission path became operational after this chat changed from Full access/never to restricted workspace/on-request. The original8177character D112 preparation succeeded through native escalation. No security configuration or database edits and no alternate executor workaround. The internal original deny rule remains unknown.\n\nOne frozen in-place tuple(river_slot,node_id) sort within existing showdown level spans; no CUDA, arithmetic, launch geometry/count, mapping, buffer capacity or quality change. This is independent of the closed E056action-arity intervention and failed D110observer. D112 exactly12CPU processes,2warmup and9fixed alternating measured pairs,1untimed full raw pair per case. All52nonorder fields, all capacities/struct sizes, retained accepted-anchor words and concrete per-level disjoint outputs pass; candidate show list exactly matches the independent D111proposal. {control['checks']} root checks compare{control['all_encoded_baseline_words_compared']} baseline words;{control['raw_bytes']} raw bytes preserved physically on S. Canonical added CPU-plan cost{control['canonical_added_component_ms']:.10f}ms is component-only and was not used as a speed acceptance proxy. CPU report SHA{old.sha(d)}.\n\nTwo fresh isolated feature/primary builds, accepted E051 restored after each. Candidate plan SHA{p['candidate_owned_sha256']['crates/solver/src/gpu/plan.rs']}. V069-unit84passed/4ignored. Fixed B223/E069R1,E069R2/B224,B225/E069R3, all18full non-timing result payloads and138quality checkpoints exact. Sum fixture median full-cycle clocks{perf['baseline_full_cycle_ms']:.10f}to{perf['candidate_full_cycle_ms']:.10f}ms; unrounded gain{perf['observed_gain_pct']:.10f}%. Strict fixture guards{json.dumps(perf['fixture_regression_guard'],separators=(',',':'))}. Root{root['checks']}raw-record/arithmetic checks; assessment SHA{old.sha(qpath)}. {reason}\n\nNo exclusions, extensions, historical timing pooling or adoption. Fresh16/broader/F32/save/resume/continuation/material/holdout/cumulative qualification not run for E069. All{len(published)}published artifacts HTTP-byte verified; raw arenas were fingerprinted, not independently byte-compared in this screen. All owned children terminal, accepted source/main/live/protected PTX unchanged. E051 accepted cumulative12.4372274192% remains unchanged. Last primary baselineB225.\n'''
+nl=b'\r\n' if b'\r\n' in raw else b'\n';ledger.write_bytes(raw+entry.encode('utf-8').replace(b'\n',nl))
+old.save(out/'publication.json',{'at':old.now(),'http_byte_verified_artifacts':published,'accepted_source_unchanged':True,'candidate_adopted':False});old.custody()
+subprocess.run(['git','commit','--only','-m','research: resume native-approved showdown-order trial','--','research/postflop-gpu-20261016/experiments.md'],cwd=old.REPO,check=True)
+commit=subprocess.check_output(['git','rev-parse','HEAD'],cwd=old.REPO,text=True).strip();old.save(out/'commit.json',{'at':old.now(),'commit':commit,'scope':'Research ledger only; no push or live deployment.'});publish(out/'commit.json',out.name+'/commit.json');old.custody()
+print(json.dumps({'decision':q['decision'],'gain_pct':perf['observed_gain_pct'],'report_sha256':old.sha(qpath),'published_files':len(published),'accepted_source':'E051','permission_block_resolved':True}),flush=True)

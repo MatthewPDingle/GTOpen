@@ -1,0 +1,17 @@
+{
+  "id": "E084",
+  "at": "2026-10-18T09:47:48.875148+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E084-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "4bb3f19fbee55ca00404813ac262382b387986bb37cb1da72778780e7a3883af"
+  },
+  "scope": "Only up_show: fill first52 retired chunk_sum words with original full per-card serial sums after its original final scan barrier; one extra CTA barrier; initialize tot_c from the first card cache and retain all second-card additions and both lower/higher correction loops. No other entry, ABI, allocation, host, launch, scan, layout, precision, quality or save change.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

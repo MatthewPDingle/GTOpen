@@ -1,0 +1,10 @@
+warning: function `float` is never used
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D195-parent-fanout\probe.rs:16:4
+   |
+16 | fn float(i:usize,mode:usize)->f32{match mode{
+   |    ^^^^^
+   |
+   = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

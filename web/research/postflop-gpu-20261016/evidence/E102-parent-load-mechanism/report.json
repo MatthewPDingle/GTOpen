@@ -1,0 +1,309 @@
+{
+  "id": "E102-parent-load-mechanism",
+  "at": "2026-10-28T20:49:29.459318+00:00",
+  "status": "pass_actual_NVRTC_parent_load_hoisting_and_copy_prerequisites",
+  "resource_report_sha256": "009c3a065249afe93af2c10463be0a081db31df3f439e3d5c5ed47afe725bd2a",
+  "full_actual_entry_sha256": "4ca9fadc2110b43103d7a01fa21b63cc65cdee24ad35619758c303bc4fcd3bba",
+  "proof": {
+    "parent_loads": [
+      {
+        "line": 86,
+        "instruction": "ld.global.f32 \t%f1, [%rd64];",
+        "role_param": 12,
+        "value_register": "%f1"
+      },
+      {
+        "line": 277,
+        "instruction": "ld.global.f32 \t%f2, [%rd138];",
+        "role_param": 13,
+        "value_register": "%f2"
+      }
+    ],
+    "stores": [
+      {
+        "line": 115,
+        "instruction": "st.global.f32 \t[%rd77], %f3;",
+        "role_param": 12,
+        "value_register": "%f3",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 137,
+        "instruction": "st.global.f32 \t[%rd86], %f4;",
+        "role_param": 12,
+        "value_register": "%f4",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 160,
+        "instruction": "st.global.f32 \t[%rd95], %f5;",
+        "role_param": 12,
+        "value_register": "%f5",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 187,
+        "instruction": "st.global.f32 \t[%rd105], %f6;",
+        "role_param": 12,
+        "value_register": "%f6",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 206,
+        "instruction": "st.global.f32 \t[%rd114], %f7;",
+        "role_param": 12,
+        "value_register": "%f7",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 225,
+        "instruction": "st.global.f32 \t[%rd123], %f8;",
+        "role_param": 12,
+        "value_register": "%f8",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 244,
+        "instruction": "st.global.f32 \t[%rd132], %f9;",
+        "role_param": 12,
+        "value_register": "%f9",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 303,
+        "instruction": "st.global.f32 \t[%rd150], %f10;",
+        "role_param": 13,
+        "value_register": "%f10",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 325,
+        "instruction": "st.global.f32 \t[%rd159], %f11;",
+        "role_param": 13,
+        "value_register": "%f11",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 348,
+        "instruction": "st.global.f32 \t[%rd168], %f12;",
+        "role_param": 13,
+        "value_register": "%f12",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 375,
+        "instruction": "st.global.f32 \t[%rd178], %f13;",
+        "role_param": 13,
+        "value_register": "%f13",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 394,
+        "instruction": "st.global.f32 \t[%rd187], %f14;",
+        "role_param": 13,
+        "value_register": "%f14",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 413,
+        "instruction": "st.global.f32 \t[%rd196], %f15;",
+        "role_param": 13,
+        "value_register": "%f15",
+        "value_is_original_parent_or_positivezero": true
+      },
+      {
+        "line": 432,
+        "instruction": "st.global.f32 \t[%rd205], %f16;",
+        "role_param": 13,
+        "value_register": "%f16",
+        "value_is_original_parent_or_positivezero": true
+      }
+    ],
+    "all_backward_branch_ranges": [
+      {
+        "line": 248,
+        "target": "$L__BB9_14",
+        "instruction": "@%p22 bra \t$L__BB9_14;",
+        "start_line": 165
+      },
+      {
+        "line": 254,
+        "target": "$L__BB9_3",
+        "instruction": "@%p23 bra \t$L__BB9_3;",
+        "start_line": 77
+      },
+      {
+        "line": 439,
+        "target": "$L__BB9_38",
+        "instruction": "@%p44 bra \t$L__BB9_38;",
+        "start_line": 357
+      },
+      {
+        "line": 445,
+        "target": "$L__BB9_26",
+        "instruction": "@%p45 bra \t$L__BB9_26;",
+        "start_line": 268
+      }
+    ],
+    "per_player_hoisting_and_copy_proof": [
+      {
+        "parent_load": {
+          "line": 86,
+          "instruction": "ld.global.f32 \t%f1, [%rd64];",
+          "role_param": 12,
+          "value_register": "%f1"
+        },
+        "all_copy_store_sites": [
+          {
+            "line": 115,
+            "instruction": "st.global.f32 \t[%rd77], %f3;",
+            "role_param": 12,
+            "value_register": "%f3",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 137,
+            "instruction": "st.global.f32 \t[%rd86], %f4;",
+            "role_param": 12,
+            "value_register": "%f4",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 160,
+            "instruction": "st.global.f32 \t[%rd95], %f5;",
+            "role_param": 12,
+            "value_register": "%f5",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 187,
+            "instruction": "st.global.f32 \t[%rd105], %f6;",
+            "role_param": 12,
+            "value_register": "%f6",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 206,
+            "instruction": "st.global.f32 \t[%rd114], %f7;",
+            "role_param": 12,
+            "value_register": "%f7",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 225,
+            "instruction": "st.global.f32 \t[%rd123], %f8;",
+            "role_param": 12,
+            "value_register": "%f8",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 244,
+            "instruction": "st.global.f32 \t[%rd132], %f9;",
+            "role_param": 12,
+            "value_register": "%f9",
+            "value_is_original_parent_or_positivezero": true
+          }
+        ],
+        "outer_hand_backedge": {
+          "line": 254,
+          "target": "$L__BB9_3",
+          "instruction": "@%p23 bra \t$L__BB9_3;",
+          "start_line": 77
+        },
+        "card_backedges": [
+          {
+            "line": 248,
+            "target": "$L__BB9_14",
+            "instruction": "@%p22 bra \t$L__BB9_14;",
+            "start_line": 165
+          }
+        ],
+        "one_parent_f32_load_per_logical_hand_in_source_loop": true,
+        "no_parent_f32_load_inside_card_backedge": true,
+        "all_original_or_zero_stores_within_same_hand_loop": true
+      },
+      {
+        "parent_load": {
+          "line": 277,
+          "instruction": "ld.global.f32 \t%f2, [%rd138];",
+          "role_param": 13,
+          "value_register": "%f2"
+        },
+        "all_copy_store_sites": [
+          {
+            "line": 303,
+            "instruction": "st.global.f32 \t[%rd150], %f10;",
+            "role_param": 13,
+            "value_register": "%f10",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 325,
+            "instruction": "st.global.f32 \t[%rd159], %f11;",
+            "role_param": 13,
+            "value_register": "%f11",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 348,
+            "instruction": "st.global.f32 \t[%rd168], %f12;",
+            "role_param": 13,
+            "value_register": "%f12",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 375,
+            "instruction": "st.global.f32 \t[%rd178], %f13;",
+            "role_param": 13,
+            "value_register": "%f13",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 394,
+            "instruction": "st.global.f32 \t[%rd187], %f14;",
+            "role_param": 13,
+            "value_register": "%f14",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 413,
+            "instruction": "st.global.f32 \t[%rd196], %f15;",
+            "role_param": 13,
+            "value_register": "%f15",
+            "value_is_original_parent_or_positivezero": true
+          },
+          {
+            "line": 432,
+            "instruction": "st.global.f32 \t[%rd205], %f16;",
+            "role_param": 13,
+            "value_register": "%f16",
+            "value_is_original_parent_or_positivezero": true
+          }
+        ],
+        "outer_hand_backedge": {
+          "line": 445,
+          "target": "$L__BB9_26",
+          "instruction": "@%p45 bra \t$L__BB9_26;",
+          "start_line": 268
+        },
+        "card_backedges": [
+          {
+            "line": 439,
+            "target": "$L__BB9_38",
+            "instruction": "@%p44 bra \t$L__BB9_38;",
+            "start_line": 357
+          }
+        ],
+        "one_parent_f32_load_per_logical_hand_in_source_loop": true,
+        "no_parent_f32_load_inside_card_backedge": true,
+        "all_original_or_zero_stores_within_same_hand_loop": true
+      }
+    ]
+  },
+  "reader_positive_and_negative_fixtures": 4,
+  "new_compilers_NVRTC_module_queries_application_kernels_or_solver_runs": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "limits": "Static actual compute120 PTX address/value origin and backward-branch ranges, with source and D194 disjoint ownership. Not final SASS, dynamic load count, occupancy, universal arithmetic, GPU raw-state or speed proof. Compatibility75 retained original9/ABI/copy-only/resource compiler checks; no other-GPU qualification.",
+  "next_required": "Full original edge controls plus fixed parent/group/orbit/nonfinite/tail/countzero/reuse cases, complete engine/canonical physical state, ordinary builds/tests and unchanged complete1%/strictfixture/fresh16/broad/material/capacity/holdout/cumulative/application qualification."
+}

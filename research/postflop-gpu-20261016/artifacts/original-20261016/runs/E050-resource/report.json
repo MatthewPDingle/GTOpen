@@ -1,0 +1,1688 @@
+{
+  "id": "E050-resource",
+  "at": "2026-10-17T03:39:32.817683+00:00",
+  "status": "rejected_resource_gate",
+  "protocol_sha256": "fe38982cdfcc9741965aae1279d310a3e4384291e0949b98a77cdbc1d2a9ba0b",
+  "source_manifest_sha256": "7ec98fb66e968d0f13fa2315723f6d0baa057fdbceb57a04e4934a556b23cb65",
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 6300,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "rainbow_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5060,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "rainbow_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 6320,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "two_tone_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5080,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "two_tone_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5600,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "river_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 4660,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          15
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "river_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 21808,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          4
+        ],
+        [
+          128,
+          4
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "wide_turn",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 26520,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "full_hand_upper_bound",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 1276,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "empty_sorted_opponent",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 1292,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 38,
+      "shape": "single_sorted_opponent",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 6300,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "rainbow_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5060,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "rainbow_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 6320,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          12
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "two_tone_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5080,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          14
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "two_tone_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5600,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "river_p0",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 4660,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          15
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "river_p1",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 21808,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          4
+        ],
+        [
+          128,
+          4
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "wide_turn",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 26520,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "full_hand_upper_bound",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 1276,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "empty_sorted_opponent",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 1292,
+      "fits_default_limits": true,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "single_sorted_opponent",
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "compile_variants": 4,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "resource_rows": 20,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "details": {
+    "rainbow_p0": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 6300,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            12
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "rainbow_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 6300,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            12
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "rainbow_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "rainbow_p1": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5060,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "rainbow_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5060,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "rainbow_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "two_tone_p0": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 6320,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            12
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "two_tone_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 6320,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            12
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "two_tone_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "two_tone_p1": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5080,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "two_tone_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5080,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            14
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "two_tone_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "river_p0": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5600,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            13
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "river_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5600,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            13
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "river_p0",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "river_p1": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 4660,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            15
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "river_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 4660,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            15
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "river_p1",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "wide_turn": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 21808,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            4
+          ],
+          [
+            128,
+            4
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "wide_turn",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 21808,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            4
+          ],
+          [
+            128,
+            4
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "wide_turn",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "full_hand_upper_bound": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 26520,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            3
+          ],
+          [
+            128,
+            3
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "full_hand_upper_bound",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 26520,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            3
+          ],
+          [
+            128,
+            3
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "full_hand_upper_bound",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "empty_sorted_opponent": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 1276,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "empty_sorted_opponent",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 1276,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "empty_sorted_opponent",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    },
+    "single_sorted_opponent": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 1292,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 38,
+        "shape": "single_sorted_opponent",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 1292,
+        "fits_default_limits": true,
+        "kernel": "up_show",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "single_sorted_opponent",
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      },
+      "gates": {
+        "registers_not_increased": false,
+        "local_not_increased": true,
+        "static_shared_not_increased": true,
+        "dynamic_shared_exact": true,
+        "max_threads_not_reduced": true,
+        "fits_default_limits": true,
+        "occupancy_not_reduced": true
+      }
+    }
+  },
+  "abi": {
+    "baseline": [
+      [
+        "u64",
+        " .ptr .align 1",
+        "0"
+      ],
+      [
+        "u32",
+        "",
+        "1"
+      ],
+      [
+        "u32",
+        "",
+        "2"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "3"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "4"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "5"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "6"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "7"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "8"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "9"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "10"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "11"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "12"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "13"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "14"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "15"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "16"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "17"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "18"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "19"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "20"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "21"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "22"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "23"
+      ],
+      [
+        "u32",
+        "",
+        "24"
+      ],
+      [
+        "u32",
+        "",
+        "25"
+      ],
+      [
+        "u32",
+        "",
+        "26"
+      ]
+    ],
+    "candidate": [
+      [
+        "u64",
+        " .ptr .align 1",
+        "0"
+      ],
+      [
+        "u32",
+        "",
+        "1"
+      ],
+      [
+        "u32",
+        "",
+        "2"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "3"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "4"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "5"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "6"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "7"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "8"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "9"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "10"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "11"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "12"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "13"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "14"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "15"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "16"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "17"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "18"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "19"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "20"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "21"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "22"
+      ],
+      [
+        "u64",
+        " .ptr .align 1",
+        "23"
+      ],
+      [
+        "u32",
+        "",
+        "24"
+      ],
+      [
+        "u32",
+        "",
+        "25"
+      ],
+      [
+        "u32",
+        "",
+        "26"
+      ]
+    ]
+  },
+  "gates": {
+    "other8_entries_exact": true,
+    "all9_sm75_fallback_entries_exact": true,
+    "async_copies_emitted": true,
+    "fallback_has_no_async": true,
+    "rainbow_p0:registers_not_increased": false,
+    "rainbow_p0:local_not_increased": true,
+    "rainbow_p0:static_shared_not_increased": true,
+    "rainbow_p0:dynamic_shared_exact": true,
+    "rainbow_p0:max_threads_not_reduced": true,
+    "rainbow_p0:fits_default_limits": true,
+    "rainbow_p0:occupancy_not_reduced": true,
+    "rainbow_p1:registers_not_increased": false,
+    "rainbow_p1:local_not_increased": true,
+    "rainbow_p1:static_shared_not_increased": true,
+    "rainbow_p1:dynamic_shared_exact": true,
+    "rainbow_p1:max_threads_not_reduced": true,
+    "rainbow_p1:fits_default_limits": true,
+    "rainbow_p1:occupancy_not_reduced": true,
+    "two_tone_p0:registers_not_increased": false,
+    "two_tone_p0:local_not_increased": true,
+    "two_tone_p0:static_shared_not_increased": true,
+    "two_tone_p0:dynamic_shared_exact": true,
+    "two_tone_p0:max_threads_not_reduced": true,
+    "two_tone_p0:fits_default_limits": true,
+    "two_tone_p0:occupancy_not_reduced": true,
+    "two_tone_p1:registers_not_increased": false,
+    "two_tone_p1:local_not_increased": true,
+    "two_tone_p1:static_shared_not_increased": true,
+    "two_tone_p1:dynamic_shared_exact": true,
+    "two_tone_p1:max_threads_not_reduced": true,
+    "two_tone_p1:fits_default_limits": true,
+    "two_tone_p1:occupancy_not_reduced": true,
+    "river_p0:registers_not_increased": false,
+    "river_p0:local_not_increased": true,
+    "river_p0:static_shared_not_increased": true,
+    "river_p0:dynamic_shared_exact": true,
+    "river_p0:max_threads_not_reduced": true,
+    "river_p0:fits_default_limits": true,
+    "river_p0:occupancy_not_reduced": true,
+    "river_p1:registers_not_increased": false,
+    "river_p1:local_not_increased": true,
+    "river_p1:static_shared_not_increased": true,
+    "river_p1:dynamic_shared_exact": true,
+    "river_p1:max_threads_not_reduced": true,
+    "river_p1:fits_default_limits": true,
+    "river_p1:occupancy_not_reduced": true,
+    "wide_turn:registers_not_increased": false,
+    "wide_turn:local_not_increased": true,
+    "wide_turn:static_shared_not_increased": true,
+    "wide_turn:dynamic_shared_exact": true,
+    "wide_turn:max_threads_not_reduced": true,
+    "wide_turn:fits_default_limits": true,
+    "wide_turn:occupancy_not_reduced": true,
+    "full_hand_upper_bound:registers_not_increased": false,
+    "full_hand_upper_bound:local_not_increased": true,
+    "full_hand_upper_bound:static_shared_not_increased": true,
+    "full_hand_upper_bound:dynamic_shared_exact": true,
+    "full_hand_upper_bound:max_threads_not_reduced": true,
+    "full_hand_upper_bound:fits_default_limits": true,
+    "full_hand_upper_bound:occupancy_not_reduced": true,
+    "empty_sorted_opponent:registers_not_increased": false,
+    "empty_sorted_opponent:local_not_increased": true,
+    "empty_sorted_opponent:static_shared_not_increased": true,
+    "empty_sorted_opponent:dynamic_shared_exact": true,
+    "empty_sorted_opponent:max_threads_not_reduced": true,
+    "empty_sorted_opponent:fits_default_limits": true,
+    "empty_sorted_opponent:occupancy_not_reduced": true,
+    "single_sorted_opponent:registers_not_increased": false,
+    "single_sorted_opponent:local_not_increased": true,
+    "single_sorted_opponent:static_shared_not_increased": true,
+    "single_sorted_opponent:dynamic_shared_exact": true,
+    "single_sorted_opponent:max_threads_not_reduced": true,
+    "single_sorted_opponent:fits_default_limits": true,
+    "single_sorted_opponent:occupancy_not_reduced": true,
+    "abi_exact": true
+  },
+  "ptx_sha256": {
+    "baseline": "5287f892be163567a49b66ae58225e54009a630dd57d59ef472e61f63a23a1b4",
+    "candidate": "5bbede75bce3f89a1fc9224047eadc49682419a0fd417921a98156cda4edeff6"
+  },
+  "entry_body_sha256": {
+    "baseline": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "f640d449f94fa2f561282eb07f399d0f59db20a4e69f1ab42d356bb21cf02f0a",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    },
+    "candidate": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "2953ae46e71d1c1bdaa6692f1bde3438e44a17df6a1ad0f786b485f8c6e38e99",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "f640d449f94fa2f561282eb07f399d0f59db20a4e69f1ab42d356bb21cf02f0a",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    }
+  },
+  "binary_sha256": "6fe6e9e662c47356849ca7c875c2d928fcdfc623758b1f81ba95288697a6fa49",
+  "stdout_sha256": "9339aad759735ac798d2aa5d4152047ec852bd2024ada835b1253dc0cb4b3de5",
+  "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Actual compiled attributes and theoretical occupancy only. No numerical, runtime utilization, capacity or speed qualification."
+}

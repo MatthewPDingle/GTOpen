@@ -1,0 +1,29 @@
+{
+  "id": "D270-reader-repair",
+  "at": "2026-10-29T08:11:58.624234+00:00",
+  "status": "FROZEN_PRE_ADDITIVE_READ_ONLY_REPLAY",
+  "original_protocol_sha256": "dab859b7881a6649eab0f7e8b531619a1b970a9896b7105b7d1a6f62bc284c87",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-prepare-reader-repair.py": "84a9c6912b9bfed819f79aa7329059fd6f6f391eecac1b92f3dc7ced98e1d6e6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-root-replay.py": "832f30bb3a4a3d2330dca9d793d153fc555a3df728ea4fe26334ea60ef8a37a8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-root-replay-r2.py": "9e1b946968cd5f420f5d7e525ae280e85a3bae11204de554baea24e367914a9d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-execute-reader-repair.py": "b9f4d44f2890b2d7f24d3905e3461a941d59ab4c521a998b4358166fe7c7c8dd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\protocol.json": "dab859b7881a6649eab0f7e8b531619a1b970a9896b7105b7d1a6f62bc284c87",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\fixtures.json": "8064ea6845927c874624dee5b8e9376b6f2fa0f9ef2e70e1ffde9012407e1fc5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\build-manifest.json": "9ea9ab13c3a096f067f91e5467db3e1960e38b05eb506733b8a0b4cda2a9b1ef",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\compile.exit.json": "60d0ad48287fb12153536546e1dbc7cefc2c330e8708af471e32c46f50e14bf6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\native.exit.json": "29b0aa77d32ac85797a87520a88bdf0552eb299cf42395970a004c7ffaf31adf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\native.stdout.log": "0769cacba1322e78a12531caf0ea7f87f03d7b400c6194f9ee3cb8cce6e0f3ed",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\reader.exit.json": "54d96e70bcd3615af2797508ae104650edd3f86df0bc939241614c98cb83a548",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\reader.stderr.log": "c4d1b60077bcc354b04f023dc364b416da83e34119142a12dfedcb2380887ea8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\reader.stdout.log": "563d8572b4ed6b2a76e1c7a2541bbfe023f6c30464f263ceec98e82ca8e5b834",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D270-actual-metadata-CPU\\execution\\restoration.json": "b7c706fb5b37532b127b66833b2db178dcd201b757f97d0761a72b112cc11d54",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E115-source-v2\\manifest.json": "e9a9976d9c241583be0d91cf7191c88a75506110401d9c88cb2a90fc33497006"
+  },
+  "error_evidence": "Original reader classifies all node_na>0 as action nodes; actual source tree.rs patches chance child count52. Original plan.rs sets positive node_cdiv only for chance, so exclude positive cdiv for action oracle. Full native18 cases/record lookups passed, and first three whole plan/projection comparisons passed before reader failed at first real compact arena.",
+  "forecast_correction": "Original16 ordered/2 river fallback forecast is false. Original plan.rs retains full action arenas when compact savings<5%; therefore rainbow and explicit-chance flops also have full layouts. Do not change E115 fixed both-compact predicate or inputs. Independently derive CPU action physical offsets from original node reservation order, kind via original cdiv, and original arena_elements/node_data_off. Require actual native capability and every compact flag to match that oracle for every case. Ordered/fallback totals and negative fixture counts are derived from all six immutable original plans, not selected from timing outcomes. Original forecast unmet is explicitly retained, not called an original-protocol pass.",
+  "unchanged_gates": "Same18 completed native cases, no compiler/native/CUDA/solver/candidate/source/fixture/predicate/science/output changes or repetitions. All53 before/after fields, all23 arrays/every word, maps/physical values/full record/capacity/canary/48 boundary checks remain mandatory. Every ordered case has same3 negative fixtures, every actual identity fallback rejects nonidentity mapping. No numerical/resource/performance gate relaxed; all original GPU/full-cycle/1%/strictfixture/fresh16/material/holdout/cumulative/app gates remain.",
+  "scope": "One repaired Python root reader only under serialization. Existing large outputs immutable; no repeat of any completed native case. Passing only establishes corrected full CPU replay, never GPU numerical/performance/adoption."
+}

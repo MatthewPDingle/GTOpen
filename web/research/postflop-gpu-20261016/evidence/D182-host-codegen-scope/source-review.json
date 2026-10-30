@@ -1,0 +1,60 @@
+{
+  "id": "D182",
+  "at": "2026-10-28T17:46:42.571714+00:00",
+  "status": "one_local_host_build_configuration_admitted_to_fresh_build_only",
+  "history_query": [
+    "git",
+    "log",
+    "--all",
+    "--oneline",
+    "-G",
+    "target-cpu|znver3|cpu=native|RUSTFLAGS",
+    "--",
+    ".",
+    ":!research/autoresearch/events.jsonl",
+    ":!research/autoresearch/passes"
+  ],
+  "history_stdout": "",
+  "actual_compiler_queries": [
+    {
+      "command": [
+        "rustc",
+        "-vV"
+      ],
+      "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8\n"
+    },
+    {
+      "command": [
+        "rustc",
+        "--print",
+        "target-cpus"
+      ],
+      "stdout": "Available CPUs for this target:\n    native                  - Select the CPU of the current host (currently znver3).\n    alderlake\n    amdfam10\n    arrowlake\n    arrowlake-s\n    arrowlake_s\n    athlon\n    athlon-4\n    athlon-fx\n    athlon-mp\n    athlon-tbird\n    athlon-xp\n    athlon64\n    athlon64-sse3\n    atom\n    atom_sse4_2\n    atom_sse4_2_movbe\n    barcelona\n    bdver1\n    bdver2\n    bdver3\n    bdver4\n    bonnell\n    broadwell\n    btver1\n    btver2\n    c3\n    c3-2\n    cannonlake\n    cascadelake\n    clearwaterforest\n    cooperlake\n    core-avx-i\n    core-avx2\n    core2\n    core_2_duo_sse4_1\n    core_2_duo_ssse3\n    core_2nd_gen_avx\n    core_3rd_gen_avx\n    core_4th_gen_avx\n    core_4th_gen_avx_tsx\n    core_5th_gen_avx\n    core_5th_gen_avx_tsx\n    core_aes_pclmulqdq\n    core_i7_sse4_2\n    corei7\n    corei7-avx\n    diamondrapids\n    emeraldrapids\n    generic\n    geode\n    goldmont\n    goldmont-plus\n    goldmont_plus\n    gracemont\n    grandridge\n    graniterapids\n    graniterapids-d\n    graniterapids_d\n    haswell\n    i386\n    i486\n    i586\n    i686\n    icelake-client\n    icelake-server\n    icelake_client\n    icelake_server\n    ivybridge\n    k6\n    k6-2\n    k6-3\n    k8\n    k8-sse3\n    knl\n    knm\n    lakemont\n    lunarlake\n    meteorlake\n    mic_avx512\n    nehalem\n    nocona\n    novalake\n    opteron\n    opteron-sse3\n    pantherlake\n    penryn\n    pentium\n    pentium-m\n    pentium-mmx\n    pentium2\n    pentium3\n    pentium3m\n    pentium4\n    pentium4m\n    pentium_4\n    pentium_4_sse3\n    pentium_ii\n    pentium_iii\n    pentium_iii_no_xmm_regs\n    pentium_m\n    pentium_mmx\n    pentium_pro\n    pentiumpro\n    prescott\n    raptorlake\n    rocketlake\n    sandybridge\n    sapphirerapids\n    sierraforest\n    silvermont\n    skx\n    skylake\n    skylake-avx512\n    skylake_avx512\n    slm\n    tigerlake\n    tremont\n    westmere\n    wildcatlake\n    winchip-c6\n    winchip2\n    x86-64                  - This is the default target CPU for the current build target (currently x86_64-pc-windows-msvc).\n    x86-64-v2\n    x86-64-v3\n    x86-64-v4\n    yonah\n    znver1\n    znver2\n    znver3\n    znver4\n    znver5\n"
+    },
+    {
+      "command": [
+        "rustc",
+        "--print",
+        "cfg"
+      ],
+      "stdout": "debug_assertions\npanic=\"unwind\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"msvc\"\ntarget_family=\"windows\"\ntarget_feature=\"cmpxchg16b\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"sse3\"\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"64\"\ntarget_vendor=\"pc\"\nwindows\n"
+    },
+    {
+      "command": [
+        "rustc",
+        "--print",
+        "cfg",
+        "-C",
+        "target-cpu=znver3"
+      ],
+      "stdout": "debug_assertions\npanic=\"unwind\"\ntarget_abi=\"\"\ntarget_arch=\"x86_64\"\ntarget_endian=\"little\"\ntarget_env=\"msvc\"\ntarget_family=\"windows\"\ntarget_feature=\"adx\"\ntarget_feature=\"aes\"\ntarget_feature=\"avx\"\ntarget_feature=\"avx2\"\ntarget_feature=\"bmi1\"\ntarget_feature=\"bmi2\"\ntarget_feature=\"cmpxchg16b\"\ntarget_feature=\"f16c\"\ntarget_feature=\"fma\"\ntarget_feature=\"fxsr\"\ntarget_feature=\"lzcnt\"\ntarget_feature=\"movbe\"\ntarget_feature=\"pclmulqdq\"\ntarget_feature=\"popcnt\"\ntarget_feature=\"rdrand\"\ntarget_feature=\"rdseed\"\ntarget_feature=\"sha\"\ntarget_feature=\"sse\"\ntarget_feature=\"sse2\"\ntarget_feature=\"sse3\"\ntarget_feature=\"sse4.1\"\ntarget_feature=\"sse4.2\"\ntarget_feature=\"sse4a\"\ntarget_feature=\"ssse3\"\ntarget_feature=\"vaes\"\ntarget_feature=\"vpclmulqdq\"\ntarget_feature=\"xsave\"\ntarget_feature=\"xsavec\"\ntarget_feature=\"xsaveopt\"\ntarget_feature=\"xsaves\"\ntarget_has_atomic=\"128\"\ntarget_has_atomic=\"16\"\ntarget_has_atomic=\"32\"\ntarget_has_atomic=\"64\"\ntarget_has_atomic=\"8\"\ntarget_has_atomic=\"ptr\"\ntarget_has_atomic_primitive_alignment=\"128\"\ntarget_has_atomic_primitive_alignment=\"16\"\ntarget_has_atomic_primitive_alignment=\"32\"\ntarget_has_atomic_primitive_alignment=\"64\"\ntarget_has_atomic_primitive_alignment=\"8\"\ntarget_has_atomic_primitive_alignment=\"ptr\"\ntarget_os=\"windows\"\ntarget_pointer_width=\"64\"\ntarget_vendor=\"pc\"\nwindows\n"
+    }
+  ],
+  "official_source": "https://doc.rust-lang.org/rustc/codegen-options/index.html#target-cpu",
+  "official_contract": "Rustc documents target-cpu selecting code generation for a processor and --print target-cpus for actual compiler-supported names. This actual local compiler identifies native as znver3. Documentation/target names do not establish speed or exactness.",
+  "scope": "Exact accepted E080 sources/Cargo.lock/GPU kernel strings/12.9 NVRTC options/dependencies/features remain. Compare default portable release against a single extra host Rust flag -C target-cpu=znver3 using separate wholly fresh Cargo targets; no optlevel/LTO/codegenunit/version/PGO/dependency/NVRTC flags sweep. Existing 16workers and unchanged full quality/fixtures.",
+  "counterevidence_and_distinction": "Closed E093 is NVRTC13 compiler/backend/JIT control, D159 is CUDA NVRTC vectorization option. Neither changes Rust host target CPU. Existing GPU cache/loop/mapping/source forms remain closed and absent. D168/169 actual8/16/32 worker controls remain rejected; this changes no worker count. No matching all-local-ref host target flag found; bounded review, not exhaustive remote uniqueness.",
+  "risks": "Host auto-vectorization/feature-detected paths/math library lowering/ABI/code placement can change runtime/CPU memory/bit patterns. New instruction requirements reduce binary portability; never overwrite portable default or deploy without qualified host eligibility. Codegen gains may not reach >=1% complete solves; no headroom claim.",
+  "frozen_screen_order": "After both fresh builds, ordinary86unit suites for both configs (no extra ignored tests), then exactly3interleaved primary samequality pairs. Every full result and all23checkpoints/process must match immutable E080 anchor. Both real NVRTC/JIT inside clock. Reject any exactness or <1% aggregate/strictfixture failure; no flags/CPUmodel/resampling rescue. Passing initial screen still requires fresh16, fullraw/F32/state/menu/save/resume/continuation/materialCPU+memory/capacity/graph/holdout/freshoriginal/application before adoption.",
+  "new_gain_accepted": false
+}

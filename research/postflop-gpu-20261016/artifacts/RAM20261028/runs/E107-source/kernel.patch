@@ -1,0 +1,18 @@
+--- E080/kernels.cu
++++ E107/kernels.cu
+@@ -214,6 +214,7 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
++    float win = node_twin[n], lose = node_tlose[n], tie = node_ttie[n];
+     int slot = node_river_slot[n];
+     int m_o = o_cnt[slot];
+     u32 ob = o_off[slot];
+@@ -260,7 +261,6 @@
+     }
+     __syncthreads();
+     float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
+-    float win = node_twin[n], lose = node_tlose[n], tie = node_ttie[n];
+ 
+     int m_p = p_cnt[slot];
+     u32 pb = p_off[slot];

@@ -1,0 +1,104 @@
+{
+  "id": "D062",
+  "created_at": "2026-10-16T19:24:33.213013+00:00",
+  "verdict": "NO_GO_WITHIN_SWEEP_IDENTICAL_OWNER_REUSE_FOR_CURRENT_TREE_BUILDER",
+  "recommendation": "Do not implement a fold-statistic cache or request a census for this owner-identity hypothesis. Source structure already makes the key injective on the reachable fold list for each fixed opponent. This is not a claim about equal row contents or cross-iteration caching.",
+  "base": {
+    "accepted": "E020",
+    "source_entries_verified": 162,
+    "head": "aceb56f30b0b74d4a742e52486d6342997005a93"
+  },
+  "question": "D055 README line33 deferred repeated fold-statistic reuse because useful duplicate reach owners had not been established. D062 examines that exact within-sweep identity question, without executing a census.",
+  "safe_key_and_value": {
+    "key": "Within one completed downward reach generation and one fixed plan/workspace: opponent player q, reach allocation/generation, reach_slot[q][fold_node], and the immutable hand/card-list layout. Slot number alone across players, solvers or swapped workspaces is unsafe.",
+    "value": "T plus s[0..52), 53 f32 words (212 bytes) per distinct key; this excludes any index/validity metadata. same_r remains the original opponent-row lookup and amount remains per terminal.",
+    "exact_order": "Retain block128, +0 initialization, each card ascending original card_idx loop, thread-strided total partials and the original 64/32/.../1 tree. Retain ((T-s[c1])-s[c2])+same_r then amount multiplication. A separate producer would need exact round/store/reload behavior and raw-bit proof; no such implementation or proof is supplied.",
+    "refs": [
+      "gpu/kernels.cu:158-188",
+      "gpu/mod.rs:288-300,344,649-657,877-884"
+    ]
+  },
+  "injectivity_proof": [
+    {
+      "step": 1,
+      "claim": "TreeBuilder emits fresh child nodes, with at most one Fold action at a decision. Fold is available only while facing a bet. First Check and every Bet/Raise switch actor; Call and second Check terminate the street into showdown or chance. A new action round follows a chance edge.",
+      "refs": [
+        "tree.rs:453-545",
+        "tree.rs:557-595",
+        "tree.rs:598-754"
+      ]
+    },
+    {
+      "step": 2,
+      "claim": "For fixed opponent q, every q action edge creates a new owner equal to its child node; every chance edge creates a new owner for both players. Only the other player action edge preserves q owner.",
+      "refs": [
+        "gpu/plan.rs:145-165",
+        "gpu/plan.rs:168-205"
+      ]
+    },
+    {
+      "step": 3,
+      "claim": "If q folds, the fold terminal owns its q reach row and has no descendants. Distinct such folds have distinct fresh node IDs and cannot share their owner with another fold.",
+      "refs": [
+        "tree.rs:602-622",
+        "gpu/plan.rs:158-159"
+      ]
+    },
+    {
+      "step": 4,
+      "claim": "If the other player p folds, it inherits q owner from its decision. Before another p decision can be reached, action alternation requires a q action edge or a chance edge; either changes q owner. Since each p decision has at most one Fold, no second p-fold can retain the same q owner. Branching into several q decisions does not help: their fold edges and any paths to another p decision first change q owner.",
+      "refs": [
+        "tree.rs:463-466,624-671,693-747",
+        "gpu/plan.rs:158-159,201"
+      ]
+    },
+    {
+      "step": 5,
+      "claim": "Iso selects representative chance subtrees and fold_nodes includes reached nodes only; it does not merge distinct active owner IDs. reach_slot assigns a separate slot per owner, with no reach-row scratch reuse. Inactive default-owner entries therefore do not create fold-list collisions.",
+      "refs": [
+        "gpu/plan.rs:168-205",
+        "gpu/plan.rs:244-277",
+        "gpu/plan.rs:412-425"
+      ]
+    }
+  ],
+  "structural_conclusion": {
+    "within_fixed_opponent_and_sweep": "Every reachable fold terminal has a distinct reach_slot; owner-key duplicate groups have size1.",
+    "avoidable_reductions_from_this_mechanism": 0,
+    "basis": "Source deduction for current TreeBuilder-produced trees, not an executed fixture census or timing measurement. Publicly constructed/mutated nonstandard Trees with consecutive same-player decisions are outside this proof; no such production construction was found (Tree literal centralized in tree.rs416).",
+    "actual_retained_duplicate_census": null
+  },
+  "lifetime_limits": [
+    "During one upward sweep, reach arrays are read-only, so an otherwise valid owner-key statistic could remain valid across levels. That lifetime does not create duplicate owners.",
+    "E015 reuses reach1 only in the second paired downward pass; p0 fold uses reach1 while p1 fold uses newly computed reach0. This is not a shared opponent row between the two fold traversals. Following training/evaluation downward passes may rewrite rows.",
+    "Raked evaluation already computes terminals once per player and reuses their full CFVs in the second mode (mod.rs521-537,628-630). Recomputing or caching only fold statistics cannot eliminate that already absent second calculation.",
+    "Warm state, locks, new root inputs and errors require generation-aware invalidation for any cross-pass cache. Standalone continuation uploads roots then takes a full sweep (mod.rs178-194,759-772). Host/SSD paging swaps d_reach among seven mutable buffers; plan slot equality does not identify physical contents across swaps."
+  ],
+  "cost_and_scope": "With no repeated key within a sweep, an owner-index table and 212-byte statistic records add work/storage without removing the original per-owner reductions. This is a mechanism-level no-go, not a measured complete-cycle claim and not proof that all conceivable fold optimizations fail. No E019 reduction variant, E030 card scheduling variant or E032 terminal scheduling variant is reopened.",
+  "census_decision": "No new CPU-only census recommended now. If TreeBuilder semantics later change, the smallest structural check is fold_nodes grouped by reach_slot[q] for each q on a finalized GpuPlan, reporting node/owner identities and group multiplicities. That contingency is neither prepared nor authorized here.",
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\README.md": "6c8bb5aa9540e0f37e1af064e60ad47167a20f3770c769bae48064107dea753a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D055-next-hypothesis-scout\\report.json": "def9606cf66cec46d11a8733a698933d7931319f0941a3c56a36f702f58d8901",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-next-hypothesis-scout\\manifest.json": "8a362a8960cdaaf25a925498ab45da2d3c420cfbb9cddd23d67b3d9caabfb23c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-three-pair-comparison\\report.json": "8f64f4ee7bc0ef77a8dafc46a735abfc1200afece194aad838bb40d76ddb6387",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E019-three-pair-comparison\\report.json": "f0ea456e81ab72c888e658290d24dfb51aaae449ab0adad14608305ecd4ceafb",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E032-independent-review\\manifest.json": "f47354a431be313d3f3e2fcad66bb6af6454c20c58a16bbab02337ec3e046a2e"
+  },
+  "source_only": true,
+  "cpu_solver_or_plan_executed": false,
+  "compiler_native_gpu_executed": false,
+  "candidate_prepared": false,
+  "census_prepared": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "production_modified": false,
+  "status_modified": false,
+  "exploration_note": "One read-only rg command used a Windows wildcard path that rg treated literally; repeated required lookup with concrete files. No source change or execution occurred."
+}

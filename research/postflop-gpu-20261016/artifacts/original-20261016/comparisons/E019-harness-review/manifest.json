@@ -1,0 +1,29 @@
+{
+  "id": "E019-harness-review",
+  "created_at": "2026-10-16T10:04:21.632844+00:00",
+  "reviewer": "menu_change_review",
+  "verdict": "PASS_SOURCE_ONLY",
+  "actionable_findings": [],
+  "resolved_R1_finding": "heartbeat exception could orphan cargo while releasing GPU lock",
+  "additional_hardening_verified": [
+    "candidate binary/manifest pins before and after each run",
+    "exact full84/0/4/0/0 unit summary"
+  ],
+  "checked_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\protocol.json": "c74dfd6cbd57804c1fd8e9bad65744a8ab2b525f3e6aa230b5ed46c6959b1fba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\build.py": "9a70f07528879b6316c3cddf5ae3751696360946d64e96046ca1712110e85e25",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\primary.py": "993fcac3be703a7f003e4d9a424b880bb9a6da04e72e876dd33b4f6d1a422564",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\draft-r1\\build.py": "ad8afeec9afed38b619620f24ed7295ec865b155fe2190a2a36c73f52f179eaf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E019-primary-plan\\draft-r1\\primary.py": "99fd1ada745ba1403fc7cdb1694683b79dd2da4c9302af53ce9427a8c79123e6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-unit\\report.json": "8c3490457c49085ac6074cc68c0fc2f8914bd70dc95ba1b0caaa9c0f4927fc8e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-unit\\stdout.log": "1da455ad139691f875a85b5052acf46cbc001978db4383f5561203d805d844d0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-solver.manifest.json": "691d560cb5e446975bb43047065c7bef998ffd6a7c9672caf2e80611fd21f88d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+  },
+  "review_sha256": "6fdda1672e1a4ca652a6aeefc5cb602bf25333e22217794d5f7f12c7a3e7f623",
+  "executed_scripts": false,
+  "builds": false,
+  "gpu_calls": false,
+  "source_edits": false
+}

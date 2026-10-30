@@ -1,0 +1,325 @@
+{
+  "id": "E015",
+  "accepted_at": "2026-10-16T07:34:27Z",
+  "status": "validated",
+  "scope": "Three alternating original-baseline/candidate pairs; sum of per-fixture medians. Fresh compressed native solves on RTX 5090 with a warm driver cache: tree construction, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo builds, fingerprinting, destruction after fingerprinting, browser/API latency and disk saving excluded. E004 improves initialization; E015 reduces repeated reach propagation during solving. F32 and saved/resumed correctness passed; their performance and cold-start performance are not qualified.",
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 10740.3699,
+    "candidate_full_cycle_ms": 9707.2344,
+    "observed_gain_pct": 9.619179875732216,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": true,
+    "fixture_median_regression_above_3pct": [],
+    "fixture_regression_guard": {
+      "threshold_pct": 3.0,
+      "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+      "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -9.464833199279798,
+          "paired_regression_pct": [
+            -9.301265250519272,
+            -9.529811912262916,
+            -9.289068087846298
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "rainbow: median regression -9.4648%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -10.066511132480336,
+          "paired_regression_pct": [
+            -8.458113523125133,
+            -10.272999556193822,
+            -10.507458889116844
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "two-tone: median regression -10.0665%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": -0.6670973343296962,
+          "paired_regression_pct": [
+            1.820335610380897,
+            -10.099223228752074,
+            -0.6670973343296962
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "river: median regression -0.6671%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        }
+      ],
+      "affected_fixtures": [],
+      "failed": false
+    },
+    "statistical_significance_established": false
+  },
+  "incremental_performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 11262.887400000001,
+    "candidate_full_cycle_ms": 10814.3093,
+    "observed_gain_pct": 3.982798407449235,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": true,
+    "fixture_median_regression_above_3pct": [],
+    "fixture_regression_guard": {
+      "threshold_pct": 3.0,
+      "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+      "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -4.456319194120346,
+          "paired_regression_pct": [
+            -4.01179716778334,
+            -6.1983035494591405,
+            -4.456319194120346
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "rainbow: median regression -4.4563%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -3.153005498098315,
+          "paired_regression_pct": [
+            -6.539413360619769,
+            -4.441827128203039,
+            -3.153005498098315
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "two-tone: median regression -3.1530%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": -8.807343488597345,
+          "paired_regression_pct": [
+            -0.5803774019411991,
+            -3.744321944305687,
+            -20.57281164822329
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "river: median regression -8.8073%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        }
+      ],
+      "affected_fixtures": [],
+      "failed": false
+    },
+    "statistical_significance_established": false
+  },
+  "pairs": [
+    {
+      "baseline_id": "B038",
+      "candidate_id": "E015C1",
+      "order": [
+        "B038",
+        "E015C1"
+      ],
+      "baseline_full_cycle_ms": 10697.2091,
+      "candidate_full_cycle_ms": 9750.0297,
+      "observed_gain_pct": 8.85445344804937,
+      "fixture_gain_pct": {
+        "rainbow": 9.301265250519272,
+        "two-tone": 8.458113523125133,
+        "river": -1.820335610380897
+      }
+    },
+    {
+      "baseline_id": "B039",
+      "candidate_id": "E015C2",
+      "order": [
+        "E015C2",
+        "B039"
+      ],
+      "baseline_full_cycle_ms": 10750.6723,
+      "candidate_full_cycle_ms": 9693.421,
+      "observed_gain_pct": 9.834280782607427,
+      "fixture_gain_pct": {
+        "rainbow": 9.529811912262916,
+        "two-tone": 10.272999556193822,
+        "river": 10.099223228752074
+      }
+    },
+    {
+      "baseline_id": "B040",
+      "candidate_id": "E015C3",
+      "order": [
+        "B040",
+        "E015C3"
+      ],
+      "baseline_full_cycle_ms": 10782.0091,
+      "candidate_full_cycle_ms": 9736.8276,
+      "observed_gain_pct": 9.693754571214365,
+      "fixture_gain_pct": {
+        "rainbow": 9.289068087846298,
+        "two-tone": 10.507458889116844,
+        "river": 0.6670973343296962
+      }
+    }
+  ],
+  "incremental_pairs": [
+    {
+      "baseline_id": "B035",
+      "candidate_id": "E015",
+      "order": [
+        "B035",
+        "E015"
+      ],
+      "baseline_full_cycle_ms": 11351.1103,
+      "candidate_full_cycle_ms": 10786.506,
+      "observed_gain_pct": 4.974000649081886,
+      "fixture_gain_pct": {
+        "rainbow": 4.01179716778334,
+        "two-tone": 6.539413360619769,
+        "river": 0.5803774019411991
+      }
+    },
+    {
+      "baseline_id": "B036",
+      "candidate_id": "E015R2",
+      "order": [
+        "E015R2",
+        "B036"
+      ],
+      "baseline_full_cycle_ms": 11326.8597,
+      "candidate_full_cycle_ms": 10707.678100000001,
+      "observed_gain_pct": 5.466489533723101,
+      "fixture_gain_pct": {
+        "rainbow": 6.1983035494591405,
+        "two-tone": 4.441827128203039,
+        "river": 3.744321944305687
+      }
+    },
+    {
+      "baseline_id": "B037",
+      "candidate_id": "E015R3",
+      "order": [
+        "B037",
+        "E015R3"
+      ],
+      "baseline_full_cycle_ms": 11276.447900000001,
+      "candidate_full_cycle_ms": 10811.183500000001,
+      "observed_gain_pct": 4.125983679665651,
+      "fixture_gain_pct": {
+        "rainbow": 4.456319194120346,
+        "two-tone": 3.153005498098315,
+        "river": 20.57281164822329
+      }
+    }
+  ],
+  "controls_snapshots_each": 160,
+  "unit_tests_passed": 84,
+  "unit_tests_ignored": 4,
+  "gpu_integration_tests_passed": 6,
+  "f32_whole_arena_exact": true,
+  "independent_source_review": "PASS: paired-only scope, kernel width guards, graph order and unchanged standalone refresh independently checked; main production sources match research.",
+  "research_commit": "e868cfbb125002216f25046af2d88b22a697b2fd",
+  "main_commit": "bf0d15c42a587180981d616159af382dfd9dd45d",
+  "mod_rs_sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+  "binary_sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+  "evidence": [
+    {
+      "label": "Fresh original-baseline cumulative comparison",
+      "url": "evidence/E015-cumulative-comparison/report.json"
+    },
+    {
+      "label": "Incremental comparison against E004",
+      "url": "evidence/E015-three-pair-comparison/report.json"
+    },
+    {
+      "label": "Independent primary and correctness audit",
+      "url": "evidence/E015-independent-review/validation.json"
+    },
+    {
+      "label": "Independent cumulative audit",
+      "url": "evidence/E015-independent-review/cumulative-validation.json"
+    },
+    {
+      "label": "160 exact saved-state/menu/resume snapshots",
+      "url": "evidence/E015-controls-comparison/report.json"
+    },
+    {
+      "label": "Full F32 exact comparison",
+      "url": "evidence/E015-f32-comparison/report.json"
+    },
+    {
+      "label": "84 solver unit tests",
+      "url": "evidence/V015-unit/stdout.log"
+    },
+    {
+      "label": "Six GPU integration tests",
+      "url": "evidence/V015-gpu/stdout.log"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-three-pair-comparison\\report.json",
+      "sha256": "03857d4717ff68d90c41d444e7f06c3d080bf3c594965fb803a4e7cd307d7111"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-cumulative-comparison\\report.json",
+      "sha256": "966bacf2d240b43daf2c2749d849e9b1e911b67f25ec6bb194bb9985175398f6"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-independent-review\\validation.json",
+      "sha256": "8d3f8710e213aa045354d26bb1f674df54274438c2e53473889478b13f13b390"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-independent-review\\summary.md",
+      "sha256": "788e412e54d9c6d9914028954f8365a33539715ef17f16a27669fec1e86f4be0"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-independent-review\\cumulative-validation.json",
+      "sha256": "c47e0e4c919a8a9aa475eccaf452ce4520becd6514098cd570dcf6a5853fc10a"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-controls-comparison\\report.json",
+      "sha256": "2e89baa97974bc01e7a4482cddff8583a2c5ab23440d70abc5775430f3df2634"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E015-f32-comparison\\report.json",
+      "sha256": "f6e7356f093262f2a271a5fae39193a903cc93d65458a65eb5968977cda165ae"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+      "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+      "sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-unit\\stdout.log",
+      "sha256": "1da455ad139691f875a85b5052acf46cbc001978db4383f5561203d805d844d0"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-gpu\\stdout.log",
+      "sha256": "a43d1c749a684d3ca79e5d05248fa3c8361f4c76dcd04faef925e8ae26535662"
+    }
+  ],
+  "interpretation": [
+    "Cumulative gain is measured against the original implementation in a fresh cohort; percentages are not added.",
+    "Absolute times differ across cohorts; cross-cohort subtraction and a cause for the shift are not established.",
+    "Performance qualification is scoped to the three fixed compressed fixtures, hardware and protocol. No statistical significance or arbitrary-tree guarantee is claimed."
+  ],
+  "deployed": false,
+  "deployment": "Automatic approval review blocked live executable replacement/restart with generic reason blocked by policy. Main source integrated; isolated server validation is separate."
+}

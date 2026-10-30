@@ -1,0 +1,222 @@
+{
+  "id": "E102-close",
+  "at": "2026-10-28T21:21:27.690272+00:00",
+  "status": "closed_original_canonical_wrapper_equality_gate_failed",
+  "reason": "Frozen D197 requires full metadata equality including wrapper_bytes. Actual accepted wrapper4448B versus E1024464B, +16B at all12lifecycle stages, consistent with added CudaFunction handle. This is a host resource/layout gate failure, not observed numeric or solve-speed failure. Do not waive after observing or rescue through alternate handle/caller/helper/source form.",
+  "original_D197_failure_retained": true,
+  "original_D197_protocol_sha256": "062b115ae72cd2def50d0a4236a4d3e2a431d4e8963459a6c98c567d2a532009",
+  "retained_raw_diagnostic_report_sha256": "f4c760986a1472719b48fee28dda12784834e6ed9f90307623b572c20116436b",
+  "direct_cases": 8345,
+  "direct_kernel_launches": 16690,
+  "engine_cases": 36,
+  "engine_phase_pairs": 752,
+  "canonical_scientific_records_exact": 6,
+  "canonical_checkpoints_exact": 46,
+  "canonical_all66device_plusCPU_query_save_futureEV_pairs_exact": true,
+  "entire_raw_pair_bytes_exact": 54608665195,
+  "wrapper_differences": [
+    {
+      "fixture": "rainbow",
+      "stage": "converged",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "continued",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "locked",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "resumed",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "converged",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "continued",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "locked",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "resumed",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "river",
+      "stage": "converged",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "river",
+      "stage": "continued",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "river",
+      "stage": "locked",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    },
+    {
+      "fixture": "river",
+      "stage": "resumed",
+      "baseline_bytes": 4448,
+      "candidate_bytes": 4464,
+      "delta_bytes": 16
+    }
+  ],
+  "all66_retained_raw_file_extents_verified": true,
+  "raw_files_not_rehashed_after_full_comparison": true,
+  "original_numeric_failure_observed": false,
+  "speed_or_improvement_measured": false,
+  "new_integrated_Cargo_builds": 0,
+  "new_primary_or_confirmation_samples": 0,
+  "build_primary_preparers_written_but_never_executed": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-prepare-build.py": "e5011e0f21d5d1045df1a8204671a54a57d6b97f72fd31a2c2f8bf6f2f909075",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-prepare-primary.py": "dfad5b9e6d173166a5cff50b2806270164535580b02c3063b166fcc5fc0232f9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-record-primary.py": "cb3f9d4c6698c225a73329e7e2e1cb1861e6668dd596358486db7c40ede31657"
+  },
+  "all_owned_compilers_native_readers_terminal": true,
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-resource\\execution\\probe.exit.json",
+      "sha256": "b7dedd94a6f825631432e3c130b3dfcff110df33e00db1f85d7e6885d2981849",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-resource\\execution\\rustc.exit.json",
+      "sha256": "332525ae3558f74d1ba514fb9007044f4d2a1d175cef004e2d4cdc8d6c66c558",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-original-chance\\execution\\probe.exit.json",
+      "sha256": "9e282bd64b6f1a1a28f865266cb0932db3c21baf2b5826ce86e9dc7b444bd860",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-original-chance\\execution\\rustc.exit.json",
+      "sha256": "d49b78aa57fa597abc61ed5f427ee61c826f564f1be66f8abfa3292feb58e214",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-fanout\\execution\\probe.exit.json",
+      "sha256": "7a56f88e5d8e5006ac625a6e7a4a3524a14ab7b02b290f02b4882fe9618e093f",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-fanout\\execution\\rustc.exit.json",
+      "sha256": "832242b694b42f246b4f12976bc99148a1caa53947dcfcdc7378bbef7864d7bc",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-chance-controls\\execution\\audit.exit.json",
+      "sha256": "e18bb0a034b603ffea3c7184671d65e85e60ac90e184b670ea93562bb74ce270",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D196-parent-chance-engine\\execution\\audit.exit.json",
+      "sha256": "7134d4c2f40f30bb09716bedfc104793bd847ee2adab324eac99c1c3ecc1054f",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D196-parent-chance-engine\\execution\\probe.exit.json",
+      "sha256": "8aef6b7f5b089c879a7c8a6f6b4892a657c31bf25397c18b89973574e7d530b3",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D196-parent-chance-engine\\execution\\rustc.exit.json",
+      "sha256": "e02434024df1ce204c32d52f229414d5251e05beda33309f94e4ac1253beb4fa",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\execution\\audit.exit.json",
+      "sha256": "5ababe35935c2b30c9f3a241a6f62628d0d2c296ea7c7572dd4258f8b01c112a",
+      "returncode": 1,
+      "original_wrapper_gate_failure_retained": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\execution\\baseline.exit.json",
+      "sha256": "e7367bd8ec7b69f81acdbcef48e6c95d3503dc9d9a7ba510f520e570161be6fa",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\execution\\candidate.exit.json",
+      "sha256": "7c609a61c94778b5a7012457127c3bd45e860411f1a705fb2236c3bce9398146",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\execution\\rustc-baseline.exit.json",
+      "sha256": "a5e8bb6faa3e1335196cebcdc59523476a19174e7821682f608fece90142ccc3",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\execution\\rustc-candidate.exit.json",
+      "sha256": "857415a44776195df08e767706e5d88f293d481e165f0dd4b045dc0b23930b6f",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D198-canonical-terminal-diagnostic\\execution\\audit.exit.json",
+      "sha256": "95fb58b02e5256bac53be4f1359095efc25376bbadd468cd31a8de55ec8480b0",
+      "returncode": 0,
+      "original_wrapper_gate_failure_retained": false
+    }
+  ],
+  "no_native_repeated_for_retained_reader": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "new_gain_accepted_or_deployed": false,
+  "closure": "Exact parent-fanout form closed; no grouping/tile/width/guard/field/helper/caller/handle/flag/source/sample rescue. D198 raw completion is diagnostic, never a wrapper-equality pass or speed/adoption admission. Future unrelated forms must declare expected nonnumeric structural costs prospectively before native runs, while retaining full numerical/state equality and actual material/capacity gates.",
+  "last_primary_baseline_id": "B313",
+  "current_RAM_reference_ms": 10456.4109,
+  "historical_or_other_cohort_timing_pooled": false,
+  "best_qualified": "E080 / GPU / compressed / 16workers",
+  "goal_active": true
+}

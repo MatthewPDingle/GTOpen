@@ -1,0 +1,136 @@
+{
+  "id": "E080-large-warm-controls",
+  "at": "2026-10-18T07:24:40.732125+00:00",
+  "status": "pass_six_full_raw_large_warm_states_each",
+  "protocol_sha256": "872edc4e5f5efcbec7e3763bc60e783bb6649d5407234d120ccc6321162ece8d",
+  "source_candidate_unchanged": true,
+  "raw_layouts": {
+    "baseline": [
+      {
+        "raw_sha256": "29121ab5aeeca4abd385eb791cafec2ccb06d31c74cd3551168c98f30e8b3d08",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 3,
+        "stage": "warm_full",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\warm_full.bin"
+      },
+      {
+        "raw_sha256": "ff4650b121e8ac4d629a47cec2e354ba3a1c9a8b293afc74a207c236e0d70ce7",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 3,
+        "stage": "compact_initial_sync",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\compact_initial_sync.bin"
+      },
+      {
+        "raw_sha256": "7dde3835fb0f9551677563e20e330ed7086c85a1662a01686446af01c454dd63",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "compact_trained",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\compact_trained.bin"
+      },
+      {
+        "raw_sha256": "7dde3835fb0f9551677563e20e330ed7086c85a1662a01686446af01c454dd63",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "materialized_resync",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\materialized_resync.bin"
+      },
+      {
+        "raw_sha256": "bd32bee642c13c9ba7e36f42783f57ca1d0964c5c095c023348cfef5a28e1e5c",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "loaded",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\loaded.bin"
+      },
+      {
+        "raw_sha256": "0f092b772d723bf043a535ed8574cec4eb45911c7c717befe76840ec7c2c8e48",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 7,
+        "stage": "resumed",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\resumed.bin"
+      }
+    ],
+    "candidate": [
+      {
+        "raw_sha256": "29121ab5aeeca4abd385eb791cafec2ccb06d31c74cd3551168c98f30e8b3d08",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 3,
+        "stage": "warm_full",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\warm_full.bin"
+      },
+      {
+        "raw_sha256": "ff4650b121e8ac4d629a47cec2e354ba3a1c9a8b293afc74a207c236e0d70ce7",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 3,
+        "stage": "compact_initial_sync",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\compact_initial_sync.bin"
+      },
+      {
+        "raw_sha256": "7dde3835fb0f9551677563e20e330ed7086c85a1662a01686446af01c454dd63",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "compact_trained",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\compact_trained.bin"
+      },
+      {
+        "raw_sha256": "7dde3835fb0f9551677563e20e330ed7086c85a1662a01686446af01c454dd63",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "materialized_resync",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\materialized_resync.bin"
+      },
+      {
+        "raw_sha256": "bd32bee642c13c9ba7e36f42783f57ca1d0964c5c095c023348cfef5a28e1e5c",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 5,
+        "stage": "loaded",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\loaded.bin"
+      },
+      {
+        "raw_sha256": "0f092b772d723bf043a535ed8574cec4eb45911c7c717befe76840ec7c2c8e48",
+        "raw_bytes": 1391071392,
+        "encoded_elements": 690148392,
+        "iteration": 7,
+        "stage": "resumed",
+        "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\resumed.bin"
+      }
+    ]
+  },
+  "raw_files_stream_compared": 6,
+  "all_full_q_and_scale_bytes_exact": true,
+  "root_query_and_all_non_path_markers_exact": true,
+  "raw_bytes_retained": 16692856704,
+  "encoded_elements_per_arm": 4140890352,
+  "complete_save_files": {
+    "baseline": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-baseline\\large-warm.gto",
+      "sha256": "8a828ea6eaa8a41a7ccde7e1b025d3f8fd2aaf8bf042a6686a1ec087d185bd1c",
+      "bytes": 2739045475
+    },
+    "candidate": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-broader-warm-execution\\raw-candidate\\large-warm.gto",
+      "sha256": "8a828ea6eaa8a41a7ccde7e1b025d3f8fd2aaf8bf042a6686a1ec087d185bd1c",
+      "bytes": 2739045475
+    }
+  },
+  "complete_save_files_stream_compared": true,
+  "successful_GPU_constructors_each": 3,
+  "budget_rejections_each": 1,
+  "iterations_each": 7,
+  "verified_q_bytes": 1369522280,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "limits": "One fixed large compressed two-tone case. Warm full-plan initialization, compact reconstruction, materialized query/resync, complete save/load and resume are actual executions. Eligibility is verified by real q-byte lengths and pinned source; no external worker thread trace. Entire raw frames and all q/scale bytes compare, not only hashes. No complete-cycle, whole-memory, capacity or responsiveness conclusion."
+}

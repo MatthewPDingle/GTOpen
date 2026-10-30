@@ -1,0 +1,10 @@
+warning: unused import: `File`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\E060-scalar-control\probe.rs:3:16
+  |
+3 | use std::{fs::{File,OpenOptions},io::{BufWriter,Write},path::PathBuf};
+  |                ^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

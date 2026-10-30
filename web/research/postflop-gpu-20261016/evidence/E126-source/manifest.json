@@ -1,0 +1,14 @@
+{
+  "id": "E126",
+  "at": "2026-10-29T22:07:39.331130+00:00",
+  "status": "FROZEN_OFFTREE_BEFORE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "7015106c83215814bb7d6e15125526ddd0330a264666c5ae20066a4f904def06",
+  "whole_CRLF_source_inverse_exact": true,
+  "before": "            u32 c0 = o_card_off[(u64)slot * 53 + cc[x]];\r\n            u32 c1 = o_card_off[(u64)slot * 53 + cc[x] + 1];",
+  "after": "            const u32* bounds = o_card_off + (u64)slot * 53 + cc[x];\r\n            u32 c0, c1;\r\n            if (((u64)bounds & 7ull) == 0ull) {\r\n                const uint2 pair = *reinterpret_cast<const uint2*>(bounds);\r\n                c0 = pair.x;\r\n                c1 = pair.y;\r\n            } else {\r\n                c0 = bounds[0];\r\n                c1 = bounds[1];\r\n            }",
+  "target": "up_showonly adjacentcardoffsetc0/c1reads. Actualpointeralignment8 guard, notassumingbase/row/cardparity; unalignedto8pointerretainsoriginal2scalaru32reads.",
+  "unchanged": "EveryoriginalFPexpression/operand/reduction/payout/order/rankcondition/cache/prefix/barrier/arrayword/ABI/host/allocation/launch/graph/quality/save remains. Existingboundssourcehasoriginaltwoinitializedu32wordreads, vectorreadsidentical8bytes no extraaddress. No cachehint/precision/typewidth/datapayload change.",
+  "risks": "Mixedalignmentwarpsmayexecutevectorandfallbackinstructions, extraaddresspredicate/registers/code/JITcouldregress. Widerloadmaystillscalarize. No instructionthroughput/transaction/speed/no-tradeoff inferencefromvirtualvectorwidth.",
+  "failure": "Closefixed8bytealignedcard-boundpairloadwithoriginalscalarfallback; no width/guard/layout/cacheoperator/array/helper/architecture/kernel-scope/flags/source/quality/sample rescue."
+}

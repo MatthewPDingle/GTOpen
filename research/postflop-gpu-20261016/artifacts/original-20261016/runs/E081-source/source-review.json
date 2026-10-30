@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-18T08:56:00.063822+00:00",
+  "scope": "Only training up_action assigns one independent action node to each physical warp; four nodes share the unchanged128thread CTA. Each lane processes its own hand indices with width32 (or last-partial-warp width for direct unusual launch controls). Every original per-hand ascending-action floating expression and mutable write is retained exactly. One host training launch uses ceil(nodecount/4) blocks. Node lists/order, buffers, CFV layout, all other kernels/evaluation launches, ABI, shared memory, math, quality, precision, saves and E080 setup remain unchanged. No warp collectives, implicit inter-thread synchronization or shared scratch.",
+  "complete_source_reverse_exact": true,
+  "floating_body_reverse_exact": true,
+  "up_action_hand_loops_changed": 3,
+  "helper_has_no_collectives_or_atomics": true,
+  "only_host_training_launch_changed": true,
+  "new_host_unit_unexecuted": true,
+  "candidate_ordinary_units_if_built": 87,
+  "risk": "Warp-level arity divergence, longer per-lane loops, register pressure, loss of locality or instruction overhead may erase any structural utilization benefit. No dynamic occupancy, bandwidth, speed or no-material-cost claim. Current parity-separated CFV schedule must retain cross-node independence; direct mixed-node controls and actual plan metadata audit remain before integration.",
+  "references": [
+    {
+      "title": "NVIDIA CUDA advanced kernel programming, thread/block/warp execution and synchronization",
+      "url": "https://docs.nvidia.com/cuda/cuda-programming-guide/03-advanced/advanced-kernel-programming.html"
+    }
+  ],
+  "frozen_production_thread_count": 128,
+  "nodes_per_default_CTA": 4,
+  "no_block_width_or_scope_variants": true
+}

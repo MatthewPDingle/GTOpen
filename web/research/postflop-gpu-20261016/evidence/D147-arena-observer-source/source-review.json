@@ -1,0 +1,19 @@
+{
+  "id": "D147",
+  "at": "2026-10-28T09:48:09.281088+00:00",
+  "kind": "diagnostic_only_not_optimization",
+  "status": "staged_not_compiled",
+  "source_reversal_exact": true,
+  "underlying_source": "accepted E080",
+  "scope": "Retain every original write, iteration order, join, branch, quantizer and address. Add optional host timestamps around complete write calls and compact active/inactive subregions; publish O(1) layout lengths after timing. No metadata scan, GPU call, synchronization, numerical/quality/layout/store or persistence change. Full/noncompact and compact F32 writes remain fully measured. Counter/logger work is observer overhead; matched usefulness controls and full exact records/checkpoints are required before interpreting the clocks.",
+  "clock_meaning": "CPU wall including Rayon scheduling, source scans and destination writes. Active and inactive timings are descriptive, not isolated quantizer or achievable saving. Broad source layout cases are not universally proved by this stage.",
+  "motivation": "Fresh D146 reports415.0981ms in independent CPU-stage medians versus195.7499ms in wait medians. Inspect whether inactive restoration has enough observed work to motivate the unimplemented E011 design; no optimization is selected or admitted from these timings.",
+  "must_remain_closed": [
+    "E091 zero-reach normalization shortcut",
+    "E003 alias hints",
+    "E012/E013 codec wrappers",
+    "E087 bounded pinned-window transfer",
+    "other numerical or complete-cycle failures"
+  ],
+  "next": "Review/parse standalone adapter, then freeze a fresh matched diagnostic cohort before any compile or native work."
+}

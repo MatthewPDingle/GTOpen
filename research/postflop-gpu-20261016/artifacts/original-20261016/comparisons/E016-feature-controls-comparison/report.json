@@ -1,0 +1,137 @@
+{
+  "status": "pass",
+  "created_at": "2026-10-16T07:53:43Z",
+  "scope": "Selected continuation lifecycle and workspace correctness, no performance claim or forced SSD-spill coverage",
+  "checks": [
+    {
+      "id": "V016-continuation-invalidation",
+      "test": "gpu::tests::paired_reach_reuse_continuation_invalidates_before_validation_and_changed_roots",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "id": "V016-continuation-paging",
+      "test": "paging_preserves_resident_trajectories_and_rejects_invalid_inputs",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "id": "V016-continuation-rejection",
+      "test": "symmetric_continuation_rejects_unsupported_inputs_without_mutation",
+      "passed": 1,
+      "failed": 0
+    },
+    {
+      "id": "V016-continuation-stored",
+      "test": "gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes",
+      "passed": 1,
+      "failed": 0
+    }
+  ],
+  "paging_exact_sweeps": 160,
+  "stored_exact_passes": 720,
+  "stored_summary": {
+    "full_device_arrays_bitwise_equal": true,
+    "passes": 720,
+    "restored_arrays_bitwise_equal": true,
+    "values_bitwise_equal": true,
+    "workspace_bytes": 104827924
+  },
+  "environment_evidence": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-feature-environment.json",
+  "verified_artifacts": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-reference\\report.json",
+      "sha256": "0fe834d254e71fe97116d4e31830ac0c1f77bf3a184254b6581260a9ff893341"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+      "sha256": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+      "sha256": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-reference\\stdout.log",
+      "sha256": "d1fb468af09cbe3d4a95416cb51c0c1384714e61eec8d01e27e104a6c4059d30"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-candidate\\report.json",
+      "sha256": "3318a623e667e532c7622190654a036ee6cfa4594a15bd52cfcb52edfd7fff49"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.exe",
+      "sha256": "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-postflop_autoresearch.manifest.json",
+      "sha256": "fcf4fdaacbddc55154a79db7f2cad64b2c68190df5e096cc01148425ae541eee"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-f32-candidate\\stdout.log",
+      "sha256": "f257f417a1b4aad80ef50e903b8b4ce100e707f00dbb77c563ac8804553b9a58"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-invalidation\\report.json",
+      "sha256": "3382d3997aa7fe4014677ee4f5eaf50261e9622616183ac6da44c90d08abc06c"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation-tests.exe",
+      "sha256": "1987c0a8bf848a4a6f7f0b0739a347099b96aae7d4a8daa3f7651ce613717ff2"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation-tests.manifest.json",
+      "sha256": "209d5af266960b6ed3c486dd0dde0c3b01bc07dd3386073c4ecfb67c14366e55"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-invalidation\\stdout.log",
+      "sha256": "4e163ccc65c04bd09db66c1eaa0c42dfc37a348d1f48d7deafc2720e910898a7"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-paging\\report.json",
+      "sha256": "86aef7e97025a0bbed974bac4eb7e99ec4ff26a94cd1ffb3edde563508772e59"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation_paging.exe",
+      "sha256": "c8e87ca8208f16115d85b4d9a9e2c214b5364d92f4a94d5fb026562648548fcd"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation_paging.manifest.json",
+      "sha256": "fd8aaaf77cc6936c522c074606377a4486a10da942f7a445ab3832dd78f78938"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-paging\\stdout.log",
+      "sha256": "9fefedbae055186ad0bf975da1bdd268832d58db6b3ea675be9b6f168afb3a01"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-rejection\\report.json",
+      "sha256": "a0ff1c8d30952b4e9aeef267a1645f7001d3b13b5a92cf770c4d2d567e01645b"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation_symmetry.exe",
+      "sha256": "3c4e09d777c6fc628d9594e8d8f8cee9ef3d243602ed3115d03e9056c8399d7e"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E016-continuation_symmetry.manifest.json",
+      "sha256": "96cab98320f1c4ac5a790514f9189c6443bd7e5b373f319bf44b4f74c8d3c107"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-rejection\\stdout.log",
+      "sha256": "59e7edfec2162b69345cb70d3346827c49f61c0c483f4feedd14d27d656bcaaf"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-stored\\report.json",
+      "sha256": "5fb694dba4cfbd85a735adc368932c8a43dcfd6df0808c784e063badd75a0041"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-continuation-stored\\stdout.log",
+      "sha256": "4fbc3133bca50edd0d1436f33f5eb62fd711baabe59e019a4cd7ad444776fc60"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V016-feature-environment.json",
+      "sha256": "ebbe2d1e35281a5ba7f7ab7f04f91ac743245cac7b3e3fa25ce14201f58dff87"
+    }
+  ],
+  "accepted": false,
+  "deployed": false
+}

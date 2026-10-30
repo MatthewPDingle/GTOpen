@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T10:16:15.070352+00:00",
+  "scope": "Only up_chance card-blocker predicate uses explicit bfe.u64 at positioncc_card[t],length1. Same mask/card inputs, branch decision for supported cards, original ordered floating accumulations, permutation, payout, buffers, host/ABI/launch/graph, quality and save behavior.",
+  "source_reverse_exact": true,
+  "constraints": "Unsigned64 input/output use l operands; bit position is u32 r and fixed length1. Pure register operation has no hidden memory effects and does not need volatile or memory clobber. Existing cc_card load remains an ordinary immutable input.",
+  "source_identity": "No floating expression, selected child, loop ordering or guard span changes. Public/private plan encodings and every caller retain exact bytes. Legal card IDs0..51 fit documented8bit position domain.",
+  "risks": "bfe.u64 is a virtual instruction and may lower to equivalent or slower native operations. Register pressure and scheduling may worsen. No static instruction-count speed inference, actual occupancy measurement or no-tradeoff claim.",
+  "primary_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/parallel-thread-execution/index.html#integer-arithmetic-instructions-bfe",
+      "paraphrase": "Unsigned32/64bit field extraction zero-extends the selected field; position/length are32bit operands restricted to0..255; supported fromsm20."
+    }
+  ],
+  "required_controls": "Actual resource feasibility, full original/candidate chance-kernel raw outputs/immutable inputs/guards, ordinary units and complete-solve qualification."
+}

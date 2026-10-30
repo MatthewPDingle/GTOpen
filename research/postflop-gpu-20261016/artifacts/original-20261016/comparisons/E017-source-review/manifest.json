@@ -1,0 +1,130 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-16T08:27:56.9111409Z",
+  "reviewer": "/root/menu_change_review",
+  "candidate": "E017",
+  "base": "accepted E015",
+  "verdict": "PASS_source_only",
+  "actionable_findings": [],
+  "source_frozen": true,
+  "review": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E017-source-review\\review.md",
+    "sha256": "4e0729c28167e46dec7ec7cd2f243af5dbe3a07a8c045ba920faaed001cb293d"
+  },
+  "checked_inputs": [
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate-mod.rs",
+      "sha256": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate-plan.rs",
+      "sha256": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+      "sha256": "e97a8e025e4ec4b2900685720756fcbaeb61f38b2cd8274149118eec8bb8bf9f",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate-continuation_capacity.rs",
+      "sha256": "e97a8e025e4ec4b2900685720756fcbaeb61f38b2cd8274149118eec8bb8bf9f",
+      "role": "frozen_candidate",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "role": "accepted_E015_base",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\base-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "role": "accepted_E015_base",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\base-continuation_capacity.rs",
+      "sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "role": "accepted_E015_base",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "role": "protected_source",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "role": "protected_source",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs",
+      "sha256": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+      "role": "protected_source",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "role": "protected_source",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate.patch",
+      "sha256": "32e0e331919261cb24b79372f02610a7cd6baa55558ac5e1768a1b40ae04a861",
+      "role": "frozen_patch",
+      "expected_hash_matches": true
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json",
+      "sha256": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+      "role": "review_context"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\manifest.json",
+      "sha256": "056d6110ef070674330e89bc7a2568b4d1939fa7d70366c88342904acbef503d",
+      "role": "review_context"
+    }
+  ],
+  "checks": {
+    "candidate_archived_copies_match_checkout": true,
+    "accepted_E015_base_hashes_match": true,
+    "protected_kernel_arena_store_evaluator_unchanged": true,
+    "optional_list_math_and_coordinate_systems_reviewed": true,
+    "admission_capacity_and_lifecycle_reviewed": true,
+    "runtime_test_obligations_documented": true,
+    "builds_performed": false,
+    "gpu_work_performed": false,
+    "tests_executed_by_reviewer": false,
+    "source_modified_by_reviewer": false,
+    "performance_qualification_established": false,
+    "statistical_significance_established": false,
+    "deployment_reviewed_or_performed": false
+  },
+  "limitations": [
+    "This source review does not validate the runtime fixture-selection assertions or CUDA execution.",
+    "Static CTA counts were not independently recomputed and are not used as performance evidence.",
+    "Root owns serialized builds, correctness controls and complete-cycle qualification."
+  ]
+}

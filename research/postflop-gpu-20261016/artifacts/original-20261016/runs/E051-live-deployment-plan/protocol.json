@@ -1,0 +1,42 @@
+{
+  "id": "E051-qualified-live-maintenance",
+  "at": "2026-10-18T01:41:56.129053+00:00",
+  "status": "FROZEN_PRE_LIVE_OPERATION",
+  "candidate": "E051",
+  "candidate_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-gto-server.exe",
+  "candidate_sha256": "6909ebe22240d17cab427e5a348d6ce2c6fe4634cbad49f31b2213fb2103cf4c",
+  "candidate_manifest_sha256": "75e542d33b8be0e3a97919dc816f0b0efe8b9fbc6e6c5e694e7a7327f959a04d",
+  "live_path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+  "old_sha256": "b7b808b8baff6b3a92c4f3cc8c54ee74ee2c0bb079a8ca68be4da9703f6b84bd",
+  "old_identity": {
+    "path": "X:\\Dev\\GTOpen\\target\\desktop-runtime\\release\\gto-server.exe",
+    "pid": 37268,
+    "created": "2026-10-16T02:58:55.0784380Z",
+    "listeners": [
+      37268
+    ]
+  },
+  "backup_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-live-deployment\\original-gto-server.exe",
+  "output_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-live-deployment",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-deploy-qualified-server.py": "145179bbbf469daa7c4124a03ad9681845230633cf133502b41f7ba2ffbb592e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-live-deployment-plan\\deploy.ps1": "9f3b9ff5bba5fe15458019528816e04ff41ef073abe8b60d4a020d2bafd72308",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-live-deployment-plan\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-smoke\\result.json": "39b3ce30007966d667c0d0f919f040d30ae87472e21225d18bb52f2b93413e36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-smoke-manager\\smoke.exit.json": "b23126b08dac6ff171a068b21e14b001143a0d8d1a0eb3cbf001cfcc6a31df38",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-build\\report.json": "17f4d1ad0249718357b8b9735913b095538d785911bdc5e23a1b8b93aa8f4265",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V051-server-unit\\report.json": "c258868aaa429889c8e557794d0580f5967840bce9d4e6a05c69929ffed418d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V051-server-unit\\stdout.log": "5b60aeb640371acf97ef34ee96cb9d5808c93d3bec66f34c97a3b6b2e1a99e97",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-gto-server.exe": "6909ebe22240d17cab427e5a348d6ce2c6fe4634cbad49f31b2213fb2103cf4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-gto-server.manifest.json": "75e542d33b8be0e3a97919dc816f0b0efe8b9fbc6e6c5e694e7a7327f959a04d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051\\protected-main.json": "29b1dc9072f7efae3640a0e8e4160eeabd710636284a52a136efc099bd41b73b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E051-server-final-plan-r2\\protocol.json": "faf5dfd755582982f80ede4ba164b5654ebda0682bf69f609ccc3cd90f821fde"
+  },
+  "authority": "Current AGENTS authorizes routine desktop rebuild/restart/session restoration. Human also explicitly approved all commands/full access and resumed this research goal after permissions changed. Real full-access/never native research is now operational. Historical blocked attempts and internal cause remain preserved; no security setting or database modified.",
+  "maintenance_guards": "Verify old PID/executable/hash/creation/listener, current sessions empty and reports idle immediately before stop. Preserve checksum-verified old executable on S. Replace only explicit desktop-runtime release gto-server.exe. Launch hidden with fixed port43735,GPU/compressed/Rayon16/NVRTC. Verify new PID/path/hash/listener and unchanged empty sessions. On failed replacement/readiness, recover original backup only if port free; never stop unrelated occupants.",
+  "source_changes": [],
+  "performance_samples": 0,
+  "accepted_cumulative_benchmark_gain_pct": 12.4372274192464,
+  "new_custody_epoch": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018",
+  "old_epoch_preserved": true
+}

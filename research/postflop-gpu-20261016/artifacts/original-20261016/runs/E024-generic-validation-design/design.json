@@ -1,0 +1,121 @@
+{
+  "id": "E024-generic-validation-design",
+  "status": "prospective_conditional_design_only; no implementation or execution",
+  "entry_gate": "Implement/build/run only after E024 primary passes and receives independent terminal audit. This is additional numerical qualification, never a new primary case or performance score.",
+  "arms": {
+    "reference": "exact accepted E020 kernel and compiled solver sources",
+    "candidate": "same sources except exact frozen E024 one-line CUDA predicate; same frozen diagnostic harness in both"
+  },
+  "kernel_sha256": {
+    "E020": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "E024": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762"
+  },
+  "rationale": "NA5-8 takes the formerly cached generic branch; NA9 is the first formerly uncached case; NA16/17 crosses the newly observed generic PTX 16-wide unroll boundary. Existing frozen NA1/11 controls remain required. D046 local-memory/resource success proves neither numerical equivalence nor performance.",
+  "matrix": {
+    "arity_order": [
+      5,
+      6,
+      7,
+      8,
+      9,
+      16,
+      17
+    ],
+    "algorithm_order": [
+      "Dcfr",
+      "CfrPlus"
+    ],
+    "storage_order": [
+      "F32",
+      "Compressed"
+    ],
+    "case_count_per_arm": 28,
+    "case_order": "arity outer, algorithm middle, storage inner; no case selection after results",
+    "checkpoints_per_case": 3,
+    "complete_snapshots_per_arm": 84,
+    "complete_snapshots_both_arms": 168,
+    "iterations_per_case": 62,
+    "native_performance_claim": false
+  },
+  "fixture": {
+    "board": "Ks7h2dQhTc",
+    "range_oop": "AA,KK,QQ,JJ,AKs,AQs,AKo,98s",
+    "range_ip": "AA,QQ,TT,77,AQs,KQs,AQo,JTs",
+    "starting_pot": 10.0,
+    "effective_stack": 100.0,
+    "rake_pct": 0.05,
+    "rake_cap": 1.0,
+    "menus_percent_by_arity": {
+      "5": "5 10 15 20",
+      "6": "5 10 15 20 25",
+      "7": "5 10 15 20 25 30",
+      "8": "5 10 15 20 25 30 35",
+      "9": "5 10 15 20 25 30 35 40",
+      "16": "5 10 15 20 25 30 35 40 45 50 55 60 65 70 75",
+      "17": "5 10 15 20 25 30 35 40 45 50 55 60 65 70 75 80"
+    },
+    "oop_ip_and_all_three_streets": "identical selected literal menu; raises and donks empty",
+    "max_raises": 0,
+    "add_allin": false,
+    "allin_threshold": 0.85,
+    "carry_aggressor_through_checks": false,
+    "use_isomorphism": false,
+    "storage_constructor": "Solver::with_storage, never Solver::new for compressed",
+    "gpu_constructor": "ordinary GpuSolver::new; no budget-induced alternate layout, fake reaches, altered stopping criterion or kernel override"
+  },
+  "shape_assertions": [
+    "Root is OOP action; root child for actual Action::Check (assert index0) is IP action. Both have exactly requested NA and remain in active plan action lists.",
+    "Both menus have Check followed by exactly the A-1 distinct ascending Bet amounts produced by the fixed source expressions. Compare action tags and f64 amount bits across arms; fail if clamping/deduplication changes cardinality.",
+    "Only those two nodes have target high arity; all facing responses have Fold/Call (NA2), no chance nodes or raises. Source-derived total nodes=6*A-3, at most99; assert actual count and full ordered tree/action/children identity.",
+    "Record actor, actual node ID/path, num_children, hand counts and complete arena lengths; fail rather than silently skip any missing arity/actor/phase."
+  ],
+  "schedule": [
+    {
+      "phase": "unlocked",
+      "iterations": 40,
+      "end_iteration": 40,
+      "requirements": "Both nodes unlocked; ordinary iterate exercises initial eager iteration then capture/replay. Assert graph absent initially, present after iteration2, and nonzero learned strategy for each actor. Take snapshot."
+    },
+    {
+      "phase": "both_actor_locks",
+      "iterations": 17,
+      "end_iteration": 57,
+      "requirements": "After the first full readback, Freeze root/OOP and Check/IP using existing lock_node with fixed distinct labels. Verify exactly these2 lock entries and sigma lengths/finite frequencies. update_locks must clear graphs; ordinary next iteration captures again. Take snapshot with both locks retained."
+    },
+    {
+      "phase": "saved_warm_resume",
+      "iterations": 5,
+      "end_iteration": 62,
+      "requirements": "Save locked CPU state through existing API, drop GPU, load_with_storage using same storage. Explicitly restore case algorithm and use_isomorphism=false because save Header does not encode algorithm. Verify loaded iteration57 and both locks/labels, graph absent initially and present after first warm iterate. Five ordinary iterations then snapshot."
+    }
+  ],
+  "snapshot_order": [
+    "Drain via existing synchronous clone_dtoh helper and persist all six complete device images: d_regrets[0/1], d_strat[0/1], d_reach[0/1], each f32::to_bits in labeled length-framed little-endian data BEFORE sync_to_cpu, exploitability or CPU queries. This is essential for compressed cases. Do not compare inactive/unwritten d_cfv scratch.",
+    "Call original full sync_to_cpu. Persist complete Store payloads for regrets/strategy of both actors: every F32 bit, or every signed/unsigned q value and every scale bit (including otherwise unused scale entries), preserving storage tag and lengths.",
+    "Record exact iteration/algo, complete canonical lock data by node ID with sigma float bits and labels; call original exploitability and record exact bits, then original root and Check/IP node_view snapshots with all numeric bits preserved.",
+    "Save with existing API. Compare magic, complete header values (canonicalize only ordering of unique lock/label entries by node ID), each arena length and ALL raw payload bytes. Never normalize float values, drop fields or compare only file/FNV hashes. Whole .gto byte hashes are evidence only: HashMap lock header order can vary between processes.",
+    "After all checkpoints, compare every fixed case/phase between arms; report first mismatch plus retained full raw files. Compression or tolerance may never hide a raw-device mismatch."
+  ],
+  "helper_reuse": {
+    "raw_device": "gpu/mod.rs tests::device_bits/assert_device_bits and assert_reach_reuse_state image selection; temporary child test module can access private GPU arrays without production API changes",
+    "cpu_payload": "postflop_resume_state.rs state Store dispatch, extended only to retain actual labeled bytes instead of using FNV as equality oracle",
+    "menus_and_locks": "postflop_action_menus.rs fixed river/ranges,40/17 iteration cadence and LockMode::Freeze; gpu::tests::paired_reach_reuse_matches_full_sweeps_across_lifecycle both-actor lock/graph assertions",
+    "resume": "postflop_resume_state.rs save/drop/load_with_storage/five-iteration path, with algorithm restored explicitly",
+    "wiring_if_entry_gate_passes": "one ignored gpu::generic_cache_controls::generic_cache_original_controls test in a temporary test-only module plus identical cfg(test) declaration in each isolated arm; no evaluator, CUDA, production API or ordinary test mutation"
+  },
+  "provenance_and_execution": [
+    "Freeze common test source, fixed fixture/matrix and exact source maps before any build. Separately fresh E020/E024 Cargo target directories are mandatory; inspect compiler-artifact source paths and fresh flags.",
+    "Verify expected complete embedded CUDA bytes and opposite kernel absence in each executable, because an earlier shared-target holdout build linked the wrong arm. Pin binaries, manifests, CUDA dependencies, toolchain/options and compiler override absence.",
+    "Parent alone builds/runs under existing serialization lock. Build both arms and all other needed binaries before any scored timing cohort. Run original E020 complete28-case harness first, then E024 identical28-case harness; no arbitrary retries, exclusions, changed menus or extra iterations after a mismatch.",
+    "Suggested frozen filter after implementation: cargo test --release --locked -p solver --features gpu --lib generic_cache_original_controls -- --ignored --exact --nocapture --test-threads=1; use full module-qualified name for --exact (gpu::generic_cache_controls::generic_cache_original_controls). No actual run ID or output directory is reserved by this design.",
+    "Correctness only: no speed threshold, performance inference or addition of diagnostic synchronization to primary evaluator."
+  ],
+  "pass_gate": "All28 shapes and84 checkpoints per arm execute; every raw-device bit, complete CPU q/scale/F32 payload, canonical complete save state, query/exploit bits, iteration/algo/lock and graph assertions match. Any mismatch/missing case is failed or incomplete qualification, not permission to narrow matrix. Existing160 original snapshots,3 originalF32 fixtures,6 GPU integration, relevant3 continuation controls, fixed wide holdout and fresh-original cumulative gates remain separately required.",
+  "limits": "Finite deterministic river controls target generic action-count/codegen coverage; they do not prove arbitrary nonfinite inputs or every game. Multi-street/iso behavior and existing NA1/11 remain covered by unchanged existing controls. Fixed full snapshots and no quantization tolerance close the material new coverage gaps without a new solver/performance framework.",
+  "execution_counts": {
+    "implementations": 0,
+    "builds": 0,
+    "native_tests": 0,
+    "gpu_runs": 0
+  }
+}

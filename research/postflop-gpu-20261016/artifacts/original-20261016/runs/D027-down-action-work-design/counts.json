@@ -1,0 +1,468 @@
+[
+  {
+    "fixture_id": "rainbow",
+    "board": "Ks7h2d",
+    "iso_active": false,
+    "hands": [
+      257,
+      319
+    ],
+    "configuration_matches_E016_run": true,
+    "action_nodes": 523533,
+    "nodes_by_actor": [
+      274801,
+      248732
+    ],
+    "levels_total": 14,
+    "nonempty_action_levels": 13,
+    "uniform_actor_levels": [
+      {
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "nodes_by_actor": [
+          3,
+          0
+        ]
+      }
+    ],
+    "mixed_actor_level_count": 10,
+    "per_level_actor_counts": [
+      {
+        "level": 0,
+        "original_start": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "original_start": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "original_start": 3,
+        "nodes_by_actor": [
+          3,
+          0
+        ]
+      },
+      {
+        "level": 3,
+        "original_start": 6,
+        "nodes_by_actor": [
+          98,
+          3
+        ]
+      },
+      {
+        "level": 4,
+        "original_start": 107,
+        "nodes_by_actor": [
+          150,
+          196
+        ]
+      },
+      {
+        "level": 5,
+        "original_start": 453,
+        "nodes_by_actor": [
+          343,
+          150
+        ]
+      },
+      {
+        "level": 6,
+        "original_start": 946,
+        "nodes_by_actor": [
+          9704,
+          490
+        ]
+      },
+      {
+        "level": 7,
+        "original_start": 11140,
+        "nodes_by_actor": [
+          17052,
+          19110
+        ]
+      },
+      {
+        "level": 8,
+        "original_start": 47302,
+        "nodes_by_actor": [
+          49686,
+          24059
+        ]
+      },
+      {
+        "level": 9,
+        "original_start": 121047,
+        "nodes_by_actor": [
+          54292,
+          73010
+        ]
+      },
+      {
+        "level": 10,
+        "original_start": 248349,
+        "nodes_by_actor": [
+          72912,
+          68208
+        ]
+      },
+      {
+        "level": 11,
+        "original_start": 389469,
+        "nodes_by_actor": [
+          49392,
+          54096
+        ]
+      },
+      {
+        "level": 12,
+        "original_start": 492957,
+        "nodes_by_actor": [
+          21168,
+          9408
+        ]
+      }
+    ],
+    "per_frozen_20_iteration_batch": {
+      "e016_down_action_ctas": 20941320,
+      "uniform_only_omitted_ctas": 116,
+      "actor_filtered_omitted_ctas": 10195859,
+      "actor_filtered_omitted_cta_pct": 48.68775702773273,
+      "e016_down_action_launches": 520,
+      "omitted_launches_both_designs": 58,
+      "remaining_launches_both_designs": 462
+    },
+    "planned_extra_node_ids": 523533,
+    "planned_extra_device_payload_bytes": 2094132,
+    "planned_extra_host_node_payload_peak_bytes": 2094132,
+    "planned_retained_host_span_payload_bytes": 224,
+    "new_device_node_allocations_and_uploads": 1,
+    "limits": "Structural CTA/launch counts, not device timing or throughput. Assumes unchanged check-every20 with one invalidated full p0 at batch start; no change to hand-loop work versus E016."
+  },
+  {
+    "fixture_id": "two-tone",
+    "board": "Ks7s2d",
+    "iso_active": true,
+    "hands": [
+      258,
+      320
+    ],
+    "configuration_matches_E016_run": true,
+    "action_nodes": 318562,
+    "nodes_by_actor": [
+      167213,
+      151349
+    ],
+    "levels_total": 14,
+    "nonempty_action_levels": 13,
+    "uniform_actor_levels": [
+      {
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "nodes_by_actor": [
+          3,
+          0
+        ]
+      }
+    ],
+    "mixed_actor_level_count": 10,
+    "per_level_actor_counts": [
+      {
+        "level": 0,
+        "original_start": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "original_start": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "original_start": 3,
+        "nodes_by_actor": [
+          3,
+          0
+        ]
+      },
+      {
+        "level": 3,
+        "original_start": 6,
+        "nodes_by_actor": [
+          72,
+          3
+        ]
+      },
+      {
+        "level": 4,
+        "original_start": 81,
+        "nodes_by_actor": [
+          111,
+          144
+        ]
+      },
+      {
+        "level": 5,
+        "original_start": 336,
+        "nodes_by_actor": [
+          252,
+          111
+        ]
+      },
+      {
+        "level": 6,
+        "original_start": 699,
+        "nodes_by_actor": [
+          5934,
+          360
+        ]
+      },
+      {
+        "level": 7,
+        "original_start": 6993,
+        "nodes_by_actor": [
+          10435,
+          11648
+        ]
+      },
+      {
+        "level": 8,
+        "original_start": 29076,
+        "nodes_by_actor": [
+          30225,
+          14686
+        ]
+      },
+      {
+        "level": 9,
+        "original_start": 73987,
+        "nodes_by_actor": [
+          33011,
+          44371
+        ]
+      },
+      {
+        "level": 10,
+        "original_start": 151369,
+        "nodes_by_actor": [
+          44299,
+          41441
+        ]
+      },
+      {
+        "level": 11,
+        "original_start": 237109,
+        "nodes_by_actor": [
+          30009,
+          32867
+        ]
+      },
+      {
+        "level": 12,
+        "original_start": 299985,
+        "nodes_by_actor": [
+          12861,
+          5716
+        ]
+      }
+    ],
+    "per_frozen_20_iteration_batch": {
+      "e016_down_action_ctas": 12742480,
+      "uniform_only_omitted_ctas": 116,
+      "actor_filtered_omitted_ctas": 6204027,
+      "actor_filtered_omitted_cta_pct": 48.68775152089703,
+      "e016_down_action_launches": 520,
+      "omitted_launches_both_designs": 58,
+      "remaining_launches_both_designs": 462
+    },
+    "planned_extra_node_ids": 318562,
+    "planned_extra_device_payload_bytes": 1274248,
+    "planned_extra_host_node_payload_peak_bytes": 1274248,
+    "planned_retained_host_span_payload_bytes": 224,
+    "new_device_node_allocations_and_uploads": 1,
+    "limits": "Structural CTA/launch counts, not device timing or throughput. Assumes unchanged check-every20 with one invalidated full p0 at batch start; no change to hand-loop work versus E016."
+  },
+  {
+    "fixture_id": "river",
+    "board": "Ks7h2dQhTc",
+    "iso_active": false,
+    "hands": [
+      233,
+      280
+    ],
+    "configuration_matches_E016_run": true,
+    "action_nodes": 12,
+    "nodes_by_actor": [
+      6,
+      6
+    ],
+    "levels_total": 8,
+    "nonempty_action_levels": 7,
+    "uniform_actor_levels": [
+      {
+        "level": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "nodes_by_actor": [
+          2,
+          0
+        ]
+      },
+      {
+        "level": 3,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 4,
+        "nodes_by_actor": [
+          2,
+          0
+        ]
+      },
+      {
+        "level": 5,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 6,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      }
+    ],
+    "mixed_actor_level_count": 0,
+    "per_level_actor_counts": [
+      {
+        "level": 0,
+        "original_start": 0,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      },
+      {
+        "level": 1,
+        "original_start": 1,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 2,
+        "original_start": 3,
+        "nodes_by_actor": [
+          2,
+          0
+        ]
+      },
+      {
+        "level": 3,
+        "original_start": 5,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 4,
+        "original_start": 7,
+        "nodes_by_actor": [
+          2,
+          0
+        ]
+      },
+      {
+        "level": 5,
+        "original_start": 9,
+        "nodes_by_actor": [
+          0,
+          2
+        ]
+      },
+      {
+        "level": 6,
+        "original_start": 11,
+        "nodes_by_actor": [
+          1,
+          0
+        ]
+      }
+    ],
+    "per_frozen_20_iteration_batch": {
+      "e016_down_action_ctas": 480,
+      "uniform_only_omitted_ctas": 234,
+      "actor_filtered_omitted_ctas": 234,
+      "actor_filtered_omitted_cta_pct": 48.75,
+      "e016_down_action_launches": 280,
+      "omitted_launches_both_designs": 136,
+      "remaining_launches_both_designs": 144
+    },
+    "planned_extra_node_ids": 0,
+    "planned_extra_device_payload_bytes": 0,
+    "planned_extra_host_node_payload_peak_bytes": 0,
+    "planned_retained_host_span_payload_bytes": 128,
+    "new_device_node_allocations_and_uploads": 0,
+    "limits": "Structural CTA/launch counts, not device timing or throughput. Assumes unchanged check-every20 with one invalidated full p0 at batch start; no change to hand-loop work versus E016."
+  }
+]

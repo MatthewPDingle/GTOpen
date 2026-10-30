@@ -1,0 +1,204 @@
+{
+  "id": "RAM20261028-baseline",
+  "at": "2026-10-28T08:08:22.128124+00:00",
+  "status": "pass_current_hardware_baseline",
+  "measurement_epoch": "RAM20261028",
+  "configuration": "Accepted E080, GPU, compressed CPU storage, Rayon16, unchanged quality/stopping/evaluator/workloads",
+  "protocol_sha256": "7ca9762600d6835bb192a9418fd42bb7604ea6500078426cdb6e2a3bbca2a2ac",
+  "binary_sha256": "0ca6ea19d0598d36c6396040d4cbaf6c2be5a599ca4cc3d9ace9beba32094184",
+  "scored_runs": [
+    "RAM20261028-B01",
+    "RAM20261028-B02",
+    "RAM20261028-B03",
+    "RAM20261028-B04",
+    "RAM20261028-B05"
+  ],
+  "prespecified_warmup_runs": [
+    "RAM20261028-W01"
+  ],
+  "scored_run_count": 5,
+  "aggregate_ms": 10456.4109,
+  "aggregation": "Unrounded sum of five-observation per-fixture complete-cycle medians",
+  "raw_serialized_suite_ms": [
+    10554.4806,
+    10416.1442,
+    10445.8335,
+    10481.5879,
+    10496.2379
+  ],
+  "median_serialized_suite_ms": 10481.5879,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "raw_full_cycle_ms": [
+        6116.1769,
+        6125.1662,
+        6126.5299,
+        6152.3875,
+        6143.0987000000005
+      ],
+      "median_full_cycle_ms": 6126.5299,
+      "min_full_cycle_ms": 6116.1769,
+      "max_full_cycle_ms": 6152.3875,
+      "median_solve_ms": 5122.2672999999995,
+      "fingerprint": "65fb2853a11f3acc",
+      "all_full_non_timing_states_and_stops_exact": true
+    },
+    {
+      "fixture_id": "two-tone",
+      "raw_full_cycle_ms": [
+        4317.5928,
+        4169.8135,
+        4198.781,
+        4209.3584,
+        4239.833
+      ],
+      "median_full_cycle_ms": 4209.3584,
+      "min_full_cycle_ms": 4169.8135,
+      "max_full_cycle_ms": 4317.5928,
+      "median_solve_ms": 3156.1623,
+      "fingerprint": "9dd12ac305ce542f",
+      "all_full_non_timing_states_and_stops_exact": true
+    },
+    {
+      "fixture_id": "river",
+      "raw_full_cycle_ms": [
+        120.7109,
+        121.16449999999999,
+        120.5226,
+        119.842,
+        113.30619999999999
+      ],
+      "median_full_cycle_ms": 120.5226,
+      "min_full_cycle_ms": 113.30619999999999,
+      "max_full_cycle_ms": 121.16449999999999,
+      "median_solve_ms": 17.043699999999998,
+      "fingerprint": "63944e67a4f99157",
+      "all_full_non_timing_states_and_stops_exact": true
+    }
+  ],
+  "unit_passed": 86,
+  "unit_ignored": 4,
+  "scored_exact_full_results": 15,
+  "scored_exact_checkpoints": 115,
+  "all_six_processes_exact_results": 18,
+  "all_six_processes_exact_checkpoints": 138,
+  "hardware_inventory": {
+    "cpu": [
+      {
+        "Name": "AMD Ryzen 9 5950X 16-Core Processor            ",
+        "NumberOfCores": 16,
+        "NumberOfLogicalProcessors": 32,
+        "MaxClockSpeed": 3401
+      }
+    ],
+    "memory": [
+      {
+        "DeviceLocator": "DIMM 0",
+        "Capacity": 34359738368,
+        "Speed": 2933,
+        "ConfiguredClockSpeed": 2933,
+        "Manufacturer": "Unknown",
+        "PartNumber": "CMW128GX4M4E3200C16"
+      },
+      {
+        "DeviceLocator": "DIMM 1",
+        "Capacity": 34359738368,
+        "Speed": 2933,
+        "ConfiguredClockSpeed": 2933,
+        "Manufacturer": "Unknown",
+        "PartNumber": "CMW128GX4M4E3200C16"
+      },
+      {
+        "DeviceLocator": "DIMM 0",
+        "Capacity": 34359738368,
+        "Speed": 2933,
+        "ConfiguredClockSpeed": 2933,
+        "Manufacturer": "Unknown",
+        "PartNumber": "CMW128GX4M4E3200C16"
+      },
+      {
+        "DeviceLocator": "DIMM 1",
+        "Capacity": 34359738368,
+        "Speed": 2933,
+        "ConfiguredClockSpeed": 2933,
+        "Manufacturer": "Unknown",
+        "PartNumber": "CMW128GX4M4E3200C16"
+      }
+    ],
+    "os": [
+      {
+        "LastBootUpTime": "/Date(1793142779500)/",
+        "TotalVisibleMemorySize": 134135580,
+        "Version": "10.0.26100",
+        "BuildNumber": "26100"
+      }
+    ],
+    "output_volume": [
+      {
+        "DeviceID": "X:",
+        "VolumeName": "Biwin X570 Pro",
+        "VolumeSerialNumber": "B0F50BDF",
+        "FileSystem": "NTFS",
+        "Size": 8193497362432,
+        "FreeSpace": 5172406677504
+      }
+    ],
+    "at": "2026-10-28T08:05:45.084121+00:00",
+    "gpu": {
+      "command": [
+        "nvidia-smi",
+        "--query-gpu=name,uuid,driver_version,memory.total",
+        "--format=csv,noheader"
+      ],
+      "returncode": 0,
+      "stdout": "NVIDIA GeForce RTX 5090, GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee, 610.88, 32607 MiB",
+      "stderr": ""
+    },
+    "user_reported_RAM_timings_changed": true,
+    "active_RAM_latency_timings": "Not exposed by standard Windows inventory; no inference from DIMM part number.",
+    "CPU_threads_used": 16,
+    "configuration": "Exact accepted E080 executable, GPU, compressed CPU storage",
+    "storage": "New outputs on physical X. Prior archive on S is read-only; no T dependency in new runtime.",
+    "current_rustc": {
+      "command": [
+        "rustc",
+        "-Vv"
+      ],
+      "returncode": 0,
+      "stdout": "rustc 1.98.1 (48a229cea 2026-09-01)\nbinary: rustc\ncommit-hash: 48a229ceaefd4985c50990b14116b6d856af0985\ncommit-date: 2026-09-01\nhost: x86_64-pc-windows-msvc\nrelease: 1.98.1\nLLVM version: 22.1.8",
+      "stderr": ""
+    }
+  },
+  "all_new_outputs_physically_on_X": true,
+  "historical_timing_samples_scored": 0,
+  "excluded_scored_samples": [],
+  "extension_runs": 0,
+  "new_optimizer_gain_claimed": false,
+  "RAM_causal_speedup_claimed": false,
+  "historical_14_7414pct_gain_is_prior_epoch_only": true,
+  "evidence_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-V01.exit.json": "fc4d1aa80478ecb32eb892f51a0dbe4f8f68d647930900bd854f19e0ed185f77",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-V01\\report.json": "01a9f19b3a576035dd6ca4b0078918938a2bca8425f247ea3bc272002752bd14",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-V01\\stdout.log": "f3498cdd027610086fc4e25ef5520482f1f3991cda8fb21dfd396dcf3cc40a9c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-W01.exit.json": "edf222e1e96d06d96eae66f35fb716810c3457947e73638c44e4deeb72824e76",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-W01\\report.json": "861a52422ce109e0e95d2bf9dc46ad972b5bd00596d7ad9f1e14be098e1ee829",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-W01\\stdout.log": "0fd18c2aefea478c837c57c441163ab1fc3dc41f2baf0e08c9d916c0aa6a3a66",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-B01.exit.json": "0cf9050281dd148588d6f7d218f2424586ba550c504be458dac0065f7be8696b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B01\\report.json": "f4a9e0eec21c0db8e2a8ee0f4b43d7f5f8a7fe6c5af501811786010ab08f7555",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B01\\stdout.log": "2690d32629cc75233a340afeb5b3cf7bdad4531b17681e0fbd22310517ee04b8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-B02.exit.json": "162dac9214f933da72453203c800eac26b5abcaf524dc0ac1b8e6e150978827c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B02\\report.json": "27700eb503473b91fade721b7ddcb6ba13567c9f2c9516799cc7b9872ca81302",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B02\\stdout.log": "3612d753d6aa531f6f13c61e2876ba622103866439973f96a0f266dd7afa8285",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-B03.exit.json": "fcba340b080629a7aa04a2acf3068f8d39c09a7c50a9036d13a103980de22c67",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B03\\report.json": "db8e5f702110a17d06bcb37b84335164a9decb3cede2c4a393965deab6eed1b5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B03\\stdout.log": "e28a727f4a43a5a77468c30ab229274a9f40ab4f6b8c9c919a9b47c7be508cbb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-B04.exit.json": "c3014ff9874dfd1721c4eb9443accf612b537aa02fd42bc68a17ccee16f6411f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B04\\report.json": "8dc7ff8bfbec70c5abb3a3a065f86f7d49f64993f5530116f2b160b40c007f89",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B04\\stdout.log": "2db02ef42e86ee54c72298a434f9ed5adb15063acb6e29fcce892c6f5f200060",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-execution\\RAM20261028-B05.exit.json": "f9ae8dd6b83436596dbc059cf7f7e6713499915c70657ba8baefbbc177e5dfc2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B05\\report.json": "feab53cc2828173e075e7942619f480bfb366913ca7baecc4f0eed1fa72a9e0b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\RAM20261028-B05\\stdout.log": "ff4fc5f9e571f5629e551fc731a29d2c12557bd5df5ed2aadff6ae8f6a89c935"
+  },
+  "limits": "A fresh baseline of the best already accepted configuration under the user changed RAM timings and current machine/storage state. Five retained observations describe timing variability; no statistical confidence or causal RAM-only attribution. Future optimization comparisons require fresh matched controls from this epoch and the unchanged 1%/fixture/fresh16/broad/material/holdout/cumulative gates. Native complete cycles include build/allocation/GPU init/JIT/quality solve/checks/full readback; Cargo, fingerprints, final destruction, saving and browser latency remain excluded."
+}

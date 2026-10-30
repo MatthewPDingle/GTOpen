@@ -1,0 +1,134 @@
+{
+  "id": "E070-seven-entry-partitioned-control-closure",
+  "at": "2026-10-18T01:18:41.739890+00:00",
+  "status": "pass_scoped_seven_entry_exact_controls_with_recorded_fixture_correction",
+  "protocol_sha256": "b5a276c90d8f9eaaed1c704318c02ad6e274dc2edd2e5d96488802a26799802f",
+  "original_execution_plan_sha256": "e274ca3b0aa5927691740141f7f8a3efb186fa57309c7f9223b8b3e821cbfb09",
+  "original_up_report_sha256": "72275331a95c21eb689d97680ae0506d69c6920a9b783a5347b111b913e97a45",
+  "original_down_prefix_report_sha256": "6c45d8a2b6aabed1e66772bf5d5aeaf935950108eb67ba8ec0e9f92b2fed1fdb",
+  "corrected_remaining_components": [
+    {
+      "component": "down-remaining",
+      "cases": 24,
+      "kernel_launches": 48,
+      "report_sha256": "9eff96cd4546a77b696c03b99ce59f0334a2b4d779934b7bdc27c2bda70b6070",
+      "raw_files": {
+        "baseline-inputs.bin": {
+          "sha256": "54cf8d24fa8b5711b515280eafe23ab89f55f65d5b94413684e18ca29113b3ce",
+          "bytes": 68224
+        },
+        "baseline.bin": {
+          "sha256": "e6d6b0dc2fbaefea1e0d99057367827293c09907a027042b1061954011ec0288",
+          "bytes": 88240
+        },
+        "candidate-inputs.bin": {
+          "sha256": "54cf8d24fa8b5711b515280eafe23ab89f55f65d5b94413684e18ca29113b3ce",
+          "bytes": 68224
+        },
+        "candidate.bin": {
+          "sha256": "e6d6b0dc2fbaefea1e0d99057367827293c09907a027042b1061954011ec0288",
+          "bytes": 88240
+        },
+        "inputs.bin": {
+          "sha256": "c61de7e4cbcd93a094a43dd5ac7f95ca58152d823e8e2282b4411d25ea1207cb",
+          "bytes": 157696
+        }
+      }
+    },
+    {
+      "component": "up-action-eval",
+      "cases": 1638,
+      "kernel_launches": 3276,
+      "report_sha256": "f72b77f55e46078d69315579a589ecf12a3047189770c52785753b39eb0310e9",
+      "raw_files": {
+        "baseline-inputs.bin": {
+          "sha256": "b603c84cffbdb6e2be9bb9def3f4223685dc87a30bb6fb308534b7d01e570875",
+          "bytes": 21072877
+        },
+        "baseline.bin": {
+          "sha256": "bcaa4153f11875157b9838218c14d2a845f652a884111c1a7264865a7d8c2c2c",
+          "bytes": 49549310
+        },
+        "candidate-inputs.bin": {
+          "sha256": "b603c84cffbdb6e2be9bb9def3f4223685dc87a30bb6fb308534b7d01e570875",
+          "bytes": 21072877
+        },
+        "candidate.bin": {
+          "sha256": "bcaa4153f11875157b9838218c14d2a845f652a884111c1a7264865a7d8c2c2c",
+          "bytes": 49549310
+        },
+        "inputs.bin": {
+          "sha256": "6a72f4b5a829528b96e0d82def8a5f33de05def2ac9851c9b04adbc8b2dd5b4d",
+          "bytes": 70720453
+        }
+      }
+    },
+    {
+      "component": "up-fold",
+      "cases": 180,
+      "kernel_launches": 360,
+      "report_sha256": "84cb30a63cd40d66ebdc44dbad1b339d8ee392c7b349e4ef175dbacc02ef593a",
+      "raw_files": {
+        "baseline-inputs.bin": {
+          "sha256": "e8b44d9d1fcc403a35799ce0cebca2c3c69fa5bfd21003474221c92d3cae4fb5",
+          "bytes": 31818853
+        },
+        "baseline.bin": {
+          "sha256": "927410bb26d800e9f47cfd72003a57261cd77acd858f2776bc08bb264cb861ad",
+          "bytes": 19026854
+        },
+        "candidate-inputs.bin": {
+          "sha256": "e8b44d9d1fcc403a35799ce0cebca2c3c69fa5bfd21003474221c92d3cae4fb5",
+          "bytes": 31818853
+        },
+        "candidate.bin": {
+          "sha256": "927410bb26d800e9f47cfd72003a57261cd77acd858f2776bc08bb264cb861ad",
+          "bytes": 19026854
+        },
+        "inputs.bin": {
+          "sha256": "fb20761beef175bd9350d570a893812e12599deb306596ffdb05967678f2b600",
+          "bytes": 50852173
+        }
+      }
+    },
+    {
+      "component": "continuation-raw",
+      "cases": 2120,
+      "kernel_launches": 4240,
+      "report_sha256": "96e91ee2683e451deb5206063b60453d612d640cc0277657f306b728f8c756f0",
+      "raw_files": {
+        "baseline-inputs.bin": {
+          "sha256": "8494d0d20a7a516b914900a485cc0c73bc8d3b39a2e8bf65db6fd37a3170356d",
+          "bytes": 4807175
+        },
+        "baseline.bin": {
+          "sha256": "96855a2fc269709cce23feb4dcfe3a6f425bb367350c572dc7ab29f44a739669",
+          "bytes": 1097128496
+        },
+        "candidate-inputs.bin": {
+          "sha256": "8494d0d20a7a516b914900a485cc0c73bc8d3b39a2e8bf65db6fd37a3170356d",
+          "bytes": 4807175
+        },
+        "candidate.bin": {
+          "sha256": "96855a2fc269709cce23feb4dcfe3a6f425bb367350c572dc7ab29f44a739669",
+          "bytes": 1097128496
+        },
+        "inputs.bin": {
+          "sha256": "9c9419b61d75fa9234f6c8d5c25f3aec46c83898e3e84c3f448ac4301d3936c4",
+          "bytes": 1102037415
+        }
+      }
+    }
+  ],
+  "cases": 5953,
+  "application_kernel_launches": 11906,
+  "native_numerical_processes": 6,
+  "case_coverage": "Up819; down original IDs0..1171 plus corrected/unexecuted IDs1172..1195; eval1638; fold180; helpers2120. Each retained ID has one baseline/candidate GPU pair; no completed pair repeated or case excluded.",
+  "fixture_normalization": "Exactly12unexecuted signed actor=-1 cases use source-valid byte255 in both arms; all other dimensions/float factories/PTX/widths/locks/IDs retained.",
+  "source_main_live_PTX_custody_pass": true,
+  "all_owned_child_handles_terminal": true,
+  "solver_activation": false,
+  "solver_executions": 0,
+  "performance_measurements": 0,
+  "candidate_accepted": false
+}

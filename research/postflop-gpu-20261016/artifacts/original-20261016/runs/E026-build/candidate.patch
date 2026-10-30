@@ -1,0 +1,70 @@
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 50beeffe..b6af5936 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -240,23 +240,28 @@ extern "C" __global__ void up_show(
+     // totals, then chunk offsets are added back.
+     __shared__ float chunk_sum[257];
+     {
+-        int chunk = (m_o + blockDim.x - 1) / blockDim.x;
++        const int scan_threads = blockDim.x == 256 ? 128 : (int)blockDim.x;
++        int chunk = (m_o + scan_threads - 1) / scan_threads;
+         int lo_k = threadIdx.x * chunk;
+         int hi_k = min(lo_k + chunk, m_o);
+-        float acc = 0.f;
+-        for (int k = lo_k; k < hi_k; k++) {
+-            acc += reach_sh[k];
+-            prefix[k] = acc;
++        if (threadIdx.x < (u32)scan_threads) {
++            float acc = 0.f;
++            for (int k = lo_k; k < hi_k; k++) {
++                acc += reach_sh[k];
++                prefix[k] = acc;
++            }
++            chunk_sum[threadIdx.x + 1] = acc;
+         }
+-        chunk_sum[threadIdx.x + 1] = acc;
+         __syncthreads();
+         if (threadIdx.x == 0) {
+             chunk_sum[0] = 0.f;
+-            for (int t = 1; t <= (int)blockDim.x; t++) chunk_sum[t] += chunk_sum[t - 1];
++            for (int t = 1; t <= scan_threads; t++) chunk_sum[t] += chunk_sum[t - 1];
+         }
+         __syncthreads();
+-        float base = chunk_sum[threadIdx.x];
+-        for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
++        if (threadIdx.x < (u32)scan_threads) {
++            float base = chunk_sum[threadIdx.x];
++            for (int k = lo_k; k < hi_k; k++) prefix[k] += base;
++        }
+     }
+     __syncthreads();
+     float total = m_o > 0 ? prefix[m_o - 1] : 0.f;
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index 88a21c4c..a01b4bbe 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -692,7 +692,10 @@ impl GpuSolver {
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, show_shared))
++                        .launch(LaunchConfig {
++                            block_dim: (256, 1, 1),
++                            ..Self::cfg(sp.count, show_shared)
++                        })
+                         .map_err(e)?;
+                 }
+             }
+@@ -922,7 +925,10 @@ impl GpuSolver {
+                         .arg(&nh_p)
+                         .arg(&nh_o)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, show_shared))
++                        .launch(LaunchConfig {
++                            block_dim: (256, 1, 1),
++                            ..Self::cfg(sp.count, show_shared)
++                        })
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 4, t0)?;

@@ -1,0 +1,104 @@
+{
+  "id": "E112",
+  "at": "2026-10-29T05:04:07.774463+00:00",
+  "D253_report_sha256": "1b2fa70a7046cd021f662a08ebbc657e012b2ff6ff4926f4a2c56ccaa26a0fe6",
+  "replacements": {
+    "kernels.cu": [
+      {
+        "old": "    const float* __restrict__ disc, // [pos, neg, strat] — device-resident so\r\n                                    // captured graphs stay iteration-invariant\r\n",
+        "new": "",
+        "count": 2
+      },
+      {
+        "old": "    float pos = disc[0], neg = disc[1], ds = disc[2];",
+        "new": "    float pos = gto_postflop_discounts[0], neg = gto_postflop_discounts[1], ds = gto_postflop_discounts[2];",
+        "count": 1
+      },
+      {
+        "old": "cfv_slot, cfv, disc, nh_p, nh_max",
+        "new": "cfv_slot, cfv, nh_p, nh_max",
+        "count": 4
+      },
+      {
+        "old": "template<int NA>\r\n__device__ __forceinline__ void up_action_impl(",
+        "new": "extern \"C\" { __constant__ float gto_postflop_discounts[3] = {0.f, 0.f, 0.f}; }\r\n\r\ntemplate<int NA>\r\n__device__ __forceinline__ void up_action_impl(",
+        "count": 1
+      }
+    ],
+    "mod.rs": [
+      {
+        "old": "    d_disc: CudaSlice<f32>,",
+        "new": "    discount_symbol_bytes: usize,",
+        "count": 1
+      },
+      {
+        "old": "        let func = |name: &str| module.load_function(name).map_err(e);",
+        "new": "        let func = |name: &str| module.load_function(name).map_err(e);\n        let discount_symbol_bytes = {\n            let symbol = module.get_global(\"gto_postflop_discounts\", &stream).map_err(e)?;\n            if symbol.len() != 12 { return Err(\"unexpected postflop discount symbol size\".into()); }\n            symbol.len()\n        };\n",
+        "count": 1
+      },
+      {
+        "old": "            d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,",
+        "new": "            discount_symbol_bytes,",
+        "count": 1
+      },
+      {
+        "old": "        self.stream.memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc).map_err(e)?;",
+        "new": "        self.upload_discounts([disc.pos, disc.neg, disc.strat])?;",
+        "count": 1
+      },
+      {
+        "old": "        self.stream\n            .memcpy_htod(&[disc.pos, disc.neg, disc.strat], &mut self.d_disc)\n            .map_err(e)?;",
+        "new": "        self.upload_discounts([disc.pos, disc.neg, disc.strat])?;",
+        "count": 2
+      },
+      {
+        "old": "                        .arg(&self.d_disc)\n",
+        "new": "",
+        "count": 1
+      },
+      {
+        "old": "        gpu.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut gpu.d_disc).unwrap();",
+        "new": "        gpu.upload_discounts([d.pos, d.neg, d.strat]).unwrap();",
+        "count": 1
+      },
+      {
+        "old": "    pub fn new(solver: &Solver) -> Result<GpuSolver, String> {",
+        "new": "    // The module owns this symbol. Views borrow the module/stream and never free it.\n    fn discount_symbol(&self) -> Result<cudarc::driver::CudaViewMut<'_, u8>, String> {\n        let symbol = self._module.get_global(\"gto_postflop_discounts\", &self.stream).map_err(e)?;\n        if symbol.len() != self.discount_symbol_bytes || symbol.len() != 12 {\n            return Err(\"unexpected postflop discount symbol size\".into());\n        }\n        Ok(symbol)\n    }\n\n    fn upload_discounts(&self, values: [f32; 3]) -> Result<(), String> {\n        let mut bytes = self.discount_symbol()?;\n        // Exactly three f32 words, size checked above; the temporary typed view\n        // cannot outlive the module borrow. Same-stream ordering precedes grids.\n        let mut typed = unsafe { bytes.transmute_mut::<f32>(3).unwrap() };\n        self.stream.memcpy_htod(&values, &mut typed).map_err(e)\n    }\n\n    pub fn new(solver: &Solver) -> Result<GpuSolver, String> {",
+        "count": 1
+      },
+      {
+        "old": "// into CUDA graphs. Kernels read discounts from d_disc, so the",
+        "new": "// into CUDA graphs. Kernels read the module discount symbol, so the",
+        "count": 1
+      }
+    ],
+    "continuation_capacity.rs": [
+      {
+        "old": "        d_cfv_slot:u32,d_eval_roots:f32,d_disc:f32);",
+        "new": "        d_cfv_slot:u32,d_eval_roots:f32);",
+        "count": 1
+      },
+      {
+        "old": "    n\n}\n\npub fn stored_capacity_plan",
+        "new": "    n + g.discount_symbol_bytes as u64\n}\n\npub fn stored_capacity_plan",
+        "count": 1
+      },
+      {
+        "old": "/// Actual CUDA slice payloads, excluding the seven borrowed mutable buffers.",
+        "new": "/// Actual CUDA slices plus queried module discount bytes, excluding seven borrowed buffers.",
+        "count": 1
+      }
+    ]
+  },
+  "mechanism": "Replace the single12byte global discount slice by the single12byte explicitly initialized module constant symbol. Three originalpos/neg/strategy loads keep their original placement and exact arithmetic expressions/order. Existing128thread dispatch/arity/loop/reduction/locks/sigma/actionworklists/quality stay unchanged. Remove only discountpointer formal/argument from private up_action ABI20to19; allother8global kernels/ABIs exact. No E055conditional orE075ldu mechanism composed.",
+  "host_and_lifetime": "CudaModule/stream remain owned. Every update uses size-checked borrowed byteview and ephemeral typed f32view, no owning upgrade/free. Constructor queries actual symbol12bytes; only its size is retained for observed metadata. Same-stream HtoD copies complete/order before original eager/graph work; no same-symbol concurrent writer/reader introduced. D253 proves finite independent module isolation and changing graph values only; full solver/owner/error/paging controls remain.",
+  "payload_accounting": "Existing estimated12discountbytes unchanged; actual observed metadata replaces slice length by actual queried symbol size12, counted once. No second persistent buffer or new scratch. Driver module/constant rounding/allocation/responsiveness costs are not captured by logical payload and require actual material/capacity qualification.",
+  "prospective_costs": [
+    "Extra module-symbol query per original update and one constructor query; all runtime costs included.",
+    "Modified constant access/cache path and module allocation/JIT/code costs.",
+    "Wrapper shrinks after removing CudaSlice; actual compiled size/alignment and all capacity/graph owners must be checked.",
+    "New symbol query errors propagate; unsupporteddevices and CUDA75compile compatibility must remain qualified."
+  ],
+  "gates": "Both120/75ABI20to19exact ordinal mapping,8otherentrybodies/resources exact,actual3constantloadsboundtooriginalpos/neg/stratoperands,no newlocal/dynamic/stack/maxthread loss/defaultfit. Positive original64/128/256occupancies. Then full rawdirect/engine/canonical/ordinary/1%strictfixture/fresh16/broad/material/holdout/cumulative/app before adoption.",
+  "failure": "Genuine mechanism/ABI/resource/numerical/state/lifecycle/capacity/material/performance failure closes fixedconstantform withoutsource/helper/width/loop/placement/flags/threshold/entrysubset/quality/sample rescue. Mechanical reader/binding/preparation defects additive, no completed scientifickernels repeated."
+}

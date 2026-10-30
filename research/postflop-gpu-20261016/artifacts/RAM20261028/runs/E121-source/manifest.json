@@ -1,0 +1,59 @@
+{
+  "id": "E121",
+  "at": "2026-10-29T18:44:11.629148+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\baseline.cu",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\candidate.cu",
+      "base_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate_sha256": "f1d7d518223d3fd3ad622d67203936cab25534e8e739d7c5d9cb5e36aab5cd76"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\baseline-mod.rs",
+      "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E121-source\\candidate-mod.rs",
+      "base_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "candidate_sha256": "f901eed725066c965664403ea7cef35f4c3848b1d7865e1e87730b2d5f444e13"
+    }
+  },
+  "CUDA_edits": [
+    {
+      "entry": "up_fold",
+      "old": "        u32 sc = same_p[i];\r\n        float same_r = sc != SENTINEL ? ro[sc] : 0.f;\r\n        float valid = (float)(T - s[pc1[i]] - s[pc2[i]]) + same_r;",
+      "new": "        u32 hand_word = same_p[i];\r\n        u32 sc = hand_word >> 12;\r\n        float same_r = sc != 0x7ffu ? ro[sc] : 0.f;\r\n        float valid = (float)(T - s[hand_word & 63u] - s[(hand_word >> 6) & 63u]) + same_r;"
+    },
+    {
+      "entry": "up_show",
+      "old": "        u32 cc[2] = { pc1[i], pc2[i] };",
+      "new": "        u32 hand_word = same_p[i];\r\n        u32 cc[2] = { hand_word & 63u, (hand_word >> 6) & 63u };"
+    },
+    {
+      "entry": "up_show",
+      "old": "        u32 sc = same_p[i];\r\n        float same_r = sc != SENTINEL ? ro[sc] : 0.f;",
+      "new": "        u32 sc = hand_word >> 12;\r\n        float same_r = sc != 0x7ffu ? ro[sc] : 0.f;"
+    }
+  ],
+  "host_edits": [
+    {
+      "old": "pub struct GpuSolver {",
+      "new": "fn terminal_hand_words(c1: &[u32], c2: &[u32], same: &[u32]) -> Vec<u32> {\n    c1.iter().zip(c2).zip(same).map(|((&a, &b), &s)| {\n        let index = if s == u32::MAX { 0x7ff } else { s };\n        a | (b << 6) | (index << 12)\n    }).collect()\n}\n\npub struct GpuSolver {"
+    },
+    {
+      "old": "    d_same: [CudaSlice<u32>; 2],",
+      "new": "    // Terminal word: card1/card2 in 6+6 bits, same index in 11 bits (2047 absent).\n    d_same: [CudaSlice<u32>; 2],"
+    },
+    {
+      "old": "        Ok(GpuSolver {",
+      "new": "        let terminal_words = [\n            terminal_hand_words(&plan.hand_c1[0], &plan.hand_c2[0], &plan.same_combo[0]),\n            terminal_hand_words(&plan.hand_c1[1], &plan.hand_c2[1], &plan.same_combo[1]),\n        ];\n\n        Ok(GpuSolver {"
+    },
+    {
+      "old": "            d_same: [up32(&plan.same_combo[0])?, up32(&plan.same_combo[1])?],",
+      "new": "            d_same: [up32(&terminal_words[0])?, up32(&terminal_words[1])?],"
+    }
+  ],
+  "entire_CUDA_CRLF_and_Rust_LF_inverse_exact": true,
+  "contract_sha256": "82a6fc85e849ac112c5463be77d5c6666f5f80bc3a77a176a87a82cfc406d6e8",
+  "history_sha256": "371c5cc17992331574b9c9a4bb6955d0851de9f86a82b21e79b80aa6b3d39fa6",
+  "unchanged": "Allfloatingexpressions/operandvalues/order/precision/barriers/launchshape/dynamicshared/publicplan/capacityformula/save/quality/cadence. Earlyreadpackedintegerinshow replaces2cardloadsandlateindexload; originalsamefloatread/payoutposition retained. Other7CUDAentriesunchanged.",
+  "risks": "Integerdecode/longerwordlifetime/changedregisterallocation/JIT/hostpacking/temporaryvectors may erase load saving. No speed/material/equivalence claim. Onefixedencoding/source/masks/sentinel/width/architecture/helper/flags/quality/sampleform closesaftergenuinefailure."
+}

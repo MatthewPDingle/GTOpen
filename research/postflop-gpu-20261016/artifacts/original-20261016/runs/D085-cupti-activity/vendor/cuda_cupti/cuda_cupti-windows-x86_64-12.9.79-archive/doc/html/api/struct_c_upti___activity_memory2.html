@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>6.60. CUpti_ActivityMemory2 &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="6.61. CUpti_ActivityMemory3" href="struct_c_upti___activity_memory3.html" />
+    <link rel="prev" title="6.59. CUpti_ActivityMemory" href="struct_c_upti___activity_memory.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">5. Modules</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="data-structures.html">6. Data Structures</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity.html">6.1. CUpti_Activity</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_a_p_i.html">6.2. CUpti_ActivityAPI</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_auto_boost_state.html">6.3. CUpti_ActivityAutoBoostState</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_branch.html">6.4. CUpti_ActivityBranch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_branch2.html">6.5. CUpti_ActivityBranch2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_cdp_kernel.html">6.6. CUpti_ActivityCdpKernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_context.html">6.7. CUpti_ActivityContext</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_context2.html">6.8. CUpti_ActivityContext2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_context3.html">6.9. CUpti_ActivityContext3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_cuda_event.html">6.10. CUpti_ActivityCudaEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_cuda_event2.html">6.11. CUpti_ActivityCudaEvent2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device.html">6.12. CUpti_ActivityDevice</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device2.html">6.13. CUpti_ActivityDevice2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device3.html">6.14. CUpti_ActivityDevice3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device4.html">6.15. CUpti_ActivityDevice4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device5.html">6.16. CUpti_ActivityDevice5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device_attribute.html">6.17. CUpti_ActivityDeviceAttribute</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_device_graph_trace.html">6.18. CUpti_ActivityDeviceGraphTrace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_environment.html">6.19. CUpti_ActivityEnvironment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_event.html">6.20. CUpti_ActivityEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_event_instance.html">6.21. CUpti_ActivityEventInstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_external_correlation.html">6.22. CUpti_ActivityExternalCorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_function.html">6.23. CUpti_ActivityFunction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_global_access.html">6.24. CUpti_ActivityGlobalAccess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_global_access2.html">6.25. CUpti_ActivityGlobalAccess2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_global_access3.html">6.26. CUpti_ActivityGlobalAccess3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_graph_trace.html">6.27. CUpti_ActivityGraphTrace</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_graph_trace2.html">6.28. CUpti_ActivityGraphTrace2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instantaneous_event.html">6.29. CUpti_ActivityInstantaneousEvent</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instantaneous_event_instance.html">6.30. CUpti_ActivityInstantaneousEventInstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instantaneous_metric.html">6.31. CUpti_ActivityInstantaneousMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instantaneous_metric_instance.html">6.32. CUpti_ActivityInstantaneousMetricInstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instruction_correlation.html">6.33. CUpti_ActivityInstructionCorrelation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_instruction_execution.html">6.34. CUpti_ActivityInstructionExecution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_jit.html">6.35. CUpti_ActivityJit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_jit2.html">6.36. CUpti_ActivityJit2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel.html">6.37. CUpti_ActivityKernel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel2.html">6.38. CUpti_ActivityKernel2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel3.html">6.39. CUpti_ActivityKernel3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel4.html">6.40. CUpti_ActivityKernel4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel5.html">6.41. CUpti_ActivityKernel5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel6.html">6.42. CUpti_ActivityKernel6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel7.html">6.43. CUpti_ActivityKernel7</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel8.html">6.44. CUpti_ActivityKernel8</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_kernel9.html">6.45. CUpti_ActivityKernel9</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_marker.html">6.46. CUpti_ActivityMarker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_marker2.html">6.47. CUpti_ActivityMarker2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_marker_data.html">6.48. CUpti_ActivityMarkerData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_mem_decompress.html">6.49. CUpti_ActivityMemDecompress</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy.html">6.50. CUpti_ActivityMemcpy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy3.html">6.51. CUpti_ActivityMemcpy3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy4.html">6.52. CUpti_ActivityMemcpy4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy5.html">6.53. CUpti_ActivityMemcpy5</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy6.html">6.54. CUpti_ActivityMemcpy6</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy_pto_p.html">6.55. CUpti_ActivityMemcpyPtoP</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy_pto_p2.html">6.56. CUpti_ActivityMemcpyPtoP2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy_pto_p3.html">6.57. CUpti_ActivityMemcpyPtoP3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memcpy_pto_p4.html">6.58. CUpti_ActivityMemcpyPtoP4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memory.html">6.59. CUpti_ActivityMemory</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">6.60. CUpti_ActivityMemory2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memory3.html">6.61. CUpti_ActivityMemory3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memory4.html">6.62. CUpti_ActivityMemory4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memory_pool.html">6.63. CUpti_ActivityMemoryPool</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memory_pool2.html">6.64. CUpti_ActivityMemoryPool2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memset.html">6.65. CUpti_ActivityMemset</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memset2.html">6.66. CUpti_ActivityMemset2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memset3.html">6.67. CUpti_ActivityMemset3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_memset4.html">6.68. CUpti_ActivityMemset4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_metric.html">6.69. CUpti_ActivityMetric</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_metric_instance.html">6.70. CUpti_ActivityMetricInstance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_module.html">6.71. CUpti_ActivityModule</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_name.html">6.72. CUpti_ActivityName</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_nv_link.html">6.73. CUpti_ActivityNvLink</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_nv_link2.html">6.74. CUpti_ActivityNvLink2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_nv_link3.html">6.75. CUpti_ActivityNvLink3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_nv_link4.html">6.76. CUpti_ActivityNvLink4</a></li>
+<li class="toctree-l2"><a class="reference internal" href="union_c_upti___activity_object_kind_id.html">6.77. CUpti_ActivityObjectKindId</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_open_acc.html">6.78. CUpti_ActivityOpenAcc</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_open_acc_data.html">6.79. CUpti_ActivityOpenAccData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_open_acc_launch.html">6.80. CUpti_ActivityOpenAccLaunch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_open_acc_other.html">6.81. CUpti_ActivityOpenAccOther</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_open_mp.html">6.82. CUpti_ActivityOpenMp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_overhead.html">6.83. CUpti_ActivityOverhead</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_overhead2.html">6.84. CUpti_ActivityOverhead2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_overhead3.html">6.85. CUpti_ActivityOverhead3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_overhead_command_buffer_full_data.html">6.86. CUpti_ActivityOverheadCommandBufferFullData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_p_c_sampling.html">6.87. CUpti_ActivityPCSampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_p_c_sampling2.html">6.88. CUpti_ActivityPCSampling2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_p_c_sampling3.html">6.89. CUpti_ActivityPCSampling3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_p_c_sampling_config.html">6.90. CUpti_ActivityPCSamplingConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_p_c_sampling_record_info.html">6.91. CUpti_ActivityPCSamplingRecordInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_pcie.html">6.92. CUpti_ActivityPcie</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_preemption.html">6.93. CUpti_ActivityPreemption</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_shared_access.html">6.94. CUpti_ActivitySharedAccess</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_source_locator.html">6.95. CUpti_ActivitySourceLocator</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_stream.html">6.96. CUpti_ActivityStream</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_synchronization.html">6.97. CUpti_ActivitySynchronization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_synchronization2.html">6.98. CUpti_ActivitySynchronization2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_unified_memory_counter.html">6.99. CUpti_ActivityUnifiedMemoryCounter</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_unified_memory_counter2.html">6.100. CUpti_ActivityUnifiedMemoryCounter2</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_unified_memory_counter3.html">6.101. CUpti_ActivityUnifiedMemoryCounter3</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___activity_unified_memory_counter_config.html">6.102. CUpti_ActivityUnifiedMemoryCounterConfig</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___callback_data.html">6.103. CUpti_CallbackData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___event_group_set.html">6.104. CUpti_EventGroupSet</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___event_group_sets.html">6.105. CUpti_EventGroupSets</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___get_cubin_crc_params.html">6.106. CUpti_GetCubinCrcParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___get_sass_to_source_correlation_params.html">6.107. CUpti_GetSassToSourceCorrelationParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___graph_data.html">6.108. CUpti_GraphData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="union_c_upti___metric_value.html">6.109. CUpti_MetricValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___module_resource_data.html">6.110. CUpti_ModuleResourceData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___nvtx_data.html">6.111. CUpti_NvtxData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info.html">6.112. CUpti_PCSamplingConfigurationInfo</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html">6.113. CUpti_PCSamplingConfigurationInfoParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_data.html">6.114. CUpti_PCSamplingData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_disable_params.html">6.115. CUpti_PCSamplingDisableParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_enable_params.html">6.116. CUpti_PCSamplingEnableParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_get_data_params.html">6.117. CUpti_PCSamplingGetDataParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_get_num_stall_reasons_params.html">6.118. CUpti_PCSamplingGetNumStallReasonsParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_get_stall_reasons_params.html">6.119. CUpti_PCSamplingGetStallReasonsParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_p_c_data.html">6.120. CUpti_PCSamplingPCData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_stall_reason.html">6.121. CUpti_PCSamplingStallReason</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_start_params.html">6.122. CUpti_PCSamplingStartParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___p_c_sampling_stop_params.html">6.123. CUpti_PCSamplingStopParams</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data_image___initialize___params.html">6.124. CUpti_PmSampling_CounterDataImage_Initialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___counter_data___get_sample_info___params.html">6.125. CUpti_PmSampling_CounterData_GetSampleInfo_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___decode_data___params.html">6.126. CUpti_PmSampling_DecodeData_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___disable___params.html">6.127. CUpti_PmSampling_Disable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___enable___params.html">6.128. CUpti_PmSampling_Enable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_availability___params.html">6.129. CUpti_PmSampling_GetCounterAvailability_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_info___params.html">6.130. CUpti_PmSampling_GetCounterDataInfo_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___get_counter_data_size___params.html">6.131. CUpti_PmSampling_GetCounterDataSize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___set_config___params.html">6.132. CUpti_PmSampling_SetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___start___params.html">6.133. CUpti_PmSampling_Start_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___pm_sampling___stop___params.html">6.134. CUpti_PmSampling_Stop_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___begin_pass___params.html">6.135. CUpti_Profiler_BeginPass_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___begin_session___params.html">6.136. CUpti_Profiler_BeginSession_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___counter_data_image_options.html">6.137. CUpti_Profiler_CounterDataImageOptions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_scratch_buffer_size___params.html">6.138. CUpti_Profiler_CounterDataImage_CalculateScratchBufferSize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___calculate_size___params.html">6.139. CUpti_Profiler_CounterDataImage_CalculateSize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize_scratch_buffer___params.html">6.140. CUpti_Profiler_CounterDataImage_InitializeScratchBuffer_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___counter_data_image___initialize___params.html">6.141. CUpti_Profiler_CounterDataImage_Initialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___de_initialize___params.html">6.142. CUpti_Profiler_DeInitialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___device_supported___params.html">6.143. CUpti_Profiler_DeviceSupported_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___disable_profiling___params.html">6.144. CUpti_Profiler_DisableProfiling_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___enable_profiling___params.html">6.145. CUpti_Profiler_EnableProfiling_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___end_pass___params.html">6.146. CUpti_Profiler_EndPass_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___end_session___params.html">6.147. CUpti_Profiler_EndSession_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___flush_counter_data___params.html">6.148. CUpti_Profiler_FlushCounterData_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___get_counter_availability___params.html">6.149. CUpti_Profiler_GetCounterAvailability_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___config_add_metrics___params.html">6.150. CUpti_Profiler_Host_ConfigAddMetrics_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___deinitialize___params.html">6.151. CUpti_Profiler_Host_Deinitialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___evaluate_to_gpu_values___params.html">6.152. CUpti_Profiler_Host_EvaluateToGpuValues_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_base_metrics___params.html">6.153. CUpti_Profiler_Host_GetBaseMetrics_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image_size___params.html">6.154. CUpti_Profiler_Host_GetConfigImageSize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_config_image___params.html">6.155. CUpti_Profiler_Host_GetConfigImage_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_max_num_hardware_metrics_per_pass___params.html">6.156. CUpti_Profiler_Host_GetMaxNumHardwareMetricsPerPass_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_metric_properties___params.html">6.157. CUpti_Profiler_Host_GetMetricProperties_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_num_of_passes___params.html">6.158. CUpti_Profiler_Host_GetNumOfPasses_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_range_name___params.html">6.159. CUpti_Profiler_Host_GetRangeName_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_sub_metrics___params.html">6.160. CUpti_Profiler_Host_GetSubMetrics_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___get_supported_chips___params.html">6.161. CUpti_Profiler_Host_GetSupportedChips_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___host___initialize___params.html">6.162. CUpti_Profiler_Host_Initialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___initialize___params.html">6.163. CUpti_Profiler_Initialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___is_pass_collected___params.html">6.164. CUpti_Profiler_IsPassCollected_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___pop_range___params.html">6.165. CUpti_Profiler_PopRange_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___push_range___params.html">6.166. CUpti_Profiler_PushRange_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___set_config___params.html">6.167. CUpti_Profiler_SetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___profiler___unset_config___params.html">6.168. CUpti_Profiler_UnsetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___counter_data_image___initialize___params.html">6.169. CUpti_RangeProfiler_CounterDataImage_Initialize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___counter_data___get_range_info___params.html">6.170. CUpti_RangeProfiler_CounterData_GetRangeInfo_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___decode_data___params.html">6.171. CUpti_RangeProfiler_DecodeData_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___disable___params.html">6.172. CUpti_RangeProfiler_Disable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___enable___params.html">6.173. CUpti_RangeProfiler_Enable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_info___params.html">6.174. CUpti_RangeProfiler_GetCounterDataInfo_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___get_counter_data_size___params.html">6.175. CUpti_RangeProfiler_GetCounterDataSize_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___pop_range___params.html">6.176. CUpti_RangeProfiler_PopRange_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___push_range___params.html">6.177. CUpti_RangeProfiler_PushRange_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___set_config___params.html">6.178. CUpti_RangeProfiler_SetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___start___params.html">6.179. CUpti_RangeProfiler_Start_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___range_profiler___stop___params.html">6.180. CUpti_RangeProfiler_Stop_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___resource_data.html">6.181. CUpti_ResourceData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_disable___params.html">6.182. CUpti_SassMetricsDisable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_enable___params.html">6.183. CUpti_SassMetricsEnable_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_flush_data___params.html">6.184. CUpti_SassMetricsFlushData_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_get_data_properties___params.html">6.185. CUpti_SassMetricsGetDataProperties_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_set_config___params.html">6.186. CUpti_SassMetricsSetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics_unset_config___params.html">6.187. CUpti_SassMetricsUnsetConfig_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___config.html">6.188. CUpti_SassMetrics_Config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___data.html">6.189. CUpti_SassMetrics_Data</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___get_metrics___params.html">6.190. CUpti_SassMetrics_GetMetrics_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___get_num_of_metrics___params.html">6.191. CUpti_SassMetrics_GetNumOfMetrics_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___get_properties___params.html">6.192. CUpti_SassMetrics_GetProperties_Params</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___instance_value.html">6.193. CUpti_SassMetrics_InstanceValue</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___sass_metrics___metric_details.html">6.194. CUpti_SassMetrics_MetricDetails</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___state_data.html">6.195. CUpti_StateData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___stream_attr_data.html">6.196. CUpti_StreamAttrData</a></li>
+<li class="toctree-l2"><a class="reference internal" href="struct_c_upti___synchronize_data.html">6.197. CUpti_SynchronizeData</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="data-structures.html"><span class="section-number">6. </span>Data Structures</a> &raquo;</li>
+<li><span class="section-number">6.60. </span>CUpti_ActivityMemory2</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-activitymemory2">
+<h1><span class="section-number">6.60. </span>CUpti_ActivityMemory2<a class="headerlink" href="#cupti-activitymemory2" title="Permalink to this headline"></a></h1>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv421CUpti_ActivityMemory2">
+<span id="_CPPv321CUpti_ActivityMemory2"></span><span id="_CPPv221CUpti_ActivityMemory2"></span><span id="CUpti_ActivityMemory2"></span><span class="target" id="struct_c_upti___activity_memory2"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ActivityMemory2</span></span></span><a class="headerlink" href="#_CPPv421CUpti_ActivityMemory2" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The activity record for memory. </p>
+<p>This activity record represents a memory allocation and free operation (CUPTI_ACTIVITY_KIND_MEMORY2). This activity record provides separate records for memory allocation and memory release operations. This allows to correlate the corresponding driver and runtime API activity record with the memory operation.</p>
+<p>Note: This activity record is an upgrade over <a class="reference internal" href="struct_c_upti___activity_memory.html#struct_c_upti___activity_memory"><span class="std std-ref">CUpti_ActivityMemory</span></a> enabled using the kind <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ggaefed720d5a60c3e8b286cd386c4913e3afee93ef030088d7a992a1abd6d6e53b0"><span class="std std-ref">CUPTI_ACTIVITY_KIND_MEMORY</span></a>. <a class="reference internal" href="struct_c_upti___activity_memory.html#struct_c_upti___activity_memory"><span class="std std-ref">CUpti_ActivityMemory</span></a> provides a single record for the memory allocation and memory release operations. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric-h3 rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory24kindE">
+<span id="_CPPv3N21CUpti_ActivityMemory24kindE"></span><span id="_CPPv2N21CUpti_ActivityMemory24kindE"></span><span id="CUpti_ActivityMemory2::kind__CUpti_ActivityKind"></span><span class="target" id="struct_c_upti___activity_memory2_1abc175c3ea0054abce5518556b39348f7"></span><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#_CPPv418CUpti_ActivityKind" title="CUpti_ActivityKind"><span class="n"><span class="pre">CUpti_ActivityKind</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">kind</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory24kindE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The activity record kind, must be CUPTI_ACTIVITY_KIND_MEMORY2. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory219memoryOperationTypeE">
+<span id="_CPPv3N21CUpti_ActivityMemory219memoryOperationTypeE"></span><span id="_CPPv2N21CUpti_ActivityMemory219memoryOperationTypeE"></span><span id="CUpti_ActivityMemory2::memoryOperationType__CUpti_ActivityMemoryOperationType"></span><span class="target" id="struct_c_upti___activity_memory2_1adb7078d199d29cca3f62c58759fc0689"></span><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#_CPPv433CUpti_ActivityMemoryOperationType" title="CUpti_ActivityMemoryOperationType"><span class="n"><span class="pre">CUpti_ActivityMemoryOperationType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memoryOperationType</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory219memoryOperationTypeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The memory operation requested by the user, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga6404b89cfbbd60e04204244d230b15c4"><span class="std std-ref">CUpti_ActivityMemoryOperationType</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory210memoryKindE">
+<span id="_CPPv3N21CUpti_ActivityMemory210memoryKindE"></span><span id="_CPPv2N21CUpti_ActivityMemory210memoryKindE"></span><span id="CUpti_ActivityMemory2::memoryKind__CUpti_ActivityMemoryKind"></span><span class="target" id="struct_c_upti___activity_memory2_1a7857c71ffba0eaa9e02fe92c82a357da"></span><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#_CPPv424CUpti_ActivityMemoryKind" title="CUpti_ActivityMemoryKind"><span class="n"><span class="pre">CUpti_ActivityMemoryKind</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memoryKind</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory210memoryKindE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The memory kind requested by the user, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga9969b86f0e54989b27080dc6083263bc"><span class="std std-ref">CUpti_ActivityMemoryKind</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory213correlationIdE">
+<span id="_CPPv3N21CUpti_ActivityMemory213correlationIdE"></span><span id="_CPPv2N21CUpti_ActivityMemory213correlationIdE"></span><span id="CUpti_ActivityMemory2::correlationId__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1aba753043faca43e903ab8dfcd068759f"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">correlationId</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory213correlationIdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The correlation ID of the memory operation. </p>
+<p>Each memory operation is assigned a unique correlation ID that is identical to the correlation ID in the driver and runtime API activity record that launched the memory operation. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory27addressE">
+<span id="_CPPv3N21CUpti_ActivityMemory27addressE"></span><span id="_CPPv2N21CUpti_ActivityMemory27addressE"></span><span id="CUpti_ActivityMemory2::address__uint64_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a091f2f757e1efd329dc1673c721a894e"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">address</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory27addressE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The virtual address of the allocation. </p>
+<p>The base address of the memory pool. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory25bytesE">
+<span id="_CPPv3N21CUpti_ActivityMemory25bytesE"></span><span id="_CPPv2N21CUpti_ActivityMemory25bytesE"></span><span id="CUpti_ActivityMemory2::bytes__uint64_t"></span><span class="target" id="struct_c_upti___activity_memory2_1ac84308d7764183c8ed7a73206b50c553"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bytes</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory25bytesE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The number of bytes of memory allocated. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory29timestampE">
+<span id="_CPPv3N21CUpti_ActivityMemory29timestampE"></span><span id="_CPPv2N21CUpti_ActivityMemory29timestampE"></span><span id="CUpti_ActivityMemory2::timestamp__uint64_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a94fa41c60dd647509fa69ff76b191552"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">timestamp</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory29timestampE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The start timestamp for the memory operation, in ns. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory22PCE">
+<span id="_CPPv3N21CUpti_ActivityMemory22PCE"></span><span id="_CPPv2N21CUpti_ActivityMemory22PCE"></span><span id="CUpti_ActivityMemory2::PC__uint64_t"></span><span class="target" id="struct_c_upti___activity_memory2_1ab78ee1d974b686cd6e0316cd0470117c"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">PC</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory22PCE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The program counter of the memory operation. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory29processIdE">
+<span id="_CPPv3N21CUpti_ActivityMemory29processIdE"></span><span id="_CPPv2N21CUpti_ActivityMemory29processIdE"></span><span id="CUpti_ActivityMemory2::processId__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a0a0b49b0018469f8e304a58f14423b7d"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">processId</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory29processIdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The ID of the process to which this record belongs to. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory28deviceIdE">
+<span id="_CPPv3N21CUpti_ActivityMemory28deviceIdE"></span><span id="_CPPv2N21CUpti_ActivityMemory28deviceIdE"></span><span id="CUpti_ActivityMemory2::deviceId__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1ae24573e7257ea6067575d2632b0470fd"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">deviceId</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory28deviceIdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The ID of the device where the memory operation is taking place. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory29contextIdE">
+<span id="_CPPv3N21CUpti_ActivityMemory29contextIdE"></span><span id="_CPPv2N21CUpti_ActivityMemory29contextIdE"></span><span id="CUpti_ActivityMemory2::contextId__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1afe095f4500de8bb38feb52a26559468c"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">contextId</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory29contextIdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The ID of the context. </p>
+<p>If context is NULL, <code class="docutils literal notranslate"><span class="pre">contextId</span></code> is set to CUPTI_INVALID_CONTEXT_ID. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory28streamIdE">
+<span id="_CPPv3N21CUpti_ActivityMemory28streamIdE"></span><span id="_CPPv2N21CUpti_ActivityMemory28streamIdE"></span><span id="CUpti_ActivityMemory2::streamId__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1af4ce72b6db3f815e3589ee67aef768e7"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">streamId</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory28streamIdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The ID of the stream. </p>
+<p>If memory operation is not async, <code class="docutils literal notranslate"><span class="pre">streamId</span></code> is set to CUPTI_INVALID_STREAM_ID. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory24nameE">
+<span id="_CPPv3N21CUpti_ActivityMemory24nameE"></span><span id="_CPPv2N21CUpti_ActivityMemory24nameE"></span><span id="CUpti_ActivityMemory2::name__cCP"></span><span class="target" id="struct_c_upti___activity_memory2_1a1ce4277d58693c0bbe8b63f9a8d34e25"></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">char</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">name</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory24nameE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Variable name. </p>
+<p>This name is shared across all activity records representing the same symbol, and so should not be modified. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory27isAsyncE">
+<span id="_CPPv3N21CUpti_ActivityMemory27isAsyncE"></span><span id="_CPPv2N21CUpti_ActivityMemory27isAsyncE"></span><span id="CUpti_ActivityMemory2::isAsync__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a982110a1d4a8b07e73b98ee8c4128f27"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">isAsync</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory27isAsyncE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><code class="docutils literal notranslate"><span class="pre">isAsync</span></code> is set if memory operation happens through async memory APIs. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory24pad1E">
+<span id="_CPPv3N21CUpti_ActivityMemory24pad1E"></span><span id="_CPPv2N21CUpti_ActivityMemory24pad1E"></span><span id="CUpti_ActivityMemory2::pad1__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a55dec605c70b58e0a9987b04265bc495"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pad1</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory24pad1E" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Undefined. </p>
+<p>Reserved for internal use. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory214memoryPoolTypeE">
+<span id="_CPPv3N21CUpti_ActivityMemory214memoryPoolTypeE"></span><span id="_CPPv2N21CUpti_ActivityMemory214memoryPoolTypeE"></span><span id="CUpti_ActivityMemory2::memoryPoolType__CUpti_ActivityMemoryPoolType"></span><span class="target" id="struct_c_upti___activity_memory2_1a5f18419b83569564924b55177dc1fefb"></span><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#_CPPv428CUpti_ActivityMemoryPoolType" title="CUpti_ActivityMemoryPoolType"><span class="n"><span class="pre">CUpti_ActivityMemoryPoolType</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memoryPoolType</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory214memoryPoolTypeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The type of the memory pool, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga8c40b23a5fe82862b18d60c5c42399a8"><span class="std std-ref">CUpti_ActivityMemoryPoolType</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory24pad2E">
+<span id="_CPPv3N21CUpti_ActivityMemory24pad2E"></span><span id="_CPPv2N21CUpti_ActivityMemory24pad2E"></span><span id="CUpti_ActivityMemory2::pad2__uint32_t"></span><span class="target" id="struct_c_upti___activity_memory2_1a95b8a139ab8fa7ecc4a4a0bf7da88f83"></span><span class="n"><span class="pre">uint32_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pad2</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory24pad2E" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Undefined. </p>
+<p>Reserved for internal use. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory216releaseThresholdE">
+<span id="_CPPv3N21CUpti_ActivityMemory216releaseThresholdE"></span><span id="_CPPv2N21CUpti_ActivityMemory216releaseThresholdE"></span><span id="CUpti_ActivityMemory2::releaseThreshold__uint64_t"></span><span class="target" id="struct_c_upti___activity_memory2_1adc0e926abd13ce22546621c6ff957c7e"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">releaseThreshold</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory216releaseThresholdE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The release threshold of the memory pool in bytes. </p>
+<p><code class="docutils literal notranslate"><span class="pre">releaseThreshold</span></code> is valid for CUPTI_ACTIVITY_MEMORY_POOL_TYPE_LOCAL, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga8c40b23a5fe82862b18d60c5c42399a8"><span class="std std-ref">CUpti_ActivityMemoryPoolType</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory24poolE">
+<span id="_CPPv3N21CUpti_ActivityMemory24poolE"></span><span id="_CPPv2N21CUpti_ActivityMemory24poolE"></span><span class="target" id="struct_c_upti___activity_memory2_1a21ac8858275f5e562e329c353ccb4c6b"></span><span class="k"><span class="pre">union</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv421CUpti_ActivityMemory2" title="CUpti_ActivityMemory2"><span class="n"><span class="pre">CUpti_ActivityMemory2</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">pool</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory24poolE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The size of the memory pool in bytes and the processID of the memory pool. </p>
+<p><code class="docutils literal notranslate"><span class="pre">size</span></code> is valid if <code class="docutils literal notranslate"><span class="pre">memoryPoolType</span></code> is CUPTI_ACTIVITY_MEMORY_POOL_TYPE_LOCAL, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga8c40b23a5fe82862b18d60c5c42399a8"><span class="std std-ref">CUpti_ActivityMemoryPoolType</span></a>. <code class="docutils literal notranslate"><span class="pre">processId</span></code> is valid if <code class="docutils literal notranslate"><span class="pre">memoryPoolType</span></code> is CUPTI_ACTIVITY_MEMORY_POOL_TYPE_IMPORTED, <a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html#group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i_1ga8c40b23a5fe82862b18d60c5c42399a8"><span class="std std-ref">CUpti_ActivityMemoryPoolType</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N21CUpti_ActivityMemory216memoryPoolConfigE">
+<span id="_CPPv3N21CUpti_ActivityMemory216memoryPoolConfigE"></span><span id="_CPPv2N21CUpti_ActivityMemory216memoryPoolConfigE"></span><span class="target" id="struct_c_upti___activity_memory2_1af9d2752fbc7919e7d0ed1f9651731121"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><a class="reference internal" href="#_CPPv421CUpti_ActivityMemory2" title="CUpti_ActivityMemory2"><span class="n"><span class="pre">CUpti_ActivityMemory2</span></span></a><span class="p"><span class="pre">::</span></span><span class="n"><span class="pre">[anonymous]</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">memoryPoolConfig</span></span></span><a class="headerlink" href="#_CPPv4N21CUpti_ActivityMemory216memoryPoolConfigE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>The memory pool configuration used for the memory operations. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

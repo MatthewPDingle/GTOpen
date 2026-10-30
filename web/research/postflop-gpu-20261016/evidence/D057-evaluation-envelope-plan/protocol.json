@@ -1,0 +1,150 @@
+{
+  "schema_version": 1,
+  "id": "D057",
+  "kind": "prospective evaluation-device-envelope plan only",
+  "accepted_base": "E020",
+  "implementation_authorized_by_this_artifact": false,
+  "execution_authorized_by_this_artifact": false,
+  "question": "What is the event-perturbed device envelope of the existing captured raked evaluation graph at three fixed later checks? This does not select an optimization.",
+  "fixture": {
+    "id": "two-tone",
+    "board": "Ks7s2d",
+    "storage": "compressed",
+    "algorithm": "Dcfr",
+    "isomorphism": true,
+    "rake_pct": 0.05,
+    "rake_cap": 3.0,
+    "config_file": "anchors.json",
+    "config_override_allowed": false
+  },
+  "schedule": {
+    "check_every": 20,
+    "terminal_iteration": 200,
+    "all_check_iterations": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140,
+      160,
+      180,
+      200
+    ],
+    "sample_iterations": [
+      160,
+      180,
+      200
+    ],
+    "warm_checks": [
+      20,
+      40,
+      60,
+      80,
+      100,
+      120,
+      140
+    ],
+    "warm_arm_order": [
+      "ordinary",
+      "instrumented"
+    ],
+    "sample_arm_order": [
+      [
+        "ordinary",
+        "instrumented"
+      ],
+      [
+        "instrumented",
+        "ordinary"
+      ],
+      [
+        "ordinary",
+        "instrumented"
+      ]
+    ],
+    "per_arm_batch": "20 unchanged GpuSolver::iterate calls followed immediately by exactly one exploitability call; no wait, raw readback, state fingerprint, event query or logging between training and evaluation.",
+    "warm_capture": "Both arms use the unmodified production exploitability method for20..140. Require eager evaluation at20, capture at40, and existing captured replay60..140. Inspect warmed/key1 graph-present state only after normal checks; do not add graph launches, clones, uploads or capture.",
+    "sampling": "Ordinary arm continues production exploitability. Instrumented arm uses the identical already-captured branch with only two ordinary stream-event records added. It must reject missing/wrong warmed graph rather than silently warm/capture or fall back.",
+    "serialization": "Run one whole arm batch through its normal root DTOH and CPU reduction before starting the other. No overlapping arms. All post-check verification occurs only after both matched arms finish."
+  },
+  "events": {
+    "handles": 2,
+    "arm": "instrumented only",
+    "timing_enabled": true,
+    "creation": "Once after constructors/admission and before warm training; outside all measured brackets. Keep owning context, stream, solver buffers and graph alive.",
+    "record_start": "On the instrumented solver stream immediately before its normal eval_graphs[1].launch; preceding20 training iterations remain normally queued. No stream synchronize or raw copy before this point.",
+    "record_end": "On the same stream immediately after the normal graph launch and before the existing root clone_dtoh.",
+    "readout": "Only after the normal DTOH/CPU result completes and both arms end their host brackets; before handles are rerecorded at the next sampled checkpoint.",
+    "capture_policy": "Events are outside capture. No external graph-event flags, graph editing, graph cloning or extra replay required.",
+    "intervals": 3,
+    "records": 6,
+    "query_validation": "All three elapsed values finite and nonnegative; retain near-resolution values and mark them. Any CUDA error invalidates the diagnostic.",
+    "cleanup": "Reuse checked success-path event/context cleanup and non-panicking best-effort error cleanup. Drain only after normal completion; events are destroyed before owning stream/context."
+  },
+  "outer_usefulness": {
+    "metric": "host wall milliseconds for20 ordinary iterate calls plus that arm normal complete evaluation call, including root DTOH and CPU reduction",
+    "start": "Immediately before first iterate in each sampled batch",
+    "end": "Immediately after exploitability returns, before event query, equality check, logging, CPU store sync or fingerprint",
+    "extra_outer_events": 0,
+    "formula": "abs(instrumented_host_batch_ms / ordinary_host_batch_ms - 1) * 100",
+    "require_each_of_three_abs_pct_lte": 10.0,
+    "failure": "Preserve every sample and mark inconclusive for low-perturbation interpretation. No trimming, retuning, alternate placement, extra samples or extension.",
+    "limits": "This matched whole-batch host distortion screen is not evaluation check wall time, not pure GPU time and not a bound on individual event interval bias."
+  },
+  "exactness": {
+    "exploit_anchor_bits": "Both arms must match every20 anchor20..200 in anchors.json, including the same target crossing at200.",
+    "post_evaluation_checkpoints": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "raw_arrays": "Compare full raw bits of both players regrets/strategy/reach/weights plus discounts after BOTH evaluations have completed; bounded1M-float chunks. These are matched post-evaluation reaches, not pre-evaluation training reaches. Exclude uninitialized CFV scratch.",
+    "root_outputs": "Compare all four logical downloaded evaluation root vectors/defined d_eval_roots content after normal completion; never use unknown CFV padding as an oracle.",
+    "cpu_stores": "Then sync both arms to CPU and directly compare every q word and every scale bit of all four compressed arenas. This check is outside timing and does not mutate GPU learning state.",
+    "final200": "Both complete state_fingerprint objects (all arena metadata/hashes and full root_strategy_bits) equal each other and immutable original/E015/E020 final object, in addition to direct full arm raw/q/scale equality.",
+    "no_early_drain": "D045 raw-before-eval and explicit synchronize-before-check calls must NOT be reused. Any pre-eval download/synchronize at a sampled checkpoint is a protocol violation."
+  },
+  "memory_lifetime": {
+    "shared_spot": "One Arc<Spot>; two independent CPU/GPU solver states, each retains its own stream/context ownership and all captured buffers.",
+    "admission": "Reuse D045 checked dual-state VRAM/RAM admission before allocations and second-arm live-free recheck;2GiB device reserve,8GiB host reserve, at least16GiB available host RAM before shared Spot. Derive actual accepted E020 two-tone plan payload, not rainbow constants.",
+    "cpu_arena_bytes_per_arm": 1391071288,
+    "raw_chunk_floats": 1048576,
+    "maximum_pairwise_raw_copy_bytes": 8388608,
+    "backups": "No additional device snapshots; sequential host comparisons; no cross-solver graph or event handles."
+  },
+  "minimal_future_implementation": {
+    "status": "Suggested scope only; no code prepared",
+    "files": [
+      "crates/solver/src/gpu/mod.rs (one cfg(test) module declaration only)",
+      "crates/solver/src/gpu/evaluation_device_events.rs (new ignored diagnostic helper)"
+    ],
+    "test_filter": "gpu::evaluation_device_events::captured_evaluation_envelope_diagnostic",
+    "method": "Ordinary arm invokes accepted exploitability unchanged. At sampled points only, instrumented test helper mechanically copies accepted already-captured evaluation path, including identical denom/dot/root offsets/reduction expressions, and inserts two event record calls around the existing launch. Warm/capture is always performed by original method beforehand.",
+    "reuse": "D045 fixture parsing/admission/checked sums, bounded raw and CPU exact comparison, fingerprint helper, event cleanup, root-owned build/run/provenance patterns. Remove training graph clone/node descriptor/instrumented iterate machinery entirely.",
+    "mechanical_review": "Require source provenance for copied captured path and unchanged numeric statements; same logical graph/kernel descriptors at140, no node edits; accepted CUDA and every production method byte-identical. Inspect test inventory at actual implementation freeze.",
+    "future_execution": "One ignored test invocation under existing GPU lock/live-idle/disk/provenance guards after separate root authorization and independent source/script review. Fixed primary evaluator, old binaries and all closed evidence stay immutable."
+  },
+  "required_output": [
+    "both arm host batch times and order at160/180/200",
+    "three event-perturbed evaluation envelope intervals",
+    "all10 exploit anchors per arm",
+    "matched post-eval raw/q/scale checks140/160/180/200",
+    "complete final anchor object",
+    "memory admission and actual source/binary provenance",
+    "warm/capture cadence evidence and checked cleanup outcome",
+    "all failures and usefulness disposition"
+  ],
+  "interpretation": [
+    "Evaluation-device envelope only: queued eval kernels and graph root copies, with possible scheduling/submission idle between events.",
+    "No CPU pair-weight/dot/root DTOH inside event interval.",
+    "No quality-check wall-time attribution, training/evaluation fraction, family or individual-kernel cost, native complete-solve fraction, removable headroom, speedup or acceptance claim.",
+    "Three fixed samples of one workload; do not extrapolate across configurations or use outer guard to claim per-component accuracy."
+  ],
+  "no_extensions": true,
+  "performance_acceptance": false,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

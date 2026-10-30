@@ -1,0 +1,1445 @@
+{
+  "at": "2026-10-17T07:54:18.450143+00:00",
+  "status": "pass_scoped_activity_diagnostic",
+  "protocol_sha256": "6fee5b99ca0ce5b5bdaf12bc800d64cf3be7ab428a8db0dab703619bdf5f3d32",
+  "pairs": [
+    {
+      "baseline_id": "D096B1",
+      "trace_id": "D096T1",
+      "baseline_cycle_ms": 3812.8847,
+      "trace_cycle_ms": 3856.8248,
+      "cycle_change_pct": 1.1524109291843887,
+      "baseline_process_ms": 5405.999999988126,
+      "trace_process_ms": 5437.000000005355,
+      "process_change_pct": 0.5734369222585523,
+      "baseline_runner_wall_ms": 6562.000000005355,
+      "trace_runner_wall_ms": 6625.0,
+      "runner_wall_change_pct": 0.9600731483479619,
+      "usefulness_pass": true
+    },
+    {
+      "baseline_id": "D096B2",
+      "trace_id": "D096T2",
+      "baseline_cycle_ms": 3797.6998000000003,
+      "trace_cycle_ms": 3815.9529,
+      "cycle_change_pct": 0.4806356732040884,
+      "baseline_process_ms": 5406.999999991967,
+      "trace_process_ms": 5500.0,
+      "process_change_pct": 1.7199926023334644,
+      "baseline_runner_wall_ms": 6671.999999991385,
+      "trace_runner_wall_ms": 6672.000000005937,
+      "runner_wall_change_pct": 2.1811441541785825e-10,
+      "usefulness_pass": true
+    },
+    {
+      "baseline_id": "D096B3",
+      "trace_id": "D096T3",
+      "baseline_cycle_ms": 3819.0654,
+      "trace_cycle_ms": 3806.1033,
+      "cycle_change_pct": -0.33940502825637875,
+      "baseline_process_ms": 5405.999999988126,
+      "trace_process_ms": 5406.999999991967,
+      "process_change_pct": 0.018497965294939078,
+      "baseline_runner_wall_ms": 6531.000000002678,
+      "trace_runner_wall_ms": 6531.000000002678,
+      "runner_wall_change_pct": 0.0,
+      "usefulness_pass": true
+    }
+  ],
+  "traces": {
+    "D096T1": {
+      "records": 29666,
+      "collector": {
+        "event": "complete",
+        "records": 29666,
+        "kernels": 26670,
+        "memcopies": 310,
+        "memsets": 9,
+        "driver_api_records": 2677,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "kernel_family_counts": {
+        "copy_root": 410,
+        "down_action": 5330,
+        "down_chance": 3690,
+        "up_fold": 5040,
+        "up_show": 2520,
+        "up_action": 5200,
+        "up_chance": 3960,
+        "up_action_eval": 520
+      },
+      "families": {
+        "copy_root": {
+          "count": 410,
+          "summed_ms": 0.534268,
+          "share_of_summed_kernel_time_pct": 0.018733793327343012
+        },
+        "down_action": {
+          "count": 5330,
+          "summed_ms": 475.515536,
+          "share_of_summed_kernel_time_pct": 16.673672717371684
+        },
+        "down_chance": {
+          "count": 3690,
+          "summed_ms": 71.214611,
+          "share_of_summed_kernel_time_pct": 2.497098468111749
+        },
+        "up_fold": {
+          "count": 5040,
+          "summed_ms": 244.651361,
+          "share_of_summed_kernel_time_pct": 8.57855614453268
+        },
+        "up_show": {
+          "count": 2520,
+          "summed_ms": 839.179598,
+          "share_of_summed_kernel_time_pct": 29.425339255682147
+        },
+        "up_action": {
+          "count": 5200,
+          "summed_ms": 923.284802,
+          "share_of_summed_kernel_time_pct": 32.37443878904372
+        },
+        "up_chance": {
+          "count": 3960,
+          "summed_ms": 255.380216,
+          "share_of_summed_kernel_time_pct": 8.954757137684116
+        },
+        "up_action_eval": {
+          "count": 520,
+          "summed_ms": 42.133993,
+          "share_of_summed_kernel_time_pct": 1.4774036942465525
+        }
+      },
+      "graph_groups": [
+        {
+          "graph_id": 2,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 5,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 8,
+          "kernel_nodes": 147,
+          "repeats_each_node": 9,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 24,
+            "up_show": 12,
+            "up_action_eval": 52,
+            "up_chance": 36
+          }
+        }
+      ],
+      "summed_kernel_ms": 2851.894385,
+      "kernel_union_ms": 2850.813807,
+      "all_device_activity_union_ms": 2934.162245,
+      "device_activity_span_ms": 3294.054031,
+      "raw_trace_sha256": "b3b8649d8594b0e501ad48450953b03dd4052abdb68362f4b6fd74cb39216605",
+      "metadata_sha256": "2bad98f9e3e52468e104c050eadafce366f6f80a60758582d15704cd740e43fe",
+      "scope": "Traced activity only; family sums may overlap and are not uninstrumented wall-time attribution or removable speed headroom.",
+      "driver_api_records": 2677,
+      "all_kernel_APIcorrelations_exact": true,
+      "graph_launch_API_records": 407,
+      "phase_timestamps_ns": {
+        "1": 105480151938400,
+        "2": 105480763037600,
+        "3": 105480763122800,
+        "4": 105483628406400,
+        "5": 105483628486300,
+        "6": 105483905889700
+      },
+      "phases": {
+        "init": {
+          "span_ms": 611.0992,
+          "device_union_ms": 13.852171,
+          "api_union_ms": 198.1528,
+          "api_device_overlap_ms": 13.808153,
+          "device_uncovered_ms": 597.247029,
+          "uncovered_by_device_or_api_ms": 412.902382,
+          "api_counts": {
+            "cuDeviceGet": 1,
+            "cuDevicePrimaryCtxRetain": 1,
+            "cuDeviceGetAttribute": 3,
+            "cuCtxGetCurrent": 142,
+            "cuCtxSetCurrent": 1,
+            "cuCtxSynchronize": 1,
+            "cuStreamCreate": 1,
+            "cuInit": 1,
+            "cuModuleLoadData": 1,
+            "cuMemHostAlloc": 1,
+            "cuMemAllocAsync": 66,
+            "cuMemsetD8Async": 9,
+            "cuStreamSynchronize": 5,
+            "cuModuleGetFunction": 8,
+            "cuMemcpyHtoDAsync_v2": 57
+          },
+          "device_kind_counts": {
+            "2": 9,
+            "1": 57
+          },
+          "api_functions": [
+            {
+              "api": "cuDevicePrimaryCtxRetain",
+              "calls": 1,
+              "summed_ms": 90.1261,
+              "union_ms": 90.1261,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 90.1261,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 5,
+              "summed_ms": 32.6208,
+              "union_ms": 32.6208,
+              "device_overlap_ms": 1.382329,
+              "api_union_without_device_activity_ms": 31.238471,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemHostAlloc",
+              "calls": 1,
+              "summed_ms": 30.4281,
+              "union_ms": 30.4281,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 30.4281,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 57,
+              "summed_ms": 26.164,
+              "union_ms": 26.164,
+              "device_overlap_ms": 12.170483,
+              "api_union_without_device_activity_ms": 13.993517,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemAllocAsync",
+              "calls": 66,
+              "summed_ms": 16.7836,
+              "union_ms": 16.7836,
+              "device_overlap_ms": 0.251668,
+              "api_union_without_device_activity_ms": 16.531932,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleLoadData",
+              "calls": 1,
+              "summed_ms": 1.2756,
+              "union_ms": 1.2756,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 1.2756,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemsetD8Async",
+              "calls": 9,
+              "summed_ms": 0.3814,
+              "union_ms": 0.3814,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3814,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleGetFunction",
+              "calls": 8,
+              "summed_ms": 0.3223,
+              "union_ms": 0.3223,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3223,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamCreate",
+              "calls": 1,
+              "summed_ms": 0.0217,
+              "union_ms": 0.0217,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0217,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 142,
+              "summed_ms": 0.0147,
+              "union_ms": 0.0147,
+              "device_overlap_ms": 0.003673,
+              "api_union_without_device_activity_ms": 0.011027,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuInit",
+              "calls": 1,
+              "summed_ms": 0.005,
+              "union_ms": 0.005,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.005,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSynchronize",
+              "calls": 1,
+              "summed_ms": 0.003,
+              "union_ms": 0.003,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.003,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGet",
+              "calls": 1,
+              "summed_ms": 0.0025,
+              "union_ms": 0.0025,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0025,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGetAttribute",
+              "calls": 3,
+              "summed_ms": 0.0023,
+              "union_ms": 0.0023,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0023,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSetCurrent",
+              "calls": 1,
+              "summed_ms": 0.0017,
+              "union_ms": 0.0017,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0017,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "solve": {
+          "span_ms": 2865.2836,
+          "device_union_ms": 2850.991922,
+          "api_union_ms": 2863.8737,
+          "api_device_overlap_ms": 2850.308367,
+          "device_uncovered_ms": 14.291678,
+          "uncovered_by_device_or_api_ms": 0.726345,
+          "api_counts": {
+            "cuCtxGetCurrent": 1177,
+            "cuMemcpyHtoDAsync_v2": 200,
+            "cuLaunchKernel": 546,
+            "cuStreamBeginCapture_v2": 3,
+            "cuStreamEndCapture": 3,
+            "cuGraphInstantiateWithFlags": 3,
+            "cuGraphLaunch": 407,
+            "cuMemcpyDtoHAsync_v2": 13,
+            "cuMemcpyDtoDAsync_v2": 4,
+            "cuStreamSynchronize": 1
+          },
+          "device_kind_counts": {
+            "1": 249,
+            "10": 26670
+          },
+          "api_functions": [
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 13,
+              "summed_ms": 2820.0057,
+              "union_ms": 2820.0057,
+              "device_overlap_ms": 2808.342759,
+              "api_union_without_device_activity_ms": 11.662941,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphLaunch",
+              "calls": 407,
+              "summed_ms": 37.5205,
+              "union_ms": 37.5205,
+              "device_overlap_ms": 36.561999,
+              "api_union_without_device_activity_ms": 0.958501,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuLaunchKernel",
+              "calls": 546,
+              "summed_ms": 3.1405,
+              "union_ms": 3.1405,
+              "device_overlap_ms": 2.742089,
+              "api_union_without_device_activity_ms": 0.398411,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 200,
+              "summed_ms": 1.8069,
+              "union_ms": 1.8069,
+              "device_overlap_ms": 1.296174,
+              "api_union_without_device_activity_ms": 0.510726,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphInstantiateWithFlags",
+              "calls": 3,
+              "summed_ms": 1.253,
+              "union_ms": 1.253,
+              "device_overlap_ms": 1.237704,
+              "api_union_without_device_activity_ms": 0.015296,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 1177,
+              "summed_ms": 0.1064,
+              "union_ms": 0.1064,
+              "device_overlap_ms": 0.099442,
+              "api_union_without_device_activity_ms": 0.006958,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamBeginCapture_v2",
+              "calls": 3,
+              "summed_ms": 0.0128,
+              "union_ms": 0.0128,
+              "device_overlap_ms": 0.0128,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 1,
+              "summed_ms": 0.0125,
+              "union_ms": 0.0125,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0125,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoDAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.0107,
+              "union_ms": 0.0107,
+              "device_overlap_ms": 0.0107,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamEndCapture",
+              "calls": 3,
+              "summed_ms": 0.0047,
+              "union_ms": 0.0047,
+              "device_overlap_ms": 0.0047,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "readback": {
+          "span_ms": 277.4034,
+          "device_union_ms": 69.318152,
+          "api_union_ms": 69.8475,
+          "api_device_overlap_ms": 69.30868,
+          "device_uncovered_ms": 208.085248,
+          "uncovered_by_device_or_api_ms": 207.546428,
+          "api_counts": {
+            "cuCtxGetCurrent": 10,
+            "cuStreamSynchronize": 6,
+            "cuMemcpyDtoHAsync_v2": 4
+          },
+          "device_kind_counts": {
+            "1": 4
+          },
+          "api_functions": [
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 6,
+              "summed_ms": 69.4478,
+              "union_ms": 69.4478,
+              "device_overlap_ms": 69.304152,
+              "api_union_without_device_activity_ms": 0.143648,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.3905,
+              "union_ms": 0.3905,
+              "device_overlap_ms": 0.004328,
+              "api_union_without_device_activity_ms": 0.386172,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 10,
+              "summed_ms": 0.0092,
+              "union_ms": 0.0092,
+              "device_overlap_ms": 0.0002,
+              "api_union_without_device_activity_ms": 0.009,
+              "nonzero_returns": 0
+            }
+          ]
+        }
+      },
+      "API_time_limit": "API calls may wait on GPU execution. CPU/API and GPU times overlap; these intervals are not removable overhead or complete-cycle gains."
+    },
+    "D096T2": {
+      "records": 29666,
+      "collector": {
+        "event": "complete",
+        "records": 29666,
+        "kernels": 26670,
+        "memcopies": 310,
+        "memsets": 9,
+        "driver_api_records": 2677,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "kernel_family_counts": {
+        "copy_root": 410,
+        "down_action": 5330,
+        "down_chance": 3690,
+        "up_fold": 5040,
+        "up_show": 2520,
+        "up_action": 5200,
+        "up_chance": 3960,
+        "up_action_eval": 520
+      },
+      "families": {
+        "copy_root": {
+          "count": 410,
+          "summed_ms": 0.534325,
+          "share_of_summed_kernel_time_pct": 0.018765330347734182
+        },
+        "down_action": {
+          "count": 5330,
+          "summed_ms": 473.34899,
+          "share_of_summed_kernel_time_pct": 16.623871552175782
+        },
+        "down_chance": {
+          "count": 3690,
+          "summed_ms": 70.761724,
+          "share_of_summed_kernel_time_pct": 2.485130074084481
+        },
+        "up_fold": {
+          "count": 5040,
+          "summed_ms": 247.335143,
+          "share_of_summed_kernel_time_pct": 8.686334468720487
+        },
+        "up_show": {
+          "count": 2520,
+          "summed_ms": 841.300233,
+          "share_of_summed_kernel_time_pct": 29.546206510776663
+        },
+        "up_action": {
+          "count": 5200,
+          "summed_ms": 917.06887,
+          "share_of_summed_kernel_time_pct": 32.20717783591128
+        },
+        "up_chance": {
+          "count": 3960,
+          "summed_ms": 255.361816,
+          "share_of_summed_kernel_time_pct": 8.968228766083026
+        },
+        "up_action_eval": {
+          "count": 520,
+          "summed_ms": 41.694141,
+          "share_of_summed_kernel_time_pct": 1.4642854619005439
+        }
+      },
+      "graph_groups": [
+        {
+          "graph_id": 2,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 5,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 8,
+          "kernel_nodes": 147,
+          "repeats_each_node": 9,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 24,
+            "up_show": 12,
+            "up_action_eval": 52,
+            "up_chance": 36
+          }
+        }
+      ],
+      "summed_kernel_ms": 2847.405242,
+      "kernel_union_ms": 2846.31193,
+      "all_device_activity_union_ms": 2923.460462,
+      "device_activity_span_ms": 3280.311395,
+      "raw_trace_sha256": "69a85d4d3e92d140a01bd1af0b6bd35615f525026c15c1563cf03b4a1ca716e5",
+      "metadata_sha256": "fb110f5e99c887e08f160e8207d7c865ead297885c7e3ff7d1080f8b06fe3fc5",
+      "scope": "Traced activity only; family sums may overlap and are not uninstrumented wall-time attribution or removable speed headroom.",
+      "driver_api_records": 2677,
+      "all_kernel_APIcorrelations_exact": true,
+      "graph_launch_API_records": 407,
+      "phase_timestamps_ns": {
+        "1": 105896259210500,
+        "2": 105896856577600,
+        "3": 105896856659500,
+        "4": 105899716287700,
+        "5": 105899716375300,
+        "6": 105899978948700
+      },
+      "phases": {
+        "init": {
+          "span_ms": 597.3671,
+          "device_union_ms": 12.2997,
+          "api_union_ms": 187.2685,
+          "api_device_overlap_ms": 12.258959,
+          "device_uncovered_ms": 585.0674,
+          "uncovered_by_device_or_api_ms": 410.057859,
+          "api_counts": {
+            "cuDeviceGet": 1,
+            "cuDevicePrimaryCtxRetain": 1,
+            "cuDeviceGetAttribute": 3,
+            "cuCtxGetCurrent": 142,
+            "cuCtxSetCurrent": 1,
+            "cuCtxSynchronize": 1,
+            "cuStreamCreate": 1,
+            "cuInit": 1,
+            "cuModuleLoadData": 1,
+            "cuMemHostAlloc": 1,
+            "cuMemAllocAsync": 66,
+            "cuMemsetD8Async": 9,
+            "cuStreamSynchronize": 5,
+            "cuModuleGetFunction": 8,
+            "cuMemcpyHtoDAsync_v2": 57
+          },
+          "device_kind_counts": {
+            "2": 9,
+            "1": 57
+          },
+          "api_functions": [
+            {
+              "api": "cuDevicePrimaryCtxRetain",
+              "calls": 1,
+              "summed_ms": 77.0667,
+              "union_ms": 77.0667,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 77.0667,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 5,
+              "summed_ms": 33.9604,
+              "union_ms": 33.9604,
+              "device_overlap_ms": 1.385047,
+              "api_union_without_device_activity_ms": 32.575353,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemHostAlloc",
+              "calls": 1,
+              "summed_ms": 31.5767,
+              "union_ms": 31.5767,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 31.5767,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 57,
+              "summed_ms": 24.9634,
+              "union_ms": 24.9634,
+              "device_overlap_ms": 10.611898,
+              "api_union_without_device_activity_ms": 14.351502,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemAllocAsync",
+              "calls": 66,
+              "summed_ms": 17.6774,
+              "union_ms": 17.6774,
+              "device_overlap_ms": 0.258761,
+              "api_union_without_device_activity_ms": 17.418639,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleLoadData",
+              "calls": 1,
+              "summed_ms": 1.2938,
+              "union_ms": 1.2938,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 1.2938,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemsetD8Async",
+              "calls": 9,
+              "summed_ms": 0.3648,
+              "union_ms": 0.3648,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3648,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleGetFunction",
+              "calls": 8,
+              "summed_ms": 0.3019,
+              "union_ms": 0.3019,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3019,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamCreate",
+              "calls": 1,
+              "summed_ms": 0.0363,
+              "union_ms": 0.0363,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0363,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 142,
+              "summed_ms": 0.0146,
+              "union_ms": 0.0146,
+              "device_overlap_ms": 0.003253,
+              "api_union_without_device_activity_ms": 0.011347,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuInit",
+              "calls": 1,
+              "summed_ms": 0.0047,
+              "union_ms": 0.0047,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0047,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSynchronize",
+              "calls": 1,
+              "summed_ms": 0.0029,
+              "union_ms": 0.0029,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0029,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGetAttribute",
+              "calls": 3,
+              "summed_ms": 0.0021,
+              "union_ms": 0.0021,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0021,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGet",
+              "calls": 1,
+              "summed_ms": 0.0021,
+              "union_ms": 0.0021,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0021,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSetCurrent",
+              "calls": 1,
+              "summed_ms": 0.0007,
+              "union_ms": 0.0007,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0007,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "solve": {
+          "span_ms": 2859.6282,
+          "device_union_ms": 2846.491393,
+          "api_union_ms": 2858.5311,
+          "api_device_overlap_ms": 2845.889727,
+          "device_uncovered_ms": 13.136807,
+          "uncovered_by_device_or_api_ms": 0.495434,
+          "api_counts": {
+            "cuCtxGetCurrent": 1177,
+            "cuMemcpyHtoDAsync_v2": 200,
+            "cuLaunchKernel": 546,
+            "cuStreamBeginCapture_v2": 3,
+            "cuStreamEndCapture": 3,
+            "cuGraphInstantiateWithFlags": 3,
+            "cuGraphLaunch": 407,
+            "cuMemcpyDtoHAsync_v2": 13,
+            "cuMemcpyDtoDAsync_v2": 4,
+            "cuStreamSynchronize": 1
+          },
+          "device_kind_counts": {
+            "1": 249,
+            "10": 26670
+          },
+          "api_functions": [
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 13,
+              "summed_ms": 2816.8968,
+              "union_ms": 2816.8968,
+              "device_overlap_ms": 2805.76914,
+              "api_union_without_device_activity_ms": 11.12766,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphLaunch",
+              "calls": 407,
+              "summed_ms": 36.137,
+              "union_ms": 36.137,
+              "device_overlap_ms": 35.345781,
+              "api_union_without_device_activity_ms": 0.791219,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuLaunchKernel",
+              "calls": 546,
+              "summed_ms": 2.363,
+              "union_ms": 2.363,
+              "device_overlap_ms": 2.065757,
+              "api_union_without_device_activity_ms": 0.297243,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 200,
+              "summed_ms": 1.7837,
+              "union_ms": 1.7837,
+              "device_overlap_ms": 1.388229,
+              "api_union_without_device_activity_ms": 0.395471,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphInstantiateWithFlags",
+              "calls": 3,
+              "summed_ms": 1.2304,
+              "union_ms": 1.2304,
+              "device_overlap_ms": 1.219712,
+              "api_union_without_device_activity_ms": 0.010688,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 1177,
+              "summed_ms": 0.0788,
+              "union_ms": 0.0788,
+              "device_overlap_ms": 0.071208,
+              "api_union_without_device_activity_ms": 0.007592,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamBeginCapture_v2",
+              "calls": 3,
+              "summed_ms": 0.0128,
+              "union_ms": 0.0128,
+              "device_overlap_ms": 0.0128,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 1,
+              "summed_ms": 0.0115,
+              "union_ms": 0.0115,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0115,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoDAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.011,
+              "union_ms": 0.011,
+              "device_overlap_ms": 0.011,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamEndCapture",
+              "calls": 3,
+              "summed_ms": 0.0061,
+              "union_ms": 0.0061,
+              "device_overlap_ms": 0.0061,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "readback": {
+          "span_ms": 262.5734,
+          "device_union_ms": 64.669369,
+          "api_union_ms": 65.1076,
+          "api_device_overlap_ms": 64.669369,
+          "device_uncovered_ms": 197.904031,
+          "uncovered_by_device_or_api_ms": 197.4658,
+          "api_counts": {
+            "cuCtxGetCurrent": 10,
+            "cuStreamSynchronize": 6,
+            "cuMemcpyDtoHAsync_v2": 4
+          },
+          "device_kind_counts": {
+            "1": 4
+          },
+          "api_functions": [
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 6,
+              "summed_ms": 64.7694,
+              "union_ms": 64.7694,
+              "device_overlap_ms": 64.669369,
+              "api_union_without_device_activity_ms": 0.100031,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.3327,
+              "union_ms": 0.3327,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3327,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 10,
+              "summed_ms": 0.0055,
+              "union_ms": 0.0055,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0055,
+              "nonzero_returns": 0
+            }
+          ]
+        }
+      },
+      "API_time_limit": "API calls may wait on GPU execution. CPU/API and GPU times overlap; these intervals are not removable overhead or complete-cycle gains."
+    },
+    "D096T3": {
+      "records": 29666,
+      "collector": {
+        "event": "complete",
+        "records": 29666,
+        "kernels": 26670,
+        "memcopies": 310,
+        "memsets": 9,
+        "driver_api_records": 2677,
+        "dropped": 0,
+        "errors": 0,
+        "invalid_timestamps": 0,
+        "outstanding_buffers": 0,
+        "peak_buffers": 3
+      },
+      "kernel_family_counts": {
+        "copy_root": 410,
+        "down_action": 5330,
+        "down_chance": 3690,
+        "up_fold": 5040,
+        "up_show": 2520,
+        "up_action": 5200,
+        "up_chance": 3960,
+        "up_action_eval": 520
+      },
+      "families": {
+        "copy_root": {
+          "count": 410,
+          "summed_ms": 0.536602,
+          "share_of_summed_kernel_time_pct": 0.018838604058505414
+        },
+        "down_action": {
+          "count": 5330,
+          "summed_ms": 474.965224,
+          "share_of_summed_kernel_time_pct": 16.674708250240087
+        },
+        "down_chance": {
+          "count": 3690,
+          "summed_ms": 70.265218,
+          "share_of_summed_kernel_time_pct": 2.4668164132570647
+        },
+        "up_fold": {
+          "count": 5040,
+          "summed_ms": 243.508618,
+          "share_of_summed_kernel_time_pct": 8.548910438902285
+        },
+        "up_show": {
+          "count": 2520,
+          "summed_ms": 842.166173,
+          "share_of_summed_kernel_time_pct": 29.56611247183904
+        },
+        "up_action": {
+          "count": 5200,
+          "summed_ms": 918.649512,
+          "share_of_summed_kernel_time_pct": 32.2512298223026
+        },
+        "up_chance": {
+          "count": 3960,
+          "summed_ms": 256.548277,
+          "share_of_summed_kernel_time_pct": 9.00669660622728
+        },
+        "up_action_eval": {
+          "count": 520,
+          "summed_ms": 41.777373,
+          "share_of_summed_kernel_time_pct": 1.4666873931731421
+        }
+      },
+      "graph_groups": [
+        {
+          "graph_id": 2,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 5,
+          "kernel_nodes": 63,
+          "repeats_each_node": 199,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 12,
+            "up_show": 6,
+            "up_action": 13,
+            "up_chance": 9
+          }
+        },
+        {
+          "graph_id": 8,
+          "kernel_nodes": 147,
+          "repeats_each_node": 9,
+          "families": {
+            "copy_root": 1,
+            "down_action": 13,
+            "down_chance": 9,
+            "up_fold": 24,
+            "up_show": 12,
+            "up_action_eval": 52,
+            "up_chance": 36
+          }
+        }
+      ],
+      "summed_kernel_ms": 2848.416997,
+      "kernel_union_ms": 2847.474308,
+      "all_device_activity_union_ms": 2925.022662,
+      "device_activity_span_ms": 3279.241947,
+      "raw_trace_sha256": "f91d4cfd9c5cfe2feab5836f4a33d9ca4089161aa79fc7fef8ecbdeb6765688d",
+      "metadata_sha256": "401400f61d4e9e8ad343cdacbff55fcbbd5862a72b9c3f53c7db80e8604c27dc",
+      "scope": "Traced activity only; family sums may overlap and are not uninstrumented wall-time attribution or removable speed headroom.",
+      "driver_api_records": 2677,
+      "all_kernel_APIcorrelations_exact": true,
+      "graph_launch_API_records": 407,
+      "phase_timestamps_ns": {
+        "1": 105921322310400,
+        "2": 105921909028700,
+        "3": 105921909137200,
+        "4": 105924770143400,
+        "5": 105924770224300,
+        "6": 105925032292800
+      },
+      "phases": {
+        "init": {
+          "span_ms": 586.7183,
+          "device_union_ms": 12.771059,
+          "api_union_ms": 185.2667,
+          "api_device_overlap_ms": 12.722328,
+          "device_uncovered_ms": 573.947241,
+          "uncovered_by_device_or_api_ms": 401.402869,
+          "api_counts": {
+            "cuDeviceGet": 1,
+            "cuDevicePrimaryCtxRetain": 1,
+            "cuDeviceGetAttribute": 3,
+            "cuCtxGetCurrent": 142,
+            "cuCtxSetCurrent": 1,
+            "cuCtxSynchronize": 1,
+            "cuStreamCreate": 1,
+            "cuInit": 1,
+            "cuModuleLoadData": 1,
+            "cuMemHostAlloc": 1,
+            "cuMemAllocAsync": 66,
+            "cuMemsetD8Async": 9,
+            "cuStreamSynchronize": 5,
+            "cuModuleGetFunction": 8,
+            "cuMemcpyHtoDAsync_v2": 57
+          },
+          "device_kind_counts": {
+            "2": 9,
+            "1": 57
+          },
+          "api_functions": [
+            {
+              "api": "cuDevicePrimaryCtxRetain",
+              "calls": 1,
+              "summed_ms": 77.8056,
+              "union_ms": 77.8056,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 77.8056,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 5,
+              "summed_ms": 32.6449,
+              "union_ms": 32.6449,
+              "device_overlap_ms": 1.387,
+              "api_union_without_device_activity_ms": 31.2579,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemHostAlloc",
+              "calls": 1,
+              "summed_ms": 31.5781,
+              "union_ms": 31.5781,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 31.5781,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 57,
+              "summed_ms": 24.5771,
+              "union_ms": 24.5771,
+              "device_overlap_ms": 11.063645,
+              "api_union_without_device_activity_ms": 13.513455,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemAllocAsync",
+              "calls": 66,
+              "summed_ms": 16.727,
+              "union_ms": 16.727,
+              "device_overlap_ms": 0.266895,
+              "api_union_without_device_activity_ms": 16.460105,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleLoadData",
+              "calls": 1,
+              "summed_ms": 1.1542,
+              "union_ms": 1.1542,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 1.1542,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemsetD8Async",
+              "calls": 9,
+              "summed_ms": 0.3671,
+              "union_ms": 0.3671,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3671,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuModuleGetFunction",
+              "calls": 8,
+              "summed_ms": 0.3592,
+              "union_ms": 0.3592,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3592,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamCreate",
+              "calls": 1,
+              "summed_ms": 0.0242,
+              "union_ms": 0.0242,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0242,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 142,
+              "summed_ms": 0.0166,
+              "union_ms": 0.0166,
+              "device_overlap_ms": 0.004788,
+              "api_union_without_device_activity_ms": 0.011812,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuInit",
+              "calls": 1,
+              "summed_ms": 0.0046,
+              "union_ms": 0.0046,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0046,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSynchronize",
+              "calls": 1,
+              "summed_ms": 0.0027,
+              "union_ms": 0.0027,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0027,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGetAttribute",
+              "calls": 3,
+              "summed_ms": 0.0022,
+              "union_ms": 0.0022,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0022,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuDeviceGet",
+              "calls": 1,
+              "summed_ms": 0.0021,
+              "union_ms": 0.0021,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0021,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxSetCurrent",
+              "calls": 1,
+              "summed_ms": 0.0011,
+              "union_ms": 0.0011,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0011,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "solve": {
+          "span_ms": 2861.0062,
+          "device_union_ms": 2847.652677,
+          "api_union_ms": 2859.766,
+          "api_device_overlap_ms": 2846.962827,
+          "device_uncovered_ms": 13.353523,
+          "uncovered_by_device_or_api_ms": 0.55035,
+          "api_counts": {
+            "cuCtxGetCurrent": 1177,
+            "cuMemcpyHtoDAsync_v2": 200,
+            "cuLaunchKernel": 546,
+            "cuStreamBeginCapture_v2": 3,
+            "cuStreamEndCapture": 3,
+            "cuGraphInstantiateWithFlags": 3,
+            "cuGraphLaunch": 407,
+            "cuMemcpyDtoHAsync_v2": 13,
+            "cuMemcpyDtoDAsync_v2": 4,
+            "cuStreamSynchronize": 1
+          },
+          "device_kind_counts": {
+            "1": 249,
+            "10": 26670
+          },
+          "api_functions": [
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 13,
+              "summed_ms": 2814.7438,
+              "union_ms": 2814.7438,
+              "device_overlap_ms": 2803.770567,
+              "api_union_without_device_activity_ms": 10.973233,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphLaunch",
+              "calls": 407,
+              "summed_ms": 38.9608,
+              "union_ms": 38.9608,
+              "device_overlap_ms": 38.126854,
+              "api_union_without_device_activity_ms": 0.833946,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuLaunchKernel",
+              "calls": 546,
+              "summed_ms": 2.8186,
+              "union_ms": 2.8186,
+              "device_overlap_ms": 2.341587,
+              "api_union_without_device_activity_ms": 0.477013,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyHtoDAsync_v2",
+              "calls": 200,
+              "summed_ms": 1.8343,
+              "union_ms": 1.8343,
+              "device_overlap_ms": 1.347978,
+              "api_union_without_device_activity_ms": 0.486322,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuGraphInstantiateWithFlags",
+              "calls": 3,
+              "summed_ms": 1.2951,
+              "union_ms": 1.2951,
+              "device_overlap_ms": 1.278299,
+              "api_union_without_device_activity_ms": 0.016801,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 1177,
+              "summed_ms": 0.0772,
+              "union_ms": 0.0772,
+              "device_overlap_ms": 0.071742,
+              "api_union_without_device_activity_ms": 0.005458,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamBeginCapture_v2",
+              "calls": 3,
+              "summed_ms": 0.0128,
+              "union_ms": 0.0128,
+              "device_overlap_ms": 0.0128,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 1,
+              "summed_ms": 0.0104,
+              "union_ms": 0.0104,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.0104,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoDAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.0085,
+              "union_ms": 0.0085,
+              "device_overlap_ms": 0.0085,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuStreamEndCapture",
+              "calls": 3,
+              "summed_ms": 0.0045,
+              "union_ms": 0.0045,
+              "device_overlap_ms": 0.0045,
+              "api_union_without_device_activity_ms": 0.0,
+              "nonzero_returns": 0
+            }
+          ]
+        },
+        "readback": {
+          "span_ms": 262.0685,
+          "device_union_ms": 64.598926,
+          "api_union_ms": 65.0417,
+          "api_device_overlap_ms": 64.596926,
+          "device_uncovered_ms": 197.469574,
+          "uncovered_by_device_or_api_ms": 197.0248,
+          "api_counts": {
+            "cuCtxGetCurrent": 10,
+            "cuStreamSynchronize": 6,
+            "cuMemcpyDtoHAsync_v2": 4
+          },
+          "device_kind_counts": {
+            "1": 4
+          },
+          "api_functions": [
+            {
+              "api": "cuStreamSynchronize",
+              "calls": 6,
+              "summed_ms": 64.6787,
+              "union_ms": 64.6787,
+              "device_overlap_ms": 64.596869,
+              "api_union_without_device_activity_ms": 0.081831,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuMemcpyDtoHAsync_v2",
+              "calls": 4,
+              "summed_ms": 0.3481,
+              "union_ms": 0.3481,
+              "device_overlap_ms": 0.0,
+              "api_union_without_device_activity_ms": 0.3481,
+              "nonzero_returns": 0
+            },
+            {
+              "api": "cuCtxGetCurrent",
+              "calls": 10,
+              "summed_ms": 0.0149,
+              "union_ms": 0.0149,
+              "device_overlap_ms": 5.7e-05,
+              "api_union_without_device_activity_ms": 0.014843,
+              "nonzero_returns": 0
+            }
+          ]
+        }
+      },
+      "API_time_limit": "API calls may wait on GPU execution. CPU/API and GPU times overlap; these intervals are not removable overhead or complete-cycle gains."
+    }
+  },
+  "all6full_results_60checkpoints_exact": true,
+  "all_expected_graph_repeats_verified": true,
+  "all_kernel_family_counts_repeatable": true,
+  "all_driver_API_kernel_correlations_exact": true,
+  "all_phase_timestamps_valid": true,
+  "no_drops_or_collector_errors": true,
+  "observer_usefulness_pass": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "historical_timing_samples_used": 0,
+  "optimization_accepted": false,
+  "accepted_source": "E051",
+  "scope": "Second registered fixture, two-tone only. Fresh diagnostic to observe device/kernel/API/phase overlaps; no optimizer or primary whole-suite gain claim. Preserve original1%/exactness/fixture/fresh16/broader/material/holdout/cumulative gates. Filtered fixture is first in each fresh process; primary second-fixture NVRTC/context history differs. No second-fixture initialization apportionment or direct rainbow cohort comparison.",
+  "limits": "No confidence or native per-family bias bound; summed kernel intervals are not complete-cycle wall time. This diagnostic does not establish a speedup."
+}

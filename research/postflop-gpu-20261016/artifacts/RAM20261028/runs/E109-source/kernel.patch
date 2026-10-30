@@ -1,0 +1,56 @@
+--- E080/kernels.cu
++++ E109/kernels.cu
+@@ -147,7 +147,7 @@
+     const u32* __restrict__ card_off, const u32* __restrict__ card_idx,
+     const u32* __restrict__ same_p,
+     const u32* __restrict__ cfv_slot, float* cfv,
+-    int nh_p, int nh_o, int nh_max)
++    int nh_p, int nh_o, u32 nh_max)
+ {
+     extern __shared__ float local_reach[];
+     __shared__ float s[52];
+@@ -208,7 +208,7 @@
+     const u32* __restrict__ same_p,
+     const u32* __restrict__ pc1, const u32* __restrict__ pc2,
+     const u32* __restrict__ cfv_slot, float* cfv,
+-    int nh_p, int nh_o, int nh_max)
++    int nh_p, int nh_o, u32 nh_max)
+ {
+     extern __shared__ char shraw[];
+     int b = blockIdx.x;
+@@ -304,7 +304,7 @@
+     const float* __restrict__ node_cdiv,
+     const u64* __restrict__ mask_p,
+     const u32* __restrict__ hand_perm_p, // perm k at [k*nh_p, (k+1)*nh_p)
+-    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
++    const u32* __restrict__ cfv_slot, float* cfv, int nh_p, u32 nh_max)
+ {
+     int b = blockIdx.x;
+     if (b >= count) return;
+@@ -343,7 +343,7 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+-    int nh_p, int nh_max)
++    int nh_p, u32 nh_max)
+ {
+     float pos = disc[0], neg = disc[1], ds = disc[2];
+     int b = blockIdx.x;
+@@ -423,7 +423,7 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+-    int nh_p, int nh_max)
++    int nh_p, u32 nh_max)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     const int na = node_na[nodes[start + blockIdx.x]];
+@@ -458,7 +458,7 @@
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+     const u32* __restrict__ cfv_slot, float* cfv,
+-    int nh_p, int nh_max)
++    int nh_p, u32 nh_max)
+ {
+     int b = blockIdx.x;
+     if (b >= count) return;

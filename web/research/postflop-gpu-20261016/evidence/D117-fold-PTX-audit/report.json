@@ -1,0 +1,697 @@
+{
+  "id": "D117",
+  "at": "2026-10-18T02:21:07.552229+00:00",
+  "status": "pass_static_count_false_positive_audit_admit_raw_numerical_controls",
+  "original_resource_outcome": "rejected_compiled_prerequisite",
+  "original_report_sha256": "4c73f0a5bcc1dd69d994d43c8f823f4907585415cd4a310161ac75899915310b",
+  "original_failed_gate_preserved": "compute_120:FP_opcode_counts_exact",
+  "source_candidate_sha256": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3",
+  "source_candidate_unchanged": true,
+  "source_reverse_equals_accepted": true,
+  "analysis": {
+    "compute_120": {
+      "baseline": {
+        "FP_opcode_counts": {
+          "add.f32": 34,
+          "sub.f32": 2,
+          "mul.f32": 1
+        },
+        "card_accumulator": "%f107",
+        "card_addition_sites": 31,
+        "other_addition_sites": 3,
+        "unrolled_card_accumulator_chain_lengths": [
+          16,
+          8,
+          4,
+          1,
+          1,
+          1
+        ],
+        "main_unroll_width": 16,
+        "every_card_chain_serially_left_associated": true,
+        "every_card_add_uses_shared_reach_operand": true,
+        "groups": [
+          {
+            "length": 16,
+            "instruction_offsets": [
+              4230,
+              4391,
+              4551,
+              4711,
+              4871,
+              5031,
+              5190,
+              5349,
+              5505,
+              5663,
+              5821,
+              5980,
+              6139,
+              6298,
+              6457,
+              6616
+            ],
+            "operations": [
+              {
+                "destination": "%f30",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f29",
+                "offset": 4230
+              },
+              {
+                "destination": "%f32",
+                "accumulator_operand": "%f30",
+                "loaded_operand": "%f31",
+                "offset": 4391
+              },
+              {
+                "destination": "%f34",
+                "accumulator_operand": "%f32",
+                "loaded_operand": "%f33",
+                "offset": 4551
+              },
+              {
+                "destination": "%f36",
+                "accumulator_operand": "%f34",
+                "loaded_operand": "%f35",
+                "offset": 4711
+              },
+              {
+                "destination": "%f38",
+                "accumulator_operand": "%f36",
+                "loaded_operand": "%f37",
+                "offset": 4871
+              },
+              {
+                "destination": "%f40",
+                "accumulator_operand": "%f38",
+                "loaded_operand": "%f39",
+                "offset": 5031
+              },
+              {
+                "destination": "%f42",
+                "accumulator_operand": "%f40",
+                "loaded_operand": "%f41",
+                "offset": 5190
+              },
+              {
+                "destination": "%f44",
+                "accumulator_operand": "%f42",
+                "loaded_operand": "%f43",
+                "offset": 5349
+              },
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f44",
+                "loaded_operand": "%f45",
+                "offset": 5505
+              },
+              {
+                "destination": "%f48",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f47",
+                "offset": 5663
+              },
+              {
+                "destination": "%f50",
+                "accumulator_operand": "%f48",
+                "loaded_operand": "%f49",
+                "offset": 5821
+              },
+              {
+                "destination": "%f52",
+                "accumulator_operand": "%f50",
+                "loaded_operand": "%f51",
+                "offset": 5980
+              },
+              {
+                "destination": "%f54",
+                "accumulator_operand": "%f52",
+                "loaded_operand": "%f53",
+                "offset": 6139
+              },
+              {
+                "destination": "%f56",
+                "accumulator_operand": "%f54",
+                "loaded_operand": "%f55",
+                "offset": 6298
+              },
+              {
+                "destination": "%f58",
+                "accumulator_operand": "%f56",
+                "loaded_operand": "%f57",
+                "offset": 6457
+              },
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f58",
+                "loaded_operand": "%f59",
+                "offset": 6616
+              }
+            ]
+          },
+          {
+            "length": 8,
+            "instruction_offsets": [
+              7112,
+              7271,
+              7429,
+              7590,
+              7753,
+              7916,
+              8079,
+              8242
+            ],
+            "operations": [
+              {
+                "destination": "%f62",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f61",
+                "offset": 7112
+              },
+              {
+                "destination": "%f64",
+                "accumulator_operand": "%f62",
+                "loaded_operand": "%f63",
+                "offset": 7271
+              },
+              {
+                "destination": "%f66",
+                "accumulator_operand": "%f64",
+                "loaded_operand": "%f65",
+                "offset": 7429
+              },
+              {
+                "destination": "%f68",
+                "accumulator_operand": "%f66",
+                "loaded_operand": "%f67",
+                "offset": 7590
+              },
+              {
+                "destination": "%f70",
+                "accumulator_operand": "%f68",
+                "loaded_operand": "%f69",
+                "offset": 7753
+              },
+              {
+                "destination": "%f72",
+                "accumulator_operand": "%f70",
+                "loaded_operand": "%f71",
+                "offset": 7916
+              },
+              {
+                "destination": "%f74",
+                "accumulator_operand": "%f72",
+                "loaded_operand": "%f73",
+                "offset": 8079
+              },
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f74",
+                "loaded_operand": "%f75",
+                "offset": 8242
+              }
+            ]
+          },
+          {
+            "length": 4,
+            "instruction_offsets": [
+              8663,
+              8827,
+              8990,
+              9154
+            ],
+            "operations": [
+              {
+                "destination": "%f78",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f77",
+                "offset": 8663
+              },
+              {
+                "destination": "%f80",
+                "accumulator_operand": "%f78",
+                "loaded_operand": "%f79",
+                "offset": 8827
+              },
+              {
+                "destination": "%f82",
+                "accumulator_operand": "%f80",
+                "loaded_operand": "%f81",
+                "offset": 8990
+              },
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f82",
+                "loaded_operand": "%f83",
+                "offset": 9154
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              9468
+            ],
+            "operations": [
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f84",
+                "offset": 9468
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              9685
+            ],
+            "operations": [
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f85",
+                "offset": 9685
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              9902
+            ],
+            "operations": [
+              {
+                "destination": "%f107",
+                "accumulator_operand": "%f107",
+                "loaded_operand": "%f86",
+                "offset": 9902
+              }
+            ]
+          }
+        ],
+        "limits": "Static PTX recurrence structure, not a complete CFG trip-count/address proof, SASS execution or GPU numerical equivalence."
+      },
+      "candidate": {
+        "FP_opcode_counts": {
+          "add.f32": 18,
+          "sub.f32": 2,
+          "mul.f32": 1
+        },
+        "card_accumulator": "%f75",
+        "card_addition_sites": 15,
+        "other_addition_sites": 3,
+        "unrolled_card_accumulator_chain_lengths": [
+          8,
+          4,
+          2,
+          1
+        ],
+        "main_unroll_width": 8,
+        "every_card_chain_serially_left_associated": true,
+        "every_card_add_uses_shared_reach_operand": true,
+        "groups": [
+          {
+            "length": 8,
+            "instruction_offsets": [
+              8450,
+              8908,
+              9364,
+              9828,
+              10293,
+              10760,
+              11227,
+              11695
+            ],
+            "operations": [
+              {
+                "destination": "%f2",
+                "accumulator_operand": "%f75",
+                "loaded_operand": "%f38",
+                "offset": 8450
+              },
+              {
+                "destination": "%f3",
+                "accumulator_operand": "%f2",
+                "loaded_operand": "%f39",
+                "offset": 8908
+              },
+              {
+                "destination": "%f4",
+                "accumulator_operand": "%f3",
+                "loaded_operand": "%f40",
+                "offset": 9364
+              },
+              {
+                "destination": "%f5",
+                "accumulator_operand": "%f4",
+                "loaded_operand": "%f41",
+                "offset": 9828
+              },
+              {
+                "destination": "%f6",
+                "accumulator_operand": "%f5",
+                "loaded_operand": "%f42",
+                "offset": 10293
+              },
+              {
+                "destination": "%f7",
+                "accumulator_operand": "%f6",
+                "loaded_operand": "%f43",
+                "offset": 10760
+              },
+              {
+                "destination": "%f8",
+                "accumulator_operand": "%f7",
+                "loaded_operand": "%f44",
+                "offset": 11227
+              },
+              {
+                "destination": "%f75",
+                "accumulator_operand": "%f8",
+                "loaded_operand": "%f45",
+                "offset": 11695
+              }
+            ]
+          },
+          {
+            "length": 4,
+            "instruction_offsets": [
+              12486,
+              12906,
+              13326,
+              13747
+            ],
+            "operations": [
+              {
+                "destination": "%f12",
+                "accumulator_operand": "%f75",
+                "loaded_operand": "%f47",
+                "offset": 12486
+              },
+              {
+                "destination": "%f13",
+                "accumulator_operand": "%f12",
+                "loaded_operand": "%f48",
+                "offset": 12906
+              },
+              {
+                "destination": "%f14",
+                "accumulator_operand": "%f13",
+                "loaded_operand": "%f49",
+                "offset": 13326
+              },
+              {
+                "destination": "%f75",
+                "accumulator_operand": "%f14",
+                "loaded_operand": "%f50",
+                "offset": 13747
+              }
+            ]
+          },
+          {
+            "length": 2,
+            "instruction_offsets": [
+              14347,
+              14767
+            ],
+            "operations": [
+              {
+                "destination": "%f18",
+                "accumulator_operand": "%f75",
+                "loaded_operand": "%f52",
+                "offset": 14347
+              },
+              {
+                "destination": "%f75",
+                "accumulator_operand": "%f18",
+                "loaded_operand": "%f53",
+                "offset": 14767
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              15367
+            ],
+            "operations": [
+              {
+                "destination": "%f75",
+                "accumulator_operand": "%f75",
+                "loaded_operand": "%f54",
+                "offset": 15367
+              }
+            ]
+          }
+        ],
+        "limits": "Static PTX recurrence structure, not a complete CFG trip-count/address proof, SASS execution or GPU numerical equivalence."
+      }
+    },
+    "compute_75": {
+      "baseline": {
+        "FP_opcode_counts": {
+          "add.f32": 10,
+          "sub.f32": 2,
+          "mul.f32": 1
+        },
+        "card_accumulator": "%f46",
+        "card_addition_sites": 7,
+        "other_addition_sites": 3,
+        "unrolled_card_accumulator_chain_lengths": [
+          4,
+          1,
+          1,
+          1
+        ],
+        "main_unroll_width": 4,
+        "every_card_chain_serially_left_associated": true,
+        "every_card_add_uses_shared_reach_operand": true,
+        "groups": [
+          {
+            "length": 1,
+            "instruction_offsets": [
+              3755
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f20",
+                "loaded_operand": "0f00000000",
+                "offset": 3755
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              4051
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f21",
+                "offset": 4051
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              4343
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f22",
+                "offset": 4343
+              }
+            ]
+          },
+          {
+            "length": 4,
+            "instruction_offsets": [
+              4711,
+              4952,
+              5193,
+              5434
+            ],
+            "operations": [
+              {
+                "destination": "%f24",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f23",
+                "offset": 4711
+              },
+              {
+                "destination": "%f26",
+                "accumulator_operand": "%f24",
+                "loaded_operand": "%f25",
+                "offset": 4952
+              },
+              {
+                "destination": "%f28",
+                "accumulator_operand": "%f26",
+                "loaded_operand": "%f27",
+                "offset": 5193
+              },
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f28",
+                "loaded_operand": "%f29",
+                "offset": 5434
+              }
+            ]
+          }
+        ],
+        "limits": "Static PTX recurrence structure, not a complete CFG trip-count/address proof, SASS execution or GPU numerical equivalence."
+      },
+      "candidate": {
+        "FP_opcode_counts": {
+          "add.f32": 10,
+          "sub.f32": 2,
+          "mul.f32": 1
+        },
+        "card_accumulator": "%f46",
+        "card_addition_sites": 7,
+        "other_addition_sites": 3,
+        "unrolled_card_accumulator_chain_lengths": [
+          4,
+          1,
+          1,
+          1
+        ],
+        "main_unroll_width": 4,
+        "every_card_chain_serially_left_associated": true,
+        "every_card_add_uses_shared_reach_operand": true,
+        "groups": [
+          {
+            "length": 1,
+            "instruction_offsets": [
+              4804
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f23",
+                "loaded_operand": "0f00000000",
+                "offset": 4804
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              5364
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f24",
+                "offset": 5364
+              }
+            ]
+          },
+          {
+            "length": 1,
+            "instruction_offsets": [
+              5923
+            ],
+            "operations": [
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f25",
+                "offset": 5923
+              }
+            ]
+          },
+          {
+            "length": 4,
+            "instruction_offsets": [
+              6587,
+              7091,
+              7596,
+              8084
+            ],
+            "operations": [
+              {
+                "destination": "%f7",
+                "accumulator_operand": "%f46",
+                "loaded_operand": "%f26",
+                "offset": 6587
+              },
+              {
+                "destination": "%f8",
+                "accumulator_operand": "%f7",
+                "loaded_operand": "%f27",
+                "offset": 7091
+              },
+              {
+                "destination": "%f9",
+                "accumulator_operand": "%f8",
+                "loaded_operand": "%f28",
+                "offset": 7596
+              },
+              {
+                "destination": "%f46",
+                "accumulator_operand": "%f9",
+                "loaded_operand": "%f29",
+                "offset": 8084
+              }
+            ]
+          }
+        ],
+        "limits": "Static PTX recurrence structure, not a complete CFG trip-count/address proof, SASS execution or GPU numerical equivalence."
+      }
+    }
+  },
+  "amended_prerequisite_gates": {
+    "compute_120:unchanged8entries_exact": true,
+    "compute_120:only_fold_entry_changed": true,
+    "compute_120:ABI_exact": true,
+    "compute_120:integer_shared_staging_emitted": true,
+    "compute_120:additional_barrier_emitted": true,
+    "compute_75:unchanged8entries_exact": true,
+    "compute_75:only_fold_entry_changed": true,
+    "compute_75:ABI_exact": true,
+    "compute_75:integer_shared_staging_emitted": true,
+    "compute_75:additional_barrier_emitted": true,
+    "up_fold:local_bytes_not_increased": true,
+    "up_fold:dynamic_shared_not_increased": true,
+    "up_fold:max_threads_not_reduced": true,
+    "up_fold:supports_all_fixed_thread_controls": true,
+    "up_fold:both_fit_default_limits": true,
+    "up_fold:positive_fixed_driver_occupancy": true,
+    "static_shared_bytes_exact": true,
+    "dynamic_shared_bytes_exact": true,
+    "source_computational_statements_reverse_exact": true,
+    "static_FP_count_difference_fully_explained_by_card_chain_sites": true,
+    "each_unrolled_card_chain_keeps_serial_left_association": true,
+    "noncard_FP_operation_counts_unchanged": true
+  },
+  "assessment_correction": "Static FP opcode count equality is not an accuracy condition: the same serial card accumulator is emitted with16wide versus8wide unrolling oncompute120. All16static ADDsite differences are in that card loop; both other ADDsites3,SUBsites2,MULsite1 remain unchanged. Compute75retains4wide in both arms. Replace the invalid raw-count-equality proxy by source reversal and explicit left-associated card-chain structural checks. Do not call this a numerical pass.",
+  "scientific_limits": "No GPU arithmetic, full CFG/address proof, compiler/SASS correctness, dynamic transaction count, resource-cost or speed conclusion follows from this static audit. The frozen E072source must pass separately registered full raw GPU outputs/input/guard controls including nonfinite cases before any integrated speed trial. No count threshold, accuracy tolerance or performance cutoff is relaxed.",
+  "authority_and_boundary": "Correcting an agent-authored assessment proxy within the user-authorized research, before any E072numerical/performance outcome. Original source, resource command, run and failed assessment remain immutable. No recompile/resource rerun/source/cache-size/threshold variant and no failed numerical/speed family reopening.",
+  "source_policy_relation": "Original no-variant/no-retry rule is retained: the original CUDAbytes and sole resource execution are reused without another execution. This additive assessment correction does not erase or relabel the original failed gate.",
+  "new_compiler_CUDA_resource_or_application_kernel_executions": 0,
+  "new_solver_or_performance_executions": 0,
+  "root_analysis_not_external_audit": true,
+  "accepted_and_live_source": "E051",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D117-fold-PTX-audit.py": "a9ad770a3be22426bd25223c6f7d54ccf797d5eea9489e2593add5d5cd73c4d6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D116-prepare.py": "eea8939abd6b2198b12b7887a5592a0dfb72c199ab6d93d9ed0283a55214c0fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\report.json": "4c73f0a5bcc1dd69d994d43c8f823f4907585415cd4a310161ac75899915310b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\protocol.json": "be256cd18733dda93740a865f77db8470a10fe72ecd5bf71c6a49ea0e344d741",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-source\\candidate.cu": "e88cd178d22863d98cdae13fb9aceca9c63aca73634e73afab49ad78a17e58b3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-source\\baseline.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\execution\\baseline-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\execution\\candidate-compute_120.ptx": "e2947fb160bb5eb897b989fe89859c2e3a8af170a45bbd4dc5f4c5e576574984",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E072-resource\\execution\\candidate-compute_75.ptx": "33bb5aa7f284f5b1a166e518c338a694cce3f8691d718f1cd45d84daad13ab27"
+  }
+}

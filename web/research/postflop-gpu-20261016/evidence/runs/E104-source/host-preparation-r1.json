@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-28T22:32:48.540801+00:00",
+  "status": "withdrawn_precompiler_host_copy_encoding_adapter",
+  "finding": "Path.read_text default Windowscp1252 decoded originalUTF8comments into mojibake; re-encodedcopy didnotmatchacceptedbaselinehash. D208preparation caughtUnicodeDecodeErrorbeforeany hostcompiler/layout/CFRprocess. Originalacceptedrepo/main/live/shader unchanged.",
+  "original_manifest_sha256": "ec2a345097b582bb5ddfa05675f0daf1eb2abe40b095e08d203cad861ec019b7",
+  "original_baseline_sha256": "4c17a63af76d4474bb812bc58a88a7cc9fcf21fddaf0ed4108fcc20e840a9c5f",
+  "accepted_baseline_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+  "repair": "ExplicitUTF8byte-decodefororiginalhostandallsourceinspection,writefresh-r2copies/manifest; retainallR1filesandpreparer. NoCUDA/shader/barrier/data/eligibility/gates change orobservednumeric/speedresultdiscarded.",
+  "compiler_or_CFR_processes": 0
+}

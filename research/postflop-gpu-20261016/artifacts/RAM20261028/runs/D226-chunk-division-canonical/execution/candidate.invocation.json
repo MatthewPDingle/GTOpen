@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-29T01:23:50.248801+00:00",
+  "command": [
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate.exe",
+    "--exact",
+    "postflop_complete_cycle",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "output_env": {
+    "D156_OUTPUT": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate-output"
+  },
+  "limits": {
+    "raw_reservation_bytes": 274877906944,
+    "disk_headroom_bytes": 68719476736,
+    "required_free_bytes": 343597383680,
+    "available_RAM_before_bytes": 68719476736,
+    "available_RAM_during_bytes": 34359738368,
+    "process_reported_peak_max_bytes": 34359738368,
+    "native_timeout_seconds": 1800,
+    "poll_interval_ms": 200
+  },
+  "global_memory_before": {
+    "length": 64,
+    "load": 20,
+    "total_physical": 137354833920,
+    "available_physical": 108946812928,
+    "total_pagefile": 158466265088,
+    "available_pagefile": 114236928000,
+    "total_virtual": 140737488224256,
+    "available_virtual": 140733039820800,
+    "available_extended_virtual": 0
+  }
+}

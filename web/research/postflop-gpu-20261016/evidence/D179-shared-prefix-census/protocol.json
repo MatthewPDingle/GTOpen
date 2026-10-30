@@ -1,0 +1,52 @@
+{
+  "id": "D179",
+  "at": "2026-10-28T17:13:33.704268+00:00",
+  "status": "FROZEN_CPU_ONLY_PRE_CENSUS",
+  "input_frames": [
+    {
+      "fixture": "rainbow",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\baseline-output\\rainbow-converged.gpu.bin",
+      "wholeframe_identity_from_prior_full_reader": {
+        "bytes": 5900013831,
+        "sha256": "0ca6a8f5fdd4756f4cf0f73755b8c27d01afb2b9ef4abddd570f0195649621fa"
+      }
+    },
+    {
+      "fixture": "two-tone",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\baseline-output\\two-tone-converged.gpu.bin",
+      "wholeframe_identity_from_prior_full_reader": {
+        "bytes": 3607280935,
+        "sha256": "b836ded95173fd46de2a624ed56f8fd2f3c38fd042114b0cd51cf6e7f4f884da"
+      }
+    },
+    {
+      "fixture": "river",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\baseline-output\\river-converged.gpu.bin",
+      "wholeframe_identity_from_prior_full_reader": {
+        "bytes": 166771,
+        "sha256": "f4b34287ad442eaf3020a8c9d20434be0bc91ed4c0394659ca38b58065e09141"
+      }
+    }
+  ],
+  "selected_fields": [
+    "hands",
+    "d_show_nodes",
+    "d_node_river_slot",
+    "d_riv_cnt[0]",
+    "d_riv_cnt[1]"
+  ],
+  "block_threads": 128,
+  "warp_threads": 32,
+  "banks": 32,
+  "physical_index": "k+(k>>5)",
+  "required_free_bytes": 1073741824,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D179-prepare-census.py": "48408907349759e1cd8291854960e19864336c8dc15cb48d0c2fe2a2bd0400af",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D179-census.py": "9b31ca60e953b0f63b9ff3e5bf177a1c90c7a026569125ec3ee293e08272786c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D179-shared-prefix-census\\source-review.json": "20c49e26cb5b0859e6bfe0cc4496ba200853736922cc83fb3fb5a52f6a160919",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D178-canonical-cache-control\\report.json": "50b5e382e8eb6ed03d88705d904a36e1ff16cfe0d700a67dba4eda90f6929c8e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E096-terminal-checkpoint\\report.json": "9f0c44670839cfa4fa317e0dd05c2404dd3675bf1b17c3f7a3222f36b91d390b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "scope": "Readonlyfieldextractionfromthreealreadywhole-byte-comparedframes,noCUDA/context/kernel/compiler/counter/newtiming orsourceactivation. Preserveeveryfield extent/hashandwholeframeparentidentity;donotrehash109GB. Allnode/slot/countdomainschecked;exactonefixedanalyticalwordbank modelnotperformanceevidence."
+}

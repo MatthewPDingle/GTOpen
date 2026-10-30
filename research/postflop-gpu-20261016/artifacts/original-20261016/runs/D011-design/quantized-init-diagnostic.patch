@@ -1,0 +1,164 @@
+--- a/crates/solver/src/gpu/quantized_readback.rs
++++ b/crates/solver/src/gpu/quantized_readback.rs
+@@ -120,38 +120,111 @@
+     unsigned: CudaFunction,
+ }
+ 
++
++// Diagnostic-only host timers; no CUDA calls, events, or additional waits.
++#[derive(serde::Serialize)]
++struct QuantizedInitSpan {
++    stage: &'static str,
++    player: Option<usize>,
++    wall_ms: f64,
++}
++struct QuantizedInitTrace {
++    started: Option<std::time::Instant>,
++    last: Option<std::time::Instant>,
++    spans: Vec<QuantizedInitSpan>,
++}
++impl QuantizedInitTrace {
++    fn new() -> Self {
++        let enabled = std::env::var_os("POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE")
++            .as_deref() == Some(std::ffi::OsStr::new("1"));
++        let started = enabled.then(std::time::Instant::now);
++        Self { started, last: started, spans: Vec::with_capacity(if enabled { 24 } else { 0 }) }
++    }
++    fn mark(&mut self, stage: &'static str, player: Option<usize>) {
++        if let Some(last) = self.last {
++            let now = std::time::Instant::now();
++            let wall_ms = now.duration_since(last).as_secs_f64() * 1e3;
++            if wall_ms.is_finite() {
++                self.spans.push(QuantizedInitSpan { stage, player, wall_ms });
++            }
++            self.last = Some(now);
++        }
++    }
++    fn finish(self, outcome: &'static str) {
++        if let Some(started) = self.started {
++            let wall_ms_before_logging = started.elapsed().as_secs_f64() * 1e3;
++            if !wall_ms_before_logging.is_finite() { return; }
++            use std::io::Write;
++            let mut stderr = std::io::stderr().lock();
++            let _ = writeln!(stderr, "QUANTIZED_INIT_PROFILE {}", serde_json::json!({
++                "schema_version": 1, "phase": "quantized_try_new", "outcome": outcome,
++                "clock": "host_wall", "diagnostic_only": true,
++                "environment": {
++                    "POSTFLOP_AUTORESEARCH_QUANTIZED_INIT_PROFILE": "1",
++                    "CUDA_MODULE_LOADING": std::env::var("CUDA_MODULE_LOADING").ok()
++                },
++                "extra_cuda_synchronizations": 0,
++                "wall_ms_before_logging": wall_ms_before_logging, "spans": self.spans,
++                "note": "Host-call spans may submit asynchronous work. Existing wait spans drain pending stream work; they are not isolated kernel/device times. Logging and timers perturb constructor time; exclude this run from qualification."
++            }));
++        }
++    }
++}
++
+ impl QuantizedReadback {
+     pub(super) fn try_new(
+         solver: &Solver, layouts: &[ArenaLayout; 2], staging: &PinnedBuf,
+         stream: &Arc<CudaStream>, module: &Arc<CudaModule>, base_bytes: u64, budget: u64,
+     ) -> Result<Option<Self>, String> {
+-        if !(0..2).all(|p| matches!(solver.regrets[p], Store::I16 { .. })
+-            && matches!(solver.strat[p], Store::U16 { .. })) { return Ok(None); }
+-        let plans = [layouts[0].quantized_plan(solver, 0)?, layouts[1].quantized_plan(solver, 1)?];
+-        if plans.iter().all(|p| p.blocks.is_empty()) { return Ok(None); }
+-        let Some(host_layout) = StagingLayout::for_buffer(staging,
+-            plans.iter().map(|p| p.words).max().unwrap(),
+-            plans.iter().map(|p| p.blocks.len()).max().unwrap()) else { return Ok(None); };
+-        if !extra_bytes(&plans).and_then(|extra| base_bytes.checked_add(extra))
+-            .is_some_and(|needed| needed <= budget) { return Ok(None); }
+-        // Base solver is fully allocated first. OOM here cannot evict its buffers.
+-        // Clear any prior asynchronous error before classifying allocation errors.
+-        stream.synchronize().map_err(e)?;
+-        match Self::prepare(plans, host_layout, stream, module) {
+-            Ok(value) => Ok(Some(value)),
+-            Err(err) if err.fallback() => { stream.synchronize().map_err(e)?; Ok(None) }
+-            Err(err) => Err(err.message()),
+-        }
+-    }
+-
+-    fn prepare(plans: [ArenaPlan; 2], host_layout: StagingLayout, stream: &Arc<CudaStream>, module: &Arc<CudaModule>) -> Result<Self, SetupError> {
++        let mut trace = QuantizedInitTrace::new();
++        let result = (|| {
++            if !(0..2).all(|p| matches!(solver.regrets[p], Store::I16 { .. })
++                && matches!(solver.strat[p], Store::U16 { .. })) { return Ok(None); }
++            trace.mark("eligibility_cpu", None);
++            let plan0 = layouts[0].quantized_plan(solver, 0)?;
++            trace.mark("descriptors_cpu", Some(0));
++            let plan1 = layouts[1].quantized_plan(solver, 1)?;
++            trace.mark("descriptors_cpu", Some(1));
++            let plans = [plan0, plan1];
++            if plans.iter().all(|p| p.blocks.is_empty()) { return Ok(None); }
++            let Some(host_layout) = StagingLayout::for_buffer(staging,
++                plans.iter().map(|p| p.words).max().unwrap(),
++                plans.iter().map(|p| p.blocks.len()).max().unwrap()) else { return Ok(None); };
++            if !extra_bytes(&plans).and_then(|extra| base_bytes.checked_add(extra))
++                .is_some_and(|needed| needed <= budget) { return Ok(None); }
++            trace.mark("staging_capacity_and_budget_cpu", None);
++            // Base solver is fully allocated first. OOM here cannot evict its buffers.
++            // Clear any prior asynchronous error before classifying allocation errors.
++            stream.synchronize().map_err(e)?;
++            trace.mark("existing_preparation_stream_wait", None);
++            match Self::prepare(plans, host_layout, stream, module, &mut trace) {
++                Ok(value) => Ok(Some(value)),
++                Err(err) if err.fallback() => {
++                    stream.synchronize().map_err(e)?;
++                    trace.mark("existing_allocation_fallback_wait", None);
++                    Ok(None)
++                }
++                Err(err) => Err(err.message()),
++            }
++        })();
++        trace.mark("exit_tail_cpu_or_failed_operation", None);
++        let outcome = match &result { Ok(Some(_)) => "selected", Ok(None) => "fallback", Err(_) => "error" };
++        trace.finish(outcome);
++        result
++    }
++
++    fn prepare(plans: [ArenaPlan; 2], host_layout: StagingLayout, stream: &Arc<CudaStream>, module: &Arc<CudaModule>, trace: &mut QuantizedInitTrace) -> Result<Self, SetupError> {
+         let signed = module.load_function("quantize_i16_readback").map_err(SetupError::Cuda)?;
++        trace.mark("load_signed_function_host_call", None);
+         let unsigned = module.load_function("quantize_u16_readback").map_err(SetupError::Cuda)?;
++        trace.mark("load_unsigned_function_host_call", None);
+         let words_len = plans.iter().map(|p| p.words).max().unwrap().max(1);
+         let scales_len = plans.iter().map(|p| p.blocks.len()).max().unwrap().max(1);
+         // Every transferred element is written before readback; no device clear.
+         let words = unsafe { stream.alloc::<u16>(words_len) }.map_err(SetupError::Allocation)?;
++        trace.mark("scratch_sizes_and_words_allocation_host_call", None);
+         let scales = unsafe { stream.alloc::<f32>(scales_len) }.map_err(SetupError::Allocation)?;
++        trace.mark("scales_allocation_host_call", None);
+         let allocate = |len: usize| -> Result<DevicePlan, SetupError> {
+             let len = len.max(1);
+             Ok(DevicePlan {
+@@ -160,20 +233,27 @@
+                 lengths: unsafe { stream.alloc::<u32>(len) }.map_err(SetupError::Allocation)?,
+             })
+         };
+-        let mut metadata = [allocate(plans[0].blocks.len())?, allocate(plans[1].blocks.len())?];
++        let device0 = allocate(plans[0].blocks.len())?;
++        trace.mark("descriptor_allocations_host_calls", Some(0));
++        let device1 = allocate(plans[1].blocks.len())?;
++        trace.mark("descriptor_allocations_host_calls", Some(1));
++        let mut metadata = [device0, device1];
+         // No asynchronous host transfers start until all optional allocations pass.
+-        for (plan, device) in plans.iter().zip(&mut metadata) {
++        for (p, (plan, device)) in plans.iter().zip(&mut metadata).enumerate() {
+             if plan.blocks.is_empty() { continue; }
+             let source: Vec<_> = plan.blocks.iter().map(|b| b.source).collect();
+             let output: Vec<_> = plan.blocks.iter().map(|b| b.output).collect();
+             let lengths: Vec<_> = plan.blocks.iter().map(|b| b.len).collect();
++            trace.mark("descriptor_vectors_cpu", Some(p));
+             let copied = (|| {
+                 stream.memcpy_htod(&source, &mut device.source)?;
+                 stream.memcpy_htod(&output, &mut device.output)?;
+                 stream.memcpy_htod(&lengths, &mut device.lengths)
+             })();
++            trace.mark("descriptor_upload_host_calls", Some(p));
+             // Keep host vectors alive through completion even on a submission error.
+             let waited = stream.synchronize();
++            trace.mark("descriptor_existing_stream_wait", Some(p));
+             copied.map_err(SetupError::Cuda)?;
+             waited.map_err(SetupError::Cuda)?;
+         }

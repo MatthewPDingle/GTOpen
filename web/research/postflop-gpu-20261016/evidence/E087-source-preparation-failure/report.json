@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-18T11:08:22.309702+00:00",
+  "original_preparer_sha256": "03143b4065b0f16f01a2fd3b6db4e557d3bf2d26e8d36e5f577891ea21b2a29d",
+  "error": "AssertionError at line110: reverse==mod",
+  "cause": "The strategy-only replacement is textually identical to the second download call in the full-sync replacement. Naive first-occurrence reversal restores the wrong occurrence.",
+  "repair": "Reverse the strategy-only occurrence from the end, then reverse the full-sync and constructor replacements. Candidate generated text is unchanged. Recover the verified still-empty output folder without deleting anything.",
+  "candidate_source_files_created": 0,
+  "compiler_native_executions": 0,
+  "algorithm_cases_gates_changed": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": "D240",
+  "at": "2026-10-29T03:19:23.690629+00:00",
+  "status": "FROZEN_PRE_CPU_STATIC_READER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D240-fold-copy-PTX.py": "82e6bfa0216368c7e3d92d2c5b8a8ad7b68bc99806eb612a07d31f14a4bd6c4e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\protocol.json": "7467fc636f34ec98922824df5db6cc9cb44a2c8c441c9e04b7e6fc278eb307f4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\report.json": "ce4082c9251187245b9a4b86200c604e88548ba05b12e5c4d41c919f1e9ecd03",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-source\\manifest.json": "75f1ec0249f52389f70ec3fec09e7029f936bfcdc9a4a5aa1a582c1819158984",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-source\\source-review.json": "60779daaf4d738f46a91556cf8864316cd9386683068a3e8c372333cdf99b24b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D239-fold-copy-sum-scout\\source-review.json": "5a28bc1966c8af6eb97e711f1bbdc48362fa54e54cd30a4cb0757262a989edcb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\baseline-compute_120-up_fold.ptx.txt": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\baseline-compute_75-up_fold.ptx.txt": "d69e25c1be0cb07b33680eaa7de95948132eb7e5bfa1c63d664dc55e53c24726",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\candidate-compute_120-up_fold.ptx.txt": "71916e69fcd286a9124639988549fa9205f6d7389c018abc01130440deb7db31",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\candidate-compute_75-up_fold.ptx.txt": "4a88e7ed1083a24cfc3a9c9bf2518995e2207b7caccf38a9a107f81adb4d524f"
+  },
+  "gate": "Both120/75 actual globalf32fill load also sharedstored; candidate exactsame register feeds zero-seeded selfaddition loop withTID init,+blockDim andnh_o param19bound beforefirstbarrier. Original recurrence consumes later sharedload withsameinduction andstored totalparts aftercardloop. Candidate retains computedpartial unchanged acrosscardloop tothatstore. AllFP arithmeticopcode counts andbarrier sites identical. Source-byte reversal establishes unchanged card/reduction/math/address instructions, further numerical/native gates mandatory.",
+  "limits": "Operand/induction/source structural witness, not fullPTX CFG/FP simulator/universal IEEEpayload/nativebehavior/timing proof. Positive/wrongoperand negative fixtures required; no appkernels."
+}

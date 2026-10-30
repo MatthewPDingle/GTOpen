@@ -1,0 +1,34 @@
+{
+  "id": "D046",
+  "status": "SOURCE_ONLY_PREPARED",
+  "at": "2026-10-16T14:01:53.109266+00:00",
+  "accepted_source_entries_verified": 162,
+  "one_literal_change_verified": true,
+  "down_action_original_literal_retained": true,
+  "source_reversal_exact": true,
+  "python_ast_pass": [
+    "run.py",
+    "runner-primitives-source.py"
+  ],
+  "probe_has_no_launch_stream_allocation_or_copy_api": true,
+  "D043_baseline_local_declarations": [
+    ".local .align 16 .b8 \t__local_depot6[64];"
+  ],
+  "source_variants": {
+    "baseline": {
+      "sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+      "fnv1a64": "fd544fbd87847b9c",
+      "bytes": 22878
+    },
+    "candidate": {
+      "sha256": "74da2733b0c3780cd5f73c2f3d0005af01dfd983b5446b80bbfe664c0e165762",
+      "fnv1a64": "63b0b5afb98f2059",
+      "bytes": 22889
+    }
+  },
+  "builds": 0,
+  "native_executions": 0,
+  "gpu_calls": 0,
+  "production_edits": 0,
+  "Rust_compile_status": "not executed; only changed literals/array selection from previously compiled D043 probe; pinned APIs unchanged"
+}

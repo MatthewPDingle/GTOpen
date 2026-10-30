@@ -1,0 +1,83 @@
+_RNvCsluSbfOPdzkh_10d090_probe8wide_i16:
+.Lfunc_begin55:
+	testq	%rdx, %rdx
+	je	.LBB55_1
+	cmpq	$8, %rdx
+	jae	.LBB55_5
+	xorl	%r8d, %r8d
+	xorl	%eax, %eax
+	jmp	.LBB55_4
+.LBB55_1:
+	xorl	%eax, %eax
+	retq
+.LBB55_5:
+	cmpq	$64, %rdx
+	jae	.LBB55_7
+	xorl	%r8d, %r8d
+	xorl	%eax, %eax
+	jmp	.LBB55_11
+.LBB55_7:
+	movabsq	$4611686018427387840, %r8
+	andq	%rdx, %r8
+	leaq	(%rdx,%rdx), %rax
+	andq	$-128, %rax
+	vpxor	%xmm0, %xmm0, %xmm0
+	xorl	%r9d, %r9d
+	vpxor	%xmm1, %xmm1, %xmm1
+	vpxor	%xmm2, %xmm2, %xmm2
+	vpxor	%xmm3, %xmm3, %xmm3
+	.p2align	4
+.LBB55_8:
+	vpor	(%rcx,%r9), %ymm0, %ymm0
+	vpor	32(%rcx,%r9), %ymm1, %ymm1
+	vpor	64(%rcx,%r9), %ymm2, %ymm2
+	vpor	96(%rcx,%r9), %ymm3, %ymm3
+	subq	$-128, %r9
+	cmpq	%r9, %rax
+	jne	.LBB55_8
+	vpor	%ymm0, %ymm1, %ymm0
+	vpor	%ymm2, %ymm3, %ymm1
+	vpor	%ymm0, %ymm1, %ymm0
+	vextracti128	$1, %ymm0, %xmm1
+	vpor	%xmm1, %xmm0, %xmm0
+	vpshufd	$238, %xmm0, %xmm1
+	vpor	%xmm1, %xmm0, %xmm0
+	vpshufd	$85, %xmm0, %xmm1
+	vpor	%xmm1, %xmm0, %xmm0
+	vpsrld	$16, %xmm0, %xmm1
+	vpor	%xmm0, %xmm1, %xmm0
+	vmovd	%xmm0, %eax
+	cmpq	%r8, %rdx
+	je	.LBB55_15
+	testb	$56, %dl
+	je	.LBB55_4
+.LBB55_11:
+	movq	%r8, %r9
+	movabsq	$4611686018427387896, %r8
+	andq	%rdx, %r8
+	movzwl	%ax, %eax
+	vmovd	%eax, %xmm0
+	.p2align	4
+.LBB55_12:
+	vpor	(%rcx,%r9,2), %xmm0, %xmm0
+	addq	$8, %r9
+	cmpq	%r9, %r8
+	jne	.LBB55_12
+	vpshufd	$238, %xmm0, %xmm1
+	vpor	%xmm1, %xmm0, %xmm0
+	vpshufd	$85, %xmm0, %xmm1
+	vpor	%xmm1, %xmm0, %xmm0
+	vpsrld	$16, %xmm0, %xmm1
+	vpor	%xmm0, %xmm1, %xmm0
+	vmovd	%xmm0, %eax
+	jmp	.LBB55_14
+.LBB55_4:
+	orw	(%rcx,%r8,2), %ax
+	incq	%r8
+.LBB55_14:
+	cmpq	%r8, %rdx
+	jne	.LBB55_4
+.LBB55_15:
+	vzeroupper
+	retq
+.Lfunc_end55:

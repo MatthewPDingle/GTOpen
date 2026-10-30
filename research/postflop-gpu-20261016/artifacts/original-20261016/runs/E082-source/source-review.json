@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T09:01:58.258651+00:00",
+  "scope": "Only up_show chunk-offset construction changes. Original per-thread sorted-reach chunk scan and full prefix[k] values retain their original floating operands/order. After the existing producer barrier, each thread independently folds unchanged raw chunk totals1..threadIdx into private +0 base using raw[t]+prior_prefix. Remove thread0 cumulative shared writes and their following barrier. Keep the final CTA barrier, shared allocation/declaration, original host/ABI/thread shape/launch/node mapping, all other kernels, arithmetic downstream, layouts, storage, quality and saves unchanged.",
+  "source_reverse_exact": true,
+  "original_operand_order_preserved": "For each t, original shared cumulative[t]=raw[t]+cumulative[t-1]; new private base=raw[t]+base from+0. Same binary FP operation tree for the consumed prefix. No associative regrouping, shuffle/parallel reduction, fastmath, FTZ or precision change. Actual GPU exactness is not yet proven.",
+  "synchronization": "Every raw chunk slot1..blockDim has exactly one producer, followed by the unchanged CTA barrier. No chunk_sum writes occur while consumers read it. Chunk_sum is static shared memory; prefix is disjoint dynamic shared memory. Unique existing per-thread chunk intervals write prefix, then unchanged final CTA barrier precedes terminal consumers. No reliance on warp synchronization or independent scheduling assumptions.",
+  "barriers_before_after": [
+    5,
+    4
+  ],
+  "risks": "Quadratically more additions overall, repeated shared reads, long private chains and register pressure can outweigh avoided cumulative shared writes/barrier. Source equivalence and theoretical resources establish no accuracy or speed claim.",
+  "direct_controls_required": "Full original/candidate raw up_show corpus including chunk/block/tail/boundary/physical-card/payout/order/nonfinite cases, immutable inputs and guards, before solver integration. No candidate eligibility or source variants on failure.",
+  "distinct_from_E008": "E008 only changed the original single producer to carry its sum in a register. E082 has no shared cumulative producer/writes and removes one CTA barrier; its duplicated independent consumer algorithm increases total work substantially. E008 remains closed with its original fresh16 outcome.",
+  "distinct_from_E081": "Node-per-block, threadIdx hand work assignment and every host launch remain unchanged; closed node packing is not reused."
+}

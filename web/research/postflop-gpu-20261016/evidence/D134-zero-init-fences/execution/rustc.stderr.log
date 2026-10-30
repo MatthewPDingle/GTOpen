@@ -1,0 +1,47 @@
+error[E0624]: method `use_full_action_arenas` is private
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences\baseline\mod.rs:226:18
+    |
+226 |             plan.use_full_action_arenas(&solver.spot);
+    |                  ^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: crates\solver\src\gpu\plan.rs:486:5
+    |
+486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+    |     ------------------------------------------------------------ private method defined here
+
+error[E0624]: method `use_full_action_arenas` is private
+    --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences\baseline\mod.rs:1572:86
+     |
+1572 |         if solver.storage==crate::store::Storage::F32 && full_needed<=u64::MAX {plan.use_full_action_arenas(&solver.spot);}
+     |                                                                                      ^^^^^^^^^^^^^^^^^^^^^^ private method
+     |
+    ::: crates\solver\src\gpu\plan.rs:486:5
+     |
+ 486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+     |     ------------------------------------------------------------ private method defined here
+
+error[E0624]: method `use_full_action_arenas` is private
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences\candidate\mod.rs:226:18
+    |
+226 |             plan.use_full_action_arenas(&solver.spot);
+    |                  ^^^^^^^^^^^^^^^^^^^^^^ private method
+    |
+   ::: crates\solver\src\gpu\plan.rs:486:5
+    |
+486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+    |     ------------------------------------------------------------ private method defined here
+
+error[E0624]: method `use_full_action_arenas` is private
+    --> S:\GTOpen-research\postflop-gpu-20261016\runs\D134-zero-init-fences\candidate\mod.rs:1574:86
+     |
+1574 |         if solver.storage==crate::store::Storage::F32 && full_needed<=u64::MAX {plan.use_full_action_arenas(&solver.spot);}
+     |                                                                                      ^^^^^^^^^^^^^^^^^^^^^^ private method
+     |
+    ::: crates\solver\src\gpu\plan.rs:486:5
+     |
+ 486 |     pub(crate) fn use_full_action_arenas(&mut self, spot: &Spot) {
+     |     ------------------------------------------------------------ private method defined here
+
+error: aborting due to 4 previous errors
+
+For more information about this error, try `rustc --explain E0624`.

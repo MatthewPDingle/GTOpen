@@ -1,0 +1,8 @@
+{
+  "at": "2026-10-18T05:21:48.018301+00:00",
+  "original_arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "original_predicate_body_exact": "match store {\n            Store::I16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0\n            }\n            Store::U16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0\n            }\n            Store::F32(_) => false,\n        }",
+  "mechanism": "Read one owned initialized i16/u16 per actual OS page using existing Rayon16 pool, fixed with_min_len64 pages, discard values, then all4 original serial full scale/q scans in original order. Candidate requires compressed four buffers,>=64MiB total q,all scale bits positive zero. Tiny fallback before extra scale checks. No validation omission/parallel reduction/cache/provenance/data writes/new buffer/ISA/kernel/GPU/solver source activation.",
+  "scope": "CPU-only source component, accepted RLIB/mimalloc/Spot/Solver/GpuPlan. No CUDA context, pinning, device allocation or actual private ArenaLayout; not complete solve or production upload.",
+  "resource_guard": "Per applicable fixture candidate median summed process CPU ms <=baseline median*1.10+5.0ms. Includes all threads, not CPU-core average; component screen only, actual no-tradeoff qualification still required."
+}

@@ -1,0 +1,39 @@
+{
+  "id": "E038-control",
+  "status": "FROZEN_SOURCE_ONLY_PENDING_ROOT_EXECUTION",
+  "at": "2026-10-17T00:06:07.6303500Z",
+  "baseline": "E020",
+  "baseline_finalized": true,
+  "compiler_native_gpu_executed": false,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "owned_attachment_path": "crates/solver/src/gpu/arena.rs",
+  "attachment_sha256": "47e77c2321a7cfb09a1522b075e0a0fed8f53c4ea4f7a044d771dc26880d93b1",
+  "original_arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "candidate_arena_sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+  "artifact_sha256": {
+    "attachment.rs": "47e77c2321a7cfb09a1522b075e0a0fed8f53c4ea4f7a044d771dc26880d93b1",
+    "original-control-arena.rs": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+    "candidate-control-arena.rs": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866",
+    "schema.json": "de2910a9f2562a5ccfecfb3bf2be404fabd65bb6eff6e1659537f83c04921cea",
+    "README.md": "bd4c7e5145ed0b4ed8f83ebb4ecad1c4fc8176f9674ee9d42b70b33ad1f96f6f",
+    "source-checks.json": "373c14d046b017db6acb30f1e7d741fb0df6121fbbca3bfd88d4f0435fe0fd92"
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-root-decisions\\baseline.json": "22d1b4b2c2ade026e8c1dbb34b049eb07db2076efd3476061c6a0ba5661f890f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\manifest.json": "61b64edf06df7aec0df01382f2d6c3d7f6b119c77a2cadcb0c38f7f5e9b654ff",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E038-source-review\\report.json": "c09344a215ab2376a4e5db213dfd52bf8f558cb03ca6edab468b548f73c3b838",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6"
+  },
+  "scope": "One identical ignored actual GpuSolver upload/readback control attached to two immutable source prefixes; full and compact fixed fixture, 27 evidence files and three markers per independent arm; no training or timing.",
+  "runtime_authorization": "Separate root-owned build/run/assessment package and review; source preparation does not authorize native execution.",
+  "sealed_E038_design_unchanged": true
+}

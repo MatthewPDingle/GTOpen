@@ -1,0 +1,39 @@
+{
+  "id": "E038-fresh-baseline-breakdown",
+  "at": "2026-10-17T00:19:01Z",
+  "source_report_sha256": "50a3230cac0d6cd0cb7fc6c8818f205a13b9bc999991e02e8ab7d74a5fd60b5e",
+  "basis": "Descriptive medians of B119/B120/B121 only; no new runtime, outcome rescoring or changed acceptance rule. Component medians do not form an exact additive partition of the median complete cycle.",
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_component_medians_ms": {
+        "full_cycle_ms": 6417.2655,
+        "build_ms": 88.95309999999999,
+        "init_ms": 698.539,
+        "solve_ms": 5184.9334,
+        "readback_ms": 411.1634
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_component_medians_ms": {
+        "full_cycle_ms": 4426.393,
+        "build_ms": 414.868,
+        "init_ms": 519.2776,
+        "solve_ms": 3220.2852000000003,
+        "readback_ms": 277.0052
+      }
+    },
+    {
+      "fixture_id": "river",
+      "baseline_component_medians_ms": {
+        "full_cycle_ms": 123.7686,
+        "build_ms": 0.2505,
+        "init_ms": 105.1751,
+        "solve_ms": 17.5169,
+        "readback_ms": 0.8417
+      }
+    }
+  ],
+  "next_question": "Investigate remaining solve-kernel work; no new candidate activated or speedup claimed."
+}

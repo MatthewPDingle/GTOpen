@@ -1,0 +1,1329 @@
+{
+  "id": "D190-inline-tree-control",
+  "at": "2026-10-28T20:05:04.602267+00:00",
+  "status": "rejected_component_admission",
+  "protocol_sha256": "f13ca9b505078cdb527f5c47adef02863d0567235ef55e413800f71956477160",
+  "canonical": [
+    {
+      "baseline_median_ms": 48.4144,
+      "baseline_samples_ms": [
+        52.8091,
+        50.4081,
+        47.9105,
+        48.1934,
+        47.782,
+        100.5313,
+        49.0099,
+        48.2473,
+        48.4144
+      ],
+      "candidate_median_ms": 38.3883,
+      "candidate_samples_ms": [
+        41.5411,
+        40.601,
+        83.6409,
+        37.1096,
+        38.3883,
+        37.6447,
+        36.536699999999996,
+        38.1445,
+        74.7121
+      ],
+      "checks": 19894027,
+      "fingerprint": "f9182d3423bb5655",
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "hands": [
+        257,
+        319
+      ],
+      "id": 0,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "positive_median_slowdown": false,
+      "raw_file": "tree-canonical-0.bin",
+      "saving_ms": 10.0261,
+      "slower_pairs": 2,
+      "stage": "canonical",
+      "status": "pass_exact_tree_and_capacity"
+    },
+    {
+      "baseline_median_ms": 45.6661,
+      "baseline_samples_ms": [
+        49.0048,
+        50.2286,
+        44.4452,
+        45.7624,
+        44.335300000000004,
+        79.58279999999999,
+        44.90389999999999,
+        45.6661,
+        44.9018
+      ],
+      "candidate_median_ms": 38.128099999999996,
+      "candidate_samples_ms": [
+        40.027699999999996,
+        41.279,
+        73.9675,
+        36.7125,
+        35.9071,
+        38.128099999999996,
+        37.229600000000005,
+        35.6864,
+        62.83089999999999
+      ],
+      "checks": 19894028,
+      "fingerprint": "b55e490d74f01f6c",
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "hands": [
+        258,
+        320
+      ],
+      "id": 1,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "positive_median_slowdown": false,
+      "raw_file": "tree-canonical-1.bin",
+      "saving_ms": 7.538000000000004,
+      "slower_pairs": 2,
+      "stage": "canonical",
+      "status": "pass_exact_tree_and_capacity"
+    },
+    {
+      "baseline_median_ms": 0.0031999999999999997,
+      "baseline_samples_ms": [
+        0.0034000000000000002,
+        0.0037,
+        0.0031,
+        0.0033,
+        0.0033,
+        0.003,
+        0.0031,
+        0.0031999999999999997,
+        0.0031999999999999997
+      ],
+      "candidate_median_ms": 0.0031,
+      "candidate_samples_ms": [
+        0.0034000000000000002,
+        0.0031,
+        0.0031,
+        0.0031,
+        0.003,
+        0.0029000000000000002,
+        0.0055,
+        0.003,
+        0.0043
+      ],
+      "checks": 1078,
+      "fingerprint": "e7cf3668eb9a73d6",
+      "full_cycle_performance_measured": false,
+      "gpu_executions": 0,
+      "hands": [
+        233,
+        280
+      ],
+      "id": 2,
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "positive_median_slowdown": false,
+      "raw_file": "tree-canonical-2.bin",
+      "saving_ms": 9.999999999999983e-05,
+      "slower_pairs": 2,
+      "stage": "canonical",
+      "status": "pass_exact_tree_and_capacity"
+    }
+  ],
+  "controls": [
+    {
+      "cap": 0,
+      "error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-0-budget-0",
+      "status": "exact_error"
+    },
+    {
+      "cap": 1,
+      "error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-0-budget-1",
+      "status": "exact_error"
+    },
+    {
+      "cap": 1346812,
+      "checks": 19894027,
+      "fingerprint": "f9182d3423bb5655",
+      "hands": [
+        257,
+        319
+      ],
+      "label": "canonical-0-budget-2",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-0-budget-2.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 1346813,
+      "checks": 19894027,
+      "fingerprint": "f9182d3423bb5655",
+      "hands": [
+        257,
+        319
+      ],
+      "label": "canonical-0-budget-3",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-0-budget-3.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 1346814,
+      "checks": 19894027,
+      "fingerprint": "f9182d3423bb5655",
+      "hands": [
+        257,
+        319
+      ],
+      "label": "canonical-0-budget-4",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-0-budget-4.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 0,
+      "error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-1-budget-0",
+      "status": "exact_error"
+    },
+    {
+      "cap": 1,
+      "error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-1-budget-1",
+      "status": "exact_error"
+    },
+    {
+      "cap": 1346812,
+      "checks": 19894028,
+      "fingerprint": "b55e490d74f01f6c",
+      "hands": [
+        258,
+        320
+      ],
+      "label": "canonical-1-budget-2",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-1-budget-2.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 1346813,
+      "checks": 19894028,
+      "fingerprint": "b55e490d74f01f6c",
+      "hands": [
+        258,
+        320
+      ],
+      "label": "canonical-1-budget-3",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-1-budget-3.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 1346814,
+      "checks": 19894028,
+      "fingerprint": "b55e490d74f01f6c",
+      "hands": [
+        258,
+        320
+      ],
+      "label": "canonical-1-budget-4",
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-1-budget-4.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 0,
+      "error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-2-budget-0",
+      "status": "exact_error"
+    },
+    {
+      "cap": 1,
+      "error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "label": "canonical-2-budget-1",
+      "status": "exact_error"
+    },
+    {
+      "cap": 32,
+      "checks": 1078,
+      "fingerprint": "e7cf3668eb9a73d6",
+      "hands": [
+        233,
+        280
+      ],
+      "label": "canonical-2-budget-2",
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-2-budget-2.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 33,
+      "checks": 1078,
+      "fingerprint": "e7cf3668eb9a73d6",
+      "hands": [
+        233,
+        280
+      ],
+      "label": "canonical-2-budget-3",
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-2-budget-3.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 34,
+      "checks": 1078,
+      "fingerprint": "e7cf3668eb9a73d6",
+      "hands": [
+        233,
+        280
+      ],
+      "label": "canonical-2-budget-4",
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "raw_file": "tree-canonical-2-budget-4.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 105929,
+      "fingerprint": "6a491020f4fc4665",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "empty-menus-flop",
+      "metadata": [
+        7353,
+        7502,
+        4902,
+        0,
+        17157,
+        26961,
+        8192,
+        8192,
+        8192,
+        64,
+        16
+      ],
+      "raw_file": "tree-empty-menus-flop.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 2497,
+      "fingerprint": "5e4dd54dd4a2594a",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "empty-menus-turn",
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "raw_file": "tree-empty-menus-turn.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 429,
+      "fingerprint": "05b2116d4c3a21e2",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "empty-menus-river",
+      "metadata": [
+        3,
+        2,
+        2,
+        2,
+        7,
+        11,
+        4,
+        4,
+        4,
+        64,
+        16
+      ],
+      "raw_file": "tree-empty-menus-river.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 42736,
+      "fingerprint": "0c69e2319b00b8ef",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "turn-initiative-False",
+      "metadata": [
+        2853,
+        2880,
+        2516,
+        1,
+        8806,
+        13838,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "raw_file": "tree-turn-initiative-False.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 42735,
+      "fingerprint": "84916a07aa7eee84",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "turn-initiative-True",
+      "metadata": [
+        2853,
+        2880,
+        2516,
+        1,
+        8806,
+        13838,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "raw_file": "tree-turn-initiative-True.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 453322,
+      "fingerprint": "914b2765c6ed005f",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "flop-all-in-runouts",
+      "metadata": [
+        31761,
+        32504,
+        19608,
+        0,
+        68628,
+        107844,
+        32768,
+        32768,
+        32768,
+        64,
+        16
+      ],
+      "raw_file": "tree-flop-all-in-runouts.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 2903,
+      "fingerprint": "558ed6aae4064024",
+      "hands": [
+        1326,
+        1081
+      ],
+      "label": "river-wide-menu",
+      "metadata": [
+        141,
+        140,
+        140,
+        2,
+        92820,
+        75670,
+        256,
+        256,
+        208,
+        64,
+        16
+      ],
+      "raw_file": "tree-river-wide-menu.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "error": "turn OOP bet: '2.5x' is a raise-only size — use % of pot or 'a'",
+      "label": "strict-bet-multiple-error",
+      "status": "exact_error"
+    },
+    {
+      "cap": 100000,
+      "checks": 2513,
+      "fingerprint": "390e95b759cf9dce",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "lenient-bet-multiple-dropped",
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "raw_file": "tree-lenient-bet-multiple-dropped.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 445,
+      "fingerprint": "bf254a0bae04b8e6",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "unused-prior-street-size",
+      "metadata": [
+        3,
+        2,
+        2,
+        2,
+        7,
+        11,
+        4,
+        4,
+        4,
+        64,
+        16
+      ],
+      "raw_file": "tree-unused-prior-street-size.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 38881,
+      "fingerprint": "48a5ae9445ac0db9",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "duplicate-rounded-sizes",
+      "metadata": [
+        2565,
+        2592,
+        2228,
+        1,
+        8134,
+        11726,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "raw_file": "tree-duplicate-rounded-sizes.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "checks": 2496,
+      "fingerprint": "9e4662ea685d022c",
+      "hands": [
+        7,
+        11
+      ],
+      "label": "public-builder-absent-carry-flag",
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "raw_file": "tree-public-builder-absent-carry-flag.bin",
+      "status": "exact_tree"
+    },
+    {
+      "cap": 100000,
+      "error": "pot and stacks must be positive finite numbers",
+      "label": "negative-pot-error",
+      "status": "exact_error"
+    },
+    {
+      "cap": 100000,
+      "error": "board must have 3 to 5 cards",
+      "label": "invalid-board-length",
+      "status": "exact_error"
+    },
+    {
+      "cap": 100000,
+      "error": "invalid action count 301 during tree build",
+      "label": "too-many-actions-error",
+      "status": "exact_error"
+    }
+  ],
+  "raw_files": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-0.bin",
+      "sha256": "5815c664ffd01a7269701f2d19f10c9661edbe534bca1f48130b26377bf5fdf8",
+      "bytes": 307443940,
+      "label": "canonical-0",
+      "checks": 19894027,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        257,
+        319
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-1.bin",
+      "sha256": "d3097dcbea18d0e89ce89334055925c2a0d17d5cdc60734865c285332c26292f",
+      "bytes": 307443942,
+      "label": "canonical-1",
+      "checks": 19894028,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        258,
+        320
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-2.bin",
+      "sha256": "ee7027c02d73f53ad667dc1a802ccd289cd4260b5ba8f20fe8d17f0a486f0169",
+      "bytes": 8982,
+      "label": "canonical-2",
+      "checks": 1078,
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "hands": [
+        233,
+        280
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-0-budget-2.bin",
+      "sha256": "5815c664ffd01a7269701f2d19f10c9661edbe534bca1f48130b26377bf5fdf8",
+      "bytes": 307443940,
+      "label": "canonical-0-budget-2",
+      "checks": 19894027,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        257,
+        319
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-0-budget-3.bin",
+      "sha256": "5815c664ffd01a7269701f2d19f10c9661edbe534bca1f48130b26377bf5fdf8",
+      "bytes": 307443940,
+      "label": "canonical-0-budget-3",
+      "checks": 19894027,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        257,
+        319
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-0-budget-4.bin",
+      "sha256": "5815c664ffd01a7269701f2d19f10c9661edbe534bca1f48130b26377bf5fdf8",
+      "bytes": 307443940,
+      "label": "canonical-0-budget-4",
+      "checks": 19894027,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156020845,
+        185172163,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        257,
+        319
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-1-budget-2.bin",
+      "sha256": "d3097dcbea18d0e89ce89334055925c2a0d17d5cdc60734865c285332c26292f",
+      "bytes": 307443942,
+      "label": "canonical-1-budget-2",
+      "checks": 19894028,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        258,
+        320
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-1-budget-3.bin",
+      "sha256": "d3097dcbea18d0e89ce89334055925c2a0d17d5cdc60734865c285332c26292f",
+      "bytes": 307443942,
+      "label": "canonical-1-budget-3",
+      "checks": 19894028,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        258,
+        320
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-1-budget-4.bin",
+      "sha256": "d3097dcbea18d0e89ce89334055925c2a0d17d5cdc60734865c285332c26292f",
+      "bytes": 307443942,
+      "label": "canonical-1-budget-4",
+      "checks": 19894028,
+      "metadata": [
+        1346813,
+        1356562,
+        1187562,
+        0,
+        156627930,
+        185752640,
+        2097152,
+        2097152,
+        2097152,
+        64,
+        16
+      ],
+      "hands": [
+        258,
+        320
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-2-budget-2.bin",
+      "sha256": "ee7027c02d73f53ad667dc1a802ccd289cd4260b5ba8f20fe8d17f0a486f0169",
+      "bytes": 8982,
+      "label": "canonical-2-budget-2",
+      "checks": 1078,
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "hands": [
+        233,
+        280
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-2-budget-3.bin",
+      "sha256": "ee7027c02d73f53ad667dc1a802ccd289cd4260b5ba8f20fe8d17f0a486f0169",
+      "bytes": 8982,
+      "label": "canonical-2-budget-3",
+      "checks": 1078,
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "hands": [
+        233,
+        280
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-canonical-2-budget-4.bin",
+      "sha256": "ee7027c02d73f53ad667dc1a802ccd289cd4260b5ba8f20fe8d17f0a486f0169",
+      "bytes": 8982,
+      "label": "canonical-2-budget-4",
+      "checks": 1078,
+      "metadata": [
+        33,
+        32,
+        32,
+        2,
+        3728,
+        4480,
+        64,
+        32,
+        32,
+        64,
+        16
+      ],
+      "hands": [
+        233,
+        280
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-empty-menus-flop.bin",
+      "sha256": "08377d6e8660621037caa50f82292c984e670764d40771b488785f9f71a8205f",
+      "bytes": 1629624,
+      "label": "empty-menus-flop",
+      "checks": 105929,
+      "metadata": [
+        7353,
+        7502,
+        4902,
+        0,
+        17157,
+        26961,
+        8192,
+        8192,
+        8192,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-empty-menus-turn.bin",
+      "sha256": "80585b76dccb600718e198ce2980803fda2f7a8851c6c5274555ef8dcf1e6dfd",
+      "bytes": 33528,
+      "label": "empty-menus-turn",
+      "checks": 2497,
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-empty-menus-river.bin",
+      "sha256": "50aa08906d8232eb808e0998a132e2e20b73b723fe75b6c42d04e391eec834c0",
+      "bytes": 1624,
+      "label": "empty-menus-river",
+      "checks": 429,
+      "metadata": [
+        3,
+        2,
+        2,
+        2,
+        7,
+        11,
+        4,
+        4,
+        4,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-turn-initiative-False.bin",
+      "sha256": "ae8f42b6c75ce8ac14a6b43572e458cc3d8d8ef0f89692fe1033a2abdc5dc85c",
+      "bytes": 652698,
+      "label": "turn-initiative-False",
+      "checks": 42736,
+      "metadata": [
+        2853,
+        2880,
+        2516,
+        1,
+        8806,
+        13838,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-turn-initiative-True.bin",
+      "sha256": "05ddea742dc02094c06f0d7c25f31485228f31aa89635c67405afeb0c629d0f9",
+      "bytes": 652696,
+      "label": "turn-initiative-True",
+      "checks": 42735,
+      "metadata": [
+        2853,
+        2880,
+        2516,
+        1,
+        8806,
+        13838,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-flop-all-in-runouts.bin",
+      "sha256": "9a66fd5def82cef63adb5b98434696c08e44a7e8649d35bdbe90cea98fa516c3",
+      "bytes": 6986734,
+      "label": "flop-all-in-runouts",
+      "checks": 453322,
+      "metadata": [
+        31761,
+        32504,
+        19608,
+        0,
+        68628,
+        107844,
+        32768,
+        32768,
+        32768,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-river-wide-menu.bin",
+      "sha256": "7ace8a88e2437a44a17c4ed6f481cb5be8f2a4b26eb1de0d6e9d995c35315a36",
+      "bytes": 34448,
+      "label": "river-wide-menu",
+      "checks": 2903,
+      "metadata": [
+        141,
+        140,
+        140,
+        2,
+        92820,
+        75670,
+        256,
+        256,
+        208,
+        64,
+        16
+      ],
+      "hands": [
+        1326,
+        1081
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-lenient-bet-multiple-dropped.bin",
+      "sha256": "8caf8d05189c0af8f1be85125e93372f808058cb61b5e48f0c789d0d81eaea2e",
+      "bytes": 33560,
+      "label": "lenient-bet-multiple-dropped",
+      "checks": 2513,
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-unused-prior-street-size.bin",
+      "sha256": "d2290785d6159acf7f3c69bcbe57f54306c2653625e81df1b76c9cedb59e715f",
+      "bytes": 1656,
+      "label": "unused-prior-street-size",
+      "checks": 445,
+      "metadata": [
+        3,
+        2,
+        2,
+        2,
+        7,
+        11,
+        4,
+        4,
+        4,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-duplicate-rounded-sizes.bin",
+      "sha256": "35204ef02482b26b74fe3e0854ae502cfb0b8fe07e256952ec741914ace292d6",
+      "bytes": 586812,
+      "label": "duplicate-rounded-sizes",
+      "checks": 38881,
+      "metadata": [
+        2565,
+        2592,
+        2228,
+        1,
+        8134,
+        11726,
+        4096,
+        4096,
+        4096,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D190-inline-tree-control\\execution\\tree-public-builder-absent-carry-flag.bin",
+      "sha256": "37b7082722071619b238d08b2eb4c58689b799764c6da6b61ed6ab6c4c604691",
+      "bytes": 33526,
+      "label": "public-builder-absent-carry-flag",
+      "checks": 2496,
+      "metadata": [
+        147,
+        150,
+        98,
+        1,
+        343,
+        539,
+        256,
+        256,
+        128,
+        64,
+        16
+      ],
+      "hands": [
+        7,
+        11
+      ]
+    }
+  ],
+  "sum_component_median_saving_ms": 17.564200000000003,
+  "required_component_saving_ms": 95.086109,
+  "component_guards": [
+    {
+      "id": 0,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 1,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 2,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    }
+  ],
+  "temporary_container_sizes": {
+    "baseline_action_vec_bytes": 24,
+    "baseline_amount_vec_bytes": 24,
+    "candidate_action_smallvec_bytes": 80,
+    "candidate_amount_smallvec_bytes": 48,
+    "inline_capacity": 4,
+    "stage": "temporary_container_sizes"
+  },
+  "all_tree_fields_capacities_errors_exact": true,
+  "measured_pairs_per_canonical": 9,
+  "warmup_pairs_per_canonical": 2,
+  "historical_timing_samples_scored": 0,
+  "exclusions": [],
+  "extension_samples": 0,
+  "binary_sha256": "2585f802966ad07167c629b0b6cb1828cdd2797dd20ad9499420b452f67a3010",
+  "all_owned_children_terminal": true,
+  "source_activated": false,
+  "gpu_executions": 0,
+  "full_cycle_performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "CPU tree wrapper screen only. Full raw final/control trees retained; no full solve/CPU/RAM/material/quality/capacity qualification. Component-reference effort proxy is separate from samples. All original gates apply before adoption."
+}

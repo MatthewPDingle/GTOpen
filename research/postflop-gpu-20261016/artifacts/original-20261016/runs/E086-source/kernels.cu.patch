@@ -1,0 +1,16 @@
+--- accepted/kernels.cu
++++ E086/kernels.cu
+@@ -316,8 +316,11 @@
+         u64 hm = mask_p[i];
+         float acc = 0.f;
+         for (u32 t = t0; t < t1; t++) {
+-            u64 cm = 1ull << cc_card[t];
+-            if (hm & cm) continue;
++            u64 blocked;
++            // Extract the dealt-card bit without materializing a one-hot mask.
++            asm ("bfe.u64 %0, %1, %2, 1;"
++                : "=l"(blocked) : "l"(hm), "r"(cc_card[t]));
++            if (blocked != 0) continue;
+             u32 k = cc_perm[t];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+             acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];

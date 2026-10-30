@@ -1,0 +1,38 @@
+{
+  "candidate": "E022",
+  "E020_accepted": false,
+  "E020_server_qualification_pass": false,
+  "independent_source_review_pass": false,
+  "independent_script_review_pass": false,
+  "prerequisites": {
+    "E020_acceptance": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_ACCEPTANCE_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E020_server_qualification": {
+      "path": "ROOT_FILL_IMMUTABLE_E020_SERVER_QUALIFICATION_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E022_source_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E022_SOURCE_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    },
+    "E022_script_review": {
+      "path": "ROOT_FILL_IMMUTABLE_E022_SCRIPT_REVIEW_RECORD",
+      "sha256": "ROOT_FILL"
+    }
+  },
+  "candidate_sources": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\candidate\\kernels.cu",
+      "sha256": "d961dc3717314e3eef5fa6ab19caf857048f8f35b1efee6ef0bdc5cbfc30b8f3"
+    }
+  },
+  "evidence_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-primary-plan\\scripts-manifest.json": "ROOT_FILL_AFTER_SOURCE_REVIEW",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-primary-plan\\protocol.json": "65e680ac9a02e09e37919ba854c3f6a1fbe7629ef586c896589567cb48acfec8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E022-design\\manifest.json": "716d64aaec6a1bc8cc73bf1bfe70947248c5d388c872a7f03b69789e30ef434c",
+    "ROOT_FILL_ALL_PREREQUISITE_PATHS": "ROOT_FILL"
+  },
+  "scope": "Root supplies an immutable authorization only after E020 acceptance and server qualification plus independent E022 source/script reviews. Pin every prerequisite above into evidence_sha256. These placeholders do not authorize execution."
+}

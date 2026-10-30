@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-18T10:16:15.051330+00:00",
+  "status": "pass_canonical_and_basis_bit_selection",
+  "checks": 85336,
+  "canonical_hands": 1326,
+  "legal_cards": 52,
+  "ordered_predicate": "For unsigned64 mask and card0..51, bit-field positioncard length1 yields(mask>>card)&1 and the same branch as mask&(1<<card). Basis/complement tests also cover indices0..63.",
+  "kernel_launches": 0,
+  "limits": "CPU integer identity and documented instruction semantics; no compiled GPU numerical/performance proof."
+}

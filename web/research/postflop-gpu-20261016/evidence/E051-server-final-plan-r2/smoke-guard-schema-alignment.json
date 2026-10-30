@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-18T01:39:54.680911+00:00",
+  "status": "prospective_guard_schema_alignment_no_server_started",
+  "original_smoke_sha256": "7b95e42e521f0cc2667964013927ce6935917b59759d8602ed204ee63137aace",
+  "changes": [
+    "Guard live path uses the frozen live_identity.path field instead of the historical executable alias.",
+    "Guard old binary hash uses the frozen protocol.live_sha256 field instead of a historical live alias.",
+    "Verify every new smoke protocol input before any server launch."
+  ],
+  "unchanged": "Original tiny river spot,100iterations,API requests,finite/value/strategy checks,port43736 ownership,cleanup and unchanged live source/process/state checks.",
+  "server_launches_before_alignment": 0,
+  "performance_samples": 0
+}

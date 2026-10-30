@@ -1,0 +1,30 @@
+{
+  "id": "E073",
+  "at": "2026-10-18T02:41:59.286534+00:00",
+  "status": "pass_source_and_integer_representation_review",
+  "D118_report_sha256": "f282f668f83d8c6b73cd539b7e2d1b93f68e6f2aa94a5326998d3a3741f300ec",
+  "source_scope": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "replacements": 1,
+      "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+      "candidate_sha256": "55a0237a260e8cc46d22248c042426f20d150ae676344ce5aedcffe1a792e53b"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "replacements": 5,
+      "baseline_sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "candidate_sha256": "3210fefc89c80ae6b986b088e0018b58524a9eff690528c151ffe8ca03a795cc"
+    },
+    "crates/solver/src/gpu/continuation_capacity.rs": {
+      "replacements": 2,
+      "baseline_sha256": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+      "candidate_sha256": "777f62bbfae5abf557974c3be4b564924fb6d978eb8c831bd4ca7a2d56d1ca2d"
+    }
+  },
+  "floating_body_unchanged": true,
+  "public_CPU_plan_unchanged": true,
+  "private_host_temporary_and_sync_costs_included": true,
+  "prospective_compiler_prerequisite": "Actual andcompute75PTXexact other8entries/expected27ABI; narrow global loads from boundary parameters emitted; same allocated local/static/dynamic bytes and default feasibility/positive64/128/256occupancy for10fixed shapes. Register/residency are diagnostics under D108, no adoption without all later qualification. FPstatic opcode counts are diagnostic only; source recurrence and actual full raw numeric controls are mandatory.",
+  "no_variant_rescue": true,
+  "external_independent_review": false,
+  "candidate_accepted": false
+}

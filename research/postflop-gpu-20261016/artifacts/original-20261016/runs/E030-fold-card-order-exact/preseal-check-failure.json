@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-16T17:45:55.113763+00:00",
+  "stage": "prepared-manifest assembly before first seal",
+  "error": "Reviewer preparation script expected16 package files but actual named package contains18. All preceding source and hash checks passed. Manifest was not written.",
+  "actual_files": [
+    "README.md",
+    "baseline.cu",
+    "candidate.cu",
+    "candidate.patch",
+    "corpus-summary.json",
+    "corpus.json",
+    "original-d036-corpus.json",
+    "original-d036-probe.rs",
+    "original-e029-run.py",
+    "preparation-checks.json",
+    "prepare_corpus.py",
+    "probe-adaptation.patch",
+    "probe.rs",
+    "protocol.json",
+    "run.py",
+    "runner-adaptation.patch",
+    "runner-primitives-source.py",
+    "source-checks.json"
+  ],
+  "correction": "Count corrected to18 established files plus this preserved failure record; source,corpus,protocol,probe and runner bytes unchanged.",
+  "compiler_native_gpu_executions": 0,
+  "production_status_edits": 0
+}

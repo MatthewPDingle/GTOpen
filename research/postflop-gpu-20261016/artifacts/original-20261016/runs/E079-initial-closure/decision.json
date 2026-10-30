@@ -1,0 +1,66 @@
+{
+  "id": "E079",
+  "at": "2026-10-18T06:26:35.728693+00:00",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9794.0651,
+    "candidate_full_cycle_ms": 9502.9996,
+    "observed_gain_pct": 2.9718558844376135,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -2.404669677200763,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -0.6312419543469774,
+          -2.9870430643697765,
+          -2.8928611623406018
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -4.870826688725137,
+        "slower_pairs": 0,
+        "paired_slowdown_pct": [
+          -5.667936500731395,
+          -6.845313793954166,
+          -4.2223358583704975
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 34.31859524857289,
+        "slower_pairs": 3,
+        "paired_slowdown_pct": [
+          18.86515025416204,
+          29.338002721174494,
+          46.04541842714486
+        ],
+        "failed": true
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 86,
+  "ignored_units": 4,
+  "exact_fixture_results": 18,
+  "exact_checkpoints": 138,
+  "component_full_plan_snapshots": 18,
+  "component_lifecycle_mocks": 18,
+  "component_control_report_sha256": "f42fa40831c18c5776d23abc6c03c03eae7e48743d8cb0127434a72a36573b48",
+  "CUDA_source_unchanged": true,
+  "assessment_sha256": "0f3e28456c79b3cbbaf27c4e9f16485afc1cd217f17b074f2909ebab72110d34",
+  "root_replay_sha256": "d04f9c487288c1a98badc904b72fcb573beacac55fe44e6afe5499f362ec4eb6",
+  "primary_whole_arena_fingerprints_exact": true,
+  "primary_raw_arena_bytes_independently_compared": false,
+  "source_adopted": false,
+  "accepted_and_live_source": "E051",
+  "fresh16_broad_material_holdout_cumulative_run": false,
+  "no_exclusions_extensions_pooling": true,
+  "reason": "Initial complete-solve gain 2.971856%. All 18 full non-timing results, 138 checkpoints, and 86 ordinary tests passed. Rejected: repeatable fixture slowdown: river. No extra samples, threshold/thread/helper/scope/placement/eligibility variants, or rescue runs."
+}

@@ -1,0 +1,775 @@
+{
+  "id": "E067-original-extra-sm75-gate",
+  "at": "2026-10-17T11:23:17.319844+00:00",
+  "status": "failed_original_overbroad_mechanism_scope_requirement",
+  "original_protocol_sha256": "c7a521a6b02da023cf097d0c91321b5cbdfb654141a28074d8d3af62415e3498",
+  "observed_assertion": "Original root draft asserted all gates on actual and sm75; actual passes, sm75baseline_has_actor_branches_in_hand_loops fails for2/3/4because baselinealreadyhas0actorbranches. No numerical, solver or timing work ran.",
+  "architectures": {
+    "compute_120": {
+      "rows": [
+        {
+          "arity": 2,
+          "baseline": {
+            "arity": 2,
+            "reachable_instructions": 216,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r28",
+              "%r3",
+              "%r60",
+              "%r99"
+            ],
+            "actor_predicated_branches": [
+              {
+                "line": 100,
+                "instruction": "@%p43 bra \t$L__BB1_7;",
+                "predicate_definition_line": 95,
+                "inside_controlflow_cycle": false
+              },
+              {
+                "line": 147,
+                "instruction": "@%p52 bra \t$L__BB1_13;",
+                "predicate_definition_line": 137,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 169,
+                "instruction": "@%p53 bra \t$L__BB1_16;",
+                "predicate_definition_line": 154,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 219,
+                "instruction": "@%p47 bra \t$L__BB1_22;",
+                "predicate_definition_line": 205,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 241,
+                "instruction": "@%p49 bra \t$L__BB1_25;",
+                "predicate_definition_line": 228,
+                "inside_controlflow_cycle": true
+              }
+            ],
+            "actor_branches": 5,
+            "actor_branches_in_cycles": 4,
+            "selected_map_pointer_sites": [],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 1,
+              "div.rn.f32": 2,
+              "max.f32": 2,
+              "mul.f32": 4,
+              "selp.f32": 2,
+              "setp.gt.f32": 1
+            },
+            "entry_source_lines": 1512,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 2,
+            "reachable_instructions": 188,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r131",
+              "%r161",
+              "%r183",
+              "%r95"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 97,
+                "instruction": "selp.b64 \t%rd20, %rd9, %rd8, %p24;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 1,
+              "div.rn.f32": 2,
+              "max.f32": 2,
+              "mul.f32": 4,
+              "selp.f32": 2,
+              "setp.gt.f32": 1
+            },
+            "entry_source_lines": 1240,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": true,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        },
+        {
+          "arity": 3,
+          "baseline": {
+            "arity": 3,
+            "reachable_instructions": 267,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r28",
+              "%r3",
+              "%r60",
+              "%r99"
+            ],
+            "actor_predicated_branches": [
+              {
+                "line": 281,
+                "instruction": "@%p26 bra \t$L__BB1_30;",
+                "predicate_definition_line": 276,
+                "inside_controlflow_cycle": false
+              },
+              {
+                "line": 335,
+                "instruction": "@%p38 bra \t$L__BB1_36;",
+                "predicate_definition_line": 325,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 356,
+                "instruction": "@%p39 bra \t$L__BB1_39;",
+                "predicate_definition_line": 342,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 377,
+                "instruction": "@%p40 bra \t$L__BB1_42;",
+                "predicate_definition_line": 362,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 447,
+                "instruction": "@%p31 bra \t$L__BB1_50;",
+                "predicate_definition_line": 446,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 465,
+                "instruction": "@%p33 bra \t$L__BB1_55;",
+                "predicate_definition_line": 464,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 482,
+                "instruction": "@%p35 bra \t$L__BB1_60;",
+                "predicate_definition_line": 481,
+                "inside_controlflow_cycle": true
+              }
+            ],
+            "actor_branches": 7,
+            "actor_branches_in_cycles": 6,
+            "selected_map_pointer_sites": [],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 2,
+              "div.rn.f32": 4,
+              "max.f32": 3,
+              "mov.f32": 2,
+              "mul.f32": 6,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1512,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 3,
+            "reachable_instructions": 230,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r131",
+              "%r161",
+              "%r183",
+              "%r95"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 240,
+                "instruction": "selp.b64 \t%rd33, %rd9, %rd8, %p14;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 2,
+              "div.rn.f32": 4,
+              "max.f32": 3,
+              "mov.f32": 2,
+              "mul.f32": 6,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1240,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": true,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        },
+        {
+          "arity": 4,
+          "baseline": {
+            "arity": 4,
+            "reachable_instructions": 308,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r28",
+              "%r3",
+              "%r60",
+              "%r99"
+            ],
+            "actor_predicated_branches": [
+              {
+                "line": 522,
+                "instruction": "@%p6 bra \t$L__BB1_65;",
+                "predicate_definition_line": 517,
+                "inside_controlflow_cycle": false
+              },
+              {
+                "line": 583,
+                "instruction": "@%p20 bra \t$L__BB1_71;",
+                "predicate_definition_line": 573,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 604,
+                "instruction": "@%p21 bra \t$L__BB1_74;",
+                "predicate_definition_line": 590,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 623,
+                "instruction": "@%p21 bra \t$L__BB1_77;",
+                "predicate_definition_line": 590,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 643,
+                "instruction": "@%p21 bra \t$L__BB1_80;",
+                "predicate_definition_line": 590,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 720,
+                "instruction": "@%p10 bra \t$L__BB1_86;",
+                "predicate_definition_line": 693,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 736,
+                "instruction": "@%p13 bra \t$L__BB1_89;",
+                "predicate_definition_line": 726,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 751,
+                "instruction": "@%p13 bra \t$L__BB1_92;",
+                "predicate_definition_line": 726,
+                "inside_controlflow_cycle": true
+              },
+              {
+                "line": 767,
+                "instruction": "@%p13 bra \t$L__BB1_95;",
+                "predicate_definition_line": 726,
+                "inside_controlflow_cycle": true
+              }
+            ],
+            "actor_branches": 9,
+            "actor_branches_in_cycles": 8,
+            "selected_map_pointer_sites": [],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 3,
+              "div.rn.f32": 4,
+              "max.f32": 4,
+              "mul.f32": 8,
+              "selp.f32": 4,
+              "setp.gt.f32": 1
+            },
+            "entry_source_lines": 1512,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 4,
+            "reachable_instructions": 264,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                4
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                2
+              ]
+            ],
+            "actor_load_registers": [
+              "%r131",
+              "%r161",
+              "%r183",
+              "%r95"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 430,
+                "instruction": "selp.b64 \t%rd49, %rd9, %rd8, %p6;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 3,
+              "div.rn.f32": 4,
+              "max.f32": 4,
+              "mul.f32": 8,
+              "selp.f32": 4,
+              "setp.gt.f32": 1
+            },
+            "entry_source_lines": 1240,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": true,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        }
+      ],
+      "gates": {
+        "NA2:baseline_has_actor_branches_in_hand_loops": true,
+        "NA2:candidate_no_actor_predicated_branches": true,
+        "NA2:one_selected_map_pointer_per_common_path": true,
+        "NA2:same_floating_arithmetic_opcode_histogram": true,
+        "NA3:baseline_has_actor_branches_in_hand_loops": true,
+        "NA3:candidate_no_actor_predicated_branches": true,
+        "NA3:one_selected_map_pointer_per_common_path": true,
+        "NA3:same_floating_arithmetic_opcode_histogram": true,
+        "NA4:baseline_has_actor_branches_in_hand_loops": true,
+        "NA4:candidate_no_actor_predicated_branches": true,
+        "NA4:one_selected_map_pointer_per_common_path": true,
+        "NA4:same_floating_arithmetic_opcode_histogram": true
+      },
+      "performance_measured": false,
+      "candidate_accepted": false,
+      "limits": "Root source/CFG review, not external independent review, native SASS timing, numerical proof or speed evidence."
+    },
+    "compute_75": {
+      "rows": [
+        {
+          "arity": 2,
+          "baseline": {
+            "arity": 2,
+            "reachable_instructions": 181,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 217,
+                "instruction": "selp.b64 \t%rd61, %rd8, %rd9, %p27;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 2,
+              "div.rn.f32": 2,
+              "max.f32": 2,
+              "mov.f32": 2,
+              "mul.f32": 4,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 2,
+            "reachable_instructions": 181,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 217,
+                "instruction": "selp.b64 \t%rd61, %rd9, %rd8, %p27;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 2,
+              "div.rn.f32": 2,
+              "max.f32": 2,
+              "mov.f32": 2,
+              "mul.f32": 4,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": false,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        },
+        {
+          "arity": 3,
+          "baseline": {
+            "arity": 3,
+            "reachable_instructions": 215,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 302,
+                "instruction": "selp.b64 \t%rd42, %rd8, %rd9, %p17;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 3,
+              "div.rn.f32": 4,
+              "max.f32": 3,
+              "mov.f32": 2,
+              "mul.f32": 6,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 3,
+            "reachable_instructions": 215,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 302,
+                "instruction": "selp.b64 \t%rd42, %rd9, %rd8, %p17;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 3,
+              "div.rn.f32": 4,
+              "max.f32": 3,
+              "mov.f32": 2,
+              "mul.f32": 6,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": false,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        },
+        {
+          "arity": 4,
+          "baseline": {
+            "arity": 4,
+            "reachable_instructions": 250,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 103,
+                "instruction": "selp.b64 \t%rd20, %rd8, %rd9, %p6;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 4,
+              "div.rn.f32": 4,
+              "max.f32": 4,
+              "mov.f32": 4,
+              "mul.f32": 8,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "candidate": {
+            "arity": 4,
+            "reachable_instructions": 250,
+            "dispatch": [
+              [
+                "%p2",
+                "eq",
+                2
+              ],
+              [
+                "%p3",
+                "eq",
+                3
+              ],
+              [
+                "%p4",
+                "ne",
+                4
+              ]
+            ],
+            "actor_load_registers": [
+              "%r125",
+              "%r149",
+              "%r168",
+              "%r96"
+            ],
+            "actor_predicated_branches": [],
+            "actor_branches": 0,
+            "actor_branches_in_cycles": 0,
+            "selected_map_pointer_sites": [
+              {
+                "line": 103,
+                "instruction": "selp.b64 \t%rd20, %rd9, %rd8, %p6;"
+              }
+            ],
+            "floating_arithmetic_opcode_histogram": {
+              "add.f32": 4,
+              "div.rn.f32": 4,
+              "max.f32": 4,
+              "mov.f32": 4,
+              "mul.f32": 8,
+              "setp.leu.f32": 1
+            },
+            "entry_source_lines": 1465,
+            "limits": "Static PTX CFG; reachability fixes only initialNA dispatch and allows both outcomes for all other conditions. Cycles conservatively cover loop-control paths, not measured dynamic counts or hardware branches. FP opcode equality is corroboration; exact source integer-only delta and fresh numerical evidence remain required."
+          },
+          "gates": {
+            "baseline_has_actor_branches_in_hand_loops": false,
+            "candidate_no_actor_predicated_branches": true,
+            "one_selected_map_pointer_per_common_path": true,
+            "same_floating_arithmetic_opcode_histogram": true
+          }
+        }
+      ],
+      "gates": {
+        "NA2:baseline_has_actor_branches_in_hand_loops": false,
+        "NA2:candidate_no_actor_predicated_branches": true,
+        "NA2:one_selected_map_pointer_per_common_path": true,
+        "NA2:same_floating_arithmetic_opcode_histogram": true,
+        "NA3:baseline_has_actor_branches_in_hand_loops": false,
+        "NA3:candidate_no_actor_predicated_branches": true,
+        "NA3:one_selected_map_pointer_per_common_path": true,
+        "NA3:same_floating_arithmetic_opcode_histogram": true,
+        "NA4:baseline_has_actor_branches_in_hand_loops": false,
+        "NA4:candidate_no_actor_predicated_branches": true,
+        "NA4:one_selected_map_pointer_per_common_path": true,
+        "NA4:same_floating_arithmetic_opcode_histogram": true
+      },
+      "performance_measured": false,
+      "candidate_accepted": false,
+      "limits": "Root source/CFG review, not external independent review, native SASS timing, numerical proof or speed evidence."
+    }
+  },
+  "native_executions_added_by_review": 0,
+  "application_kernel_launches": 0,
+  "candidate_source_changed": false,
+  "original_record_preserved": true
+}

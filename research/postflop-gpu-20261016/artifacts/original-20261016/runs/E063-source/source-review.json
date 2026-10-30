@@ -1,0 +1,16 @@
+{
+  "id": "E063",
+  "at": "2026-10-17T09:50:25.254770+00:00",
+  "mechanism": "Once per constructor, compute two card-local lower/upper split counts for each own sorted hand. Pack first-card6+6bits above the existing11bit global lower, and second-card6+6bits above global upper. GPU uses three contiguous ordered loops, removing per-position strength comparisons. No source variants permitted.",
+  "source_scope": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "layout": "Same two u32 GPU words per own sorted row, same lengths/ABI/launch/shared storage. Public CPU GpuPlan fields remain unmodified; constructor owns four temporary clone vectors.",
+  "range_proof": "Legal Spot::new enumerates unique NUM_COMBOS=1326 unordered two-card combos. Each card appears in at most51. Sorted opponent bounds<=1326 fit11bits; local counts<=51 fit6bits. Bits0..10,11..16,17..22 are disjoint. Board-valid river lists are subsets.",
+  "float_dependency_proof": "Card positions are appended in ascending sorted position. Three segments partition the same list. tot_c visits every reach in identical first-card then second-card order; lower_c visits exactly the original pos<lb subsequence; higher_c visits exactly the original pos>=ub subsequence. No extra floating add/sub, reassociation, prefix scan, final formula, barrier or quality change. Compiled raw GPU exactness still mandatory.",
+  "temporary_host_cost": "Clone payload exactly8*(sum_p riv_lower[p].len()) bytes; Vec capacity measured. Valid flop max1176 river slots with at most1081 sorted hands/player gives20340096bytes (<20MiB), freed on constructor return, no GPU persistent/capacity increase. CPU preparation/copies are inside complete-cycle timing; material/peak/lifetime checks required before adoption. Same pageable Vec upload lifetime as existing plan vectors; no added stream synchronization.",
+  "history_audit_sha256": "01adcc253b72e83bad66c861f156d6eac9a5712c3ae1dec1290cd85ac21f51fe",
+  "candidate_accepted": false,
+  "limits": "Root source proof only; no GPU numerical/resource/performance result or universal speed/no-tradeoff claim."
+}

@@ -1,0 +1,209 @@
+{
+  "e015_reference_scope": "E004 vs E015 repeated complete-cycle comparison; accepted-source basis supplied by parent. Existing comparison helper decision/status fields remain unchanged.",
+  "e015_performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 11262.887400000001,
+    "candidate_full_cycle_ms": 10814.3093,
+    "observed_gain_pct": 3.982798407449235,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": true,
+    "fixture_median_regression_above_3pct": [],
+    "fixture_regression_guard": {
+      "threshold_pct": 3.0,
+      "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+      "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -4.456319194120346,
+          "paired_regression_pct": [
+            -4.01179716778334,
+            -6.1983035494591405,
+            -4.456319194120346
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "rainbow: median regression -4.4563%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -3.153005498098315,
+          "paired_regression_pct": [
+            -6.539413360619769,
+            -4.441827128203039,
+            -3.153005498098315
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "two-tone: median regression -3.1530%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": -8.807343488597345,
+          "paired_regression_pct": [
+            -0.5803774019411991,
+            -3.744321944305687,
+            -20.57281164822329
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "river: median regression -8.8073%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        }
+      ],
+      "affected_fixtures": [],
+      "failed": false
+    },
+    "statistical_significance_established": false
+  },
+  "e015_fixture_component_medians": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_solve_ms": 5520.907099999999,
+      "candidate_solve_ms": 5182.1471
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_solve_ms": 3406.9777,
+      "candidate_solve_ms": 3162.6601
+    },
+    {
+      "fixture_id": "river",
+      "baseline_solve_ms": 19.8735,
+      "candidate_solve_ms": 16.9723
+    }
+  ],
+  "d020_profile_scope": [
+    "Three late-state samples per fixture after fingerprinting; GPU state advances one extra iteration then is discarded.",
+    "Host launch setup and per-launch stream synchronization replace normal graph replay, perturbing timing; no percentage of ordinary solve time is inferred.",
+    "First copy_root also drains preceding discount upload; river/small-kernel spans are especially overhead-sensitive.",
+    "Best-response/evaluation, initialization and readback are not profiled. All complete-cycle values from these diagnostic runs remain excluded from acceptance."
+  ],
+  "d020_relevant_spans": [
+    {
+      "fixture_id": "rainbow",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 26,
+          "median_host_ms": 9.594499999999998
+        },
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "median_host_ms": 7.102800000000001
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 26,
+          "median_host_ms": 5.596400000000001
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 24,
+          "median_host_ms": 2.4605
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 18,
+          "median_host_ms": 1.4737999999999998
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 18,
+          "median_host_ms": 1.2208999999999999
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "median_host_ms": 0.09290000000000001
+        }
+      ]
+    },
+    {
+      "fixture_id": "two-tone",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 26,
+          "median_host_ms": 6.071599999999999
+        },
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "median_host_ms": 4.8732
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 26,
+          "median_host_ms": 4.0396
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 24,
+          "median_host_ms": 2.3415
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 18,
+          "median_host_ms": 1.8713000000000004
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 18,
+          "median_host_ms": 1.4889000000000001
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "median_host_ms": 0.1766
+        }
+      ]
+    },
+    {
+      "fixture_id": "river",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "median_host_ms": 0.3227
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 14,
+          "median_host_ms": 0.29379999999999995
+        },
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 14,
+          "median_host_ms": 0.24399999999999997
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 12,
+          "median_host_ms": 0.19849999999999998
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "median_host_ms": 0.0855
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 0,
+          "median_host_ms": 0.0
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 0,
+          "median_host_ms": 0.0
+        }
+      ]
+    }
+  ]
+}

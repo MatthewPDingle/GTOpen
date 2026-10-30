@@ -1,0 +1,82 @@
+_RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41:
+.seh_proc _RNvNtNtCsifJ2Jc9XidW_6solver3gpu11host_encode16encode_u16_sse41
+	subq	$40, %rsp
+	.seh_stackalloc 40
+	.seh_endprologue
+	testq	%rdx, %rdx
+	je	.LBB1222_3
+	leaq	(,%rdx,4), %rax
+	xorps	%xmm2, %xmm2
+	xorl	%r10d, %r10d
+	movaps	%xmm2, %xmm1
+	.p2align	4
+.LBB1222_2:
+	maxss	(%rcx,%r10), %xmm1
+	movaps	%xmm1, %xmm0
+	cmpunordss	%xmm1, %xmm0
+	blendvps	%xmm0, %xmm2, %xmm1
+	addq	$4, %r10
+	movaps	%xmm1, %xmm2
+	cmpq	%r10, %rax
+	jne	.LBB1222_2
+	jmp	.LBB1222_4
+.LBB1222_3:
+	xorps	%xmm1, %xmm1
+.LBB1222_4:
+	movd	%xmm1, %eax
+	testl	%eax, %eax
+	setns	%r10b
+	movl	%eax, %r11d
+	andl	$2147483647, %r11d
+	addl	$-8388608, %r11d
+	cmpl	$2130706432, %r11d
+	setb	%r11b
+	andb	%r10b, %r11b
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%r11b, %al
+	je	.LBB1222_9
+	cmpq	%r9, %rdx
+	cmovbq	%rdx, %r9
+	testq	%r9, %r9
+	je	.LBB1222_8
+	movss	__real@477fff00(%rip), %xmm0
+	movaps	%xmm0, %xmm2
+	divss	%xmm1, %xmm2
+	xorl	%eax, %eax
+	xorps	%xmm3, %xmm3
+	.p2align	4
+.LBB1222_7:
+	movss	(%rcx,%rax,4), %xmm4
+	maxss	%xmm3, %xmm4
+	mulss	%xmm2, %xmm4
+	roundss	$4, %xmm4, %xmm4
+	xorps	%xmm5, %xmm5
+	maxss	%xmm4, %xmm5
+	movaps	%xmm0, %xmm4
+	minss	%xmm5, %xmm4
+	cvttss2si	%xmm4, %edx
+	movw	%dx, (%r8,%rax,2)
+	incq	%rax
+	cmpq	%rax, %r9
+	jne	.LBB1222_7
+.LBB1222_8:
+	movaps	%xmm1, %xmm0
+	.seh_startepilogue
+	addq	$40, %rsp
+	.seh_endepilogue
+	retq
+.LBB1222_9:
+	addq	%r9, %r9
+	movq	%r8, %rcx
+	xorl	%edx, %edx
+	movq	%r9, %r8
+	callq	memset
+	xorps	%xmm1, %xmm1
+	movaps	%xmm1, %xmm0
+	.seh_startepilogue
+	addq	$40, %rsp
+	.seh_endepilogue
+	retq
+	.seh_endproc

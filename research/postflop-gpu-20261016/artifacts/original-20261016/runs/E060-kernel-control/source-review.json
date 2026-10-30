@@ -1,0 +1,28 @@
+{
+  "id": "E060-kernel-control-source-review",
+  "at": "2026-10-17T08:26:49.448694+00:00",
+  "review_scope": "Root reused the retained complete819case ABI/address/output/guard decoder and exact production PTX, changed only candidate identity and resource-pass status string. No corpus/math/input mutation. Not external independent review.",
+  "candidate_source_sha256": "50ad4559ca5b30bb961f4f74d41df1e050bed2bcd33441e76decac8dd3de547e",
+  "resource_report_sha256": "2eee1efab17d0d1ca8b858806306dfb36a0e13fec08cc4235f4144ae8d7f9691",
+  "scalar_report_sha256": "dd48aeb0ddceb01c76bf0fcb639dc589a42d79a7d4015ccd755be93578f5541f",
+  "cases": 819,
+  "expected_launches": 1638,
+  "roles": [
+    "own unlocked",
+    "own locked",
+    "opponent"
+  ],
+  "arities": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    8,
+    9,
+    16,
+    17
+  ],
+  "controls": "Raw actual12immutable input vectors, mutable regret/strategy/CFV arrays, all guards/nonowned/child rows, distinct device address ranges, parent-child rows disjoint, DCFR/CFRplus production discount bits, NaN/infinities/signedzero/subnormals/overflow/handtails/countzero/block shapes. No timing score.",
+  "failure_rule": "Any mismatch stops E060 without source/math/guard/arity rescue; retain raw failed evidence."
+}

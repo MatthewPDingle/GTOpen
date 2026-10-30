@@ -1,0 +1,717 @@
+{
+  "id": "D267",
+  "at": "2026-10-29T07:26:26.795229+00:00",
+  "status": "FROZEN_PRE_CPU_MODEL_AND_READER",
+  "raw_inputs": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-on-baseline.plan.bin",
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "fixture": {
+        "id": "rainbow-iso-on",
+        "fixture": "rainbow",
+        "config": {
+          "board": "Ks7h2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.0,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-on-baseline.plan.bin",
+      "bytes": 107872702,
+      "sha256": "12dbaa79f5b4b2b5abe2a2f1e3ae47674f942b981608f096aba11e6233c93a5f",
+      "fixture": {
+        "id": "two-tone-iso-on",
+        "fixture": "two-tone",
+        "config": {
+          "board": "Ks7s2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-on-baseline.plan.bin",
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "fixture": {
+        "id": "river-iso-on",
+        "fixture": "river",
+        "config": {
+          "board": "Ks7h2dQhTc",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": true,
+        "expected_nodes": 33
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\rainbow-iso-off-baseline.plan.bin",
+      "bytes": 116085554,
+      "sha256": "4bb4443b57a7d1fde540d960a45b6248559a9478465ce7f4d85e57ffc9d39218",
+      "fixture": {
+        "id": "rainbow-iso-off",
+        "fixture": "rainbow",
+        "config": {
+          "board": "Ks7h2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.0,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": false,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\two-tone-iso-off-baseline.plan.bin",
+      "bytes": 116139810,
+      "sha256": "d496e4c64b6432e06544e0712e63a63d031da3ed409baea68d308e06d4f93468",
+      "fixture": {
+        "id": "two-tone-iso-off",
+        "fixture": "two-tone",
+        "config": {
+          "board": "Ks7s2d",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": false,
+        "expected_nodes": 1346813
+      }
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\P1\\river-iso-off-baseline.plan.bin",
+      "bytes": 31746,
+      "sha256": "ebfb6482a3fb79c4b941eeaa83a80df2d117196512367a6a6c8ece016766a74d",
+      "fixture": {
+        "id": "river-iso-off",
+        "fixture": "river",
+        "config": {
+          "board": "Ks7h2dQhTc",
+          "range_ip": "22+,A2s+,K6s+,Q8s+,J8s+,T8s+,97s+,87s,76s,65s,A8o+,KTo+,QTo+,JTo",
+          "range_oop": "55-22,A8s-A2s,K9s-K6s,Q9s-Q6s,J9s-J7s,T8s-T7s,97s,98s,86s,87s,75s,76s,64s,65s,53s,54s,43s,AJo-A8o,KTo-K9o,QTo,QJo,JTo,T9o,98o",
+          "tree": {
+            "add_allin": false,
+            "allin_threshold": 0.85,
+            "carry_aggressor_through_checks": null,
+            "effective_stack": 970.0,
+            "ip": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  },
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "max_raises": 10,
+            "oop": [
+              {
+                "bet": [
+                  {
+                    "PotPct": 33.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              },
+              {
+                "bet": [
+                  {
+                    "PotPct": 75.0
+                  }
+                ],
+                "donk": [],
+                "raise": [
+                  {
+                    "PotPct": 60.0
+                  }
+                ]
+              }
+            ],
+            "rake_cap": 3.0,
+            "rake_pct": 0.05,
+            "starting_pot": 60.0
+          }
+        },
+        "use_iso": false,
+        "expected_nodes": 33
+      }
+    }
+  ],
+  "schema_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\schema.json",
+  "GPU_metadata_inputs": [
+    {
+      "fixture": "rainbow",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\baseline-output\\rainbow-locked.gpu.bin",
+      "bytes": 5900015883,
+      "sha256": "6b7a08d731a0e04a405e0f766dc57d4b02da0a71d79fa617a18b2e26df6c059f"
+    },
+    {
+      "fixture": "two-tone",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\baseline-output\\two-tone-locked.gpu.bin",
+      "bytes": 3607282995,
+      "sha256": "3230df93f830057e3ce14745f89534540a7ad6dc669487ae9541eaead5e341e4"
+    },
+    {
+      "fixture": "river",
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\baseline-output\\river-locked.gpu.bin",
+      "bytes": 168631,
+      "sha256": "b5e5a6d74428b93c6d29ad5362301f182fa47bb58521d620d8a0d89dc0523c0a"
+    }
+  ],
+  "required_free_bytes": 70866960384,
+  "raw_output_reservation_bytes": 4294967296,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267-prepare-node-order-model.py": "3b87e7580931ad04b2965d332cf30a2b4ffcb0af3e49cd0f52d283e109c00eb9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267-model-io.py": "1997abd555d8a7c0f4ada10c3c0a70e28c9e8cecd0516620348fc13743880580",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267-node-order-model.py": "d4494c6a902aa0264c8aae0873f5454b6b0a6af1bc8bc692f25fe69caa81ce4e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267-node-order-audit.py": "69a63f5386fa4c9487bdb67ef81d482976ac823e70b8928b30cf779a0c29c9c3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D267-execute-node-order-model.py": "122691b8357ec8a6a11c74739aa875c262f5cddd2ac6de6060aa27d92797f034",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D266-metadata-order-history\\report.json": "e2c9bbbe3786ff7829f2cbccd673701956972d1ce1bf0bd8ce876060d146c304",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D194-parent-chance-census\\protocol.json": "c059b18b012989c81422fdc35321f4b18685618a2428c7195c6005fa26a10f65",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D265-paired-chance-canonical\\report.json": "0a13ee30b4af87e02b0d7f575b878ee326f7172ce38b0c018a7db36625eba96d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\schema.json": "5e793f94c0f397d64b16db89bdccc54afbc613d4dae6842d5bcd2f52953228f4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec"
+  },
+  "mapping": "For each existing level, concatenate the original action, chance, fold and showdown node spans, retaining every order inside each span. Append all unvisited CPU node IDs in original numeric order. A total N-to-N permutation; root stays0. No node removal, CTA sorting, precision, worklist span/count or CUDA change.",
+  "projection": "Permute all14 uploaded node-indexed arrays, including both physical reach-slot maps; physical row/arena/children-start offset values remain unchanged. Map node-ID values in all four worklists, both chance-edge endpoint lists, cc_child and complete tree.children (preserving sentinels). Permute actual captured lock offsets without changing offset values or sigma order. Add one declared synthetic CPU lock-offset fixture: offset16*oldNode for every third oldNode, elseu64MAX, covering nonroot/nonaction/inactive IDs. This is not a GPU test. No scalar/array shortening or metadata omissions in the selected projection.",
+  "footprint_rule": "Count distinct aligned32-byte relative address blocks for 4/8-byte node fields per full existing frontier. This is a descriptive across-CTA address footprint with assumed base residue0, not actual cache misses/transactions/scheduling/bandwidth/time. NVIDIA warp coalescing guidance does not prove across-CTA reuse. No speed proxy or acceptance threshold.",
+  "scope": "Six original hash-bound canonical iso-on/off plan arrays plus three actual original canonical GPU metadata images; CPU model and exact inverse checks only. All D183 phase timings excluded. Persist every proposed GPU-bound metadata array and both maps, and independently reconstruct from frozen originals. No candidate/source activation, compiler, CUDA API/context/kernel/solve or performance samples. Actual host padding, all-call-path integration, material/capacity and all original numerical/full performance gates remain."
+}

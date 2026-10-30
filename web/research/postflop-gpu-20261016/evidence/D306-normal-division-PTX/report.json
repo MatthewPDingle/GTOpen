@@ -1,0 +1,6024 @@
+{
+  "id": "D306",
+  "at": "2026-10-29T20:32:26.738539+00:00",
+  "status": "pass_scoped_all_RNFTZ_guard_operands_fallback_and_join",
+  "protocol_sha256": "f5ab3d0fd56858b6b1e2f552305c18eaf74d212ef47a67151309b788bdbac164",
+  "site_counts": {
+    "compute_120:down_action": 16,
+    "compute_120:up_action": 12,
+    "compute_75:down_action": 23,
+    "compute_75:up_action": 23
+  },
+  "all_sites": {
+    "compute_120:down_action": [
+      {
+        "item_index": 227,
+        "instruction": "div.rn.ftz.f32 %f260, %f4, %f6;",
+        "destination": "%f260",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f202",
+            207
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f6",
+          213
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 226,
+        "fallback_division_item": 230,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f202",
+                207
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f6",
+              213
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f6",
+              213
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f202",
+                207
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_24"
+        ]
+      },
+      {
+        "item_index": 258,
+        "instruction": "div.rn.ftz.f32 %f261, %f5, %f6;",
+        "destination": "%f261",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f203",
+            211
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f6",
+          213
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 254,
+        "fallback_division_item": 255,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f203",
+                211
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f6",
+              213
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f6",
+              213
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f203",
+                211
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_31"
+        ]
+      },
+      {
+        "item_index": 470,
+        "instruction": "div.rn.ftz.f32 %f262, %f19, %f22;",
+        "destination": "%f262",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f185",
+            445
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f22",
+          455
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 469,
+        "fallback_division_item": 473,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f185",
+                445
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f185",
+                445
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_58"
+        ]
+      },
+      {
+        "item_index": 501,
+        "instruction": "div.rn.ftz.f32 %f264, %f20, %f22;",
+        "destination": "%f264",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f186",
+            449
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f22",
+          455
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 497,
+        "fallback_division_item": 498,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f186",
+                449
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f186",
+                449
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_66"
+        ]
+      },
+      {
+        "item_index": 528,
+        "instruction": "div.rn.ftz.f32 %f266, %f21, %f22;",
+        "destination": "%f266",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f188",
+            453
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f22",
+          455
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 524,
+        "fallback_division_item": 525,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f188",
+                453
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f22",
+              455
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f188",
+                453
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_74"
+        ]
+      },
+      {
+        "item_index": 776,
+        "instruction": "div.rn.ftz.f32 %f268, %f45, %f49;",
+        "destination": "%f268",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f157",
+            748
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f49",
+          762
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 775,
+        "fallback_division_item": 779,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f157",
+                748
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f157",
+                748
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_105"
+        ]
+      },
+      {
+        "item_index": 806,
+        "instruction": "div.rn.ftz.f32 %f269, %f46, %f49;",
+        "destination": "%f269",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f158",
+            752
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f49",
+          762
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 802,
+        "fallback_division_item": 803,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f158",
+                752
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f158",
+                752
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_112"
+        ]
+      },
+      {
+        "item_index": 833,
+        "instruction": "div.rn.ftz.f32 %f270, %f47, %f49;",
+        "destination": "%f270",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f160",
+            756
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f49",
+          762
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 829,
+        "fallback_division_item": 830,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f160",
+                756
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f160",
+                756
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_119"
+        ]
+      },
+      {
+        "item_index": 859,
+        "instruction": "div.rn.ftz.f32 %f271, %f48, %f49;",
+        "destination": "%f271",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f162",
+            760
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f49",
+          762
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 855,
+        "fallback_division_item": 856,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f162",
+                760
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f49",
+              762
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f162",
+                760
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_126"
+        ]
+      },
+      {
+        "item_index": 1332,
+        "instruction": "div.rn.ftz.f32 %f277, %f225, %f275;",
+        "destination": "%f277",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f276",
+            1320
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 1331,
+        "fallback_division_item": 1335,
+        "guard_atoms": [
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f276",
+                1320
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f276",
+                1320
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_202"
+        ]
+      },
+      {
+        "item_index": 1387,
+        "instruction": "div.rn.ftz.f32 %f280, %f229, %f275;",
+        "destination": "%f280",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f279",
+            1373
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1383,
+        "fallback_division_item": 1384,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f279",
+                1373
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f279",
+                1373
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_213"
+        ]
+      },
+      {
+        "item_index": 1438,
+        "instruction": "div.rn.ftz.f32 %f283, %f233, %f275;",
+        "destination": "%f283",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f282",
+            1424
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1434,
+        "fallback_division_item": 1435,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f282",
+                1424
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f282",
+                1424
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_224"
+        ]
+      },
+      {
+        "item_index": 1488,
+        "instruction": "div.rn.ftz.f32 %f286, %f237, %f275;",
+        "destination": "%f286",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f285",
+            1474
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1484,
+        "fallback_division_item": 1485,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f285",
+                1474
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f285",
+                1474
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_235"
+        ]
+      },
+      {
+        "item_index": 1549,
+        "instruction": "div.rn.ftz.f32 %f289, %f241, %f275;",
+        "destination": "%f289",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f288",
+            1534
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1545,
+        "fallback_division_item": 1546,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f288",
+                1534
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f288",
+                1534
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_248"
+        ]
+      },
+      {
+        "item_index": 1601,
+        "instruction": "div.rn.ftz.f32 %f292, %f245, %f275;",
+        "destination": "%f292",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f291",
+            1587
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1597,
+        "fallback_division_item": 1598,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f291",
+                1587
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f291",
+                1587
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_260"
+        ]
+      },
+      {
+        "item_index": 1651,
+        "instruction": "div.rn.ftz.f32 %f295, %f249, %f275;",
+        "destination": "%f295",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f294",
+            1638
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f275",
+          1286
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1647,
+        "fallback_division_item": 1648,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f294",
+                1638
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f294",
+                1638
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f275",
+              1286
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_272"
+        ]
+      }
+    ],
+    "compute_120:up_action": [
+      {
+        "item_index": 225,
+        "instruction": "div.rn.ftz.f32 %f474, %f5, %f8;",
+        "destination": "%f474",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f4",
+            205
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f8",
+          211
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 224,
+        "fallback_division_item": 228,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f4",
+                205
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f8",
+              211
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f8",
+              211
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f4",
+                205
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_16"
+        ]
+      },
+      {
+        "item_index": 252,
+        "instruction": "div.rn.ftz.f32 %f475, %f7, %f8;",
+        "destination": "%f475",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f6",
+            209
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f8",
+          211
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 248,
+        "fallback_division_item": 249,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f6",
+                209
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f8",
+              211
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f8",
+              211
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f6",
+                209
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_20"
+        ]
+      },
+      {
+        "item_index": 516,
+        "instruction": "div.rn.ftz.f32 %f476, %f22, %f27;",
+        "destination": "%f476",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f21",
+            492
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f27",
+          502
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 515,
+        "fallback_division_item": 519,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f21",
+                492
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f21",
+                492
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_36"
+        ]
+      },
+      {
+        "item_index": 542,
+        "instruction": "div.rn.ftz.f32 %f477, %f24, %f27;",
+        "destination": "%f477",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f23",
+            496
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f27",
+          502
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 538,
+        "fallback_division_item": 539,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f23",
+                496
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f23",
+                496
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_40"
+        ]
+      },
+      {
+        "item_index": 565,
+        "instruction": "div.rn.ftz.f32 %f478, %f26, %f27;",
+        "destination": "%f478",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f25",
+            500
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f27",
+          502
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 561,
+        "fallback_division_item": 562,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f25",
+                500
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f27",
+              502
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f25",
+                500
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_44"
+        ]
+      },
+      {
+        "item_index": 882,
+        "instruction": "div.rn.ftz.f32 %f479, %f46, %f53;",
+        "destination": "%f479",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f45",
+            854
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f53",
+          868
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 881,
+        "fallback_division_item": 885,
+        "guard_atoms": [
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f45",
+                854
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f45",
+                854
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_60"
+        ]
+      },
+      {
+        "item_index": 908,
+        "instruction": "div.rn.ftz.f32 %f480, %f48, %f53;",
+        "destination": "%f480",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f47",
+            858
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f53",
+          868
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 904,
+        "fallback_division_item": 905,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f47",
+                858
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f47",
+                858
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_64"
+        ]
+      },
+      {
+        "item_index": 931,
+        "instruction": "div.rn.ftz.f32 %f481, %f50, %f53;",
+        "destination": "%f481",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f49",
+            862
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f53",
+          868
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 927,
+        "fallback_division_item": 928,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f49",
+                862
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f49",
+                862
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_68"
+        ]
+      },
+      {
+        "item_index": 954,
+        "instruction": "div.rn.ftz.f32 %f482, %f52, %f53;",
+        "destination": "%f482",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f51",
+            866
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f53",
+          868
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 950,
+        "fallback_division_item": 951,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f51",
+                866
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f53",
+              868
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f51",
+                866
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_72"
+        ]
+      },
+      {
+        "item_index": 1679,
+        "instruction": "div.rn.ftz.f32 %f498, %f399, %f494;",
+        "destination": "%f498",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f497",
+            1664
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f494",
+          1624
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1675,
+        "fallback_division_item": 1676,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f497",
+                1664
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f497",
+                1664
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_132"
+        ]
+      },
+      {
+        "item_index": 1749,
+        "instruction": "div.rn.ftz.f32 %f502, %f385, %f494;",
+        "destination": "%f502",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f501",
+            1737
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f494",
+          1624
+        ],
+        "guard_form": "unordered_bad_guard_fallback",
+        "branch_item": 1748,
+        "fallback_division_item": 1752,
+        "guard_atoms": [
+          [
+            "ltu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f501",
+                1737
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "gtu",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f501",
+                1737
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_145"
+        ]
+      },
+      {
+        "item_index": 1808,
+        "instruction": "div.rn.ftz.f32 %f504, %f392, %f494;",
+        "destination": "%f504",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f503",
+            1794
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f494",
+          1624
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1804,
+        "fallback_division_item": 1805,
+        "guard_atoms": [
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f503",
+                1794
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f503",
+                1794
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f494",
+              1624
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_154"
+        ]
+      }
+    ],
+    "compute_75:down_action": [
+      {
+        "item_index": 613,
+        "instruction": "div.rn.ftz.f32 %f339, %f2, %f9;",
+        "destination": "%f339",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f1",
+            582
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f9",
+          596
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 610,
+        "fallback_division_item": 616,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f1",
+                582
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f1",
+                582
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_12"
+        ]
+      },
+      {
+        "item_index": 636,
+        "instruction": "div.rn.ftz.f32 %f340, %f4, %f9;",
+        "destination": "%f340",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f3",
+            586
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f9",
+          596
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 633,
+        "fallback_division_item": 639,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f3",
+                586
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f3",
+                586
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_16"
+        ]
+      },
+      {
+        "item_index": 663,
+        "instruction": "div.rn.ftz.f32 %f341, %f6, %f9;",
+        "destination": "%f341",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f5",
+            590
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f9",
+          596
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 660,
+        "fallback_division_item": 666,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f5",
+                590
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f5",
+                590
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_20"
+        ]
+      },
+      {
+        "item_index": 688,
+        "instruction": "div.rn.ftz.f32 %f342, %f8, %f9;",
+        "destination": "%f342",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f7",
+            594
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f9",
+          596
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 685,
+        "fallback_division_item": 691,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f7",
+                594
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f9",
+              596
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f7",
+                594
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_24"
+        ]
+      },
+      {
+        "item_index": 746,
+        "instruction": "div.rn.ftz.f32 %f349, %f48, %f51;",
+        "destination": "%f349",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f47",
+            722
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f51",
+          729
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 743,
+        "fallback_division_item": 749,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f47",
+                722
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f51",
+              729
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f51",
+              729
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f47",
+                722
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_61"
+        ]
+      },
+      {
+        "item_index": 769,
+        "instruction": "div.rn.ftz.f32 %f350, %f50, %f51;",
+        "destination": "%f350",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f49",
+            727
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f51",
+          729
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 766,
+        "fallback_division_item": 772,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f49",
+                727
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f51",
+              729
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f51",
+              729
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f49",
+                727
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_65"
+        ]
+      },
+      {
+        "item_index": 831,
+        "instruction": "div.rn.ftz.f32 %f343, %f24, %f29;",
+        "destination": "%f343",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f23",
+            804
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f29",
+          814
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 828,
+        "fallback_division_item": 834,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f23",
+                804
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f23",
+                804
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_37"
+        ]
+      },
+      {
+        "item_index": 856,
+        "instruction": "div.rn.ftz.f32 %f345, %f26, %f29;",
+        "destination": "%f345",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f25",
+            808
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f29",
+          814
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 853,
+        "fallback_division_item": 859,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f25",
+                808
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f25",
+                808
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_42"
+        ]
+      },
+      {
+        "item_index": 882,
+        "instruction": "div.rn.ftz.f32 %f347, %f28, %f29;",
+        "destination": "%f347",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f27",
+            812
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f29",
+          814
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 879,
+        "fallback_division_item": 885,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f27",
+                812
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f29",
+              814
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f27",
+                812
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_47"
+        ]
+      },
+      {
+        "item_index": 1109,
+        "instruction": "div.rn.ftz.f32 %f372, %f119, %f357;",
+        "destination": "%f372",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f297",
+            1099
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1106,
+        "fallback_division_item": 1112,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f297",
+                1099
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f297",
+                1099
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_141"
+        ]
+      },
+      {
+        "item_index": 1141,
+        "instruction": "div.rn.ftz.f32 %f374, %f125, %f357;",
+        "destination": "%f374",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f301",
+            1131
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1138,
+        "fallback_division_item": 1144,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f301",
+                1131
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f301",
+                1131
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_146"
+        ]
+      },
+      {
+        "item_index": 1173,
+        "instruction": "div.rn.ftz.f32 %f376, %f131, %f357;",
+        "destination": "%f376",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f305",
+            1163
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1170,
+        "fallback_division_item": 1176,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f305",
+                1163
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f305",
+                1163
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_151"
+        ]
+      },
+      {
+        "item_index": 1205,
+        "instruction": "div.rn.ftz.f32 %f378, %f137, %f357;",
+        "destination": "%f378",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f309",
+            1195
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1202,
+        "fallback_division_item": 1208,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f309",
+                1195
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f309",
+                1195
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_156"
+        ]
+      },
+      {
+        "item_index": 1248,
+        "instruction": "div.rn.ftz.f32 %f380, %f143, %f357;",
+        "destination": "%f380",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f313",
+            1238
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1245,
+        "fallback_division_item": 1422,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f313",
+                1238
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f313",
+                1238
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_163"
+        ]
+      },
+      {
+        "item_index": 1274,
+        "instruction": "div.rn.ftz.f32 %f358, %f77, %f357;",
+        "destination": "%f358",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f269",
+            1264
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1271,
+        "fallback_division_item": 1277,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f269",
+                1264
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f269",
+                1264
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_99"
+        ]
+      },
+      {
+        "item_index": 1307,
+        "instruction": "div.rn.ftz.f32 %f360, %f83, %f357;",
+        "destination": "%f360",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f273",
+            1297
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1304,
+        "fallback_division_item": 1310,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f273",
+                1297
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f273",
+                1297
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_104"
+        ]
+      },
+      {
+        "item_index": 1340,
+        "instruction": "div.rn.ftz.f32 %f362, %f89, %f357;",
+        "destination": "%f362",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f277",
+            1330
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1337,
+        "fallback_division_item": 1343,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f277",
+                1330
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f277",
+                1330
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_109"
+        ]
+      },
+      {
+        "item_index": 1373,
+        "instruction": "div.rn.ftz.f32 %f364, %f95, %f357;",
+        "destination": "%f364",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f281",
+            1363
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1370,
+        "fallback_division_item": 1376,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f281",
+                1363
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f281",
+                1363
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_114"
+        ]
+      },
+      {
+        "item_index": 1419,
+        "instruction": "div.rn.ftz.f32 %f366, %f101, %f357;",
+        "destination": "%f366",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f285",
+            1409
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1416,
+        "fallback_division_item": 1456,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f285",
+                1409
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f285",
+                1409
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_121"
+        ]
+      },
+      {
+        "item_index": 1453,
+        "instruction": "div.rn.ftz.f32 %f382, %f149, %f357;",
+        "destination": "%f382",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f317",
+            1443
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1450,
+        "fallback_division_item": 1496,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f317",
+                1443
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f317",
+                1443
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_169"
+        ]
+      },
+      {
+        "item_index": 1493,
+        "instruction": "div.rn.ftz.f32 %f368, %f107, %f357;",
+        "destination": "%f368",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f289",
+            1483
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1490,
+        "fallback_division_item": 1529,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f289",
+                1483
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f289",
+                1483
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_127"
+        ]
+      },
+      {
+        "item_index": 1526,
+        "instruction": "div.rn.ftz.f32 %f384, %f155, %f357;",
+        "destination": "%f384",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f321",
+            1516
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1523,
+        "fallback_division_item": 1569,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f321",
+                1516
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f321",
+                1516
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_175"
+        ]
+      },
+      {
+        "item_index": 1566,
+        "instruction": "div.rn.ftz.f32 %f370, %f113, %f357;",
+        "destination": "%f370",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f293",
+            1556
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f357",
+          1070
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1563,
+        "fallback_division_item": 1584,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f293",
+                1556
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f357",
+              1070
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f293",
+                1556
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB1_133"
+        ]
+      }
+    ],
+    "compute_75:up_action": [
+      {
+        "item_index": 959,
+        "instruction": "div.rn.ftz.f32 %f626, %f616, %f12;",
+        "destination": "%f626",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f4",
+            926
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f12",
+          940
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 955,
+        "fallback_division_item": 963,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f4",
+                926
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f4",
+                926
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_16"
+        ]
+      },
+      {
+        "item_index": 992,
+        "instruction": "div.rn.ftz.f32 %f627, %f613, %f12;",
+        "destination": "%f627",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f6",
+            930
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f12",
+          940
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 988,
+        "fallback_division_item": 996,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f6",
+                930
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f6",
+                930
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_20"
+        ]
+      },
+      {
+        "item_index": 1027,
+        "instruction": "div.rn.ftz.f32 %f628, %f610, %f12;",
+        "destination": "%f628",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f8",
+            934
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f12",
+          940
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1023,
+        "fallback_division_item": 1031,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f8",
+                934
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f8",
+                934
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_24"
+        ]
+      },
+      {
+        "item_index": 1060,
+        "instruction": "div.rn.ftz.f32 %f629, %f607, %f12;",
+        "destination": "%f629",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f10",
+            938
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f12",
+          940
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1056,
+        "fallback_division_item": 1064,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f10",
+                938
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f12",
+              940
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f10",
+                938
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_28"
+        ]
+      },
+      {
+        "item_index": 1164,
+        "instruction": "div.rn.ftz.f32 %f633, %f62, %f65;",
+        "destination": "%f633",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f61",
+            1140
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f65",
+          1147
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1161,
+        "fallback_division_item": 1167,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f61",
+                1140
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f65",
+              1147
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f65",
+              1147
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f61",
+                1140
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_70"
+        ]
+      },
+      {
+        "item_index": 1194,
+        "instruction": "div.rn.ftz.f32 %f634, %f64, %f65;",
+        "destination": "%f634",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f63",
+            1145
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f65",
+          1147
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1191,
+        "fallback_division_item": 1197,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f63",
+                1145
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f65",
+              1147
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f65",
+              1147
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f63",
+                1145
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_74"
+        ]
+      },
+      {
+        "item_index": 1290,
+        "instruction": "div.rn.ftz.f32 %f630, %f625, %f42;",
+        "destination": "%f630",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f36",
+            1261
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f42",
+          1271
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1286,
+        "fallback_division_item": 1294,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f36",
+                1261
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f36",
+                1261
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_45"
+        ]
+      },
+      {
+        "item_index": 1323,
+        "instruction": "div.rn.ftz.f32 %f631, %f622, %f42;",
+        "destination": "%f631",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f38",
+            1265
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f42",
+          1271
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1319,
+        "fallback_division_item": 1327,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f38",
+                1265
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f38",
+                1265
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_49"
+        ]
+      },
+      {
+        "item_index": 1357,
+        "instruction": "div.rn.ftz.f32 %f632, %f619, %f42;",
+        "destination": "%f632",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f40",
+            1269
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f42",
+          1271
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1353,
+        "fallback_division_item": 1361,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f40",
+                1269
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f42",
+              1271
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f40",
+                1269
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_53"
+        ]
+      },
+      {
+        "item_index": 1626,
+        "instruction": "div.rn.ftz.f32 %f657, %f143, %f645;",
+        "destination": "%f657",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f451",
+            1616
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1623,
+        "fallback_division_item": 1629,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f451",
+                1616
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f451",
+                1616
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_156"
+        ]
+      },
+      {
+        "item_index": 1670,
+        "instruction": "div.rn.ftz.f32 %f658, %f148, %f645;",
+        "destination": "%f658",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f459",
+            1660
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1667,
+        "fallback_division_item": 1673,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f459",
+                1660
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f459",
+                1660
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_160"
+        ]
+      },
+      {
+        "item_index": 1707,
+        "instruction": "div.rn.ftz.f32 %f659, %f153, %f645;",
+        "destination": "%f659",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f467",
+            1697
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1704,
+        "fallback_division_item": 1710,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f467",
+                1697
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f467",
+                1697
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_164"
+        ]
+      },
+      {
+        "item_index": 1744,
+        "instruction": "div.rn.ftz.f32 %f660, %f158, %f645;",
+        "destination": "%f660",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f475",
+            1734
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1741,
+        "fallback_division_item": 1747,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f475",
+                1734
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f475",
+                1734
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_168"
+        ]
+      },
+      {
+        "item_index": 1792,
+        "instruction": "div.rn.ftz.f32 %f663, %f165, %f645;",
+        "destination": "%f663",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f483",
+            1782
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1789,
+        "fallback_division_item": 1989,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f483",
+                1782
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f483",
+                1782
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_174"
+        ]
+      },
+      {
+        "item_index": 1821,
+        "instruction": "div.rn.ftz.f32 %f647, %f105, %f645;",
+        "destination": "%f647",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f392",
+            1811
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1818,
+        "fallback_division_item": 1824,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f392",
+                1811
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f392",
+                1811
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_121"
+        ]
+      },
+      {
+        "item_index": 1857,
+        "instruction": "div.rn.ftz.f32 %f648, %f110, %f645;",
+        "destination": "%f648",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f400",
+            1847
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1854,
+        "fallback_division_item": 1860,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f400",
+                1847
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f400",
+                1847
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_125"
+        ]
+      },
+      {
+        "item_index": 1895,
+        "instruction": "div.rn.ftz.f32 %f649, %f115, %f645;",
+        "destination": "%f649",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f408",
+            1885
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1892,
+        "fallback_division_item": 1898,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f408",
+                1885
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f408",
+                1885
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_129"
+        ]
+      },
+      {
+        "item_index": 1933,
+        "instruction": "div.rn.ftz.f32 %f650, %f120, %f645;",
+        "destination": "%f650",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f416",
+            1923
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1930,
+        "fallback_division_item": 1936,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f416",
+                1923
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f416",
+                1923
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_133"
+        ]
+      },
+      {
+        "item_index": 1986,
+        "instruction": "div.rn.ftz.f32 %f653, %f127, %f645;",
+        "destination": "%f653",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f424",
+            1976
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 1983,
+        "fallback_division_item": 2035,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f424",
+                1976
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f424",
+                1976
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_139"
+        ]
+      },
+      {
+        "item_index": 2032,
+        "instruction": "div.rn.ftz.f32 %f664, %f170, %f645;",
+        "destination": "%f664",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f491",
+            2022
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 2029,
+        "fallback_division_item": 2082,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f491",
+                2022
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f491",
+                2022
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_179"
+        ]
+      },
+      {
+        "item_index": 2079,
+        "instruction": "div.rn.ftz.f32 %f654, %f132, %f645;",
+        "destination": "%f654",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f432",
+            2069
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 2076,
+        "fallback_division_item": 2128,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f432",
+                2069
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f432",
+                2069
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_144"
+        ]
+      },
+      {
+        "item_index": 2125,
+        "instruction": "div.rn.ftz.f32 %f665, %f175, %f645;",
+        "destination": "%f665",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f499",
+            2115
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 2122,
+        "fallback_division_item": 2176,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f499",
+                2115
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f499",
+                2115
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_184"
+        ]
+      },
+      {
+        "item_index": 2173,
+        "instruction": "div.rn.ftz.f32 %f655, %f137, %f645;",
+        "destination": "%f655",
+        "numerator_expression": [
+          "max.f32",
+          [
+            "opaque_register_value",
+            "%f440",
+            2163
+          ],
+          [
+            "literal",
+            "0f00000000"
+          ]
+        ],
+        "denominator_expression": [
+          "opaque_register_value",
+          "%f645",
+          1588
+        ],
+        "guard_form": "ordered_good_guard",
+        "branch_item": 2170,
+        "fallback_division_item": 2206,
+        "guard_atoms": [
+          [
+            "le",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f440",
+                2163
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ]
+          ],
+          [
+            "le",
+            [
+              "opaque_register_value",
+              "%f645",
+              1588
+            ],
+            [
+              "literal",
+              "0f5F000000"
+            ]
+          ],
+          [
+            "ge",
+            [
+              "max.f32",
+              [
+                "opaque_register_value",
+                "%f440",
+                2163
+              ],
+              [
+                "literal",
+                "0f00000000"
+              ]
+            ],
+            [
+              "literal",
+              "0f20000000"
+            ]
+          ]
+        ],
+        "immediate_shared_join": [
+          "$L__BB6_149"
+        ]
+      }
+    ]
+  },
+  "negative_fixtures_rejected": [
+    "wrong_denominator",
+    "weaken_numerator_bound",
+    "invert_branch",
+    "wrong_fallback_rounding"
+  ],
+  "new_compiler_GPU_module_kernel_solver_or_speed_samples": 0,
+  "limits": "Local40instruction guard window,12step path/join walk,max/mov alias only; no fullCFG/address/FP interpreter. Unknown structure fails closed, no sites omitted. No original completeclamp/sum/globalFP-DAG/pointer ancestry/native/IEEE-output or speed claim; full raw controls stillmandatory."
+}

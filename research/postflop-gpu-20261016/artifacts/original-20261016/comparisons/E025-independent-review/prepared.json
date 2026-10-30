@@ -1,0 +1,43 @@
+{
+  "id": "E025-independent-audit-preparation",
+  "at": "2026-10-16T14:46:37.289753+00:00",
+  "status": "PREPARED_NOT_EXECUTED",
+  "source_template": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E024-independent-review\\audit-primary.py",
+  "template_sha256": "9590c5161b82f502a43c24950a231493a7da41d3b550e32aa6ba252f45fc3f25",
+  "audit_sha256": "e3ef73489e9077e8e05db6f48988e4488ea54a714e30c14e6fb02053312b7923",
+  "protocol_sha256": "9cadcf6dd20f1ccb16a061bcc5707a506bdc7a058435b4d3b7de58ff8d02e937",
+  "scripts_manifest_sha256": "c276190d4f1282198e729ad9f5bbfa89c05ad5f2b16900f272bf7fe4a9ee293e",
+  "source_archive_sha256": "84f3d6c43af847475c29dd41e4fe608f1d2991dd866ea056cfc37e943de74ab3",
+  "expected_order": [
+    "V025-unit",
+    "B083",
+    "E025R1",
+    "E025R2",
+    "B084",
+    "B085",
+    "E025R3"
+  ],
+  "expected_unit_summary": [
+    84,
+    0,
+    4,
+    0,
+    0
+  ],
+  "expected_results": 18,
+  "expected_convergence_checks": 138,
+  "source_entries": 162,
+  "owned": [
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/game.rs"
+  ],
+  "future_terminal_arguments": [
+    "authorization_sha256",
+    "comparison_report_sha256",
+    "primary_binary_sha256",
+    "unit_binary_sha256"
+  ],
+  "first_terminal_action": "Capture all active162 candidate source files into source-custody.json and notify root before restoration; then execute archive audit.",
+  "cleanup_after_rejection": "Preserve root cleanup separately without requiring cleanup before runtime verdict.",
+  "builds_native_GPU_audit_executions": 0
+}

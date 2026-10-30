@@ -1,0 +1,145 @@
+{
+  "id": "E068-resource-root-check",
+  "at": "2026-10-17T11:44:19.120958+00:00",
+  "status": "pass_feasibility_abi_actual_blocker_branch_removal",
+  "resource_report_sha256": "39f8b803c7428f7ddd26a0179bf55f39a1604fb31394e4e59c32f35e6f6185f7",
+  "blocker_branch_proof_sha256": "f4bc1b86eba7bda91eb5236d861ec8c13661bfed9af419f60a4a96a47d1bd73a",
+  "actual_mask_branch_sites": [
+    7,
+    0
+  ],
+  "abi_parameters": 15,
+  "other8entries_exact_actual_and_sm75": true,
+  "disclosed_resources": {
+    "all_chance_hands_spans": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 30,
+        "shape": "all_chance_hands_spans",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_chance",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "all_chance_hands_spans",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      },
+      "gates": {
+        "local_bytes_not_increased": true,
+        "dynamic_shared_not_increased": true,
+        "max_threads_not_reduced": true,
+        "supports_all_fixed_thread_controls": true,
+        "both_fit_default_limits": true,
+        "positive_fixed_driver_occupancy": true,
+        "same_dynamic_bytes": true
+      },
+      "feasibility_admission": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "reject_resource_prefilter",
+          "gates": {
+            "allocated_registers_not_increased": false,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": true
+          },
+          "nominal_registers": [
+            30,
+            40
+          ],
+          "allocated_registers_per_warp": [
+            1024,
+            1280
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 2048,
+              "candidate": 2560
+            },
+            {
+              "threads": 128,
+              "baseline": 4096,
+              "candidate": 5120
+            },
+            {
+              "threads": 256,
+              "baseline": 8192,
+              "candidate": 10240
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [
+          "allocated_registers_not_increased"
+        ],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    }
+  },
+  "source_and_address_binding_sha256": "7bc5644d5ea7856aff0c4680e22879c0965e2b6ed645304075dd851da8ec15b9",
+  "new_native_executions": 0,
+  "application_kernel_launches": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Root receipt/input/compiler replay only, not external independent review or dynamicSASS/latency/equivalence/materialcost proof. Actualtargetmaskbranchremoval passes; otherGPUsunqualified."
+}

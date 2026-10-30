@@ -1,0 +1,29 @@
+{
+  "id": "E031-source-checks",
+  "accepted_entries_verified": 162,
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu"
+  ],
+  "unowned_entries_unchanged": 161,
+  "baseline_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "75defdd19a144924e41d1ca36e166161c2e097ec22843905444376e9a561079b",
+  "reverse_all_four_exact_replacements_matches_accepted": true,
+  "up_show_abi_exact": true,
+  "outside_up_show_byte_exact": true,
+  "other_entry_source_bodies_unchanged": 8,
+  "barriers_before_and_after": 5,
+  "all_original_float_expressions_and_order_retained": true,
+  "global_card_base_and_position_cache_retained": true,
+  "preload_coverage_all53exact_once_for_widths": "1..256 inclusive",
+  "nominal_static_shared_bytes_added": 212,
+  "dynamic_shared_bytes_changed": 0,
+  "persistent_bytes_added": 0,
+  "test_declarations_changed": 0,
+  "expected_gpu_unit_inventory": {
+    "passed": 84,
+    "ignored": 4
+  },
+  "scope": "Byte checks and integer preload coverage only, not compile/numerical validation",
+  "preparation_note": "Initial CRLF-literal guard refused before any artifact write; accepted bytes areLF and remain exact.",
+  "compiler_native_gpu_execution": false
+}

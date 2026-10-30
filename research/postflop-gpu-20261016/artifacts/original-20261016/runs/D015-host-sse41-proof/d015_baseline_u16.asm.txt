@@ -1,0 +1,266 @@
+d015_baseline_u16:
+.Lfunc_begin26:
+.seh_proc d015_baseline_u16
+	pushq	%r15
+	.seh_pushreg %r15
+	pushq	%r14
+	.seh_pushreg %r14
+	pushq	%r12
+	.seh_pushreg %r12
+	pushq	%rsi
+	.seh_pushreg %rsi
+	pushq	%rdi
+	.seh_pushreg %rdi
+	pushq	%rbx
+	.seh_pushreg %rbx
+	subq	$184, %rsp
+	.seh_stackalloc 184
+	movaps	%xmm14, 160(%rsp)
+	.seh_savexmm %xmm14, 160
+	movaps	%xmm13, 144(%rsp)
+	.seh_savexmm %xmm13, 144
+	movaps	%xmm12, 128(%rsp)
+	.seh_savexmm %xmm12, 128
+	movaps	%xmm11, 112(%rsp)
+	.seh_savexmm %xmm11, 112
+	movaps	%xmm10, 96(%rsp)
+	.seh_savexmm %xmm10, 96
+	movaps	%xmm9, 80(%rsp)
+	.seh_savexmm %xmm9, 80
+	movaps	%xmm8, 64(%rsp)
+	.seh_savexmm %xmm8, 64
+	movaps	%xmm7, 48(%rsp)
+	.seh_savexmm %xmm7, 48
+	movaps	%xmm6, 32(%rsp)
+	.seh_savexmm %xmm6, 32
+	.seh_endprologue
+	movq	%r9, %rsi
+	movq	%r8, %rdi
+	movq	%rcx, %rbx
+	testq	%rdx, %rdx
+	je	.LBB26_1
+	leaq	(,%rdx,4), %rcx
+	addq	$-4, %rcx
+	xorps	%xmm0, %xmm0
+	movq	%rbx, %rax
+	cmpq	$28, %rcx
+	jb	.LBB26_6
+	shrq	$2, %rcx
+	incq	%rcx
+	movq	%rcx, %r8
+	andq	$-8, %r8
+	leaq	(%rbx,%r8,4), %rax
+	xorps	%xmm0, %xmm0
+	xorl	%r9d, %r9d
+	xorps	%xmm1, %xmm1
+	.p2align	4
+.LBB26_4:
+	movups	(%rbx,%r9,4), %xmm2
+	movups	16(%rbx,%r9,4), %xmm3
+	movaps	%xmm0, %xmm4
+	maxps	%xmm2, %xmm0
+	movaps	%xmm0, %xmm2
+	cmpunordps	%xmm0, %xmm2
+	andps	%xmm2, %xmm4
+	andnps	%xmm0, %xmm2
+	movaps	%xmm2, %xmm0
+	orps	%xmm4, %xmm0
+	movaps	%xmm1, %xmm2
+	maxps	%xmm3, %xmm1
+	movaps	%xmm1, %xmm3
+	cmpunordps	%xmm1, %xmm3
+	andps	%xmm3, %xmm2
+	andnps	%xmm1, %xmm3
+	movaps	%xmm3, %xmm1
+	orps	%xmm2, %xmm1
+	addq	$8, %r9
+	cmpq	%r9, %r8
+	jne	.LBB26_4
+	movaps	%xmm0, %xmm2
+	maxps	%xmm1, %xmm2
+	movaps	%xmm2, %xmm1
+	cmpunordps	%xmm2, %xmm1
+	andps	%xmm1, %xmm0
+	andnps	%xmm2, %xmm1
+	orps	%xmm0, %xmm1
+	pshufd	$255, %xmm1, %xmm2
+	pshufd	$238, %xmm1, %xmm3
+	pshufd	$245, %xmm1, %xmm4
+	movaps	%xmm1, %xmm0
+	cmpunordss	%xmm1, %xmm0
+	movaps	%xmm0, %xmm5
+	andps	%xmm4, %xmm5
+	maxss	%xmm1, %xmm4
+	andnps	%xmm4, %xmm0
+	orps	%xmm5, %xmm0
+	movdqa	%xmm3, %xmm1
+	maxss	%xmm0, %xmm1
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm4
+	andnps	%xmm1, %xmm4
+	andps	%xmm3, %xmm0
+	orps	%xmm4, %xmm0
+	movdqa	%xmm2, %xmm1
+	maxss	%xmm0, %xmm1
+	cmpunordss	%xmm0, %xmm0
+	movaps	%xmm0, %xmm3
+	andnps	%xmm1, %xmm3
+	andps	%xmm2, %xmm0
+	orps	%xmm3, %xmm0
+	cmpq	%r8, %rcx
+	je	.LBB26_8
+.LBB26_6:
+	leaq	(%rbx,%rdx,4), %rcx
+	movaps	%xmm0, %xmm1
+	.p2align	4
+.LBB26_7:
+	movaps	%xmm1, %xmm2
+	maxss	(%rax), %xmm2
+	addq	$4, %rax
+	movaps	%xmm2, %xmm0
+	cmpunordss	%xmm2, %xmm0
+	movaps	%xmm0, %xmm3
+	andnps	%xmm2, %xmm3
+	andps	%xmm1, %xmm0
+	orps	%xmm3, %xmm0
+	movaps	%xmm0, %xmm1
+	cmpq	%rcx, %rax
+	jne	.LBB26_7
+	jmp	.LBB26_8
+.LBB26_1:
+	xorps	%xmm0, %xmm0
+.LBB26_8:
+	movd	%xmm0, %eax
+	testl	%eax, %eax
+	setns	%cl
+	movl	%eax, %r8d
+	andl	$2147483647, %r8d
+	addl	$-8388608, %r8d
+	cmpl	$2130706432, %r8d
+	setb	%r8b
+	andb	%cl, %r8b
+	decl	%eax
+	cmpl	$8388607, %eax
+	setb	%al
+	orb	%r8b, %al
+	je	.LBB26_9
+	cmpq	%rsi, %rdx
+	cmovbq	%rdx, %rsi
+	testq	%rsi, %rsi
+	je	.LBB26_19
+	movss	__real@477fff00(%rip), %xmm11
+	movaps	%xmm11, %xmm12
+	movaps	%xmm0, %xmm10
+	divss	%xmm0, %xmm12
+	cmpq	$4, %rsi
+	jae	.LBB26_13
+	xorl	%r14d, %r14d
+	jmp	.LBB26_16
+.LBB26_9:
+	addq	%rsi, %rsi
+	movq	%rdi, %rcx
+	xorl	%edx, %edx
+	movq	%rsi, %r8
+	callq	memset
+	xorps	%xmm0, %xmm0
+	jmp	.LBB26_19
+.LBB26_13:
+	movabsq	$2305843009213693948, %r14
+	andq	%rsi, %r14
+	movaps	%xmm12, %xmm13
+	shufps	$0, %xmm12, %xmm13
+	leaq	(%rsi,%rsi), %r15
+	andq	$-8, %r15
+	xorl	%r12d, %r12d
+	xorps	%xmm14, %xmm14
+	.p2align	4
+.LBB26_14:
+	movups	(%rbx,%r12,2), %xmm7
+	maxps	%xmm14, %xmm7
+	mulps	%xmm13, %xmm7
+	movaps	%xmm7, %xmm0
+	shufps	$255, %xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm6
+	movaps	%xmm7, %xmm0
+	unpckhpd	%xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm8
+	unpcklps	%xmm6, %xmm8
+	movaps	%xmm7, %xmm0
+	callq	rintf
+	movaps	%xmm0, %xmm9
+	movshdup	%xmm7, %xmm0
+	callq	rintf
+	xorps	%xmm1, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm11, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	xorps	%xmm0, %xmm0
+	maxss	%xmm9, %xmm0
+	movaps	%xmm11, %xmm1
+	minss	%xmm0, %xmm1
+	cvttss2si	%xmm1, %ecx
+	movd	%ecx, %xmm0
+	pinsrw	$1, %eax, %xmm0
+	xorps	%xmm1, %xmm1
+	maxss	%xmm8, %xmm1
+	movaps	%xmm11, %xmm2
+	minss	%xmm1, %xmm2
+	cvttss2si	%xmm2, %eax
+	pinsrw	$2, %eax, %xmm0
+	xorps	%xmm1, %xmm1
+	maxss	%xmm6, %xmm1
+	movaps	%xmm11, %xmm2
+	minss	%xmm1, %xmm2
+	cvttss2si	%xmm2, %eax
+	pinsrw	$3, %eax, %xmm0
+	movq	%xmm0, (%rdi,%r12)
+	addq	$8, %r12
+	cmpq	%r12, %r15
+	jne	.LBB26_14
+	cmpq	%r14, %rsi
+	je	.LBB26_18
+.LBB26_16:
+	xorps	%xmm6, %xmm6
+	.p2align	4
+.LBB26_17:
+	leaq	1(%r14), %r15
+	movss	(%rbx,%r14,4), %xmm0
+	maxss	%xmm6, %xmm0
+	mulss	%xmm12, %xmm0
+	callq	rintf
+	xorps	%xmm1, %xmm1
+	maxss	%xmm0, %xmm1
+	movaps	%xmm11, %xmm0
+	minss	%xmm1, %xmm0
+	cvttss2si	%xmm0, %eax
+	movw	%ax, (%rdi,%r14,2)
+	movq	%r15, %r14
+	cmpq	%r15, %rsi
+	jne	.LBB26_17
+.LBB26_18:
+	movaps	%xmm10, %xmm0
+.LBB26_19:
+	movaps	32(%rsp), %xmm6
+	movaps	48(%rsp), %xmm7
+	movaps	64(%rsp), %xmm8
+	movaps	80(%rsp), %xmm9
+	movaps	96(%rsp), %xmm10
+	movaps	112(%rsp), %xmm11
+	movaps	128(%rsp), %xmm12
+	movaps	144(%rsp), %xmm13
+	movaps	160(%rsp), %xmm14
+	.seh_startepilogue
+	addq	$184, %rsp
+	popq	%rbx
+	popq	%rdi
+	popq	%rsi
+	popq	%r12
+	popq	%r14
+	popq	%r15
+	.seh_endepilogue
+	retq
+.Lfunc_end26:
+	.seh_endproc

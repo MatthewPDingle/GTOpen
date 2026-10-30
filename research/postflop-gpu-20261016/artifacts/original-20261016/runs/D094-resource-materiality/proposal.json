@@ -1,0 +1,33 @@
+{
+  "id": "D094-resource-materiality",
+  "at": "2026-10-17T07:27:03.894135+00:00",
+  "scope": "Audit resource prefilter against actual allocation granularity. No solver source/candidate change, CUDA kernel launch, historical candidate rescue or speed claim.",
+  "basis": "User requests >=1% complete-cycle gain without material tradeoffs. A nominal register increase may fit the same rounded warp allocation. CUDA12.9.79 occupancy header explicitly handles compute12.x and computes rounded allocatedRegistersPerBlock. Validate its model against all60 retained driver occupancy observations and every1..1024thread count at all10geometries.",
+  "references": [
+    {
+      "url": "https://docs.nvidia.com/cuda/cuda-c-best-practices-guide/index.html#calculating-occupancy",
+      "use": "NVIDIA distinguishes nominal registers from rounded allocation and occupancy; allocation granularity varies by compute capability."
+    },
+    {
+      "official_package_url": "https://developer.download.nvidia.com/compute/cuda/redist/cuda_cudart/windows-x86_64/cuda_cudart-windows-x86_64-12.9.79-archive.zip",
+      "package_sha256": "179e9c43b0735ffe67207b3da556eb5a0c50f3047961882b7657d3b822d34ef8",
+      "header": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cudart\\cuda_cudart-windows-x86_64-12.9.79-archive\\include\\cuda_occupancy.h",
+      "header_sha256": "a3445fd09846af0b16a9ab2b10b302522b72b0cd93e358a91bdd2dedd19bc8a2",
+      "cc12_quantum_function": "cudaOccRegAllocationGranularity",
+      "allocation_formula": "cudaOccMaxBlocksPerMultiprocessorRegsLimit rounds nominal registers*warpSize to the per-warp allocation granularity, then multiplies by ceil(threads/warpSize)."
+    }
+  ],
+  "frozen_checks": [
+    "Current registered GPUcompute12.0,warp32 and known GPU name.",
+    "20,480 complete SDK model rows:10shapes x2reported register counts x1024thread counts, no exclusions.",
+    "Root independently computes register allocation from queried quantum/warp and checks both arms equal for every shape/block.",
+    "At64/128/256threads, all60 model occupancies must match retained driver queries. Also require all modeled shared allocations, launch feasibility and register/shared/warp/block/barrier limits identical.",
+    "Only after every check passes may a prospective filter use same allocation quantum instead of nominal count alone. Spills/shared/global/host/capacity/performance/accuracy/compatibility gates remain unchanged.",
+    "E057 and every prior rejection retain their original outcomes. No automatic reopening or candidate variant. No production adoption from this audit."
+  ],
+  "reviewer": "Root audit, not an external independent review",
+  "source_activated": false,
+  "gpu_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false
+}

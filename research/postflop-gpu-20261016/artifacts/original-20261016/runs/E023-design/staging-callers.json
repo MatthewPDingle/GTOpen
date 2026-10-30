@@ -1,0 +1,89 @@
+{
+  "scope": "Source-only audit; no caller sums the complete immutable metadata total with staging_bytes; continuation workspace counts are separate.",
+  "callers": [
+    {
+      "path": "crates/solver/examples/continuation_orbit_memory.rs",
+      "base_line": 30,
+      "line": "\"staging_bytes\":plan.staging_bytes(),\"packed_arena_bytes\":packed_arenas,\"full_arena_bytes\":full_arenas,"
+    },
+    {
+      "path": "crates/solver/examples/continuation_orbit_memory.rs",
+      "base_line": 31,
+      "line": "\"planned_compact_bytes\":plan.staging_bytes()+packed_arenas}));"
+    },
+    {
+      "path": "crates/solver/examples/integrated_continuation_compact.rs",
+      "base_line": 91,
+      "line": "let base=plan.staging_bytes()+arena_bytes+host.spot.tree.nodes.len() as u64*if future_iso {4} else {12};"
+    },
+    {
+      "path": "crates/solver/examples/integrated_continuation_orbits.rs",
+      "base_line": 86,
+      "line": "let base=plan.staging_bytes()+(host.spot.tree.data_size[0]+host.spot.tree.data_size[1])*8;"
+    },
+    {
+      "path": "crates/solver/tests/continuation_coherent_symmetry.rs",
+      "base_line": 69,
+      "line": "let budget = plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/tests/continuation_host_orbit_large.rs",
+      "base_line": 197,
+      "line": "let full_device = full_plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/tests/continuation_settled_ranges.rs",
+      "base_line": 78,
+      "line": "let budget = plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/tests/continuation_symmetry.rs",
+      "base_line": 18,
+      "line": "plan.staging_bytes()+plan.arena_elements.iter().sum::<usize>() as u64*8+512*1024*1024+spot.tree.nodes.len() as u64*4"
+    },
+    {
+      "path": "crates/solver/tests/postflop_capacity_perf.rs",
+      "base_line": 21,
+      "line": "let staging_mb = plan.staging_bytes() as f64 / 1e6;"
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_replay_tests.rs",
+      "base_line": 100,
+      "line": "let budget = plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 213,
+      "line": "let full_needed = plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 220,
+      "line": "let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 280,
+      "line": "plan.staging_bytes() + (data_len[0] + data_len[1]) as u64 * 8;"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 1178,
+      "line": "plan.staging_bytes() + (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 1454,
+      "line": "let budget = plan.staging_bytes()"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "base_line": 1502,
+      "line": "let budget = plan.staging_bytes()"
+    }
+  ],
+  "new_payload_counted_once_in_admission": true,
+  "new_payload_counted_once_in_continuation_metadata": true,
+  "workspace_dimensions_unchanged": true,
+  "extra_symmetry_metadata": "n*4 stabilizer and optional n*8 public orbit arrays are distinct from up_action_nodes."
+}

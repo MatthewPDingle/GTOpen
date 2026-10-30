@@ -1,0 +1,15 @@
+--- accepted/kernels.cu
++++ E085/kernels.cu
+@@ -388,7 +388,11 @@
+                 // Independent of the completed node value: use this action's
+                 // original sigma while it is already available.
+                 u64 idx = doff + (u64)a * nh_p + i;
+-                strat_p[idx] = strat_p[idx] * ds + reach * sig;
++                float updated_strategy = strat_p[idx] * ds + reach * sig;
++                // Strategy is streamed across the arena; prefer evicting these
++                // output lines before metadata with normal cache priority.
++                asm volatile ("st.global.cs.f32 [%0], %1;"
++                    :: "l"(strat_p + idx), "f"(updated_strategy) : "memory");
+             }
+             for (int a = 0; a < na; a++) {
+                 u64 idx = doff + (u64)a * nh_p + i;

@@ -1,0 +1,49 @@
+{
+  "id": "D074-discount-upload-source",
+  "at": "2026-10-17T01:54:05.610870+00:00",
+  "status": "go_bounded_off_tree_implementation_and_controls",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_replay_tests.rs": "6333065a4a2b4eccfdcf342b325e67b50a12c3dd2b4085b23f49739e59b2b54c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b"
+  },
+  "distinct_mechanism": "Original iterate/iterate_profiled pass a stack three-float array to async HtoD before the same graph/eager sweeps. Pageable staging may synchronize on this driver; this is not measured here and no headroom bound is claimed.",
+  "official_sources": [
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/api-sync-behavior.html",
+      "scope": "Async pageable transfers may synchronize/stage; other transfers should be async. Any API may block. This does not prove current baseline timing or speedup."
+    },
+    {
+      "url": "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__MEM.html",
+      "scope": "cuMemcpyHtoDAsync accepts registered or wholly unregistered host regions; same-stream ordering retained."
+    },
+    {
+      "url": "https://doc.rust-lang.org/reference/destructors.html",
+      "scope": "Struct fields drop in declaration order; first-owned guard must drain before host staging and CUDA fields release."
+    }
+  ],
+  "proposal": "Two disjoint three-float slots inside the existing pinned h_staging, no extra pinned/device/event/stream/graph allocation. Compute original CPU Discounts unchanged; queue same d_disc copy on original stream. After two used slots, synchronize before either is overwritten. Tiny staging<6 retains original path. A first-field stream-owning guard drains on destruction/error/unwind; full/strategy readback already synchronizes before staging reuse and resets slot count.",
+  "alias_lifetime_requirements": [
+    "Form only the selected three-float mutable window from raw pointer; do not create a mutable slice over another in-flight source slot.",
+    "Mark a slot used before submitting so an error cannot incorrectly permit reuse.",
+    "Guard must be the first GpuSolver field; no GpuSolver Drop trait is required, keeping existing by-field moves legal.",
+    "Full/strategy readback drains before writing staging; continuation staging replacements are constructor-time/fresh or explicitly synchronized, and continuation upload path remains original."
+  ],
+  "costs_and_limits": [
+    "Host control metadata/Arc reference only; report size and test before adoption.",
+    "At most two queued ordinary iterations per pinned batch; stop/drop behavior and complete-process wall time need checking, not just scored solve time.",
+    "No resource/speed guarantee from documentation. Driver may already stage cheaply; explicit every-two waits and API overhead may cancel any benefit.",
+    "No factor/batch-size sweep after an outcome."
+  ],
+  "required_controls": [
+    "Exact raw GPU/CPU state against copied accepted original iterate and profiled iterate, after unsynchronized batches, checks, readback/materialization/resume and locks.",
+    "F32/compressed, iso/full/compact, DCFR/CFR+; actual tiny fallback.",
+    "Injected error after queued copy and normal/panic drop; trace drain and immediate stream readiness before field release.",
+    "Fresh feature/GPU builds, ordinary suite and fixed complete-cycle screen at current1%/no-tradeoff gate; full-process wall evidence before adoption."
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "args": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource",
+  "started_at": "2026-10-16T15:14:03.003126+00:00",
+  "timeout_seconds": 600,
+  "elapsed_seconds": 1.5469999999986612,
+  "returncode": 0,
+  "cleanup": null
+}

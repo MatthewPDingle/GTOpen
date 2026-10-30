@@ -1,0 +1,590 @@
+diff --git a/crates/solver/src/gpu/arena.rs b/crates/solver/src/gpu/arena.rs
+index 10b9d137..2fe03415 100644
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -1,5 +1,5 @@
+ //! Exact host mapping for GPU arenas containing only visited action nodes.
+-use super::{e, plan::GpuPlan, write_arena};
++use super::{e, plan::GpuPlan, quantized_readback::{ArenaPlan, Block}, write_arena};
+ use crate::{cfr::Solver, store::Store, tree::KIND_ACTION};
+ use cudarc::driver::{CudaSlice, CudaStream};
+ use std::sync::Arc;
+@@ -172,6 +172,35 @@ impl ArenaLayout {
+         Ok(device)
+     }
+ 
++    pub(super) fn quantized_plan(&self, solver: &Solver, p: usize) -> Result<ArenaPlan, String> {
++        let mut blocks = Vec::new();
++        if self.compact {
++            for block in &self.active {
++                blocks.push(Block { node: block.node, host: block.host, source: block.device as u64,
++                    output: 0, len: u32::try_from(block.len).map_err(|_| "quantized block too long")? });
++            }
++        } else {
++            // Match write_arena, including action blocks not visited by the plan.
++            let nh = solver.spot.hands[p].len();
++            for (node, value) in solver.spot.tree.nodes.iter().enumerate() {
++                if value.kind != KIND_ACTION || value.player as usize != p { continue; }
++                let len = (value.num_children as usize).checked_mul(nh).ok_or("quantized block overflow")?;
++                blocks.push(Block { node: u32::try_from(node).map_err(|_| "quantized node overflow")?,
++                    host: value.data_offset, source: value.data_offset, output: 0,
++                    len: u32::try_from(len).map_err(|_| "quantized block too long")? });
++            }
++        }
++        ArenaPlan::new(blocks, self.len,
++            usize::try_from(solver.spot.tree.data_size[p]).map_err(|_| "quantized host arena overflow")?)
++    }
++
++    pub(super) fn write_quantized(&self, solver: &Solver, p: usize, which: usize,
++        blocks: &[Block], words: &[u16], scales: &[f32]) {
++        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
++        scatter_quantized(store, blocks, words, scales);
++        self.restore_inactive_compressed(store, which);
++    }
++
+     pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+         if !self.compact {
+             write_arena(solver, which != 0, p, data);
+@@ -198,6 +227,10 @@ impl ArenaLayout {
+                     &data[block.device..block.device + block.len]);
+             }
+         });
++        self.restore_inactive_compressed(store, which);
++    }
++
++    fn restore_inactive_compressed(&self, store: &Store, which: usize) {
+         self.inactive.par_iter().for_each(|block| {
+             let start = block.initial[which];
+             let values = if start == usize::MAX { &self.zeros[..block.len] }
+@@ -207,10 +240,53 @@ impl ArenaLayout {
+     }
+ }
+ 
++fn scatter_quantized(store: &Store, blocks: &[Block], words: &[u16], scales: &[f32]) {
++    blocks.par_iter().enumerate().for_each(|(index, block)| {
++        let start = block.output as usize;
++        let values = &words[start..start + block.len as usize];
++        // Descriptor host ranges and node indices are disjoint, like write_arena.
++        unsafe {
++            match store {
++                Store::I16 { q, scale } => {
++                    for (dst, &value) in q.slice(block.host, values.len()).iter_mut().zip(values) {
++                        *dst = value as i16;
++                    }
++                    scale.write_at(block.node as usize, scales[index]);
++                }
++                Store::U16 { q, scale } => {
++                    q.slice(block.host, values.len()).copy_from_slice(values);
++                    scale.write_at(block.node as usize, scales[index]);
++                }
++                Store::F32(_) => unreachable!("quantized readback requires compressed stores"),
++            }
++        }
++    });
++}
++
+ #[cfg(test)]
+ mod tests {
+     use super::*;
+ 
++    #[test]
++    fn quantized_scatter_preserves_gaps_other_scales_and_signed_bits() {
++        let blocks = vec![Block { node: 2, host: 1, source: 9, output: 0, len: 3 }];
++        for mut store in [Store::i16(6, 5), Store::u16(6, 5)] {
++            match &mut store {
++                Store::I16 { q, scale } => { q.as_mut_slice().fill(123); scale.as_mut_slice().fill(-0.0); }
++                Store::U16 { q, scale } => { q.as_mut_slice().fill(123); scale.as_mut_slice().fill(-0.0); }
++                _ => unreachable!(),
++            }
++            scatter_quantized(&store, &blocks, &[0x8000, 0xffff, 32767], &[f32::from_bits(1)]);
++            let (words, scales) = match &store {
++                Store::I16 { q, scale } => (q.as_slice().iter().map(|&v| v as u16).collect::<Vec<_>>(), scale.as_slice()),
++                Store::U16 { q, scale } => (q.as_slice().to_vec(), scale.as_slice()),
++                _ => unreachable!(),
++            };
++            assert_eq!(words, [123, 0x8000, 0xffff, 32767, 123, 123]);
++            assert_eq!(scales.iter().map(|v| v.to_bits()).collect::<Vec<_>>(), [0x80000000, 0x80000000, 1, 0x80000000, 0x80000000]);
++        }
++    }
++
+     fn layout(compact: bool) -> ArenaLayout {
+         ArenaLayout {
+             compact, len: 4, active: Vec::new(), copies: Vec::new(),
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+index 4ecf4772..25da2626 100644
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -509,3 +509,65 @@ extern "C" __global__ void up_action_eval(
+         }
+     }
+ }
++
++// Exact compressed readback: D010 proof arithmetic, separate packed output offsets.
++template <bool SIGNED> __device__ void quantize_readback_block(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    __shared__ float maxima[128];
++    const u32 block = blockIdx.x;
++    const u32 tid = threadIdx.x;
++    const u64 offset = offsets[block];
++    const u64 output_offset = output_offsets[block];
++    const u32 length = lengths[block];
++    float maximum = 0.0f;
++    for (u32 i = tid; i < length; i += 128) {
++        float value = src[offset + i];
++        // fmaxf ignores NaNs, as Rust f32::max does. No addition/reassociation.
++        maximum = fmaxf(maximum, SIGNED ? fabsf(value) : value);
++    }
++    maxima[tid] = maximum;
++    __syncthreads();
++    for (u32 distance = 64; distance != 0; distance >>= 1) {
++        if (tid < distance) maxima[tid] = fmaxf(maxima[tid], maxima[tid + distance]);
++        __syncthreads();
++    }
++    maximum = maxima[0];
++    const bool valid = maximum > 0.0f && isfinite(maximum);
++    if (tid == 0) scales[block] = valid ? maximum : 0.0f;
++    if (!valid) {
++        for (u32 i = tid; i < length; i += 128) words[output_offset + i] = 0;
++        return;
++    }
++
++    // Match two separate Rust f32 operations, including overflow of k to +Inf.
++    const float k = __fdiv_rn(SIGNED ? 32767.0f : 65535.0f, maximum);
++    const float lo = SIGNED ? -32768.0f : 0.0f;
++    const float hi = SIGNED ? 32767.0f : 65535.0f;
++    for (u32 i = tid; i < length; i += 128) {
++        const float value = src[offset + i];
++        const float y = __fmul_rn(SIGNED ? value : fmaxf(value, 0.0f), k);
++        // Rust round_ties_even() then saturating `as`: NaN -> 0, infinities
++        // saturate. In-range integers here are all exactly representable in f32.
++        const int q = isnan(y) ? 0
++            : y >= hi ? (SIGNED ? 32767 : 65535)
++            : y <= lo ? (SIGNED ? -32768 : 0)
++            : __float2int_rn(y);
++        words[output_offset + i] = (unsigned short)q;
++    }
++}
++
++extern "C" __global__ void quantize_i16_readback(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    quantize_readback_block<true>(src, offsets, output_offsets, lengths, words, scales);
++}
++
++extern "C" __global__ void quantize_u16_readback(
++    const float* src, const u64* offsets, const u64* output_offsets, const u32* lengths,
++    unsigned short* words, float* scales)
++{
++    quantize_readback_block<false>(src, offsets, output_offsets, lengths, words, scales);
++}
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index b5f7166c..102f5215 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -7,6 +7,9 @@
+ 
+ pub mod plan;
+ mod arena;
++mod quantized_readback;
++#[cfg(test)]
++mod quantized_readback_tests;
+ #[cfg(feature = "preflop-research")]
+ mod continuation;
+ #[cfg(feature = "preflop-research")]
+@@ -20,6 +23,7 @@ mod continuation_paging;
+ #[cfg(feature = "preflop-research")]
+ pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};
+ use arena::ArenaLayout;
++use quantized_readback::QuantizedReadback;
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -71,6 +75,53 @@ fn e(err: impl std::fmt::Debug) -> String {
+     format!("cuda: {err:?}")
+ }
+ 
++
++// Diagnostic-only constructor wall times: no CUDA events or extra waits.
++#[derive(serde::Serialize)]
++struct ConstructorSpan { stage: &'static str, wall_ms: f64 }
++struct ConstructorTrace {
++    started: Option<std::time::Instant>,
++    last: Option<std::time::Instant>,
++    spans: Vec<ConstructorSpan>,
++}
++impl ConstructorTrace {
++    fn new() -> Self {
++        let enabled = std::env::var_os("POSTFLOP_AUTORESEARCH_CONSTRUCTOR_PROFILE")
++            .as_deref() == Some(std::ffi::OsStr::new("1"));
++        let started = enabled.then(std::time::Instant::now);
++        Self { started, last: started, spans: Vec::with_capacity(if enabled { 16 } else { 0 }) }
++    }
++    fn mark(&mut self, stage: &'static str) {
++        if let Some(last) = self.last {
++            let now = std::time::Instant::now();
++            let wall_ms = now.duration_since(last).as_secs_f64() * 1e3;
++            if wall_ms.is_finite() { self.spans.push(ConstructorSpan { stage, wall_ms }); }
++            self.last = Some(now);
++        }
++    }
++    fn finish(self, quantized_readback: bool, arena_elements: [usize; 2], nodes: usize) {
++        if let Some(started) = self.started {
++            let wall_ms_before_logging = started.elapsed().as_secs_f64() * 1e3;
++            if !wall_ms_before_logging.is_finite() { return; }
++            use std::io::Write;
++            let mut stderr = std::io::stderr().lock();
++            let _ = writeln!(stderr, "GPU_CONSTRUCTOR_PROFILE {}", serde_json::json!({
++                "schema_version": 1, "phase": "gpu_new_with_budget", "completed": true,
++                "clock": "host_wall", "diagnostic_only": true,
++                "environment": {
++                    "POSTFLOP_AUTORESEARCH_CONSTRUCTOR_PROFILE": "1",
++                    "CUDA_MODULE_LOADING": std::env::var("CUDA_MODULE_LOADING").ok()
++                },
++                "quantized_readback": quantized_readback, "nodes": nodes,
++                "arena_elements": arena_elements,
++                "wall_ms_before_logging": wall_ms_before_logging, "spans": self.spans,
++                "extra_cuda_synchronizations": 0,
++                "note": "Host-call spans may block or submit asynchronous work. Only existing waits inside named spans drain the stream; these are not isolated device times. Logging/timers perturb initialization; exclude this run from qualification."
++            }));
++        }
++    }
++}
++
+ pub struct GpuSolver {
+     _ctx: Arc<CudaContext>,
+     stream: Arc<CudaStream>,
+@@ -157,6 +208,7 @@ pub struct GpuSolver {
+     /// Cached+page-locked host staging for fast arena transfers.
+     h_staging: PinnedBuf,
+     arena_layout: [ArenaLayout; 2],
++    quantized_readback: Option<QuantizedReadback>,
+ 
+     pub iteration: u32,
+     pub algo: Algorithm,
+@@ -201,6 +253,7 @@ impl GpuSolver {
+     /// Check the configured traversal's compact buffers before device allocation.
+     /// Build the plan once and reuse it for both the budget check and upload.
+     pub fn new_with_budget(solver: &Solver, budget_bytes: u64) -> Result<GpuSolver, String> {
++        let mut trace = ConstructorTrace::new();
+         if solver.algo == Algorithm::PcfrPlus {
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+@@ -222,8 +275,11 @@ impl GpuSolver {
+             return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+                 needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+         }
++        trace.mark("plan_and_budget_cpu");
+         let ctx = CudaContext::new(0).map_err(e)?;
++        trace.mark("context_create_host_call");
+         let stream = ctx.new_stream().map_err(e)?;
++        trace.mark("stream_create_host_call_with_existing_context_wait");
+         // Everything in a GpuSolver runs on this one stream, so cudarc's
+         // cross-stream event tracking is unnecessary — and the events it
+         // records would invalidate CUDA graph capture.
+@@ -236,6 +292,7 @@ impl GpuSolver {
+         let (cc_maj, cc_min) = ctx.compute_capability().map_err(e)?;
+         let arch: &'static str =
+             Box::leak(format!("compute_{cc_maj}{cc_min}").into_boxed_str());
++        trace.mark("context_configuration_and_device_info_host_calls");
+         static PTX: std::sync::OnceLock<Result<cudarc::nvrtc::Ptx, String>> =
+             std::sync::OnceLock::new();
+         let ptx = PTX
+@@ -250,7 +307,9 @@ impl GpuSolver {
+                 .map_err(e)
+             })
+             .clone()?;
++        trace.mark("ptx_acquire_or_compile_cpu");
+         let module = ctx.load_module(ptx).map_err(e)?;
++        trace.mark("module_load_host_call");
+         let func = |name: &str| module.load_function(name).map_err(e);
+ 
+         let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
+@@ -260,10 +319,12 @@ impl GpuSolver {
+ 
+         let data_len = plan.arena_elements;
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
++        trace.mark("pinned_staging_allocation_host_call");
+         let mut arena_layout = [
+             ArenaLayout::new(solver, &plan, 0),
+             ArenaLayout::new(solver, &plan, 1),
+         ];
++        trace.mark("arena_layouts_cpu");
+         let d_regrets = [
+             arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
+             arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
+@@ -272,6 +333,7 @@ impl GpuSolver {
+             arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
+             arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
+         ];
++        trace.mark("arena_upload_calls_with_existing_waits");
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+         let n = plan.num_nodes;
+@@ -299,7 +361,8 @@ impl GpuSolver {
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
+-        Ok(GpuSolver {
++        trace.mark("locks_log_and_fold_tables_cpu");
++        let mut gpu = GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+             f_down_chance: func("down_chance")?,
+@@ -362,6 +425,7 @@ impl GpuSolver {
+             d_regrets,
+             d_strat,
+             arena_layout,
++            quantized_readback: None,
+             d_reach: [
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[0] * nh[0]).map_err(e)?,
+                 stream.alloc_zeros::<f32>(plan.reach_blocks[1] * nh[1]).map_err(e)?,
+@@ -379,7 +443,22 @@ impl GpuSolver {
+             _ctx: ctx,
+             stream,
+             _module: module,
+-        })
++        };
++        trace.mark("function_lookup_metadata_upload_and_basebuffers_host_calls");
++        gpu.quantized_readback = QuantizedReadback::try_new(
++            solver, &gpu.arena_layout, &gpu.h_staging, &gpu.stream, &gpu._module, needed, budget_bytes,
++        )?;
++        trace.mark("quantized_readback_try_new_with_existing_waits");
++        let quantized_readback = gpu.uses_quantized_readback();
++        trace.mark("final_return_cpu");
++        trace.finish(quantized_readback, data_len, solver.spot.tree.nodes.len());
++        Ok(gpu)
++    }
++
++    /// Whether full compressed downloads use exact GPU encoding for this engine.
++    /// Tight budgets or optional allocation OOM keep the original CPU encoder.
++    pub fn uses_quantized_readback(&self) -> bool {
++        self.quantized_readback.is_some()
+     }
+ 
+     fn cfg(blocks: u32, shared: u32) -> LaunchConfig {
+@@ -983,18 +1062,25 @@ impl GpuSolver {
+     /// Works for both f32 and compressed CPU storage (encodes per node).
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
+         self.stream.synchronize().map_err(e)?;
+-        for p in 0..2 {
+-            let len = self.d_regrets[p].len();
+-            self.stream
+-                .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+-            self.stream
+-                .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++        if let Some(readback) = &mut self.quantized_readback {
++            for p in 0..2 {
++                readback.download(&self.stream, &self.d_regrets[p], &mut self.h_staging, solver, &self.arena_layout[p], p, 0)?;
++                readback.download(&self.stream, &self.d_strat[p], &mut self.h_staging, solver, &self.arena_layout[p], p, 1)?;
++            }
++        } else {
++            for p in 0..2 {
++                let len = self.d_regrets[p].len();
++                self.stream
++                    .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
++                self.stream
++                    .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            }
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -1051,6 +1137,9 @@ impl GpuSolver {
+ pub(crate) struct PinnedBuf {
+     ptr: *mut f32,
+     len: usize,
++    // Conservative initialized prefix for temporary compressed readback views.
++    // Other completed staging writes preserve initialization once established.
++    initialized_prefix_bytes: usize,
+ }
+ 
+ unsafe impl Send for PinnedBuf {}
+@@ -1063,6 +1152,7 @@ impl PinnedBuf {
+         Ok(PinnedBuf {
+             ptr: ptr as *mut f32,
+             len,
++            initialized_prefix_bytes: 0,
+         })
+     }
+     pub(crate) fn as_slice(&self) -> &[f32] {
+diff --git a/research/postflop-gpu-20261016/experiments.md b/research/postflop-gpu-20261016/experiments.md
+index a2483596..1476e278 100644
+--- a/research/postflop-gpu-20261016/experiments.md
++++ b/research/postflop-gpu-20261016/experiments.md
+@@ -1,73 +1,89 @@
+-# Postflop GPU experiment ledger — 16 October 2026
+-
+-Evidence snapshot: published status at **2026-10-16 05:04:46 UTC**. This ledger covers E001–E008 and the D009 diagnostic; later activity belongs in a subsequent update. [Protocol](program.md) · [Live dashboard](http://127.0.0.1:43735/research/postflop-gpu-20261016/) · [Published status](X:/Dev/GTOpen/web/research/postflop-gpu-20261016/status.json).
+-
+-## Measurement and decision rules
+-
+-All performance screens use the fixed rainbow, two-tone and river fixtures on the RTX 5090, compressed CPU storage and f32 GPU arithmetic. The primary repeated score is the **sum of per-fixture median complete-cycle wall times**, with three measurements per binary. Initial screens use one serialized three-fixture sum. Positive gain below means less elapsed time; negative gain means more. Each row compares its own baseline cohort; gains and absolute times across cohorts must not be compounded or compared as a trend.
+-
+-The cycle includes tree construction, CPU allocation, GPU initialization, runtime NVRTC compilation/CUDA JIT, fixed-quality solving and complete readback. Repeated cohorts use a warm driver cache; runtime compilation is still inside the clock. Cargo compilation, correctness hashing, browser/API latency and disk saving are excluded. The fixed target is 0.3% of starting pot, checked every 20 iterations, with a 400-iteration ceiling. Qualification requires a reproducible aggregate reduction of at least 2%, no repeatable material fixture regression over 3%, and broader correctness checks. These small samples do not establish statistical significance.
+-
+-## Candidates
+-
+-Times are milliseconds. “Exact compressed screen” means matching complete-state fingerprints, exploitability bits and stopping iterations on all three registered fixtures; it is not full correctness qualification. All rejected candidates below passed that screen only. F32 and broader suites were not used to qualify them after the performance screen failed.
+-
+-| ID | Hypothesis | Baseline → candidate | Observed gain | Decision and evidence |
+-| --- | --- | ---: | ---: | --- |
+-| E001 | 64-thread action/chance kernels | 11902.3264 → 12125.5239 | −1.8752% | Rejected initial screen; no promising gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E001/comparison-B001.json) |
+-| E002 | 256-thread action/chance kernels | 11724.6973 → 12578.2880 | −7.2803% | Rejected initial screen; no promising aggregate gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E002/comparison-B002.json) |
+-| E003 | Declare action regret/strategy buffers non-overlapping | 10757.0015 → 10690.4739 | +0.6185% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E003-warm-comparison/report.json) |
+-| **E004** | Initialize proven-zero compressed arenas directly on GPU | **11773.5454 → 11139.7477** | **+5.3832%** | **Accepted and validated** after three pairs and broader checks. [Qualification](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-qualification/report.json) |
+-| E005 | Direct two-action kernel for large action levels | 11042.9072 → 11052.9290 | −0.0908% | Rejected initial screen; no promising aggregate gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E005/comparison-B010.json) |
+-| E006 | `up_action` launch bounds `(128,8)` | 11143.9813 → 11041.0797 | +0.9234% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E006-three-pair-comparison/report.json) |
+-| E007 | `up_action` launch bounds `(128,9)` | 10188.8390 → 10057.1178 | +1.2928% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E007-three-pair-comparison/report.json) |
+-| E008 | Carry the showdown prefix in a register, preserving addition order | 11291.3518 → 11099.8155 | +1.6963% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E008-three-pair-comparison/report.json) |
+-
+-The initial-screen rejections are practical screening decisions, not statistically proven regressions. The sub-2% results remain observations in the record, not accepted speedups or proven zero effects.
+-
+-## Accepted scope and deployment
+-
+-E004's gain comes from **initialization of fresh compressed native solves**. It does not establish faster iterations, resumed-solve performance, F32 performance, or browser end-to-end latency. Validation included exact compressed and F32 complete-state comparisons, **160 saved-state/menu/resume snapshots per binary** (24 state, 24 menu, 112 resume), **82 solver unit tests** and **6 GPU integration tests**. See the [control comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-controls-comparison/report.json), [F32 comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-f32-comparison/report.json), [unit log](S:/GTOpen-research/postflop-gpu-20261016/runs/V004-unit/stdout.log) and [GPU integration log](S:/GTOpen-research/postflop-gpu-20261016/runs/V004-gpu/stdout.log).
+-
+-Research commit: `5e021499c67c840f8c88e4378e5889918bbe27c6`. Main integration commit: `f3741e87dc76f1622164c78bf4df7b9455066d89`. **Accepted does not mean deployed:** automatic approval review rejected replacing/restarting the live server with the generic reason **“blocked by policy”**, without further detail. At this snapshot, main source and the tested binary are ready, but the live executable remains the original version. The qualification report's earlier `deployment: pending` is historical; the published deployment status is `blocked`.
+-
+-## Run cohorts and retained evidence
+-
+-Raw evidence root: [S:\GTOpen-research\postflop-gpu-20261016](S:/GTOpen-research/postflop-gpu-20261016). For every runner-managed ID, retain `runs/<ID>/report.json` and `stdout.log`; reports identify frozen workload/harness hashes, environment, binary hashes and build manifests. Candidate patches `runs/E001.patch` through `runs/E008.patch`, preserved binaries/manifests under `binaries/`, comparison reports and raw logs remain evidence even after implementation edits are reverted.
+-
+-| Candidate | Baseline IDs | Candidate IDs used in score |
+-| --- | --- | --- |
+-| E001 | B001 | E001 |
+-| E002 | B002 | E002 |
+-| E003 | B004, B005, B006R | E003R2, E003R3, E003R4 |
+-| E004 | B007, B008, B009 | E004, E004R2, E004R3 |
+-| E005 | B010 | E005 |
+-| E006 | B011, B012, B013 | E006, E006R2, E006R3 |
+-| E007 | B014, B015, B016 | E007, E007R2, E007R3 |
+-| E008 | B017, B018, B019 | E008, E008R2, E008R3 |
+-
+-- Preserve initial/cold B003 and E003, excluded from E003's warm cohort, and the initial flat `runs/B000-initial-baseline.log`; do not substitute them for the repeated score.
+-- [B006](S:/GTOpen-research/postflop-gpu-20261016/runs/B006/report.json) is invalid: Windows denied atomic replacement of `status.json`; B006R supplies the replacement measurement.
+-- [V000-resume-baseline](S:/GTOpen-research/postflop-gpu-20261016/runs/V000-resume-baseline/report.json) is invalid: its test filter executed no tests. The corrected `V000-resume-baseline-r` is retained separately.
+-- Diagnostic profiles, register-resource sweeps and lifecycle instrumentation are preserved under `runs/`; component timings and theoretical occupancy are not qualifying complete-cycle gains.
+-
+-## D009 and next investigation
+-
+-[D009 lifecycle summary](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D009-lifecycle-summary/report.json) passed the exact compressed state screen on all three fixtures. Across the two flop fixtures, host spans total **445.4546 ms for CPU encode/scatter/restore** and **188.9854 ms for device-to-host copy calls plus existing completion waits**. These are diagnostic measurements with timer/logging overhead, not isolated device timings or a qualifying performance cohort; no accepted gain follows from them. Raw [report](S:/GTOpen-research/postflop-gpu-20261016/runs/D009/report.json), [stdout](S:/GTOpen-research/postflop-gpu-20261016/runs/D009/stdout.log) and [instrumentation patch](S:/GTOpen-research/postflop-gpu-20261016/runs/D009.patch) are retained.
+-
+-E004 is restored as the retained implementation; no new candidate is active at this checkpoint. The next investigation is GPU-side result quantization that preserves CPU `round_ties_even`, saturating-cast and nonfinite behavior. It has no performance or correctness claim yet.
+-
+-## D010 standalone numeric proof
+-
+-The subsequent [D010 proof](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D010-proof-summary/report.json) passed on the RTX 5090. Actual Rust `encode_i16`/`encode_u16` outputs matched the experimental CUDA kernel for 2,212 cases and 1,964,131 values per type: 3,928,262 encoded values, 4,424 scale bit patterns and 26,544 output guard words. All 1,977,403 packed input float bit patterns remained unchanged. Curated cases cover ties and adjacent floats, signed zeros, NaNs, infinities, subnormal scales, reciprocal overflow, empty blocks and long tails; randomized inputs use a fixed seed.
+-
+-This is finite standalone numerical evidence, not solver integration or a speedup. The experimental kernel and ignored test are preserved under `crates/solver/tests/`; the CPU encoder is the independent oracle. [Integration design](S:/GTOpen-research/postflop-gpu-20261016/runs/D010-quantization-design/README.md) describes descriptors, scratch resources, budget fallback and unchanged inactive restoration. Integrated state checks and complete-cycle qualification remain required.
+-
+-
+-## E009 integrated GPU quantization — rejected
+-
+-The integrated candidate passed **89 solver unit tests**, including **21 same-device-image comparisons** with the existing CPU readback writer (16 full syncs and 5 strategy-only syncs). Tests covered full/compact compressed storage, initial zeros, warm state, inactive restoration, materialization, locks, continuation, tight-budget fallback and F32 fallback. All four live device float arrays remained unchanged. A synthetic host test checks quantized-data gaps and nonowned scales; the game fixtures assert nonowned-scale coverage but do not guarantee q gaps. Forced CUDA allocation failure was not injected. [Unit evidence](S:/GTOpen-research/postflop-gpu-20261016/runs/V009-unit/stdout.log).
+-
+-Three alternating pairs (B020/E009, E009R2/B021, B022/E009R3) matched full compressed fingerprints, exploitability bits and stopping iterations. The sum of fixture medians was **11150.6615 → 10995.9118 ms**, an observed **1.3878%** improvement, below the registered 2% gate. The river median regressed **110.8524 → 203.4038 ms**; initialization increased **91.3395 → 183.9442 ms**. The candidate is rejected, despite lower flop readback time. [Comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E009-three-pair-comparison/report.json).
+-
+-The patch, new source files, binaries, manifests and logs remain under `runs/E009.patch`, `runs/E009-source/` and `binaries/E009-*`. No broader saved-state/menu/resume or full F32 benchmark qualification was performed after the performance screen failed. E004 remains the accepted implementation. E010 investigates reuse of the existing host staging allocation for compressed words and scales, eliminating redundant pinned allocations while retaining checked capacity/alignment and the original fallback path; it has no speed claim yet.
++# Postflop GPU experiment ledger — 16 October 2026
++
++Evidence snapshot: published status at **2026-10-16 05:04:46 UTC**. This ledger covers E001–E008 and the D009 diagnostic; later activity belongs in a subsequent update. [Protocol](program.md) · [Live dashboard](http://127.0.0.1:43735/research/postflop-gpu-20261016/) · [Published status](X:/Dev/GTOpen/web/research/postflop-gpu-20261016/status.json).
++
++## Measurement and decision rules
++
++All performance screens use the fixed rainbow, two-tone and river fixtures on the RTX 5090, compressed CPU storage and f32 GPU arithmetic. The primary repeated score is the **sum of per-fixture median complete-cycle wall times**, with three measurements per binary. Initial screens use one serialized three-fixture sum. Positive gain below means less elapsed time; negative gain means more. Each row compares its own baseline cohort; gains and absolute times across cohorts must not be compounded or compared as a trend.
++
++The cycle includes tree construction, CPU allocation, GPU initialization, runtime NVRTC compilation/CUDA JIT, fixed-quality solving and complete readback. Repeated cohorts use a warm driver cache; runtime compilation is still inside the clock. Cargo compilation, correctness hashing, browser/API latency and disk saving are excluded. The fixed target is 0.3% of starting pot, checked every 20 iterations, with a 400-iteration ceiling. Qualification requires a reproducible aggregate reduction of at least 2%, no repeatable material fixture regression over 3%, and broader correctness checks. These small samples do not establish statistical significance.
++
++## Candidates
++
++Times are milliseconds. “Exact compressed screen” means matching complete-state fingerprints, exploitability bits and stopping iterations on all three registered fixtures; it is not full correctness qualification. All rejected candidates below passed that screen only. F32 and broader suites were not used to qualify them after the performance screen failed.
++
++| ID | Hypothesis | Baseline → candidate | Observed gain | Decision and evidence |
++| --- | --- | ---: | ---: | --- |
++| E001 | 64-thread action/chance kernels | 11902.3264 → 12125.5239 | −1.8752% | Rejected initial screen; no promising gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E001/comparison-B001.json) |
++| E002 | 256-thread action/chance kernels | 11724.6973 → 12578.2880 | −7.2803% | Rejected initial screen; no promising aggregate gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E002/comparison-B002.json) |
++| E003 | Declare action regret/strategy buffers non-overlapping | 10757.0015 → 10690.4739 | +0.6185% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E003-warm-comparison/report.json) |
++| **E004** | Initialize proven-zero compressed arenas directly on GPU | **11773.5454 → 11139.7477** | **+5.3832%** | **Accepted and validated** after three pairs and broader checks. [Qualification](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-qualification/report.json) |
++| E005 | Direct two-action kernel for large action levels | 11042.9072 → 11052.9290 | −0.0908% | Rejected initial screen; no promising aggregate gain. [Report](S:/GTOpen-research/postflop-gpu-20261016/runs/E005/comparison-B010.json) |
++| E006 | `up_action` launch bounds `(128,8)` | 11143.9813 → 11041.0797 | +0.9234% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E006-three-pair-comparison/report.json) |
++| E007 | `up_action` launch bounds `(128,9)` | 10188.8390 → 10057.1178 | +1.2928% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E007-three-pair-comparison/report.json) |
++| E008 | Carry the showdown prefix in a register, preserving addition order | 11291.3518 → 11099.8155 | +1.6963% | Rejected after three pairs; below 2% gate. [Report](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E008-three-pair-comparison/report.json) |
++
++The initial-screen rejections are practical screening decisions, not statistically proven regressions. The sub-2% results remain observations in the record, not accepted speedups or proven zero effects.
++
++## Accepted scope and deployment
++
++E004's gain comes from **initialization of fresh compressed native solves**. It does not establish faster iterations, resumed-solve performance, F32 performance, or browser end-to-end latency. Validation included exact compressed and F32 complete-state comparisons, **160 saved-state/menu/resume snapshots per binary** (24 state, 24 menu, 112 resume), **82 solver unit tests** and **6 GPU integration tests**. See the [control comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-controls-comparison/report.json), [F32 comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E004-f32-comparison/report.json), [unit log](S:/GTOpen-research/postflop-gpu-20261016/runs/V004-unit/stdout.log) and [GPU integration log](S:/GTOpen-research/postflop-gpu-20261016/runs/V004-gpu/stdout.log).
++
++Research commit: `5e021499c67c840f8c88e4378e5889918bbe27c6`. Main integration commit: `f3741e87dc76f1622164c78bf4df7b9455066d89`. **Accepted does not mean deployed:** automatic approval review rejected replacing/restarting the live server with the generic reason **“blocked by policy”**, without further detail. At this snapshot, main source and the tested binary are ready, but the live executable remains the original version. The qualification report's earlier `deployment: pending` is historical; the published deployment status is `blocked`.
++
++## Run cohorts and retained evidence
++
++Raw evidence root: [S:\GTOpen-research\postflop-gpu-20261016](S:/GTOpen-research/postflop-gpu-20261016). For every runner-managed ID, retain `runs/<ID>/report.json` and `stdout.log`; reports identify frozen workload/harness hashes, environment, binary hashes and build manifests. Candidate patches `runs/E001.patch` through `runs/E008.patch`, preserved binaries/manifests under `binaries/`, comparison reports and raw logs remain evidence even after implementation edits are reverted.
++
++| Candidate | Baseline IDs | Candidate IDs used in score |
++| --- | --- | --- |
++| E001 | B001 | E001 |
++| E002 | B002 | E002 |
++| E003 | B004, B005, B006R | E003R2, E003R3, E003R4 |
++| E004 | B007, B008, B009 | E004, E004R2, E004R3 |
++| E005 | B010 | E005 |
++| E006 | B011, B012, B013 | E006, E006R2, E006R3 |
++| E007 | B014, B015, B016 | E007, E007R2, E007R3 |
++| E008 | B017, B018, B019 | E008, E008R2, E008R3 |
++
++- Preserve initial/cold B003 and E003, excluded from E003's warm cohort, and the initial flat `runs/B000-initial-baseline.log`; do not substitute them for the repeated score.
++- [B006](S:/GTOpen-research/postflop-gpu-20261016/runs/B006/report.json) is invalid: Windows denied atomic replacement of `status.json`; B006R supplies the replacement measurement.
++- [V000-resume-baseline](S:/GTOpen-research/postflop-gpu-20261016/runs/V000-resume-baseline/report.json) is invalid: its test filter executed no tests. The corrected `V000-resume-baseline-r` is retained separately.
++- Diagnostic profiles, register-resource sweeps and lifecycle instrumentation are preserved under `runs/`; component timings and theoretical occupancy are not qualifying complete-cycle gains.
++
++## D009 and next investigation
++
++[D009 lifecycle summary](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D009-lifecycle-summary/report.json) passed the exact compressed state screen on all three fixtures. Across the two flop fixtures, host spans total **445.4546 ms for CPU encode/scatter/restore** and **188.9854 ms for device-to-host copy calls plus existing completion waits**. These are diagnostic measurements with timer/logging overhead, not isolated device timings or a qualifying performance cohort; no accepted gain follows from them. Raw [report](S:/GTOpen-research/postflop-gpu-20261016/runs/D009/report.json), [stdout](S:/GTOpen-research/postflop-gpu-20261016/runs/D009/stdout.log) and [instrumentation patch](S:/GTOpen-research/postflop-gpu-20261016/runs/D009.patch) are retained.
++
++E004 is restored as the retained implementation; no new candidate is active at this checkpoint. The next investigation is GPU-side result quantization that preserves CPU `round_ties_even`, saturating-cast and nonfinite behavior. It has no performance or correctness claim yet.
++
++## D010 standalone numeric proof
++
++The subsequent [D010 proof](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D010-proof-summary/report.json) passed on the RTX 5090. Actual Rust `encode_i16`/`encode_u16` outputs matched the experimental CUDA kernel for 2,212 cases and 1,964,131 values per type: 3,928,262 encoded values, 4,424 scale bit patterns and 26,544 output guard words. All 1,977,403 packed input float bit patterns remained unchanged. Curated cases cover ties and adjacent floats, signed zeros, NaNs, infinities, subnormal scales, reciprocal overflow, empty blocks and long tails; randomized inputs use a fixed seed.
++
++This is finite standalone numerical evidence, not solver integration or a speedup. The experimental kernel and ignored test are preserved under `crates/solver/tests/`; the CPU encoder is the independent oracle. [Integration design](S:/GTOpen-research/postflop-gpu-20261016/runs/D010-quantization-design/README.md) describes descriptors, scratch resources, budget fallback and unchanged inactive restoration. Integrated state checks and complete-cycle qualification remain required.
++
++
++## E009 integrated GPU quantization — rejected
++
++The integrated candidate passed **89 solver unit tests**, including **21 same-device-image comparisons** with the existing CPU readback writer (16 full syncs and 5 strategy-only syncs). Tests covered full/compact compressed storage, initial zeros, warm state, inactive restoration, materialization, locks, continuation, tight-budget fallback and F32 fallback. All four live device float arrays remained unchanged. A synthetic host test checks quantized-data gaps and nonowned scales; the game fixtures assert nonowned-scale coverage but do not guarantee q gaps. Forced CUDA allocation failure was not injected. [Unit evidence](S:/GTOpen-research/postflop-gpu-20261016/runs/V009-unit/stdout.log).
++
++Three alternating pairs (B020/E009, E009R2/B021, B022/E009R3) matched full compressed fingerprints, exploitability bits and stopping iterations. The sum of fixture medians was **11150.6615 → 10995.9118 ms**, an observed **1.3878%** improvement, below the registered 2% gate. The river median regressed **110.8524 → 203.4038 ms**; initialization increased **91.3395 → 183.9442 ms**. The candidate is rejected, despite lower flop readback time. [Comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E009-three-pair-comparison/report.json).
++
++The patch, new source files, binaries, manifests and logs remain under `runs/E009.patch`, `runs/E009-source/` and `binaries/E009-*`. No broader saved-state/menu/resume or full F32 benchmark qualification was performed after the performance screen failed. E004 remains the accepted implementation. E010 investigates reuse of the existing host staging allocation for compressed words and scales, eliminating redundant pinned allocations while retaining checked capacity/alignment and the original fallback path; it has no speed claim yet.
++
++
++## E010 shared host staging — rejected
++
++E010 reused the existing pinned host staging allocation for aligned, nonoverlapping compressed-word and scale buffers, removing both additional pinned allocations from E009. Checked capacity/alignment/overflow decline the optional path when needed; initialization remains inside the first readback. **92 solver unit tests passed**, including three new staging boundary/initialization/reuse tests and the existing exact-readback integration checks.
++
++Three alternating pairs (B023/E010, E010R2/B024, B025/E010R3) matched complete compressed state, exploitability bits and stopping iterations. Their score was **11130.2839 → 10871.3492 ms (2.3264%)**, but the river median regressed **79.8807%**, with **3/3** paired regressions above 3%. E010 is rejected under the existing per-fixture guard. The comparison helper now records a repeatable failure as median regression above 3% plus a strict majority of pairs (minimum two); it still cannot accept any candidate. [Comparison](S:/GTOpen-research/postflop-gpu-20261016/comparisons/E010-three-pair-comparison/report.json), [92-test log](S:/GTOpen-research/postflop-gpu-20261016/runs/V010-unit/stdout.log).
++
++The repeated river initialization overhead survived removal of extra pinned allocations. A separate D011 diagnostic will time descriptor construction, function loading, device allocations and existing transfer waits. No cause is confirmed yet. E004 remains the accepted implementation; E009/E010 source, binaries and raw results remain preserved. No new candidate has passed full F32 or broader saved-state/menu/resume qualification.
++
++
++## D011 optional initialization profile
++
++The [D011 diagnostic](S:/GTOpen-research/postflop-gpu-20261016/comparisons/D011-init-summary/report.json) matched full compressed state, exploitability and stopping iterations on all three fixtures. The river's optional quantized setup took **0.1468 ms**, including **0.0600 ms** in its two function-load calls, while enclosing initialization took **167.7424 ms**. This does not support the suspected function lookup or direct optional setup as the cause of the repeated river regression. Rainbow/two-tone optional setup totals were 26.1699/15.7886 ms.
++
++These are one-run diagnostic host spans with logging/timer disturbance, not qualifying speed results. The trace excludes work earlier in the constructor and its own final logging, and does not exclude indirect effects of the appended code on earlier module/context setup. The instrumentation was removed and the exact E010 source restored. D012 will separate the surrounding constructor stages before another implementation hypothesis is chosen.

@@ -1,0 +1,1389 @@
+{
+  "id": "E112-resource",
+  "at": "2026-10-29T05:08:36.677523+00:00",
+  "status": "pass_scoped_constant_resources_ABI_operand_review_pending",
+  "protocol_sha256": "b94bd564507f0a4497095b5002d69a4a77166cb64ccc11826dcf0531fb68c83a",
+  "gates": {
+    "symbol:actual12zero_initialized_bytes": true,
+    "compute_120:entryset": true,
+    "compute_120:copy_root:entire_entry_ABI_exact": true,
+    "compute_120:down_action:entire_entry_ABI_exact": true,
+    "compute_120:down_chance:entire_entry_ABI_exact": true,
+    "compute_120:up_fold:entire_entry_ABI_exact": true,
+    "compute_120:up_show:entire_entry_ABI_exact": true,
+    "compute_120:up_chance:entire_entry_ABI_exact": true,
+    "compute_120:up_action:declared_ABI_20_to_19": true,
+    "compute_120:up_action:constant_access_present": true,
+    "compute_120:copy_span:entire_entry_ABI_exact": true,
+    "compute_120:up_action_eval:entire_entry_ABI_exact": true,
+    "compute_75:entryset": true,
+    "compute_75:copy_root:entire_entry_ABI_exact": true,
+    "compute_75:down_action:entire_entry_ABI_exact": true,
+    "compute_75:down_chance:entire_entry_ABI_exact": true,
+    "compute_75:up_fold:entire_entry_ABI_exact": true,
+    "compute_75:up_show:entire_entry_ABI_exact": true,
+    "compute_75:up_chance:entire_entry_ABI_exact": true,
+    "compute_75:up_action:declared_ABI_20_to_19": true,
+    "compute_75:up_action:constant_access_present": true,
+    "compute_75:copy_span:entire_entry_ABI_exact": true,
+    "compute_75:up_action_eval:entire_entry_ABI_exact": true,
+    "copy_root:original_resources_exact": true,
+    "down_action:original_resources_exact": true,
+    "down_chance:original_resources_exact": true,
+    "up_fold:original_resources_exact": true,
+    "up_show:original_resources_exact": true,
+    "up_chance:original_resources_exact": true,
+    "up_action:no_new_local": true,
+    "up_action:no_dynamic_growth": true,
+    "up_action:no_maxthread_loss": true,
+    "up_action:positive_fixed_occupancies": true,
+    "up_action:default_limits_fit": true,
+    "up_action:no_stack_growth": true,
+    "copy_span:original_resources_exact": true,
+    "up_action_eval:original_resources_exact": true
+  },
+  "entry_tables": {
+    "compute_120": {
+      "copy_root": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "down_action": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "down_chance": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_fold": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_show": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_chance": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_action": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": false
+      },
+      "copy_span": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_action_eval": {
+        "old_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u64 .ptr .align 1",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      }
+    },
+    "compute_75": {
+      "copy_root": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "down_action": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "down_chance": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_fold": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_show": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_chance": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_action": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": false
+      },
+      "copy_span": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u64",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      },
+      "up_action_eval": {
+        "old_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "new_parameter_attributes": [
+          ".u64",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u32",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u64",
+          ".u32",
+          ".u32"
+        ],
+        "entire_entry_alpha_exact": true
+      }
+    }
+  },
+  "resource_rows": [
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 64,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "constant_bytes": 12,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "actual_constant_symbol": {
+    "actual_initial_bytes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "application_kernels": 0,
+    "bytes": 12,
+    "stage": "symbol"
+  },
+  "resource_warnings": [
+    {
+      "entry": "up_action",
+      "baseline": {
+        "application_kernels": 0,
+        "constant_bytes": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 62,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "constant_bytes": 12,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 64,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "constant_attribute_deltas": {
+    "copy_root": 12,
+    "down_action": 12,
+    "down_chance": 12,
+    "up_fold": 12,
+    "up_show": 12,
+    "up_chance": 12,
+    "up_action": 12,
+    "copy_span": 12,
+    "up_action_eval": 12
+  },
+  "PTX_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "96b4fb621e085a8646fb5a38711f2bddede8dacefc964b0dde6280d9afbaeba7",
+    "candidate-compute_75": "88ae5db1dfac708eb81913156194a36cb4d741cff01bb0ea879c248f04f2c763"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches_solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "source_activated": false,
+  "limits": "One Rust compiler/one module-only child: two candidateNVRTC120/75targets, sealedbaseline reused. Original9entryset;8untargetedentrybodies/ABIs/register/local/shared/occupancy/stack exact. Onlyup_actionABI20to19 removesoldparameter17, original18/19shiftto17/18. Actualconstant symbol12bytes initialzero; staticconstant-byteattributes disclosed for allentries separately. Targetno newlocal/dynamic/stack/maxthread loss/defaultfit,positive64/128/256occupancies. No applicationkernel/solver/speed/sourceactivation. Operand/caller/host/accounting/rawstate/numerical/performance gates remain.",
+  "original_report_sha256": "c93a09a8ac29a41a8942d84d45760506b3bb8579230556b24f80120b41dbd99d",
+  "reader_repair_plan_sha256": "88346613ab7c4a5cc951465a2ffc10c91d57f77fc760fb7133d5c5909f33413e",
+  "negative_fixtures_caught_each_architecture": 3,
+  "original_other_gates_unchanged": true,
+  "no_compiler_module_or_native_repeat": true,
+  "constant_attribute_note": "Everyfunction reports12additionalconstantbytes because the module has one12byte symbol. Do not multiply this by9entries. Logical12bytes replace oldglobal12; actualdriverrounding/peak/capacity andquerycost remain unqualified."
+}

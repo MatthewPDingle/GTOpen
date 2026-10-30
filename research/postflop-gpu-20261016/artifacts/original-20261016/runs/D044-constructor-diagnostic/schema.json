@@ -1,0 +1,58 @@
+{
+  "marker": "SPOT_CONSTRUCTOR_PROFILE ",
+  "schema_version": 1,
+  "record": {
+    "schema_version": "integer, exactly 1",
+    "diagnostic_only": "boolean, exactly true",
+    "instrumentation": "string, exactly D044_unconditional_source_only",
+    "board_mask": "u64 from existing constructed board mask",
+    "board_cards": "usize from existing board length",
+    "hands": "two usize existing hand lengths",
+    "node_count": "usize existing tree node length",
+    "suit_permutations": "usize existing suit_perms length",
+    "stage_us": {
+      "tree_build": "finite nonnegative f64 host wall microseconds",
+      "river_table": "finite nonnegative f64 host wall microseconds",
+      "suit_symmetry": "finite nonnegative f64 host wall microseconds"
+    },
+    "constructor_us_before_logging": "finite nonnegative f64 host wall microseconds from new_impl entry to after symmetry, excluding output/return",
+    "extra_cuda_synchronizations": "integer, exactly 0"
+  },
+  "expected_primary_markers_per_process": 3,
+  "expected_identity": [
+    {
+      "fixture_id": "rainbow",
+      "board": "Ks7h2d",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "two-tone",
+      "board": "Ks7s2d",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "river",
+      "board": "Ks7h2dQhTc",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33
+    }
+  ],
+  "placement": "One per successful Spot::new_impl after symmetry identity reordering and before Ok(Spot); primary marker between fixture_start and build_complete. Failed construction emits none. No fixture ID hardcoding or census in source."
+}

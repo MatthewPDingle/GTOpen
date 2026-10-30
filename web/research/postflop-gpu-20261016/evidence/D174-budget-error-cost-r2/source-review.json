@@ -1,0 +1,13 @@
+{
+  "id": "D174",
+  "at": "2026-10-28T16:26:55.695335+00:00",
+  "status": "constructor_failure_contract_and_material_cost_filter",
+  "exact_constructor_reversal": {
+    "baseline": true,
+    "candidate": true
+  },
+  "scope": "Two exact source constructors plus tiny thread/phase marker adapters; only plan begin/end, checks begin/end, CUDAcontext-before-call. All original statements and body order within staged candidate unchanged. No optimization source activation. Both modules use same accepted solverRLIB/Spot/Store and exact canonicalcompressed geometry. CPU preparation outside component clocks; before/afterfullCPUq/scale/root/iteration fingerprints outside clocks. Constructorbudget0 and Pcfr failures only, no successful CUDA constructor/application kernel.",
+  "contracts": "18fixed budget0 calls,3canonicalfixtures*3matchedBC/CB/BC pairs. Exact error text and CPUstate fingerprint across reference/candidate. Allplanning on caller; eligiblecandidateworkerstarts/ends differentthread and is joined by APIreturn. nvcuda.dll absentbefore/after eachcall plus zero before-CUDA markers/sourceorder establish no CUDA setup; no GPU/driver profiler call inside native process.2unsupported Pcfrcalls refuse beforeplan/scan. Existing12coordinatorerror/panic/dropmockcases run inbothcopies beforecostprocess; actualOSspawnfailure notinjected.",
+  "material_cost_gate": "Eachfixture candidate medianwall<=reference*1.01+1ms AND medianwholeprocessCPUwithinconstructor<=reference*1.01+15.625ms(oneWin32CPUclockquantum). No material fail exemption for errorpaths. Any failedcostgate closes thissource beforefullraw/speed. All3fixedpairsretained, no source/eligibility/placement/threshold/widerbudget/sample rescue afterreal failure.",
+  "limits": "Wall/CPUcomponenterrorpath only, not successfulcomplete-solve speed/adoption. Fingerprints read every CPUelementbutarenotliteralrawpair proof; completeCPU/device raw scientific proof deferredifcostfilterpasses. OS CPUcounterscoarse; native18budgetcallsinoneprocesswithimmutablehost fixturepergroup and noGPUcontext. Allreferences read sameallocations, scan/fingerprintcost outsidecomponent exceptnew sourceactualworkerwithinAPIreturn."
+}

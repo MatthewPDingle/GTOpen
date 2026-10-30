@@ -1,0 +1,1288 @@
+{
+  "id": "D307",
+  "at": "2026-10-29T20:41:23.106843+00:00",
+  "status": "rejected_closed_required_native_work_removal_not_established",
+  "protocol_sha256": "1f55a941d26d00b01d57158c116f93fc8b844da28200873367cebd9f0d0188a0",
+  "witnesses": {
+    "down_action": {
+      "original_first_common_normalization_reference": {
+        "RCP_PC": "0x9b0",
+        "FCHK_PC": "0x9e0",
+        "FCHK_guard_PC": "0xab0",
+        "slow_CALL_PC": "0xaf0",
+        "slow_CALL": "CALL.REL.NOINC `($__internal_4_$__cuda_sm3x_div_rn_noftz_f32_slowpath)",
+        "numerator_register": "R24",
+        "denominator_register": "R9",
+        "five_original_division_refinement_stages": [
+          {
+            "stage": 0,
+            "PC": "0x9f0",
+            "instruction": "FFMA R26, -R9, R21, 1"
+          },
+          {
+            "stage": 1,
+            "PC": "0xa00",
+            "instruction": "FFMA R21, R21, R26, R21"
+          },
+          {
+            "stage": 2,
+            "PC": "0xa10",
+            "instruction": "FFMA R26, R24, R21, RZ"
+          },
+          {
+            "stage": 3,
+            "PC": "0xa70",
+            "instruction": "FFMA R3, -R9, R26, R24"
+          },
+          {
+            "stage": 4,
+            "PC": "0xa90",
+            "instruction": "FFMA R3, R21, R3, R26"
+          }
+        ],
+        "local_opcode_inventory": {
+          "MUFU.RCP": 1,
+          "FCHK": 1,
+          "FFMA": 5,
+          "CALL.REL.NOINC": 1
+        }
+      },
+      "candidate_all_FTZ_site_witnesses": [
+        {
+          "RCP_PC": "0xa30",
+          "FCHK_PC": "0xa50",
+          "FCHK_guard_PC": "0xab0",
+          "slow_CALL_PC": "0xae0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0xa60",
+              "instruction": "FFMA R2, -R10, R11, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0xa70",
+              "instruction": "FFMA R2, R11, R2, R11"
+            },
+            {
+              "stage": 2,
+              "PC": "0xa80",
+              "instruction": "FFMA R11, R29, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0xa90",
+              "instruction": "FFMA R24, -R10, R11, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0xaa0",
+              "instruction": "FFMA R11, R2, R24, R11"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0xe90",
+          "FCHK_PC": "0xeb0",
+          "FCHK_guard_PC": "0xf10",
+          "slow_CALL_PC": "0xf50",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R3",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0xec0",
+              "instruction": "FFMA R2, -R10, R11, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0xed0",
+              "instruction": "FFMA R2, R11, R2, R11"
+            },
+            {
+              "stage": 2,
+              "PC": "0xee0",
+              "instruction": "FFMA R11, R3, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0xef0",
+              "instruction": "FFMA R24, -R10, R11, R3"
+            },
+            {
+              "stage": 4,
+              "PC": "0xf00",
+              "instruction": "FFMA R24, R2, R24, R11"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x2a50",
+          "FCHK_PC": "0x2a70",
+          "FCHK_guard_PC": "0x2ad0",
+          "slow_CALL_PC": "0x2b10",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R2",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x2a80",
+              "instruction": "FFMA R25, R24, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x2a90",
+              "instruction": "FFMA R25, R24, R25, R24"
+            },
+            {
+              "stage": 2,
+              "PC": "0x2aa0",
+              "instruction": "FFMA R24, R2, R25, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x2ab0",
+              "instruction": "FFMA R27, R24, -R9, R2"
+            },
+            {
+              "stage": 4,
+              "PC": "0x2ac0",
+              "instruction": "FFMA R24, R25, R27, R24"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x2fd0",
+          "FCHK_PC": "0x2ff0",
+          "FCHK_guard_PC": "0x3050",
+          "slow_CALL_PC": "0x3080",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x3000",
+              "instruction": "FFMA R25, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x3010",
+              "instruction": "FFMA R2, R2, R25, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x3020",
+              "instruction": "FFMA R24, R2, R29, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x3030",
+              "instruction": "FFMA R25, R24, -R9, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x3040",
+              "instruction": "FFMA R2, R2, R25, R24"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x3440",
+          "FCHK_PC": "0x3460",
+          "FCHK_guard_PC": "0x34c0",
+          "slow_CALL_PC": "0x34f0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x3470",
+              "instruction": "FFMA R25, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x3480",
+              "instruction": "FFMA R2, R2, R25, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x3490",
+              "instruction": "FFMA R24, R2, R29, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x34a0",
+              "instruction": "FFMA R25, R24, -R9, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x34b0",
+              "instruction": "FFMA R2, R2, R25, R24"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x38a0",
+          "FCHK_PC": "0x38c0",
+          "FCHK_guard_PC": "0x3920",
+          "slow_CALL_PC": "0x3960",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R28",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x38d0",
+              "instruction": "FFMA R13, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x38e0",
+              "instruction": "FFMA R2, R2, R13, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x38f0",
+              "instruction": "FFMA R13, R2, R28, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x3900",
+              "instruction": "FFMA R24, R13, -R9, R28"
+            },
+            {
+              "stage": 4,
+              "PC": "0x3910",
+              "instruction": "FFMA R2, R2, R24, R13"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x3db0",
+          "FCHK_PC": "0x3dd0",
+          "FCHK_guard_PC": "0x3e30",
+          "slow_CALL_PC": "0x3e60",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x3de0",
+              "instruction": "FFMA R23, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x3df0",
+              "instruction": "FFMA R2, R2, R23, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x3e00",
+              "instruction": "FFMA R22, R2, R29, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x3e10",
+              "instruction": "FFMA R23, R22, -R9, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x3e20",
+              "instruction": "FFMA R2, R2, R23, R22"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x4250",
+          "FCHK_PC": "0x4270",
+          "FCHK_guard_PC": "0x42d0",
+          "slow_CALL_PC": "0x4300",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x4280",
+              "instruction": "FFMA R23, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x4290",
+              "instruction": "FFMA R2, R2, R23, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x42a0",
+              "instruction": "FFMA R22, R2, R29, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x42b0",
+              "instruction": "FFMA R23, R22, -R9, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x42c0",
+              "instruction": "FFMA R2, R2, R23, R22"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x46d0",
+          "FCHK_PC": "0x46f0",
+          "FCHK_guard_PC": "0x4750",
+          "slow_CALL_PC": "0x4780",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R9",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x4700",
+              "instruction": "FFMA R13, R2, -R9, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x4710",
+              "instruction": "FFMA R2, R2, R13, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x4720",
+              "instruction": "FFMA R10, R2, R29, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x4730",
+              "instruction": "FFMA R13, R10, -R9, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x4740",
+              "instruction": "FFMA R2, R2, R13, R10"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x55f0",
+          "FCHK_PC": "0x5610",
+          "FCHK_guard_PC": "0x5670",
+          "slow_CALL_PC": "0x56b0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R14",
+          "denominator_register": "R7",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x5620",
+              "instruction": "FFMA R15, -R7, R2, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x5630",
+              "instruction": "FFMA R15, R2, R15, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x5640",
+              "instruction": "FFMA R2, R14, R15, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x5650",
+              "instruction": "FFMA R16, -R7, R2, R14"
+            },
+            {
+              "stage": 4,
+              "PC": "0x5660",
+              "instruction": "FFMA R24, R15, R16, R2"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x5a80",
+          "FCHK_PC": "0x5aa0",
+          "FCHK_guard_PC": "0x5b00",
+          "slow_CALL_PC": "0x5b40",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R4",
+          "denominator_register": "R7",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x5ab0",
+              "instruction": "FFMA R15, -R7, R2, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x5ac0",
+              "instruction": "FFMA R15, R2, R15, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x5ad0",
+              "instruction": "FFMA R2, R4, R15, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x5ae0",
+              "instruction": "FFMA R14, -R7, R2, R4"
+            },
+            {
+              "stage": 4,
+              "PC": "0x5af0",
+              "instruction": "FFMA R2, R15, R14, R2"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x5e00",
+          "FCHK_PC": "0x5e20",
+          "FCHK_guard_PC": "0x5e80",
+          "slow_CALL_PC": "0x5ec0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R3",
+          "denominator_register": "R7",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x5e30",
+              "instruction": "FFMA R5, -R7, R2, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x5e40",
+              "instruction": "FFMA R2, R2, R5, R2"
+            },
+            {
+              "stage": 2,
+              "PC": "0x5e50",
+              "instruction": "FFMA R5, R3, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x5e60",
+              "instruction": "FFMA R4, -R7, R5, R3"
+            },
+            {
+              "stage": 4,
+              "PC": "0x5e70",
+              "instruction": "FFMA R2, R2, R4, R5"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x6d40",
+          "FCHK_PC": "0x6d60",
+          "FCHK_guard_PC": "0x6dc0",
+          "slow_CALL_PC": "0x6df0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R29",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x6d70",
+              "instruction": "FFMA R2, -R10, R11, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x6d80",
+              "instruction": "FFMA R2, R11, R2, R11"
+            },
+            {
+              "stage": 2,
+              "PC": "0x6d90",
+              "instruction": "FFMA R11, R29, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x6da0",
+              "instruction": "FFMA R14, -R10, R11, R29"
+            },
+            {
+              "stage": 4,
+              "PC": "0x6db0",
+              "instruction": "FFMA R11, R2, R14, R11"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x71b0",
+          "FCHK_PC": "0x71d0",
+          "FCHK_guard_PC": "0x7230",
+          "slow_CALL_PC": "0x7270",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R5",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x71e0",
+              "instruction": "FFMA R2, -R10, R11, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x71f0",
+              "instruction": "FFMA R2, R11, R2, R11"
+            },
+            {
+              "stage": 2,
+              "PC": "0x7200",
+              "instruction": "FFMA R23, R5, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x7210",
+              "instruction": "FFMA R11, -R10, R23, R5"
+            },
+            {
+              "stage": 4,
+              "PC": "0x7220",
+              "instruction": "FFMA R23, R2, R11, R23"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x7520",
+          "FCHK_PC": "0x7540",
+          "FCHK_guard_PC": "0x75a0",
+          "slow_CALL_PC": "0x75e0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R4",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x7550",
+              "instruction": "FFMA R2, -R10, R5, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x7560",
+              "instruction": "FFMA R5, R5, R2, R5"
+            },
+            {
+              "stage": 2,
+              "PC": "0x7570",
+              "instruction": "FFMA R2, R4, R5, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x7580",
+              "instruction": "FFMA R11, -R10, R2, R4"
+            },
+            {
+              "stage": 4,
+              "PC": "0x7590",
+              "instruction": "FFMA R11, R5, R11, R2"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x7880",
+          "FCHK_PC": "0x78a0",
+          "FCHK_guard_PC": "0x7900",
+          "slow_CALL_PC": "0x7940",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_5_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R3",
+          "denominator_register": "R10",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x78b0",
+              "instruction": "FFMA R2, -R10, R5, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x78c0",
+              "instruction": "FFMA R2, R5, R2, R5"
+            },
+            {
+              "stage": 2,
+              "PC": "0x78d0",
+              "instruction": "FFMA R21, R3, R2, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x78e0",
+              "instruction": "FFMA R4, -R10, R21, R3"
+            },
+            {
+              "stage": 4,
+              "PC": "0x78f0",
+              "instruction": "FFMA R21, R2, R4, R21"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        }
+      ]
+    },
+    "up_action": {
+      "original_first_common_normalization_reference": {
+        "RCP_PC": "0xb30",
+        "FCHK_PC": "0xb50",
+        "FCHK_guard_PC": "0xbb0",
+        "slow_CALL_PC": "0xbd0",
+        "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_noftz_f32_slowpath)",
+        "numerator_register": "R2",
+        "denominator_register": "R35",
+        "five_original_division_refinement_stages": [
+          {
+            "stage": 0,
+            "PC": "0xb60",
+            "instruction": "FFMA R5, -R35, R8, 1"
+          },
+          {
+            "stage": 1,
+            "PC": "0xb70",
+            "instruction": "FFMA R5, R8, R5, R8"
+          },
+          {
+            "stage": 2,
+            "PC": "0xb80",
+            "instruction": "FFMA R8, R2, R5, RZ"
+          },
+          {
+            "stage": 3,
+            "PC": "0xb90",
+            "instruction": "FFMA R9, -R35, R8, R2"
+          },
+          {
+            "stage": 4,
+            "PC": "0xba0",
+            "instruction": "FFMA R5, R5, R9, R8"
+          }
+        ],
+        "local_opcode_inventory": {
+          "MUFU.RCP": 1,
+          "FCHK": 1,
+          "FFMA": 5,
+          "CALL.REL.NOINC": 1
+        }
+      },
+      "candidate_all_FTZ_site_witnesses": [
+        {
+          "RCP_PC": "0xb80",
+          "FCHK_PC": "0xba0",
+          "FCHK_guard_PC": "0xc00",
+          "slow_CALL_PC": "0xc20",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0xbb0",
+              "instruction": "FFMA R3, -R33, R0, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0xbc0",
+              "instruction": "FFMA R3, R0, R3, R0"
+            },
+            {
+              "stage": 2,
+              "PC": "0xbd0",
+              "instruction": "FFMA R0, R48, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0xbe0",
+              "instruction": "FFMA R2, -R33, R0, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0xbf0",
+              "instruction": "FFMA R3, R3, R2, R0"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0xfb0",
+          "FCHK_PC": "0xfd0",
+          "FCHK_guard_PC": "0x1030",
+          "slow_CALL_PC": "0x1060",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R6",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0xfe0",
+              "instruction": "FFMA R3, -R33, R32, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0xff0",
+              "instruction": "FFMA R3, R32, R3, R32"
+            },
+            {
+              "stage": 2,
+              "PC": "0x1000",
+              "instruction": "FFMA R32, R6, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x1010",
+              "instruction": "FFMA R38, -R33, R32, R6"
+            },
+            {
+              "stage": 4,
+              "PC": "0x1020",
+              "instruction": "FFMA R3, R3, R38, R32"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x3900",
+          "FCHK_PC": "0x3920",
+          "FCHK_guard_PC": "0x3980",
+          "slow_CALL_PC": "0x39a0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x3930",
+              "instruction": "FFMA R3, R10, -R33, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x3940",
+              "instruction": "FFMA R3, R10, R3, R10"
+            },
+            {
+              "stage": 2,
+              "PC": "0x3950",
+              "instruction": "FFMA R10, R48, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x3960",
+              "instruction": "FFMA R13, R10, -R33, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0x3970",
+              "instruction": "FFMA R3, R3, R13, R10"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x3e70",
+          "FCHK_PC": "0x3e90",
+          "FCHK_guard_PC": "0x3ef0",
+          "slow_CALL_PC": "0x3f10",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x3ea0",
+              "instruction": "FFMA R3, R32, -R33, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x3eb0",
+              "instruction": "FFMA R3, R32, R3, R32"
+            },
+            {
+              "stage": 2,
+              "PC": "0x3ec0",
+              "instruction": "FFMA R15, R3, R48, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x3ed0",
+              "instruction": "FFMA R32, R15, -R33, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0x3ee0",
+              "instruction": "FFMA R3, R3, R32, R15"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x4380",
+          "FCHK_PC": "0x43a0",
+          "FCHK_guard_PC": "0x4400",
+          "slow_CALL_PC": "0x4420",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x43b0",
+              "instruction": "FFMA R3, R10, -R33, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x43c0",
+              "instruction": "FFMA R3, R10, R3, R10"
+            },
+            {
+              "stage": 2,
+              "PC": "0x43d0",
+              "instruction": "FFMA R13, R48, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x43e0",
+              "instruction": "FFMA R10, R13, -R33, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0x43f0",
+              "instruction": "FFMA R3, R10, R3, R13"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x7080",
+          "FCHK_PC": "0x70a0",
+          "FCHK_guard_PC": "0x7100",
+          "slow_CALL_PC": "0x7120",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x70b0",
+              "instruction": "FFMA R3, -R33, R6, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x70c0",
+              "instruction": "FFMA R3, R6, R3, R6"
+            },
+            {
+              "stage": 2,
+              "PC": "0x70d0",
+              "instruction": "FFMA R6, R48, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x70e0",
+              "instruction": "FFMA R8, -R33, R6, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0x70f0",
+              "instruction": "FFMA R3, R3, R8, R6"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x74b0",
+          "FCHK_PC": "0x74d0",
+          "FCHK_guard_PC": "0x7530",
+          "slow_CALL_PC": "0x7560",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R4",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x74e0",
+              "instruction": "FFMA R3, -R33, R6, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x74f0",
+              "instruction": "FFMA R3, R6, R3, R6"
+            },
+            {
+              "stage": 2,
+              "PC": "0x7500",
+              "instruction": "FFMA R6, R4, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x7510",
+              "instruction": "FFMA R32, -R33, R6, R4"
+            },
+            {
+              "stage": 4,
+              "PC": "0x7520",
+              "instruction": "FFMA R3, R3, R32, R6"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x77f0",
+          "FCHK_PC": "0x7810",
+          "FCHK_guard_PC": "0x7870",
+          "slow_CALL_PC": "0x78a0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R12",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x7820",
+              "instruction": "FFMA R3, -R33, R32, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x7830",
+              "instruction": "FFMA R3, R32, R3, R32"
+            },
+            {
+              "stage": 2,
+              "PC": "0x7840",
+              "instruction": "FFMA R32, R12, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x7850",
+              "instruction": "FFMA R19, -R33, R32, R12"
+            },
+            {
+              "stage": 4,
+              "PC": "0x7860",
+              "instruction": "FFMA R3, R3, R19, R32"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x8d80",
+          "FCHK_PC": "0x8da0",
+          "FCHK_guard_PC": "0x8e00",
+          "slow_CALL_PC": "0x8e20",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R48",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x8db0",
+              "instruction": "FFMA R3, -R33, R0, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x8dc0",
+              "instruction": "FFMA R3, R0, R3, R0"
+            },
+            {
+              "stage": 2,
+              "PC": "0x8dd0",
+              "instruction": "FFMA R0, R48, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x8de0",
+              "instruction": "FFMA R42, -R33, R0, R48"
+            },
+            {
+              "stage": 4,
+              "PC": "0x8df0",
+              "instruction": "FFMA R3, R3, R42, R0"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x91b0",
+          "FCHK_PC": "0x91d0",
+          "FCHK_guard_PC": "0x9230",
+          "slow_CALL_PC": "0x9260",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R5",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x91e0",
+              "instruction": "FFMA R3, -R33, R42, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x91f0",
+              "instruction": "FFMA R42, R42, R3, R42"
+            },
+            {
+              "stage": 2,
+              "PC": "0x9200",
+              "instruction": "FFMA R3, R5, R42, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x9210",
+              "instruction": "FFMA R44, -R33, R3, R5"
+            },
+            {
+              "stage": 4,
+              "PC": "0x9220",
+              "instruction": "FFMA R3, R42, R44, R3"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x94d0",
+          "FCHK_PC": "0x94f0",
+          "FCHK_guard_PC": "0x9550",
+          "slow_CALL_PC": "0x9580",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R4",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x9500",
+              "instruction": "FFMA R3, -R33, R42, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x9510",
+              "instruction": "FFMA R3, R42, R3, R42"
+            },
+            {
+              "stage": 2,
+              "PC": "0x9520",
+              "instruction": "FFMA R42, R4, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x9530",
+              "instruction": "FFMA R5, -R33, R42, R4"
+            },
+            {
+              "stage": 4,
+              "PC": "0x9540",
+              "instruction": "FFMA R3, R3, R5, R42"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        },
+        {
+          "RCP_PC": "0x97f0",
+          "FCHK_PC": "0x9810",
+          "FCHK_guard_PC": "0x9870",
+          "slow_CALL_PC": "0x98a0",
+          "slow_CALL": "CALL.REL.NOINC `($__internal_3_$__cuda_sm3x_div_rn_ftz_f32_slowpath)",
+          "numerator_register": "R2",
+          "denominator_register": "R33",
+          "five_original_division_refinement_stages": [
+            {
+              "stage": 0,
+              "PC": "0x9820",
+              "instruction": "FFMA R3, -R33, R42, 1"
+            },
+            {
+              "stage": 1,
+              "PC": "0x9830",
+              "instruction": "FFMA R3, R42, R3, R42"
+            },
+            {
+              "stage": 2,
+              "PC": "0x9840",
+              "instruction": "FFMA R42, R2, R3, RZ"
+            },
+            {
+              "stage": 3,
+              "PC": "0x9850",
+              "instruction": "FFMA R44, -R33, R42, R2"
+            },
+            {
+              "stage": 4,
+              "PC": "0x9860",
+              "instruction": "FFMA R3, R3, R44, R42"
+            }
+          ],
+          "local_opcode_inventory": {
+            "MUFU.RCP": 1,
+            "FCHK": 1,
+            "FFMA": 5,
+            "CALL.REL.NOINC": 1
+          }
+        }
+      ]
+    }
+  },
+  "all_candidate_RNFTZ_sites_accounted": 28,
+  "candidate_ordinary_primitive_work_removed": false,
+  "negative_reader_fixtures_rejected": [
+    "missing_FCHK",
+    "missing_refinement_FMA",
+    "wrong_RCP_denominator",
+    "wrong_refinement_constant"
+  ],
+  "decision_basis": "Eachguardedpositive division retains1RCP/5refinementFMA/FCHK/conditional slowCALL justas originalcommon reference. Added bounds/predicate branches do not establish the predeclared removal of ordinary divisionwork. Close fixedform before GPU application/numerical/speed tests; this is an admission-evidence failure, not a measured regression or universal no-speedup proof.",
+  "new_compiler_GPU_module_applicationkernel_solver_or_speed_samples": 0,
+  "limits": "All28candidateRNFTZsites mustbeaccounted via16down/12up slowCALLs, eachlocalRCP/FCHK/5FMAdependencychain andconditionalexceptionalbranch. Comparefirstoriginalcommon normalization reference pertarget. Ifeverycandidate retains original1RCP/5divisionFMA/FCHK/CALL, E124required positive ordinary-work-removal mechanism is not established; close before numerical trials. Preserveallbaseline callwindowinventories as scopedcontext,notglobaldynamiccounts. Fourreadernegativefixtures. NotcompleteCFG/ABI/register-liveness/IEEEsimulator or speed/no-speed proof.",
+  "candidate_adopted": false
+}

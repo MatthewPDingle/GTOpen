@@ -1,0 +1,54 @@
+--- accepted-E051/kernels.cu
++++ E061-requalify-E050/kernels.cu
+@@ -210,7 +210,11 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     int nh_p, int nh_o, int nh_max)
+ {
++#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
++    extern __shared__ __align__(4) char shraw[];
++#else
+     extern __shared__ char shraw[];
++#endif
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+@@ -224,17 +228,39 @@
+     u32 card_base = o_card_off[(u64)slot * 53];
+     const float* ro_g = reach_o_buf + (u64)rsrc_o[n] * nh_o;
+ 
++#if defined(__CUDA_ARCH__) && __CUDA_ARCH__ >= 800
++    // Copy exact words to disjoint, four-byte-aligned shared destinations.
++    // Complete every issuing thread's copies before the block-wide barrier.
++    for (int j = threadIdx.x; j < nh_o; j += blockDim.x) {
++        u32 dst = (u32)__cvta_generic_to_shared(ro_sh + j);
++        asm volatile("cp.async.ca.shared.global [%0], [%1], 4;"
++            :: "r"(dst), "l"(ro_g + j) : "memory");
++    }
++    for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x) {
++        u32 dst = (u32)__cvta_generic_to_shared(card_pos_sh + j);
++        asm volatile("cp.async.ca.shared.global [%0], [%1], 4;"
++            :: "r"(dst), "l"(o_card_pos + card_base + j) : "memory");
++    }
++    // This output clear is independent of the pending input copies. All
++    // terminal rows are disjoint and present hands are overwritten later.
++    for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
++        cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
++    asm volatile("cp.async.wait_all;" ::: "memory");
++#else
+     for (int j = threadIdx.x; j < nh_o; j += blockDim.x) ro_sh[j] = ro_g[j];
+     for (int j = threadIdx.x; j < 2 * m_o; j += blockDim.x)
+         card_pos_sh[j] = o_card_pos[card_base + j];
++#endif
+     __syncthreads();
+     const float* ro = ro_sh;
+     for (int k = threadIdx.x; k < m_o; k += blockDim.x) {
+         reach_sh[k] = ro[o_idx[ob + k]];
+     }
++#if !defined(__CUDA_ARCH__) || __CUDA_ARCH__ < 800
+     // zero my full cfv span (hands missing from this river's sorted list stay 0)
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x)
+         cfv[(u64)cfv_slot[n] * nh_max + i] = 0.f;
++#endif
+     __syncthreads();
+     // Blocked inclusive scan: per-thread chunk scan, thread-0 scans chunk
+     // totals, then chunk offsets are added back.

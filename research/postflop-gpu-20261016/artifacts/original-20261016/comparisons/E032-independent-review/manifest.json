@@ -1,0 +1,34 @@
+{
+  "id": "E032-independent-review",
+  "at": "2026-10-16T19:16:44.874020+00:00",
+  "verdict": "PASS_INDEPENDENT_AUDIT_REJECTED_PRIMARY",
+  "candidate": "E032",
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "independent_numerical_audit_pass": true,
+  "source_build_custody_cleanup_pass": true,
+  "artifact_sha256": {
+    "audit.py": "599d19db1b2bbbae917ade81a1485fe29c8ad9935859859de2633cf02738fc02",
+    "combined-summary.md": "746636df819bd71ee45d0949fac6fb1944881a8ee770e8f076437faac921f115",
+    "custody-audit-exit.json": "ad1ca3743957565b8f5fad8ae4987c4ad7dd9f11c725b3eb243eff0f19ddab3e",
+    "custody-audit-r1.py": "920ac40b95d539bc8bc3bcadb32ef20b444fba3a4c6dbfa72da239e8e1c2b7fc",
+    "custody-audit.py": "1615602a49c61d0a60ee4b79b4cbfa1eef1538ae22e3768bb6f2d07a8d8f276e",
+    "custody-audit.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "custody-audit.stdout.log": "6030d934383a2cc34f145b2f0c533dfa4714badbb14322118ca672b5b6c9b223",
+    "custody-reviewer-correction.json": "b60f461c19dbcb79b82f428dc8cf60d80db783994b5cf23a3bc935cfc47e1d52",
+    "source-custody.json": "285401c2f635a606c100d4db0bd141fa1f2d891a531e870516858384088b7754",
+    "summary.md": "85610feb41310d4aa4967d8835ab72f2756deec795961b82b796268a6f3fe842",
+    "validation.json": "a24a8bacd868947eb27c0df9db45f5f84aaacb076d5ce6933e1dad7a485b62fc"
+  },
+  "comparison_report_sha256": "ad5315a8c1b82e3067d00af00b0d85cf0ecb101af35a57acf789a343597bcf4f",
+  "cleanup_sha256": "4ac0e452c94ceb1ffb955b0dab67db4969d0f72346bdf1dd3d015e4308db2024",
+  "main_compiled_shared_source_entries_verified": 107,
+  "main_shared_map_source": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json",
+    "sha256": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304"
+  },
+  "all_original_samples_retained": true,
+  "no_additional_native_measurements": true,
+  "native_or_compiler_execution_by_auditors": false,
+  "production_or_status_changed_by_auditors": false
+}

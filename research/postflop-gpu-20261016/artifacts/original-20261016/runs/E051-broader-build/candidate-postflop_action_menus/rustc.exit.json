@@ -1,0 +1,31 @@
+{
+  "started_at": "2026-10-17T04:09:33.935960+00:00",
+  "finished_at": "2026-10-17T04:09:45.544967+00:00",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "--test",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_action_menus.rs",
+    "--crate-name",
+    "e051_candidate_postflop_action_menus",
+    "--cfg",
+    "feature=\"gpu\"",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--extern",
+    "solver=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-e051-final-primary\\release\\deps",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-broader-candidate-postflop_action_menus.exe"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

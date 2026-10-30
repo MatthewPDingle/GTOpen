@@ -1,0 +1,85 @@
+--- E022 normalized/build.py
++++ E024/build.py
+@@ -14,11 +14,17 @@
+ assert authorization['candidate'] == 'E024' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'E024_source_review', 'E024_script_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'D046_terminal_review', 'E024_source_review', 'E024_script_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
++assert authorization['D046_terminal_ptx_pass'] is True
++d046_pin=authorization['prerequisites']['D046_terminal_review']
++d046=json.loads(Path(d046_pin['path']).read_text(encoding='utf-8'))
++assert d046['verdict']=='PASS_RESOURCE_PREREQUISITE_AND_SCOPED_PTX_REVIEW'
++assert d046['resource_prerequisite_pass'] is True and d046['source_ptx_review_pass'] is True
++assert d046['numerical_validation']=='not executed' and d046['candidate_accepted'] is False
+ owned = ('crates/solver/src/gpu/kernels.cu',)
+ assert set(authorization['candidate_sources']) == set(owned)
+ protocol_hash = '39fb1748192c01f5cf190e31edbc5d6cf4282966c798b44fd196fe8e04fde62e'
+@@ -69,7 +75,7 @@
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen E024 showdown unused-prefix-tail candidate', active_experiment='E024',
++            status.update(updated_at=ar.now(), stage='Building frozen E024 generic action-cache candidate', active_experiment='E024',
+                           activity='Accepted E020 server qualification and source/script review passed. Building the one-file candidate; native accuracy, complete-cycle speed and broader qualification remain pending.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+@@ -173,8 +179,8 @@
+                     'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+                     'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020, completed server qualification and independent E024 source/script review; not numerical proof',
+-                    'change': 'Only omit unconsumed up_show chunk-prefix tail using the guarded last_base bound. Original consumed recurrence, all barriers/card cache, host shared reservations, ABI, layout and launch shapes unchanged.'}
++                    'prerequisite_scope': 'Accepted E020/server qualification, D046 resource/terminal/PTX PASS and independent E024 source/script review; not numerical proof',
++                    'change': 'Disable only the generic up_action_impl dynamic caches via NA!=0&&na<=8. CommonNA2/3/4 caches, all other CUDA/host bytes, source arithmetic/order, ABI, layout and launch shapes unchanged.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+     print('E024 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
+--- E022 normalized/primary.py
++++ E024/primary.py
+@@ -1,5 +1,5 @@
+ """Run the predeclared E024 unit screen and all six primary solves once, serially."""
+-import json, os, re, shutil, signal, subprocess, sys
++import hashlib, json, os, re, shutil, signal, subprocess, sys
+ from pathlib import Path
+ 
+ repo = Path(r'X:\Dev\GTOpen-gpu-research-20261016')
+@@ -11,6 +11,11 @@
+ assert ar.sha256(protocol_path) == '39fb1748192c01f5cf190e31edbc5d6cf4282966c798b44fd196fe8e04fde62e'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
++assert authorization['D046_terminal_ptx_pass'] is True
++d046_pin=authorization['prerequisites']['D046_terminal_review']
++assert hashlib.sha256(Path(d046_pin['path']).read_bytes()).hexdigest()==d046_pin['sha256']
++d046=json.loads(Path(d046_pin['path']).read_text(encoding='utf-8'))
++assert d046['verdict']=='PASS_RESOURCE_PREREQUISITE_AND_SCOPED_PTX_REVIEW' and d046['resource_prerequisite_pass'] and d046['source_ptx_review_pass']
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_source_review_pass'] is True and authorization['independent_script_review_pass'] is True
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==ar.sha256(here/'scripts-manifest.json')
+@@ -76,7 +81,7 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'E024 showdown unused-prefix-tail candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E024 GPU solver unit screen'),
++               'E024 generic action-cache candidate' if kind == 'candidate' else ('Accepted E020 reference' if kind == 'baseline' else 'E024 GPU solver unit screen'),
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+--- E022 normalized/assess.py
++++ E024/assess.py
+@@ -5,6 +5,11 @@
+ here=Path(__file__).resolve().parent
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
++assert authorization['D046_terminal_ptx_pass'] is True
++d046_pin=authorization['prerequisites']['D046_terminal_review']
++assert hashlib.sha256(Path(d046_pin['path']).read_bytes()).hexdigest()==d046_pin['sha256']
++d046=json.loads(Path(d046_pin['path']).read_text(encoding='utf-8'))
++assert d046['verdict']=='PASS_RESOURCE_PREREQUISITE_AND_SCOPED_PTX_REVIEW' and d046['resource_prerequisite_pass'] and d046['source_ptx_review_pass']
+ def pinned_sha(path):return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+ assert authorization['evidence_sha256'][str(here/'scripts-manifest.json')]==pinned_sha(here/'scripts-manifest.json')
+ for name,h in seal['script_sha256'].items():assert pinned_sha(here/name)==h,name

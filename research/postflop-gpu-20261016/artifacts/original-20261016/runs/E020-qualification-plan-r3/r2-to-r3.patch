@@ -1,0 +1,11 @@
+--- R2/cumulative.py
++++ R3/cumulative.py
+@@ -13,7 +13,7 @@
+     b=c.check_record(ready['broader_report'])
+     assert c.Path(ready['broader_report']['path'])==c.ROOT/'comparisons'/p['broader_comparison_id']/'report.json'
+     assert b['status']=='pass' and (b['original_snapshots'],b['f32_fixtures'],b['gpu_tests'],b['continuation_tests'])==(160,3,6,3)
+-    assert c.Path(ready['holdout_report']['path'])==c.ROOT/'runs/E020-wide-turn-holdout-implementation/cohort/report.json'
++    assert c.Path(ready['holdout_report']['path'])==c.ROOT/'runs/E020-wide-turn-holdout-implementation-r2/cohort/report.json'
+     h=c.check_record(ready['holdout_report']);assert h['status']=='pass'
+     assert h['protocol_sha256']=='33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510'
+     assert h['repeatable_regression'] is False and h['candidate_accepted'] is False and h['deployment_changed'] is False

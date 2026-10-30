@@ -1,0 +1,40 @@
+{
+  "id": "small-gain-confirmation",
+  "at": "2026-10-16T22:55:17.959668+00:00",
+  "status": "PASS_OFF_TREE_PREPARATION_ONLY",
+  "scripts_ast": 4,
+  "unexpected_control_characters": false,
+  "source_accepted162_exact": true,
+  "fresh_targets_absent": 10,
+  "frozen_binaries_absent": 10,
+  "unit_ids_unused": 5,
+  "measurement_ids_unused": 128,
+  "schedule": {
+    "sha256": "16b1e0b18e162f3bcf8c75b9b1379ba9f42a85d198523666035392a6b736cc0a",
+    "single_seed_draw_replayed": true,
+    "redraws": 0,
+    "balanced_per_candidate_per_block": "2BC/2CB",
+    "rotating_family_identical_to_original_design": true,
+    "pairs": 64,
+    "processes": 128
+  },
+  "pure_host_policy_boundary_checks": [
+    "exact1pct passes",
+    "0.999pct fails",
+    "zero and negative fail",
+    "strict9of16 fixture slowdown conjunction rejects",
+    "8of16 slowdown alone does not reject"
+  ],
+  "descriptive_only_additions": [
+    "unscaled median absolute deviation",
+    "explicit wins/ties/losses"
+  ],
+  "draft_preservation": "draft-r1 preserves initial executable drafts; preparation-error.json records main research-only path mismatch. Subsequent corrections add main HEAD, complete build-artifact pins, unit report provenance, high-resolution chronology and progress reporting. No source/numerical workload/policy change.",
+  "other_preparer_read_misses": [
+    "An exploratory read used proposal.json in the historical design; actual protocol.json was read and pinned before schedule preparation."
+  ],
+  "checkout_modified": false,
+  "compiler_native_gpu_executed": false,
+  "runtime_script_import_or_execution": false,
+  "root_execution_required": true
+}

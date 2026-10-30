@@ -1,0 +1,19 @@
+{
+  "id": "D228",
+  "at": "2026-10-29T01:52:53.131679+00:00",
+  "status": "pass_nonnegative_stride_wide_address_algebra",
+  "protocol_sha256": "861db11fbf52bd22cad24c9ce74853ef2192483a94aa59371561161321dee619",
+  "sampled_strides": 1406,
+  "full_record_pairs": 237614,
+  "wide_product_pairs": 104312,
+  "intentional_u32_product_truncation_differences_detected": 104312,
+  "base_byte_address_checks": 1663298,
+  "reader_checks": 2138526,
+  "raw_bytes": 6653192,
+  "raw_sha256": "5fb3507f852274ab90b2b51c3fcbe1ffeb3d1ded13c022e9f043bb682d09b40b",
+  "all_signed_positive_and_unsigned_addresses_identical": true,
+  "algebraic_full_domain_reason": "For every0<=n<=i32MAX, signed32(n) andunsigned32(n) have identical nonnegative integer values and identicalu64 conversion. Multiplying sameu32slot afterexistingu64cast andadding sameint32index therefore yields identicalmod2^64index, including >32bitproducts. Byte/base arithmetic isalso identical. Only signature type changes; sourceproducts stayu64.",
+  "new_CUDA_contexts_compilers_kernels_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Complete retained boundaryCartesian records and independent arithmetic replay support algebra; not exhaustive allpositive32bitstrides/allslots, no validallocation/dereference/ISA/devicefloat orspeed proof. Negative handindices are only integer wrapcontrols, not claims of legalpointeraccess; actualpositive stride enginecontract and compiler/numerical gates remain."
+}

@@ -1,0 +1,1628 @@
+{
+  "at": "2026-10-17T06:15:19.151692+00:00",
+  "status": "closed_component_gate_failed",
+  "protocol_sha256": "8663128a4189e7048708ad8f35f788688672078da7bcfedfa45e55563a4a7907",
+  "fresh_baseline_median_ms": 190.5185,
+  "fresh_avx2_median_ms": 179.4254,
+  "fresh_gain_pct": 5.822584158493791,
+  "paired_gains_pct": [
+    11.181983503007078,
+    3.7912737484768666,
+    -0.8260166521262191,
+    2.053547404808401,
+    13.21418417376257,
+    10.168718203078116,
+    -4.970904412161265,
+    -16.21071495797084,
+    7.167500457882056,
+    15.355306045668206,
+    11.053718633652661,
+    3.237605623948941,
+    -0.5528724015439868,
+    4.672312116513603,
+    9.107559125034511,
+    10.75940803994048
+  ],
+  "positive_pairs": 12,
+  "paired_median_gain_pct": 5.919906287197829,
+  "block_median_gains_pct": [
+    2.922410576642634,
+    2.5989068954584256,
+    9.110609545767359,
+    6.889935620774057
+  ],
+  "order_median_gains_pct": {
+    "BA": 8.137529791458284,
+    "AB": 4.231792932495235
+  },
+  "pretouched_baseline_median_ms": 65.5464,
+  "pretouched_avx2_median_ms": 59.55159999999999,
+  "gates": {
+    "baseline_fresh_representative": true,
+    "fresh_gain_at_least25pct": false,
+    "at_least13positive_pairs": false,
+    "positive_paired_median": true,
+    "all4blocks_positive": true,
+    "both_orders_positive": true,
+    "pretouched_median_not_slower": true
+  },
+  "results": {
+    "D090B01": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 190.48319999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 70.94449999999999,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A01": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 169.1834,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 59.1234,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A02": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 180.3371,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 67.4614,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B02": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 187.44359999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 73.6162,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B03": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 177.5509,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 73.3916,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A03": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 179.01749999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 69.7826,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A04": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 181.28379999999999,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 62.8195,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B04": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 185.0846,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 64.51700000000001,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B05": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 195.5588,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 73.615,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A05": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 169.7173,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 56.715799999999994,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A06": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 174.04729999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 55.122299999999996,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B06": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 193.7491,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 65.20700000000001,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B07": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 181.7114,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 61.1261,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A07": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 190.7441,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 57.4002,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A08": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 208.6747,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 60.3616,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B08": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 179.5658,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 61.2377,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B09": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 194.3732,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 62.856700000000004,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A09": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 180.4415,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 60.3247,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A10": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 171.21259999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 60.3575,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B10": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 202.27210000000002,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 64.9358,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B11": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 193.0373,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 66.7966,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A11": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 171.6995,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 55.9511,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A12": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 186.7132,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 59.9798,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B12": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 192.9605,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 65.88579999999999,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B13": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 180.6746,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 63.700599999999994,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A13": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 181.6735,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 57.0363,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A14": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 179.8333,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 57.8133,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B14": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 188.6475,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 64.2938,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B15": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 190.5538,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 72.1407,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A15": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 173.19899999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 63.077099999999994,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090A16": {
+      "arm": "avx2",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 172.81279999999998,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 56.45,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    },
+    "D090B16": {
+      "arm": "baseline",
+      "avx2_detected": true,
+      "cpu_arena_bytes": 1386321040,
+      "fresh_ms": 193.6482,
+      "fresh_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "gpu_executions": 0,
+      "nodes": 1346813,
+      "pretouched_ms": 75.974,
+      "pretouched_results": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "scope": "Four exact full q OR scans plus original positive-zero scale checks. No GPU, snapshot metadata guard or full constructor/solve timing. No q pre-touch before fresh timer; one independent native process per arm.",
+      "shapes": [
+        [
+          0,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          0,
+          1,
+          185172163,
+          1346813
+        ],
+        [
+          1,
+          0,
+          156020845,
+          1346813
+        ],
+        [
+          1,
+          1,
+          185172163,
+          1346813
+        ]
+      ],
+      "stage": "benchmark"
+    }
+  },
+  "all32native_processes_retained": true,
+  "control_report_sha256": "5f4d712c6bb8b5f84afa5f16cf47105ec603cc54b744a73fbc52b57bfcffa77c",
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "historical_timing_samples_used": 0,
+  "gpu_executions": 0,
+  "solver_source_activated": false,
+  "optimization_accepted": false,
+  "limits": "Isolated four q+scale scans only; no GPU, snapshot guards, whole constructor, solve or no-tradeoff/capacity qualification. A component pass only admits source review. No complete-cycle saving inferred from percentages."
+}

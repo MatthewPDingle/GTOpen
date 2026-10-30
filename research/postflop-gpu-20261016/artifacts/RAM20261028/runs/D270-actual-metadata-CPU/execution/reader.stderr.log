@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D270-root-replay.py", line 105, in <module>
+    arenas=[arena_pair(str(prefix)+f'.p{p}.before.arena.bin',str(prefix)+f'.p{p}.after.arena.bin',forward,ordered,original,p,nn)for p in range(2)]
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D270-root-replay.py", line 43, in arena_pair
+    assert seen==expected
+           ^^^^^^^^^^^^^^
+AssertionError

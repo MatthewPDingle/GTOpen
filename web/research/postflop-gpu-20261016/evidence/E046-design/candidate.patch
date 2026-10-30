@@ -1,0 +1,28 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -299,8 +299,7 @@
+ extern "C" __global__ void up_chance(
+     const u32* __restrict__ nodes, int start, int count,
+     const u32* __restrict__ cc_start, const u32* __restrict__ cc_count,
+-    const u32* __restrict__ cc_card, const u32* __restrict__ cc_child,
+-    const u32* __restrict__ cc_perm,
++    const u32* __restrict__ cc_records,
+     const float* __restrict__ node_cdiv,
+     const u64* __restrict__ mask_p,
+     const u32* __restrict__ hand_perm_p, // perm k at [k*nh_p, (k+1)*nh_p)
+@@ -316,11 +315,12 @@
+         u64 hm = mask_p[i];
+         float acc = 0.f;
+         for (u32 t = t0; t < t1; t++) {
+-            u64 cm = 1ull << cc_card[t];
++            u64 record = 3ull * t;
++            u64 cm = 1ull << cc_records[record];
+             if (hm & cm) continue;
+-            u32 k = cc_perm[t];
++            u32 k = cc_records[record + 2];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+-            acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];
++            acc += cfv[(u64)cfv_slot[cc_records[record + 1]] * nh_max + idx];
+         }
+         cfv[(u64)cfv_slot[n] * nh_max + i] = acc * inv;
+     }

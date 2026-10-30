@@ -1,0 +1,18 @@
+{
+  "started_at": "2026-10-18T08:11:31.158061+00:00",
+  "command": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-resource-controls\\build\\resource-baseline.exe",
+    "postflop_complete_cycle",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "binary_sha256": "e35f13cdbfa888222fb3229829e38ad4ce6acb6e332a401f0ffeadde5dca6da5",
+  "environment_controls": {
+    "RAYON_NUM_THREADS": "16",
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": null
+  },
+  "resource_observation_only": true
+}

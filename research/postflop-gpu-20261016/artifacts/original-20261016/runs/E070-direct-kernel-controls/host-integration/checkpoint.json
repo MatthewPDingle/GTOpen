@@ -1,0 +1,49 @@
+{
+  "id": "E070-complete-host-preparation-checkpoint",
+  "at": "2026-10-17T23:10:58.817644+00:00",
+  "status": "prepared_off_tree_ABI_syntax_integer_checks_pass",
+  "complete_patch_files": 7,
+  "host_launch_sites_audited": 10,
+  "CUDA_entries_requiring_controls": 7,
+  "four_original_main_kernel_control_cases": 3833,
+  "original_main_kernel_control_executions": 0,
+  "additional_helper_entries": [
+    "continuation_project",
+    "continuation_transport",
+    "continuation_storage_copy"
+  ],
+  "helper_resource_host_probe_compiled": true,
+  "helper_resource_native_executions": 0,
+  "Rust_host_pack_byte_pair_cases": 65536,
+  "Rust_candidate_files_syntax_parsed": 4,
+  "discovery": "D114's host inventory found continuation.rs/storage.rs references, but mislabeled them as down-action callers. They launch continuation_project, continuation_transport and continuation_storage_copy from two other CUDA modules. Those three ABIs must also consume packed attrs; retaining both old buffers would defeat the2*N representation.",
+  "scope_correction": "Keep the four-entry core CUDA/resource result frozen. Add the three mandatory continuation compatibility entries and their own resource/numerical prerequisites before integrated activation. This is pre-execution caller coverage, with zero E070 GPU floating-result or timing outcomes.",
+  "file_custody": {
+    "main_source_files_exact": 157,
+    "research_source_files_exact": 162,
+    "required_absences_exact": 5,
+    "live_executable_exact": true,
+    "gpu_run_lock_exists": false,
+    "scope": "File/hash checks only; linked research Git identity and protected PTX not rechecked by this workspace-only stage."
+  },
+  "preparation_errors_preserved": [
+    "host-preparation-newline-error.json",
+    "host-abi-parser-error.json"
+  ],
+  "reports": {
+    "host_manifest_sha256": "b5c61824e571dcd48db0b94b36747925d692a6aa727c9d52fa78893c697685d0",
+    "source_ABI_audit_sha256": "eb92aba9688e74eabfc2a678ea1132b686d353a04e116c627103857b194db4bb",
+    "syntax_integer_report_sha256": "092d6f085b22f847083e80d9e12b10e62de7ac29872339d594058825c364ff61",
+    "patch_sha256": "09c1d119f9ca00371334d4f648d83199fd33d6d1237e4c7fd1bb5ba272156e50",
+    "helper_resource_preparation_sha256": "b0a77c8cbb286e51c4335d44260c598b174f312de074ef6697d383e610b18c27",
+    "helper_resource_rustc_receipt_sha256": "f07791344adeeb184a2d5ff42bf17c79e813b72a35df004dd1fd4171f6ece6d9"
+  },
+  "next_permitted_work": "Prepare the three helper full-raw numerical probes and fixed admission/decoder scripts inside the allowed workspace.",
+  "native_execution_pending": "Current chat still has on-request workspace-write access; bulk outputs require S and localhost verification is restricted. No further approval notifications requested, no settings changed or alternate executor used.",
+  "integrated_Rust_typecheck": false,
+  "new_NVRTC_executions": 0,
+  "new_GPU_executions": 0,
+  "new_performance_measurements": 0,
+  "new_accepted_gain": false,
+  "limits": "Source ABI, syntax and integer checks only. The three helper CUDA resource/numerical controls and all full solver exactness/material/performance gates remain pending. Candidate not activated or adopted."
+}

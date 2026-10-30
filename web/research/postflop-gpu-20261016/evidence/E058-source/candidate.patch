@@ -1,0 +1,11 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -78,7 +78,7 @@
+             sum += r > 0.f ? r : 0.f;
+         }
+         float pr = parent_reach[i];
+-        float uni = pr / (float)na;
++        float uni = sum > 1e-12f ? 0.f : pr / (float)na;
+         for (int a = 0; a < na; a++) {
+             u32 child = children[cs + a];
+             float r = small ? rc[a] : regs[doff + (u64)a * nh_a + i];

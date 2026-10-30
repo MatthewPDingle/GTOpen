@@ -1,0 +1,44 @@
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -31,6 +31,27 @@
+     inactive: Vec<InactiveBlock>,
+     initial: [Vec<f32>; 2],
+     zeros: Vec<f32>,
++}
++
++// Integer OR is exact across chunk/reduction order. Keep small inputs serial.
++const ZERO_PROOF_CHUNK_WORDS: usize = 1 << 20;
++fn zero_proof_i16_bits(q: &[i16]) -> u16 {
++    if q.len() < 2 * ZERO_PROOF_CHUNK_WORDS {
++        q.iter().fold(0u16, |bits, &v| bits | v as u16)
++    } else {
++        q.par_chunks(ZERO_PROOF_CHUNK_WORDS)
++            .map(|chunk| chunk.iter().fold(0u16, |bits, &v| bits | v as u16))
++            .reduce(|| 0, |a, b| a | b)
++    }
++}
++fn zero_proof_u16_bits(q: &[u16]) -> u16 {
++    if q.len() < 2 * ZERO_PROOF_CHUNK_WORDS {
++        q.iter().fold(0u16, |bits, &v| bits | v)
++    } else {
++        q.par_chunks(ZERO_PROOF_CHUNK_WORDS)
++            .map(|chunk| chunk.iter().fold(0u16, |bits, &v| bits | v))
++            .reduce(|| 0, |a, b| a | b)
++    }
+ }
+ 
+ impl ArenaLayout {
+@@ -85,11 +106,11 @@
+         let zero = match store {
+             Store::I16 { q, scale } => {
+                 scale.as_slice().iter().all(|v| v.to_bits() == 0)
+-                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0
++                    && zero_proof_i16_bits(q.as_slice()) == 0
+             }
+             Store::U16 { q, scale } => {
+                 scale.as_slice().iter().all(|v| v.to_bits() == 0)
+-                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0
++                    && zero_proof_u16_bits(q.as_slice()) == 0
+             }
+             Store::F32(_) => false,
+         };

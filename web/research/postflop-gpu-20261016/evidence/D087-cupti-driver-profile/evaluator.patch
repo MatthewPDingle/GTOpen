@@ -1,0 +1,74 @@
+--- frozen-primary-evaluator
++++ D087-diagnostic-evaluator
+@@ -14,6 +14,10 @@
+ use std::io::{self, Write};
+ use std::sync::Arc;
+ use std::time::Instant;
++
++#[link(name="D087Collector")] extern "system" { fn D087StartTrace()->u32; fn D087PhaseTrace(marker:u32)->u32; fn D087FlushTrace()->u32; fn D087StopTrace()->u32; }
++struct D087Guard;impl Drop for D087Guard {fn drop(&mut self){unsafe{D087StopTrace();}}}
++
+ 
+ const TARGET_PCT_POT: f64 = 0.3;
+ const CHECK_EVERY: u32 = 20;
+@@ -163,6 +167,8 @@
+         Ok("0") | Err(_) => false,
+         Ok(other) => panic!("unknown POSTFLOP_AUTORESEARCH_PROFILE {other:?}"),
+     };
++    assert_eq!(filter.as_deref(),Some("rainbow"),"D087 diagnostic fixture");
++    assert!(storage==Storage::Compressed && !profile,"D087 diagnostic settings");
+     emit_stage(json!({
+         "schema_version": 1, "stage": "suite_start", "storage": storage_name,
+         "fixture_filter": filter, "smoke_only": filter.is_some(),
+@@ -180,7 +186,7 @@
+             continue;
+         }
+         let mut config: SpotConfig =
+-            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++            serde_json::from_str(include_str!(r"X:\Dev\GTOpen-gpu-research-20261016\bench_spot.json")).unwrap();
+         config.board = board.into();
+         config.tree.rake_pct = rake;
+         config.tree.rake_cap = 3.0;
+@@ -204,12 +210,17 @@
+         }));
+ 
+         let stage_start = Instant::now();
++        let _d085_guard = D087Guard;
++        assert_eq!(unsafe{D087StartTrace()},1,"private CUPTI start");
++        assert_eq!(unsafe{D087PhaseTrace(1)},1,"phase init begin");
+         let mut gpu = GpuSolver::new(&host).expect("benchmark requires CUDA");
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace(2)},1,"phase init end");
+         let gpu_init_ms = elapsed_ms(stage_start);
+         emit_stage(json!({"stage": "gpu_ready", "fixture_id": name, "init_ms": gpu_init_ms}));
+ 
+         let solve_start = Instant::now();
++        assert_eq!(unsafe{D087PhaseTrace(3)},1,"phase solve begin");
+         let (exploit, exploit_pct_pot) = loop {
+             for _ in 0..CHECK_EVERY {
+                 gpu.iterate().unwrap();
+@@ -227,11 +238,14 @@
+             }
+         };
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace(4)},1,"phase solve end");
+         let solve_checks_ms = elapsed_ms(solve_start);
+ 
+         let stage_start = Instant::now();
++        assert_eq!(unsafe{D087PhaseTrace(5)},1,"phase readback begin");
+         gpu.sync_to_cpu(&mut host).unwrap();
+         gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087PhaseTrace(6)},1,"phase readback end");
+         let full_readback_ms = elapsed_ms(stage_start);
+         let total_ms = elapsed_ms(total_start);
+         assert_eq!(host.iteration, gpu.iteration);
+@@ -268,6 +282,9 @@
+         }));
+         assert!(target_met, "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations");
+ 
++        gpu.synchronize().unwrap();
++        assert_eq!(unsafe{D087FlushTrace()},1,"private CUPTI flush");
++        assert_eq!(unsafe{D087StopTrace()},1,"private CUPTI stop while context alive");
+         if profile {
+             let diagnostic = gpu.iterate_profiled().unwrap();
+             emit_stage(json!({

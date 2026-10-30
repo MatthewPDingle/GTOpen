@@ -1,0 +1,257 @@
+{
+  "id": "E120-primary-checkpoint",
+  "at": "2026-10-29T18:35:32.597722+00:00",
+  "status": "REJECTED_CLOSED_STABLE_SPARSE_CARD_FORM",
+  "measurement_epoch": "RAM20261028",
+  "source_sha256": "1a903aa2a842d1c539db476e9d250c052de223ceb1f5ba7b86d650c3dd6845ee",
+  "mechanism": "Only compute120 up_show: ORguard allactualreaches bits<=+2^80/nh_o<=1326; existing52disjointcard-positionintervals stably leftcompact +0positions afteroriginalsecondbarrier. Originalthirdbarrierjoinswriters, originalconsumerbound iscard_base+keptrelativeend. UnsafeCTAoriginalend; allprefix/nonzero correctionorder/same/valid/tied/three-term payout/allownwrites retained. Same5logicalCTAbarriers;firstisOR.",
+  "evidence_sha256": {
+    "scout": "7cf5e0137d8e1ab80e16cb6d304a497510bcee2a1de9040b7dafbedbf1d6f16e",
+    "history": "2693a361673b7ba2300fdc6ac2c912eeb2791c79a9ad7c021b2464edfb3b398e",
+    "FP_and_dependencies": "fe47c3c5867cc8f569ede84dd4e58286b873ba0fa444357b013b34a792c7bf95",
+    "resource": "bb962dc24ed463dff80813a1d64c8507988536699575697c0df1a3782f49c0be",
+    "PTX": "d4391174522ec44abb80b362d44753e74b789d88f14fad891a238c532f434bdc",
+    "native": "d5d62d9afe1a53273659e2374b186888a5e7dae956f3a04bd340d153588ad6aa",
+    "direct": "1cdec614a165b7f7b52305266cc97b6fe725b7a093ece5c61c1442fcd4c74936"
+  },
+  "D292_source_limits": "139uniqueCUDAhashes/localallref boundedliteralhistory,73719integerstablefilter/selectedsubsequencechecks andall256cardwriterwidthmodels. Not exhaustive semantic/remotenovelty/compiledIEEEproof. Eligible nonnegative bounded recurrence +0identity is sourceIEEEargument; GPUdirectrequired. No E036/E066/E068/E077/E084/E118 hunk composed.",
+  "compiled_resource_warnings": "up_show38to40regs,static1040to1248B(+208);local0,dynamicworst26520,stack1024,maxthreads1024,worstoccupancy64/128/256=3/3/3 unchanged. Untargeted8entry resources/PTX/9ABIs exact;compute75all9bodies exact. Otherworkloadresidency/materialneutrality not established.",
+  "emitted_mechanism_limits": "D293actualPTX unsignedreachguard/OR/7peeled-unrolledzero-bitloads,6nontrivialoriginalpositionstores/endpublish/2consumersafterlastbarrier/5barriers/unchangedFPopcodeinventory;5negativefixtures. Pre-firstreaderR2corrected7loadregisterbindings and secondconsumerregisters; originalreader/protocolretained, no source/nativechange. D294actualdriverguardOR/conditionalintegerstores/originalendfallback/postjoinfirstendpoint/5barriers;4negativefixtures. Bounded readers, not complete nativepointer/floatinginterpreter; secondnativeconsumer not fully symbolicallyproved; PTX+fullrawrequired. No counters/latency/significanceproof.",
+  "direct_inventory": {
+    "device_input_word_checks": 126859360,
+    "device_input_buffer_checks": 553560,
+    "active_words_compared": 7645180,
+    "output_guard_word_checks": 63032880,
+    "full_output_words_both_arms": 78323240,
+    "comparison_pairs": 13180,
+    "rounding_witness_checks": 2
+  },
+  "direct_scope": "AlloriginalE1182428cases/244geometries retained, including original764rankoracle/anti-vacuity/tworoundingwitnesses. Add208cases(13patternsx16geometries):alternating/runs17/isolated/lastpositive/zero+subnormal/zero+bound/negativezero/negative/inf/qnan/snan/abovebound/unlistedfallback. All5widths1/32/64/128/256,21entireactualinputbuffers,wholephysicalCFV/guards,exactbits/noomittedfields/tolerance.",
+  "direct_raw": {
+    "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-kernel-control\\execution\\raw-results.jsonl",
+    "bytes": 1722129693,
+    "sha256": "3c048ed211eb2bf767fc3ed0cb6a21e91e1de0d1d25916785168a1af01f338c0",
+    "not_rehashed_after_complete_reader": true
+  },
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "two_fresh_ordinary_builds_include_actual_NVRTC_JIT": true,
+  "full_canonical_raw_engine_broad_material_validation_completed": false,
+  "test_order": "Resource/source/mechanism ->entireoriginal+targetedsparseraw ->ordinaryunits ->initial3paircompletecycles, prospectivelyfrozen beforefirstapplicationkernel. Fullcanonical/engine/broad/material/fresh16/holdout/cumulative/app allmandatorybeforeadoption.",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9154.004,
+    "candidate_full_cycle_ms": 8882.5267,
+    "observed_gain_pct": 2.9656672642922204,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -3.0647007913423154,
+        "slower_pairs": 0,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -2.9585899367021984,
+        "slower_pairs": 0,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 3.3023395100063166,
+        "slower_pairs": 2,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_ms": [
+        5649.736199999999,
+        5418.0852,
+        5414.6140000000005
+      ],
+      "candidate_ms": [
+        5252.0371,
+        5267.5896,
+        5210.2336
+      ],
+      "baseline_median_ms": 5418.0852,
+      "candidate_median_ms": 5252.0371,
+      "gain_pct": 3.0647007913423154,
+      "paired_gain_pct": [
+        7.03925078838194,
+        2.7776528874075326,
+        3.7746070172315314
+      ],
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_ms": [
+        3790.8543,
+        3640.1303000000003,
+        3654.4402
+      ],
+      "candidate_ms": [
+        3612.7614000000003,
+        3546.3203000000003,
+        3498.8858999999998
+      ],
+      "baseline_median_ms": 3654.4402,
+      "candidate_median_ms": 3546.3203000000003,
+      "gain_pct": 2.9585899367021984,
+      "paired_gain_pct": [
+        4.697962145366538,
+        2.5771055503150517,
+        4.256583539114971
+      ],
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "river",
+      "baseline_ms": [
+        82.8698,
+        79.2318,
+        81.4786
+      ],
+      "candidate_ms": [
+        85.1816,
+        84.1693,
+        77.6231
+      ],
+      "baseline_median_ms": 81.4786,
+      "candidate_median_ms": 84.1693,
+      "gain_pct": -3.3023395100063166,
+      "paired_gain_pct": [
+        -2.7896773010191955,
+        -6.231715043707198,
+        4.731917337804044
+      ],
+      "guard_failed": true
+    }
+  ],
+  "primary_protocol_sha256": "4af27170e4817d2cf5b9c5ffdede7aa1fa492d95af3ee53f1cc07c2f4a13dd36",
+  "comparison_sha256": "7a008ddad8c6c9ff2dd368daef752f8401beda9933a386e4fddf281adc38ad42",
+  "root_replay_sha256": "11897364fc4867d94792997f37bed9d8b974a4a2dec087440a78dec09d70a90b",
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-resource\\execution\\probe.exit.json",
+      "sha256": "b746073c7ddd23b2ed2fffd23afd4246dc1c79fa5cb75ece171594a7d0146e5e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-resource\\execution\\rustc.exit.json",
+      "sha256": "e3130337d916299f9d5a0735063328816e68fbb1f892c955129d4e9b3d8d0a24",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D294-sparse-card-native\\execution\\candidate\\capture.exit.json",
+      "sha256": "ea4f281b6a8334932d4a7b9c50c63ad2c8562b930c9831004534008acab1ad70",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D294-sparse-card-native\\execution\\candidate\\disassemble.exit.json",
+      "sha256": "7dd3d8b0d6cff4bbdd61050108440fe0a87cf1193f6c84205a3fedb4d7452a5b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-kernel-control\\execution\\probe.exit.json",
+      "sha256": "de07b1e1873174e33d572e253820135c14db4908940a267f6c6fb699e583fa6c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-kernel-control\\execution\\rustc.exit.json",
+      "sha256": "f473d15da069ef724ea2024df7fe804a202c6f839e437600b613c330253ea841",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-direct-audit\\capture.exit.json",
+      "sha256": "dc64fc89efdf1270786b50e98b9ca89ef6d60b14ce9e4c26554c25a1d35d43a3",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-direct-audit\\reader.exit.json",
+      "sha256": "5f7d8aa5bfe8602aab8cd89ba8b4d1614f862432c85bcae43a5c080fe56baca1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-final-build\\feature\\cargo.exit.json",
+      "sha256": "15eb6b50d5aa6842efd33deebdfec4a50c4fc9b2785418f2c1312d1d8b8a55a6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-final-build\\primary\\cargo.exit.json",
+      "sha256": "dfe4629c3374dbc9abb25589ddef5c4dc20462e19d2cff27ddd6e2626f341bf7",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\B369.exit.json",
+      "sha256": "c8b095c45e133e6518f9cb5b3b826fd04e620a83af9e1160fa2dc8d15e3c4aa6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\B370.exit.json",
+      "sha256": "5657006401f8febaa27b3a71f5528c56c015e474bca28779d4b8b28f17de00a8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\B371.exit.json",
+      "sha256": "94fb4c8b1f2ad8ee09176d95b752045235f415f92a4ffa52da2e6bcbb8673862",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\E120R1.exit.json",
+      "sha256": "99d46768a9f9fd9a2e27edfae590445c13cae7546f960cd600681a342ea45a0f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\E120R2.exit.json",
+      "sha256": "a22a8c2afe988bd8687d088e4ac550303eb2d28785559ea58edd641de48a7f7e",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\E120R3.exit.json",
+      "sha256": "73daf38b8a1d7df7158ec2b73fe1e954d7835f933793dd5962685b9fc4a612e8",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-execution\\V120-unit.exit.json",
+      "sha256": "e5e8f841d1e6d77ce415c854004726f4bd967b3bf7d4fcdf69aabcb0c307d678",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-wrapper\\assess.exit.json",
+      "sha256": "0cca6282aac7d63d991e48191d17ef405ba1e5bbf8b2badf5a94e9ed05ed8db1",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-wrapper\\native.exit.json",
+      "sha256": "325cf61e7ff4d567199573a4cff5133c8a92d6161d12a71ddee9b5ba8aae9735",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E120-primary-wrapper\\root-check.exit.json",
+      "sha256": "fb54df8b910d41ca7e8cccd7822296a71f79a1b217a47898003df92f5da9cbb7",
+      "returncode": 0
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "locks_absent": true,
+  "accepted_main_live_protected_PTX_unchanged": true,
+  "candidate_adopted": false,
+  "reason": "Complete-solve medians total 9154.0040 to 8882.5267 ms: 2.965667% observed gain. The fixed form failed the 1% or strict fixture guard and is closed without source variants or extra samples.",
+  "extra_or_rescue_samples": 0,
+  "remaining_qualification_requirements": [],
+  "last_primary_baseline": "B371",
+  "next_unused_baseline": "B372",
+  "best_qualified_config": "E080/GPU/compressed/16workers/defaultaffinity",
+  "hardware_epoch_baseline_ms": 10456.4109,
+  "historical_or_RAMtimings_scored": 0,
+  "all_new_bulk_X_S_read_only_no_T_access": true,
+  "goal_active": true
+}

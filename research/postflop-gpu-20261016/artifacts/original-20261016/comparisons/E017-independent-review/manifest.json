@@ -1,0 +1,53 @@
+{
+  "candidate": "E017",
+  "created_at": "2026-10-16T08:37:50.707134+00:00",
+  "verdict": "PASS_rejection_confirmed",
+  "artifacts": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E017-independent-review\\audit.py",
+      "sha256": "05dd0875ac9d77b4e01240ef2ba0bdaefb304645186f91823df9aa81bf2628ce"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E017-independent-review\\validation.json",
+      "sha256": "0da848ea50105f4b0670e5c252ce8d75e9e9569fae083dd70e7ad593bacd9ee4"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E017-independent-review\\summary.md",
+      "sha256": "744dae1210ce5b64d88c10ea4b0ea19428d9259db7d9aacd2b92409d80bcaa98"
+    }
+  ],
+  "supplemental_source_provenance_checks": [
+    {
+      "id": "E017R1",
+      "source_entries": 162,
+      "build_runtime_source_equal": true
+    },
+    {
+      "id": "E017R2",
+      "source_entries": 162,
+      "build_runtime_source_equal": true
+    },
+    {
+      "id": "E017R3",
+      "source_entries": 162,
+      "build_runtime_source_equal": true
+    },
+    {
+      "id": "V017-unit",
+      "source_entries": 162,
+      "build_runtime_source_equal": true
+    },
+    {
+      "id": "V017-capacity",
+      "source_entries": 162,
+      "build_runtime_source_equal": true
+    }
+  ],
+  "runner_prelaunch_guard": {
+    "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+    "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "dashboard_collision_check_precedes_run_directory_creation_and_run_call": true
+  },
+  "no_build_or_gpu_work_by_reviewer": true,
+  "existing_evidence_modified": false
+}

@@ -1,0 +1,2949 @@
+{
+  "id": "D229",
+  "at": "2026-10-29T02:05:24.084467+00:00",
+  "status": "failed_compiled_stride_mechanism_or_reader",
+  "protocol_sha256": "f5227864435cdb78f884309060e7f9373f497e5d82eab17a0ee42558e08f6674",
+  "gates": {
+    "compute_120:up_fold:one_original_scalar32_parameter_binding": true,
+    "compute_120:up_fold:baseline_stride_signextension_present": true,
+    "compute_120:up_fold:candidate_stride_signextension_removed": true,
+    "compute_120:up_fold:wide_address_product_preserved": true,
+    "compute_120:up_show:one_original_scalar32_parameter_binding": true,
+    "compute_120:up_show:baseline_stride_signextension_present": true,
+    "compute_120:up_show:candidate_stride_signextension_removed": true,
+    "compute_120:up_show:wide_address_product_preserved": true,
+    "compute_120:up_chance:one_original_scalar32_parameter_binding": true,
+    "compute_120:up_chance:baseline_stride_signextension_present": true,
+    "compute_120:up_chance:candidate_stride_signextension_removed": true,
+    "compute_120:up_chance:wide_address_product_preserved": true,
+    "compute_120:up_action:one_original_scalar32_parameter_binding": false,
+    "compute_120:up_action:baseline_stride_signextension_present": true,
+    "compute_120:up_action:candidate_stride_signextension_removed": true,
+    "compute_120:up_action:wide_address_product_preserved": true,
+    "compute_120:up_action_eval:one_original_scalar32_parameter_binding": true,
+    "compute_120:up_action_eval:baseline_stride_signextension_present": true,
+    "compute_120:up_action_eval:candidate_stride_signextension_removed": true,
+    "compute_120:up_action_eval:wide_address_product_preserved": true,
+    "compute_75:up_fold:one_original_scalar32_parameter_binding": true,
+    "compute_75:up_fold:baseline_stride_signextension_present": true,
+    "compute_75:up_fold:candidate_stride_signextension_removed": true,
+    "compute_75:up_fold:wide_address_product_preserved": true,
+    "compute_75:up_show:one_original_scalar32_parameter_binding": false,
+    "compute_75:up_show:baseline_stride_signextension_present": true,
+    "compute_75:up_show:candidate_stride_signextension_removed": true,
+    "compute_75:up_show:wide_address_product_preserved": true,
+    "compute_75:up_chance:one_original_scalar32_parameter_binding": true,
+    "compute_75:up_chance:baseline_stride_signextension_present": true,
+    "compute_75:up_chance:candidate_stride_signextension_removed": true,
+    "compute_75:up_chance:wide_address_product_preserved": true,
+    "compute_75:up_action:one_original_scalar32_parameter_binding": true,
+    "compute_75:up_action:baseline_stride_signextension_present": true,
+    "compute_75:up_action:candidate_stride_signextension_removed": true,
+    "compute_75:up_action:wide_address_product_preserved": true,
+    "compute_75:up_action_eval:one_original_scalar32_parameter_binding": true,
+    "compute_75:up_action_eval:baseline_stride_signextension_present": true,
+    "compute_75:up_action_eval:candidate_stride_signextension_removed": true,
+    "compute_75:up_action_eval:wide_address_product_preserved": true
+  },
+  "entry_dataflow": {
+    "compute_120": {
+      "up_fold": {
+        "baseline": {
+          "PTX_sha256": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+          "stride_parameter_ordinal": 20,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r41",
+              "line": 52,
+              "code": "ld.param.u32 \t%r41, [up_fold_param_20];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 395,
+              "code": "cvt.s64.s32 \t%rd153, %r41;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 396,
+              "code": "mul.lo.s64 \t%rd15, %rd152, %rd153;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 34,
+            "sub.f32": 2,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "887f6d8b3efe9f1d4c4e5526e1a1d08b8382f32efac563bf1ad9a86e8ac0e4f2",
+          "stride_parameter_ordinal": 20,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r41",
+              "line": 52,
+              "code": "ld.param.u32 \t%r41, [up_fold_param_20];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 394,
+              "code": "mul.wide.u32 \t%rd15, %r82, %r41;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 34,
+            "sub.f32": 2,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_show": {
+        "baseline": {
+          "PTX_sha256": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+          "stride_parameter_ordinal": 26,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r96",
+              "line": 62,
+              "code": "ld.param.u32 \t%r96, [up_show_param_26];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 173,
+              "code": "cvt.s64.s32 \t%rd89, %r96;"
+            },
+            {
+              "line": 372,
+              "code": "cvt.s64.s32 \t%rd127, %r96;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 174,
+              "code": "mul.lo.s64 \t%rd16, %rd88, %rd89;"
+            },
+            {
+              "line": 373,
+              "code": "mul.lo.s64 \t%rd18, %rd126, %rd127;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 106,
+            "selp.f32": 90,
+            "sub.f32": 6,
+            "mul.f32": 1,
+            "fma.rn.f32": 2
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "e0f734bdfae09a797f8a8649b905cda45f5851b9e536c4b9c4b975d2c9121661",
+          "stride_parameter_ordinal": 26,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r96",
+              "line": 62,
+              "code": "ld.param.u32 \t%r96, [up_show_param_26];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 172,
+              "code": "mul.wide.u32 \t%rd16, %r107, %r96;"
+            },
+            {
+              "line": 369,
+              "code": "mul.wide.u32 \t%rd18, %r125, %r96;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 106,
+            "selp.f32": 90,
+            "sub.f32": 6,
+            "mul.f32": 1,
+            "fma.rn.f32": 2
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_chance": {
+        "baseline": {
+          "PTX_sha256": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+          "stride_parameter_ordinal": 14,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r42",
+              "line": 37,
+              "code": "ld.param.u32 \t%r42, [up_chance_param_14];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 67,
+              "code": "cvt.s64.s32 \t%rd7, %r42;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 116,
+              "code": "mul.lo.s64 \t%rd62, %rd61, %rd7;"
+            },
+            {
+              "line": 147,
+              "code": "mul.lo.s64 \t%rd76, %rd75, %rd7;"
+            },
+            {
+              "line": 179,
+              "code": "mul.lo.s64 \t%rd90, %rd89, %rd7;"
+            },
+            {
+              "line": 215,
+              "code": "mul.lo.s64 \t%rd105, %rd104, %rd7;"
+            },
+            {
+              "line": 243,
+              "code": "mul.lo.s64 \t%rd119, %rd118, %rd7;"
+            },
+            {
+              "line": 271,
+              "code": "mul.lo.s64 \t%rd133, %rd132, %rd7;"
+            },
+            {
+              "line": 299,
+              "code": "mul.lo.s64 \t%rd147, %rd146, %rd7;"
+            },
+            {
+              "line": 316,
+              "code": "mul.lo.s64 \t%rd153, %rd152, %rd7;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 7,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "7a2af9eae578606499f3a2172a74f4ad4e13d8d9a5b311c99d3a7501de80ff4c",
+          "stride_parameter_ordinal": 14,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r41",
+              "line": 37,
+              "code": "ld.param.u32 \t%r41, [up_chance_param_14];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 69,
+              "code": "mul.wide.u32 \t%rd7, %r46, %r41;"
+            },
+            {
+              "line": 115,
+              "code": "mul.wide.u32 \t%rd61, %r49, %r41;"
+            },
+            {
+              "line": 145,
+              "code": "mul.wide.u32 \t%rd74, %r52, %r41;"
+            },
+            {
+              "line": 176,
+              "code": "mul.wide.u32 \t%rd87, %r55, %r41;"
+            },
+            {
+              "line": 211,
+              "code": "mul.wide.u32 \t%rd101, %r58, %r41;"
+            },
+            {
+              "line": 238,
+              "code": "mul.wide.u32 \t%rd114, %r61, %r41;"
+            },
+            {
+              "line": 265,
+              "code": "mul.wide.u32 \t%rd127, %r64, %r41;"
+            },
+            {
+              "line": 292,
+              "code": "mul.wide.u32 \t%rd140, %r67, %r41;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 7,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_action": {
+        "baseline": {
+          "PTX_sha256": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+          "stride_parameter_ordinal": 19,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r470",
+              "line": 109,
+              "code": "ld.param.u32 \t%r470, [up_action_param_19];"
+            },
+            {
+              "register": "%r469",
+              "line": 176,
+              "code": "ld.param.u32 \t%r469, [up_action_param_19];"
+            },
+            {
+              "register": "%r468",
+              "line": 267,
+              "code": "ld.param.u32 \t%r468, [up_action_param_19];"
+            },
+            {
+              "register": "%r467",
+              "line": 341,
+              "code": "ld.param.u32 \t%r467, [up_action_param_19];"
+            },
+            {
+              "register": "%r466",
+              "line": 429,
+              "code": "ld.param.u32 \t%r466, [up_action_param_19];"
+            },
+            {
+              "register": "%r465",
+              "line": 551,
+              "code": "ld.param.u32 \t%r465, [up_action_param_19];"
+            },
+            {
+              "register": "%r464",
+              "line": 640,
+              "code": "ld.param.u32 \t%r464, [up_action_param_19];"
+            },
+            {
+              "register": "%r463",
+              "line": 748,
+              "code": "ld.param.u32 \t%r463, [up_action_param_19];"
+            },
+            {
+              "register": "%r462",
+              "line": 900,
+              "code": "ld.param.u32 \t%r462, [up_action_param_19];"
+            },
+            {
+              "register": "%r473",
+              "line": 1004,
+              "code": "ld.param.u32 \t%r473, [up_action_param_19];"
+            },
+            {
+              "register": "%r472",
+              "line": 1396,
+              "code": "ld.param.u32 \t%r472, [up_action_param_19];"
+            },
+            {
+              "register": "%r471",
+              "line": 2123,
+              "code": "ld.param.u32 \t%r471, [up_action_param_19];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 112,
+              "code": "cvt.s64.s32 \t%rd497, %r470;"
+            },
+            {
+              "line": 179,
+              "code": "cvt.s64.s32 \t%rd463, %r469;"
+            },
+            {
+              "line": 270,
+              "code": "cvt.s64.s32 \t%rd434, %r468;"
+            },
+            {
+              "line": 345,
+              "code": "cvt.s64.s32 \t%rd386, %r467;"
+            },
+            {
+              "line": 433,
+              "code": "cvt.s64.s32 \t%rd342, %r466;"
+            },
+            {
+              "line": 555,
+              "code": "cvt.s64.s32 \t%rd305, %r465;"
+            },
+            {
+              "line": 644,
+              "code": "cvt.s64.s32 \t%rd245, %r464;"
+            },
+            {
+              "line": 752,
+              "code": "cvt.s64.s32 \t%rd191, %r463;"
+            },
+            {
+              "line": 904,
+              "code": "cvt.s64.s32 \t%rd146, %r462;"
+            },
+            {
+              "line": 1006,
+              "code": "cvt.s64.s32 \t%rd83, %r473;"
+            },
+            {
+              "line": 1399,
+              "code": "cvt.s64.s32 \t%rd89, %r472;"
+            },
+            {
+              "line": 2124,
+              "code": "cvt.s64.s32 \t%rd115, %r471;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 115,
+              "code": "mul.lo.s64 \t%rd20, %rd498, %rd497;"
+            },
+            {
+              "line": 124,
+              "code": "mul.lo.s64 \t%rd21, %rd503, %rd497;"
+            },
+            {
+              "line": 133,
+              "code": "mul.lo.s64 \t%rd22, %rd508, %rd497;"
+            },
+            {
+              "line": 182,
+              "code": "mul.lo.s64 \t%rd27, %rd464, %rd463;"
+            },
+            {
+              "line": 191,
+              "code": "mul.lo.s64 \t%rd28, %rd469, %rd463;"
+            },
+            {
+              "line": 200,
+              "code": "mul.lo.s64 \t%rd29, %rd474, %rd463;"
+            },
+            {
+              "line": 273,
+              "code": "mul.lo.s64 \t%rd31, %rd435, %rd434;"
+            },
+            {
+              "line": 282,
+              "code": "mul.lo.s64 \t%rd32, %rd440, %rd434;"
+            },
+            {
+              "line": 291,
+              "code": "mul.lo.s64 \t%rd33, %rd445, %rd434;"
+            },
+            {
+              "line": 348,
+              "code": "mul.lo.s64 \t%rd39, %rd387, %rd386;"
+            },
+            {
+              "line": 357,
+              "code": "mul.lo.s64 \t%rd40, %rd392, %rd386;"
+            },
+            {
+              "line": 366,
+              "code": "mul.lo.s64 \t%rd41, %rd397, %rd386;"
+            },
+            {
+              "line": 375,
+              "code": "mul.lo.s64 \t%rd42, %rd402, %rd386;"
+            },
+            {
+              "line": 436,
+              "code": "mul.lo.s64 \t%rd47, %rd343, %rd342;"
+            },
+            {
+              "line": 445,
+              "code": "mul.lo.s64 \t%rd48, %rd348, %rd342;"
+            },
+            {
+              "line": 454,
+              "code": "mul.lo.s64 \t%rd49, %rd353, %rd342;"
+            },
+            {
+              "line": 463,
+              "code": "mul.lo.s64 \t%rd50, %rd358, %rd342;"
+            },
+            {
+              "line": 558,
+              "code": "mul.lo.s64 \t%rd52, %rd306, %rd305;"
+            },
+            {
+              "line": 567,
+              "code": "mul.lo.s64 \t%rd53, %rd311, %rd305;"
+            },
+            {
+              "line": 576,
+              "code": "mul.lo.s64 \t%rd54, %rd316, %rd305;"
+            },
+            {
+              "line": 585,
+              "code": "mul.lo.s64 \t%rd55, %rd321, %rd305;"
+            },
+            {
+              "line": 647,
+              "code": "mul.lo.s64 \t%rd61, %rd246, %rd245;"
+            },
+            {
+              "line": 656,
+              "code": "mul.lo.s64 \t%rd62, %rd251, %rd245;"
+            },
+            {
+              "line": 665,
+              "code": "mul.lo.s64 \t%rd63, %rd256, %rd245;"
+            },
+            {
+              "line": 674,
+              "code": "mul.lo.s64 \t%rd64, %rd261, %rd245;"
+            },
+            {
+              "line": 683,
+              "code": "mul.lo.s64 \t%rd65, %rd266, %rd245;"
+            },
+            {
+              "line": 755,
+              "code": "mul.lo.s64 \t%rd70, %rd192, %rd191;"
+            },
+            {
+              "line": 764,
+              "code": "mul.lo.s64 \t%rd71, %rd197, %rd191;"
+            },
+            {
+              "line": 773,
+              "code": "mul.lo.s64 \t%rd72, %rd202, %rd191;"
+            },
+            {
+              "line": 782,
+              "code": "mul.lo.s64 \t%rd73, %rd207, %rd191;"
+            },
+            {
+              "line": 791,
+              "code": "mul.lo.s64 \t%rd74, %rd212, %rd191;"
+            },
+            {
+              "line": 907,
+              "code": "mul.lo.s64 \t%rd76, %rd147, %rd146;"
+            },
+            {
+              "line": 916,
+              "code": "mul.lo.s64 \t%rd77, %rd152, %rd146;"
+            },
+            {
+              "line": 925,
+              "code": "mul.lo.s64 \t%rd78, %rd157, %rd146;"
+            },
+            {
+              "line": 934,
+              "code": "mul.lo.s64 \t%rd79, %rd162, %rd146;"
+            },
+            {
+              "line": 943,
+              "code": "mul.lo.s64 \t%rd80, %rd167, %rd146;"
+            },
+            {
+              "line": 1011,
+              "code": "mul.lo.s64 \t%rd84, %rd955, %rd83;"
+            },
+            {
+              "line": 1062,
+              "code": "mul.lo.s64 \t%rd965, %rd964, %rd83;"
+            },
+            {
+              "line": 1081,
+              "code": "mul.lo.s64 \t%rd978, %rd977, %rd83;"
+            },
+            {
+              "line": 1100,
+              "code": "mul.lo.s64 \t%rd991, %rd990, %rd83;"
+            },
+            {
+              "line": 1119,
+              "code": "mul.lo.s64 \t%rd1004, %rd1003, %rd83;"
+            },
+            {
+              "line": 1138,
+              "code": "mul.lo.s64 \t%rd1017, %rd1016, %rd83;"
+            },
+            {
+              "line": 1157,
+              "code": "mul.lo.s64 \t%rd1030, %rd1029, %rd83;"
+            },
+            {
+              "line": 1176,
+              "code": "mul.lo.s64 \t%rd1043, %rd1042, %rd83;"
+            },
+            {
+              "line": 1195,
+              "code": "mul.lo.s64 \t%rd1056, %rd1055, %rd83;"
+            },
+            {
+              "line": 1235,
+              "code": "mul.lo.s64 \t%rd1069, %rd1068, %rd83;"
+            },
+            {
+              "line": 1255,
+              "code": "mul.lo.s64 \t%rd1082, %rd1081, %rd83;"
+            },
+            {
+              "line": 1275,
+              "code": "mul.lo.s64 \t%rd1095, %rd1094, %rd83;"
+            },
+            {
+              "line": 1295,
+              "code": "mul.lo.s64 \t%rd1108, %rd1107, %rd83;"
+            },
+            {
+              "line": 1322,
+              "code": "mul.lo.s64 \t%rd1121, %rd1120, %rd83;"
+            },
+            {
+              "line": 1342,
+              "code": "mul.lo.s64 \t%rd1134, %rd1133, %rd83;"
+            },
+            {
+              "line": 1367,
+              "code": "mul.lo.s64 \t%rd1147, %rd1146, %rd83;"
+            },
+            {
+              "line": 1403,
+              "code": "mul.lo.s64 \t%rd90, %rd682, %rd89;"
+            },
+            {
+              "line": 1578,
+              "code": "mul.lo.s64 \t%rd810, %rd809, %rd89;"
+            },
+            {
+              "line": 1624,
+              "code": "mul.lo.s64 \t%rd829, %rd828, %rd89;"
+            },
+            {
+              "line": 1669,
+              "code": "mul.lo.s64 \t%rd848, %rd847, %rd89;"
+            },
+            {
+              "line": 1731,
+              "code": "mul.lo.s64 \t%rd734, %rd733, %rd89;"
+            },
+            {
+              "line": 1777,
+              "code": "mul.lo.s64 \t%rd753, %rd752, %rd89;"
+            },
+            {
+              "line": 1820,
+              "code": "mul.lo.s64 \t%rd772, %rd771, %rd89;"
+            },
+            {
+              "line": 1863,
+              "code": "mul.lo.s64 \t%rd791, %rd790, %rd89;"
+            },
+            {
+              "line": 1895,
+              "code": "mul.lo.s64 \t%rd867, %rd866, %rd89;"
+            },
+            {
+              "line": 1923,
+              "code": "mul.lo.s64 \t%rd880, %rd879, %rd89;"
+            },
+            {
+              "line": 1954,
+              "code": "mul.lo.s64 \t%rd893, %rd892, %rd89;"
+            },
+            {
+              "line": 1985,
+              "code": "mul.lo.s64 \t%rd906, %rd905, %rd89;"
+            },
+            {
+              "line": 2026,
+              "code": "mul.lo.s64 \t%rd920, %rd919, %rd89;"
+            },
+            {
+              "line": 2059,
+              "code": "mul.lo.s64 \t%rd933, %rd932, %rd89;"
+            },
+            {
+              "line": 2092,
+              "code": "mul.lo.s64 \t%rd946, %rd945, %rd89;"
+            },
+            {
+              "line": 2129,
+              "code": "mul.lo.s64 \t%rd116, %rd534, %rd115;"
+            },
+            {
+              "line": 2159,
+              "code": "mul.lo.s64 \t%rd540, %rd539, %rd115;"
+            },
+            {
+              "line": 2173,
+              "code": "mul.lo.s64 \t%rd549, %rd548, %rd115;"
+            },
+            {
+              "line": 2187,
+              "code": "mul.lo.s64 \t%rd558, %rd557, %rd115;"
+            },
+            {
+              "line": 2201,
+              "code": "mul.lo.s64 \t%rd567, %rd566, %rd115;"
+            },
+            {
+              "line": 2215,
+              "code": "mul.lo.s64 \t%rd576, %rd575, %rd115;"
+            },
+            {
+              "line": 2229,
+              "code": "mul.lo.s64 \t%rd585, %rd584, %rd115;"
+            },
+            {
+              "line": 2243,
+              "code": "mul.lo.s64 \t%rd594, %rd593, %rd115;"
+            },
+            {
+              "line": 2257,
+              "code": "mul.lo.s64 \t%rd603, %rd602, %rd115;"
+            },
+            {
+              "line": 2280,
+              "code": "mul.lo.s64 \t%rd612, %rd611, %rd115;"
+            },
+            {
+              "line": 2294,
+              "code": "mul.lo.s64 \t%rd621, %rd620, %rd115;"
+            },
+            {
+              "line": 2308,
+              "code": "mul.lo.s64 \t%rd630, %rd629, %rd115;"
+            },
+            {
+              "line": 2322,
+              "code": "mul.lo.s64 \t%rd639, %rd638, %rd115;"
+            },
+            {
+              "line": 2342,
+              "code": "mul.lo.s64 \t%rd648, %rd647, %rd115;"
+            },
+            {
+              "line": 2356,
+              "code": "mul.lo.s64 \t%rd657, %rd656, %rd115;"
+            },
+            {
+              "line": 2374,
+              "code": "mul.lo.s64 \t%rd666, %rd665, %rd115;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 72,
+            "setp.gt.f32": 19,
+            "max.f32": 23,
+            "add.f32": 37,
+            "div.rn.f32": 16,
+            "selp.f32": 25,
+            "mul.f32": 16,
+            "sub.f32": 16,
+            "rcp.rn.f32": 1,
+            "setp.leu.f32": 2
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "6214585e35334b1e1c2087b3264e654b16a49a22d8a8c9a7e59837f1d6bdf130",
+          "stride_parameter_ordinal": 19,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r148",
+              "line": 49,
+              "code": "ld.param.u32 \t%r148, [up_action_param_19];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 113,
+              "code": "mul.wide.u32 \t%rd20, %r256, %r148;"
+            },
+            {
+              "line": 121,
+              "code": "mul.wide.u32 \t%rd21, %r258, %r148;"
+            },
+            {
+              "line": 129,
+              "code": "mul.wide.u32 \t%rd22, %r261, %r148;"
+            },
+            {
+              "line": 175,
+              "code": "mul.wide.u32 \t%rd27, %r250, %r148;"
+            },
+            {
+              "line": 183,
+              "code": "mul.wide.u32 \t%rd28, %r252, %r148;"
+            },
+            {
+              "line": 191,
+              "code": "mul.wide.u32 \t%rd29, %r255, %r148;"
+            },
+            {
+              "line": 261,
+              "code": "mul.wide.u32 \t%rd31, %r243, %r148;"
+            },
+            {
+              "line": 269,
+              "code": "mul.wide.u32 \t%rd32, %r245, %r148;"
+            },
+            {
+              "line": 277,
+              "code": "mul.wide.u32 \t%rd33, %r248, %r148;"
+            },
+            {
+              "line": 331,
+              "code": "mul.wide.u32 \t%rd39, %r230, %r148;"
+            },
+            {
+              "line": 339,
+              "code": "mul.wide.u32 \t%rd40, %r232, %r148;"
+            },
+            {
+              "line": 347,
+              "code": "mul.wide.u32 \t%rd41, %r235, %r148;"
+            },
+            {
+              "line": 355,
+              "code": "mul.wide.u32 \t%rd42, %r238, %r148;"
+            },
+            {
+              "line": 413,
+              "code": "mul.wide.u32 \t%rd47, %r219, %r148;"
+            },
+            {
+              "line": 421,
+              "code": "mul.wide.u32 \t%rd48, %r221, %r148;"
+            },
+            {
+              "line": 429,
+              "code": "mul.wide.u32 \t%rd49, %r224, %r148;"
+            },
+            {
+              "line": 437,
+              "code": "mul.wide.u32 \t%rd50, %r227, %r148;"
+            },
+            {
+              "line": 529,
+              "code": "mul.wide.u32 \t%rd52, %r208, %r148;"
+            },
+            {
+              "line": 537,
+              "code": "mul.wide.u32 \t%rd53, %r210, %r148;"
+            },
+            {
+              "line": 545,
+              "code": "mul.wide.u32 \t%rd54, %r213, %r148;"
+            },
+            {
+              "line": 553,
+              "code": "mul.wide.u32 \t%rd55, %r216, %r148;"
+            },
+            {
+              "line": 612,
+              "code": "mul.wide.u32 \t%rd61, %r188, %r148;"
+            },
+            {
+              "line": 620,
+              "code": "mul.wide.u32 \t%rd62, %r190, %r148;"
+            },
+            {
+              "line": 628,
+              "code": "mul.wide.u32 \t%rd63, %r193, %r148;"
+            },
+            {
+              "line": 636,
+              "code": "mul.wide.u32 \t%rd64, %r196, %r148;"
+            },
+            {
+              "line": 644,
+              "code": "mul.wide.u32 \t%rd65, %r199, %r148;"
+            },
+            {
+              "line": 713,
+              "code": "mul.wide.u32 \t%rd70, %r173, %r148;"
+            },
+            {
+              "line": 721,
+              "code": "mul.wide.u32 \t%rd71, %r175, %r148;"
+            },
+            {
+              "line": 729,
+              "code": "mul.wide.u32 \t%rd72, %r178, %r148;"
+            },
+            {
+              "line": 737,
+              "code": "mul.wide.u32 \t%rd73, %r181, %r148;"
+            },
+            {
+              "line": 745,
+              "code": "mul.wide.u32 \t%rd74, %r184, %r148;"
+            },
+            {
+              "line": 858,
+              "code": "mul.wide.u32 \t%rd76, %r157, %r148;"
+            },
+            {
+              "line": 866,
+              "code": "mul.wide.u32 \t%rd77, %r159, %r148;"
+            },
+            {
+              "line": 874,
+              "code": "mul.wide.u32 \t%rd78, %r162, %r148;"
+            },
+            {
+              "line": 882,
+              "code": "mul.wide.u32 \t%rd79, %r165, %r148;"
+            },
+            {
+              "line": 890,
+              "code": "mul.wide.u32 \t%rd80, %r168, %r148;"
+            },
+            {
+              "line": 955,
+              "code": "mul.wide.u32 \t%rd83, %r373, %r148;"
+            },
+            {
+              "line": 1005,
+              "code": "mul.wide.u32 \t%rd884, %r378, %r148;"
+            },
+            {
+              "line": 1023,
+              "code": "mul.wide.u32 \t%rd896, %r381, %r148;"
+            },
+            {
+              "line": 1041,
+              "code": "mul.wide.u32 \t%rd908, %r384, %r148;"
+            },
+            {
+              "line": 1059,
+              "code": "mul.wide.u32 \t%rd920, %r387, %r148;"
+            },
+            {
+              "line": 1077,
+              "code": "mul.wide.u32 \t%rd932, %r390, %r148;"
+            },
+            {
+              "line": 1095,
+              "code": "mul.wide.u32 \t%rd944, %r393, %r148;"
+            },
+            {
+              "line": 1113,
+              "code": "mul.wide.u32 \t%rd956, %r396, %r148;"
+            },
+            {
+              "line": 1131,
+              "code": "mul.wide.u32 \t%rd968, %r399, %r148;"
+            },
+            {
+              "line": 1170,
+              "code": "mul.wide.u32 \t%rd980, %r403, %r148;"
+            },
+            {
+              "line": 1189,
+              "code": "mul.wide.u32 \t%rd992, %r407, %r148;"
+            },
+            {
+              "line": 1208,
+              "code": "mul.wide.u32 \t%rd1004, %r411, %r148;"
+            },
+            {
+              "line": 1227,
+              "code": "mul.wide.u32 \t%rd1016, %r415, %r148;"
+            },
+            {
+              "line": 1253,
+              "code": "mul.wide.u32 \t%rd1028, %r419, %r148;"
+            },
+            {
+              "line": 1272,
+              "code": "mul.wide.u32 \t%rd1040, %r423, %r148;"
+            },
+            {
+              "line": 1296,
+              "code": "mul.wide.u32 \t%rd1052, %r427, %r148;"
+            },
+            {
+              "line": 1329,
+              "code": "mul.wide.u32 \t%rd88, %r314, %r148;"
+            },
+            {
+              "line": 1503,
+              "code": "mul.wide.u32 \t%rd740, %r343, %r148;"
+            },
+            {
+              "line": 1548,
+              "code": "mul.wide.u32 \t%rd758, %r346, %r148;"
+            },
+            {
+              "line": 1592,
+              "code": "mul.wide.u32 \t%rd776, %r349, %r148;"
+            },
+            {
+              "line": 1653,
+              "code": "mul.wide.u32 \t%rd668, %r327, %r148;"
+            },
+            {
+              "line": 1698,
+              "code": "mul.wide.u32 \t%rd686, %r331, %r148;"
+            },
+            {
+              "line": 1740,
+              "code": "mul.wide.u32 \t%rd704, %r335, %r148;"
+            },
+            {
+              "line": 1782,
+              "code": "mul.wide.u32 \t%rd722, %r339, %r148;"
+            },
+            {
+              "line": 1813,
+              "code": "mul.wide.u32 \t%rd794, %r354, %r148;"
+            },
+            {
+              "line": 1840,
+              "code": "mul.wide.u32 \t%rd806, %r357, %r148;"
+            },
+            {
+              "line": 1870,
+              "code": "mul.wide.u32 \t%rd818, %r360, %r148;"
+            },
+            {
+              "line": 1900,
+              "code": "mul.wide.u32 \t%rd830, %r363, %r148;"
+            },
+            {
+              "line": 1940,
+              "code": "mul.wide.u32 \t%rd843, %r366, %r148;"
+            },
+            {
+              "line": 1972,
+              "code": "mul.wide.u32 \t%rd855, %r369, %r148;"
+            },
+            {
+              "line": 2004,
+              "code": "mul.wide.u32 \t%rd867, %r372, %r148;"
+            },
+            {
+              "line": 2038,
+              "code": "mul.wide.u32 \t%rd113, %r265, %r148;"
+            },
+            {
+              "line": 2067,
+              "code": "mul.wide.u32 \t%rd490, %r270, %r148;"
+            },
+            {
+              "line": 2080,
+              "code": "mul.wide.u32 \t%rd498, %r273, %r148;"
+            },
+            {
+              "line": 2093,
+              "code": "mul.wide.u32 \t%rd506, %r276, %r148;"
+            },
+            {
+              "line": 2106,
+              "code": "mul.wide.u32 \t%rd514, %r279, %r148;"
+            },
+            {
+              "line": 2119,
+              "code": "mul.wide.u32 \t%rd522, %r282, %r148;"
+            },
+            {
+              "line": 2132,
+              "code": "mul.wide.u32 \t%rd530, %r285, %r148;"
+            },
+            {
+              "line": 2145,
+              "code": "mul.wide.u32 \t%rd538, %r288, %r148;"
+            },
+            {
+              "line": 2158,
+              "code": "mul.wide.u32 \t%rd546, %r291, %r148;"
+            },
+            {
+              "line": 2180,
+              "code": "mul.wide.u32 \t%rd554, %r294, %r148;"
+            },
+            {
+              "line": 2193,
+              "code": "mul.wide.u32 \t%rd562, %r297, %r148;"
+            },
+            {
+              "line": 2206,
+              "code": "mul.wide.u32 \t%rd570, %r300, %r148;"
+            },
+            {
+              "line": 2219,
+              "code": "mul.wide.u32 \t%rd578, %r303, %r148;"
+            },
+            {
+              "line": 2238,
+              "code": "mul.wide.u32 \t%rd586, %r306, %r148;"
+            },
+            {
+              "line": 2251,
+              "code": "mul.wide.u32 \t%rd594, %r309, %r148;"
+            },
+            {
+              "line": 2268,
+              "code": "mul.wide.u32 \t%rd602, %r312, %r148;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 72,
+            "setp.gt.f32": 19,
+            "max.f32": 23,
+            "add.f32": 37,
+            "div.rn.f32": 16,
+            "selp.f32": 25,
+            "mul.f32": 16,
+            "sub.f32": 16,
+            "rcp.rn.f32": 1,
+            "setp.leu.f32": 2
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_action_eval": {
+        "baseline": {
+          "PTX_sha256": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06",
+          "stride_parameter_ordinal": 16,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r129",
+              "line": 42,
+              "code": "ld.param.u32 \t%r129, [up_action_eval_param_16];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 72,
+              "code": "cvt.s64.s32 \t%rd7, %r129;"
+            },
+            {
+              "line": 348,
+              "code": "cvt.s64.s32 \t%rd11, %r129;"
+            },
+            {
+              "line": 736,
+              "code": "cvt.s64.s32 \t%rd14, %r129;"
+            },
+            {
+              "line": 1033,
+              "code": "cvt.s64.s32 \t%rd19, %r129;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 77,
+              "code": "mul.lo.s64 \t%rd8, %rd48, %rd7;"
+            },
+            {
+              "line": 107,
+              "code": "mul.lo.s64 \t%rd54, %rd53, %rd7;"
+            },
+            {
+              "line": 121,
+              "code": "mul.lo.s64 \t%rd63, %rd62, %rd7;"
+            },
+            {
+              "line": 135,
+              "code": "mul.lo.s64 \t%rd72, %rd71, %rd7;"
+            },
+            {
+              "line": 149,
+              "code": "mul.lo.s64 \t%rd81, %rd80, %rd7;"
+            },
+            {
+              "line": 163,
+              "code": "mul.lo.s64 \t%rd90, %rd89, %rd7;"
+            },
+            {
+              "line": 177,
+              "code": "mul.lo.s64 \t%rd99, %rd98, %rd7;"
+            },
+            {
+              "line": 191,
+              "code": "mul.lo.s64 \t%rd108, %rd107, %rd7;"
+            },
+            {
+              "line": 205,
+              "code": "mul.lo.s64 \t%rd117, %rd116, %rd7;"
+            },
+            {
+              "line": 228,
+              "code": "mul.lo.s64 \t%rd126, %rd125, %rd7;"
+            },
+            {
+              "line": 242,
+              "code": "mul.lo.s64 \t%rd135, %rd134, %rd7;"
+            },
+            {
+              "line": 256,
+              "code": "mul.lo.s64 \t%rd144, %rd143, %rd7;"
+            },
+            {
+              "line": 270,
+              "code": "mul.lo.s64 \t%rd153, %rd152, %rd7;"
+            },
+            {
+              "line": 290,
+              "code": "mul.lo.s64 \t%rd162, %rd161, %rd7;"
+            },
+            {
+              "line": 304,
+              "code": "mul.lo.s64 \t%rd171, %rd170, %rd7;"
+            },
+            {
+              "line": 322,
+              "code": "mul.lo.s64 \t%rd180, %rd179, %rd7;"
+            },
+            {
+              "line": 353,
+              "code": "mul.lo.s64 \t%rd12, %rd567, %rd11;"
+            },
+            {
+              "line": 402,
+              "code": "mul.lo.s64 \t%rd577, %rd576, %rd11;"
+            },
+            {
+              "line": 421,
+              "code": "mul.lo.s64 \t%rd590, %rd589, %rd11;"
+            },
+            {
+              "line": 440,
+              "code": "mul.lo.s64 \t%rd603, %rd602, %rd11;"
+            },
+            {
+              "line": 459,
+              "code": "mul.lo.s64 \t%rd616, %rd615, %rd11;"
+            },
+            {
+              "line": 478,
+              "code": "mul.lo.s64 \t%rd629, %rd628, %rd11;"
+            },
+            {
+              "line": 497,
+              "code": "mul.lo.s64 \t%rd642, %rd641, %rd11;"
+            },
+            {
+              "line": 516,
+              "code": "mul.lo.s64 \t%rd655, %rd654, %rd11;"
+            },
+            {
+              "line": 535,
+              "code": "mul.lo.s64 \t%rd668, %rd667, %rd11;"
+            },
+            {
+              "line": 575,
+              "code": "mul.lo.s64 \t%rd681, %rd680, %rd11;"
+            },
+            {
+              "line": 595,
+              "code": "mul.lo.s64 \t%rd694, %rd693, %rd11;"
+            },
+            {
+              "line": 615,
+              "code": "mul.lo.s64 \t%rd707, %rd706, %rd11;"
+            },
+            {
+              "line": 635,
+              "code": "mul.lo.s64 \t%rd720, %rd719, %rd11;"
+            },
+            {
+              "line": 661,
+              "code": "mul.lo.s64 \t%rd733, %rd732, %rd11;"
+            },
+            {
+              "line": 681,
+              "code": "mul.lo.s64 \t%rd746, %rd745, %rd11;"
+            },
+            {
+              "line": 707,
+              "code": "mul.lo.s64 \t%rd759, %rd758, %rd11;"
+            },
+            {
+              "line": 737,
+              "code": "mul.lo.s64 \t%rd15, %rd420, %rd14;"
+            },
+            {
+              "line": 742,
+              "code": "mul.lo.s64 \t%rd16, %rd423, %rd14;"
+            },
+            {
+              "line": 778,
+              "code": "mul.lo.s64 \t%rd432, %rd431, %rd14;"
+            },
+            {
+              "line": 793,
+              "code": "mul.lo.s64 \t%rd441, %rd440, %rd14;"
+            },
+            {
+              "line": 808,
+              "code": "mul.lo.s64 \t%rd450, %rd449, %rd14;"
+            },
+            {
+              "line": 823,
+              "code": "mul.lo.s64 \t%rd459, %rd458, %rd14;"
+            },
+            {
+              "line": 838,
+              "code": "mul.lo.s64 \t%rd468, %rd467, %rd14;"
+            },
+            {
+              "line": 853,
+              "code": "mul.lo.s64 \t%rd477, %rd476, %rd14;"
+            },
+            {
+              "line": 868,
+              "code": "mul.lo.s64 \t%rd486, %rd485, %rd14;"
+            },
+            {
+              "line": 883,
+              "code": "mul.lo.s64 \t%rd495, %rd494, %rd14;"
+            },
+            {
+              "line": 907,
+              "code": "mul.lo.s64 \t%rd504, %rd503, %rd14;"
+            },
+            {
+              "line": 922,
+              "code": "mul.lo.s64 \t%rd513, %rd512, %rd14;"
+            },
+            {
+              "line": 937,
+              "code": "mul.lo.s64 \t%rd522, %rd521, %rd14;"
+            },
+            {
+              "line": 952,
+              "code": "mul.lo.s64 \t%rd531, %rd530, %rd14;"
+            },
+            {
+              "line": 973,
+              "code": "mul.lo.s64 \t%rd540, %rd539, %rd14;"
+            },
+            {
+              "line": 988,
+              "code": "mul.lo.s64 \t%rd549, %rd548, %rd14;"
+            },
+            {
+              "line": 1007,
+              "code": "mul.lo.s64 \t%rd558, %rd557, %rd14;"
+            },
+            {
+              "line": 1038,
+              "code": "mul.lo.s64 \t%rd20, %rd196, %rd19;"
+            },
+            {
+              "line": 1365,
+              "code": "mul.lo.s64 \t%rd331, %rd330, %rd19;"
+            },
+            {
+              "line": 1390,
+              "code": "mul.lo.s64 \t%rd344, %rd343, %rd19;"
+            },
+            {
+              "line": 1415,
+              "code": "mul.lo.s64 \t%rd357, %rd356, %rd19;"
+            },
+            {
+              "line": 1440,
+              "code": "mul.lo.s64 \t%rd370, %rd369, %rd19;"
+            },
+            {
+              "line": 1474,
+              "code": "mul.lo.s64 \t%rd383, %rd382, %rd19;"
+            },
+            {
+              "line": 1499,
+              "code": "mul.lo.s64 \t%rd396, %rd395, %rd19;"
+            },
+            {
+              "line": 1528,
+              "code": "mul.lo.s64 \t%rd408, %rd407, %rd19;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 46,
+            "fma.rn.f32": 22,
+            "setp.gt.f32": 15,
+            "selp.f32": 15,
+            "rcp.rn.f32": 1,
+            "max.f32": 38,
+            "setp.leu.f32": 3,
+            "div.rn.f32": 7
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "1d412b7428c9a8abfe18b3ad7a6cf28467f89ad93feab9991eda3f56fedf2056",
+          "stride_parameter_ordinal": 16,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r128",
+              "line": 42,
+              "code": "ld.param.u32 \t%r128, [up_action_eval_param_16];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 75,
+              "code": "mul.wide.u32 \t%rd7, %r133, %r128;"
+            },
+            {
+              "line": 104,
+              "code": "mul.wide.u32 \t%rd48, %r138, %r128;"
+            },
+            {
+              "line": 117,
+              "code": "mul.wide.u32 \t%rd56, %r141, %r128;"
+            },
+            {
+              "line": 130,
+              "code": "mul.wide.u32 \t%rd64, %r144, %r128;"
+            },
+            {
+              "line": 143,
+              "code": "mul.wide.u32 \t%rd72, %r147, %r128;"
+            },
+            {
+              "line": 156,
+              "code": "mul.wide.u32 \t%rd80, %r150, %r128;"
+            },
+            {
+              "line": 169,
+              "code": "mul.wide.u32 \t%rd88, %r153, %r128;"
+            },
+            {
+              "line": 182,
+              "code": "mul.wide.u32 \t%rd96, %r156, %r128;"
+            },
+            {
+              "line": 195,
+              "code": "mul.wide.u32 \t%rd104, %r159, %r128;"
+            },
+            {
+              "line": 217,
+              "code": "mul.wide.u32 \t%rd112, %r162, %r128;"
+            },
+            {
+              "line": 230,
+              "code": "mul.wide.u32 \t%rd120, %r165, %r128;"
+            },
+            {
+              "line": 243,
+              "code": "mul.wide.u32 \t%rd128, %r168, %r128;"
+            },
+            {
+              "line": 256,
+              "code": "mul.wide.u32 \t%rd136, %r171, %r128;"
+            },
+            {
+              "line": 275,
+              "code": "mul.wide.u32 \t%rd144, %r174, %r128;"
+            },
+            {
+              "line": 288,
+              "code": "mul.wide.u32 \t%rd152, %r177, %r128;"
+            },
+            {
+              "line": 305,
+              "code": "mul.wide.u32 \t%rd160, %r180, %r128;"
+            },
+            {
+              "line": 334,
+              "code": "mul.wide.u32 \t%rd10, %r290, %r128;"
+            },
+            {
+              "line": 381,
+              "code": "mul.wide.u32 \t%rd530, %r296, %r128;"
+            },
+            {
+              "line": 399,
+              "code": "mul.wide.u32 \t%rd542, %r299, %r128;"
+            },
+            {
+              "line": 417,
+              "code": "mul.wide.u32 \t%rd554, %r302, %r128;"
+            },
+            {
+              "line": 435,
+              "code": "mul.wide.u32 \t%rd566, %r305, %r128;"
+            },
+            {
+              "line": 453,
+              "code": "mul.wide.u32 \t%rd578, %r308, %r128;"
+            },
+            {
+              "line": 471,
+              "code": "mul.wide.u32 \t%rd590, %r311, %r128;"
+            },
+            {
+              "line": 489,
+              "code": "mul.wide.u32 \t%rd602, %r314, %r128;"
+            },
+            {
+              "line": 507,
+              "code": "mul.wide.u32 \t%rd614, %r317, %r128;"
+            },
+            {
+              "line": 546,
+              "code": "mul.wide.u32 \t%rd626, %r322, %r128;"
+            },
+            {
+              "line": 565,
+              "code": "mul.wide.u32 \t%rd638, %r326, %r128;"
+            },
+            {
+              "line": 584,
+              "code": "mul.wide.u32 \t%rd650, %r330, %r128;"
+            },
+            {
+              "line": 603,
+              "code": "mul.wide.u32 \t%rd662, %r334, %r128;"
+            },
+            {
+              "line": 629,
+              "code": "mul.wide.u32 \t%rd674, %r339, %r128;"
+            },
+            {
+              "line": 648,
+              "code": "mul.wide.u32 \t%rd686, %r343, %r128;"
+            },
+            {
+              "line": 673,
+              "code": "mul.wide.u32 \t%rd698, %r348, %r128;"
+            },
+            {
+              "line": 701,
+              "code": "mul.wide.u32 \t%rd12, %r235, %r128;"
+            },
+            {
+              "line": 705,
+              "code": "mul.wide.u32 \t%rd13, %r236, %r128;"
+            },
+            {
+              "line": 740,
+              "code": "mul.wide.u32 \t%rd401, %r246, %r128;"
+            },
+            {
+              "line": 754,
+              "code": "mul.wide.u32 \t%rd409, %r249, %r128;"
+            },
+            {
+              "line": 768,
+              "code": "mul.wide.u32 \t%rd417, %r252, %r128;"
+            },
+            {
+              "line": 782,
+              "code": "mul.wide.u32 \t%rd425, %r255, %r128;"
+            },
+            {
+              "line": 796,
+              "code": "mul.wide.u32 \t%rd433, %r258, %r128;"
+            },
+            {
+              "line": 810,
+              "code": "mul.wide.u32 \t%rd441, %r261, %r128;"
+            },
+            {
+              "line": 824,
+              "code": "mul.wide.u32 \t%rd449, %r264, %r128;"
+            },
+            {
+              "line": 838,
+              "code": "mul.wide.u32 \t%rd457, %r267, %r128;"
+            },
+            {
+              "line": 861,
+              "code": "mul.wide.u32 \t%rd465, %r270, %r128;"
+            },
+            {
+              "line": 875,
+              "code": "mul.wide.u32 \t%rd473, %r273, %r128;"
+            },
+            {
+              "line": 889,
+              "code": "mul.wide.u32 \t%rd481, %r276, %r128;"
+            },
+            {
+              "line": 903,
+              "code": "mul.wide.u32 \t%rd489, %r279, %r128;"
+            },
+            {
+              "line": 923,
+              "code": "mul.wide.u32 \t%rd497, %r282, %r128;"
+            },
+            {
+              "line": 937,
+              "code": "mul.wide.u32 \t%rd505, %r285, %r128;"
+            },
+            {
+              "line": 955,
+              "code": "mul.wide.u32 \t%rd513, %r288, %r128;"
+            },
+            {
+              "line": 984,
+              "code": "mul.wide.u32 \t%rd16, %r181, %r128;"
+            },
+            {
+              "line": 1310,
+              "code": "mul.wide.u32 \t%rd309, %r215, %r128;"
+            },
+            {
+              "line": 1334,
+              "code": "mul.wide.u32 \t%rd321, %r218, %r128;"
+            },
+            {
+              "line": 1358,
+              "code": "mul.wide.u32 \t%rd333, %r221, %r128;"
+            },
+            {
+              "line": 1382,
+              "code": "mul.wide.u32 \t%rd345, %r224, %r128;"
+            },
+            {
+              "line": 1415,
+              "code": "mul.wide.u32 \t%rd357, %r227, %r128;"
+            },
+            {
+              "line": 1439,
+              "code": "mul.wide.u32 \t%rd369, %r230, %r128;"
+            },
+            {
+              "line": 1467,
+              "code": "mul.wide.u32 \t%rd380, %r233, %r128;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 46,
+            "fma.rn.f32": 22,
+            "setp.gt.f32": 15,
+            "selp.f32": 15,
+            "rcp.rn.f32": 1,
+            "max.f32": 38,
+            "setp.leu.f32": 3,
+            "div.rn.f32": 7
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      }
+    },
+    "compute_75": {
+      "up_fold": {
+        "baseline": {
+          "PTX_sha256": "d69e25c1be0cb07b33680eaa7de95948132eb7e5bfa1c63d664dc55e53c24726",
+          "stride_parameter_ordinal": 20,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r33",
+              "line": 54,
+              "code": "ld.param.u32 \t%r33, [up_fold_param_20];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 277,
+              "code": "cvt.s64.s32 \t%rd100, %r33;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 278,
+              "code": "mul.lo.s64 \t%rd8, %rd99, %rd100;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 10,
+            "sub.f32": 2,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "ead203ade7006f3a9eb44f78fe013647a5591be6293c1715eba9172c7cb07c0f",
+          "stride_parameter_ordinal": 20,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r33",
+              "line": 54,
+              "code": "ld.param.u32 \t%r33, [up_fold_param_20];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 276,
+              "code": "mul.wide.u32 \t%rd8, %r54, %r33;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 10,
+            "sub.f32": 2,
+            "mul.f32": 1
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_show": {
+        "baseline": {
+          "PTX_sha256": "77dc2bd1c113913149254ebeff5acd43e2ed13087e145bb316bfd8d0afb3abf6",
+          "stride_parameter_ordinal": 26,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r77",
+              "line": 56,
+              "code": "ld.param.u32 \t%r77, [up_show_param_26];"
+            },
+            {
+              "register": "%r166",
+              "line": 366,
+              "code": "ld.param.u32 \t%r166, [up_show_param_26];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 182,
+              "code": "cvt.s64.s32 \t%rd102, %r77;"
+            },
+            {
+              "line": 381,
+              "code": "cvt.s64.s32 \t%rd145, %r166;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 183,
+              "code": "mul.lo.s64 \t%rd16, %rd101, %rd102;"
+            },
+            {
+              "line": 382,
+              "code": "mul.lo.s64 \t%rd30, %rd144, %rd145;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 56,
+            "selp.f32": 28,
+            "sub.f32": 6,
+            "mul.f32": 1,
+            "fma.rn.f32": 2
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "e6860c9c0fd8d42c9a617c43313dafbe1f05ad1ad9ee41f17317684474be8868",
+          "stride_parameter_ordinal": 26,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r77",
+              "line": 56,
+              "code": "ld.param.u32 \t%r77, [up_show_param_26];"
+            },
+            {
+              "register": "%r166",
+              "line": 364,
+              "code": "ld.param.u32 \t%r166, [up_show_param_26];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 181,
+              "code": "mul.wide.u32 \t%rd16, %r92, %r77;"
+            },
+            {
+              "line": 378,
+              "code": "mul.wide.u32 \t%rd30, %r119, %r166;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 56,
+            "selp.f32": 28,
+            "sub.f32": 6,
+            "mul.f32": 1,
+            "fma.rn.f32": 2
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_chance": {
+        "baseline": {
+          "PTX_sha256": "77a1249fc563c777cbdab6dab016a0f7859ab7eae36f4d405d4b9a5595b5985a",
+          "stride_parameter_ordinal": 14,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r28",
+              "line": 39,
+              "code": "ld.param.u32 \t%r28, [up_chance_param_14];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 76,
+              "code": "cvt.s64.s32 \t%rd8, %r28;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 77,
+              "code": "mul.lo.s64 \t%rd9, %rd64, %rd8;"
+            },
+            {
+              "line": 140,
+              "code": "mul.lo.s64 \t%rd85, %rd84, %rd8;"
+            },
+            {
+              "line": 178,
+              "code": "mul.lo.s64 \t%rd100, %rd99, %rd8;"
+            },
+            {
+              "line": 217,
+              "code": "mul.lo.s64 \t%rd115, %rd114, %rd8;"
+            },
+            {
+              "line": 262,
+              "code": "mul.lo.s64 \t%rd136, %rd135, %rd8;"
+            },
+            {
+              "line": 303,
+              "code": "mul.lo.s64 \t%rd157, %rd156, %rd8;"
+            },
+            {
+              "line": 344,
+              "code": "mul.lo.s64 \t%rd178, %rd177, %rd8;"
+            },
+            {
+              "line": 384,
+              "code": "mul.lo.s64 \t%rd199, %rd198, %rd8;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 7,
+            "mul.f32": 2
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "3f5f61e9ddd5787db8df3f4a64b97ce1d90766e7291b92b5f6dce484e80e10da",
+          "stride_parameter_ordinal": 14,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r28",
+              "line": 39,
+              "code": "ld.param.u32 \t%r28, [up_chance_param_14];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 76,
+              "code": "mul.wide.u32 \t%rd9, %r32, %r28;"
+            },
+            {
+              "line": 139,
+              "code": "mul.lo.s64 \t%rd84, %rd83, %rd8;"
+            },
+            {
+              "line": 177,
+              "code": "mul.lo.s64 \t%rd99, %rd98, %rd8;"
+            },
+            {
+              "line": 216,
+              "code": "mul.lo.s64 \t%rd114, %rd113, %rd8;"
+            },
+            {
+              "line": 261,
+              "code": "mul.lo.s64 \t%rd135, %rd134, %rd8;"
+            },
+            {
+              "line": 302,
+              "code": "mul.lo.s64 \t%rd156, %rd155, %rd8;"
+            },
+            {
+              "line": 343,
+              "code": "mul.lo.s64 \t%rd177, %rd176, %rd8;"
+            },
+            {
+              "line": 383,
+              "code": "mul.lo.s64 \t%rd198, %rd197, %rd8;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "add.f32": 7,
+            "mul.f32": 2
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_action": {
+        "baseline": {
+          "PTX_sha256": "d278da60cc05f545b79df59e33b59fcd1454deac9f4558cbcc007fce7aaec07c",
+          "stride_parameter_ordinal": 19,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r117",
+              "line": 53,
+              "code": "ld.param.u32 \t%r117, [up_action_param_19];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 131,
+              "code": "cvt.s64.s32 \t%rd278, %r117;"
+            },
+            {
+              "line": 242,
+              "code": "cvt.s64.s32 \t%rd465, %r117;"
+            },
+            {
+              "line": 329,
+              "code": "cvt.s64.s32 \t%rd383, %r117;"
+            },
+            {
+              "line": 425,
+              "code": "cvt.s64.s32 \t%rd166, %r117;"
+            },
+            {
+              "line": 626,
+              "code": "cvt.s64.s32 \t%rd199, %r117;"
+            },
+            {
+              "line": 696,
+              "code": "cvt.s64.s32 \t%rd417, %r117;"
+            },
+            {
+              "line": 740,
+              "code": "cvt.s64.s32 \t%rd323, %r117;"
+            },
+            {
+              "line": 798,
+              "code": "cvt.s64.s32 \t%rd114, %r117;"
+            },
+            {
+              "line": 974,
+              "code": "cvt.s64.s32 \t%rd238, %r117;"
+            },
+            {
+              "line": 1152,
+              "code": "cvt.s64.s32 \t%rd439, %r117;"
+            },
+            {
+              "line": 1258,
+              "code": "cvt.s64.s32 \t%rd351, %r117;"
+            },
+            {
+              "line": 1399,
+              "code": "cvt.s64.s32 \t%rd121, %r117;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 132,
+              "code": "mul.lo.s64 \t%rd50, %rd277, %rd278;"
+            },
+            {
+              "line": 139,
+              "code": "mul.lo.s64 \t%rd51, %rd281, %rd278;"
+            },
+            {
+              "line": 145,
+              "code": "mul.lo.s64 \t%rd52, %rd284, %rd278;"
+            },
+            {
+              "line": 154,
+              "code": "mul.lo.s64 \t%rd53, %rd289, %rd278;"
+            },
+            {
+              "line": 163,
+              "code": "mul.lo.s64 \t%rd54, %rd294, %rd278;"
+            },
+            {
+              "line": 245,
+              "code": "mul.lo.s64 \t%rd109, %rd466, %rd465;"
+            },
+            {
+              "line": 252,
+              "code": "mul.lo.s64 \t%rd110, %rd469, %rd465;"
+            },
+            {
+              "line": 258,
+              "code": "mul.lo.s64 \t%rd111, %rd472, %rd465;"
+            },
+            {
+              "line": 332,
+              "code": "mul.lo.s64 \t%rd83, %rd384, %rd383;"
+            },
+            {
+              "line": 339,
+              "code": "mul.lo.s64 \t%rd84, %rd387, %rd383;"
+            },
+            {
+              "line": 345,
+              "code": "mul.lo.s64 \t%rd85, %rd390, %rd383;"
+            },
+            {
+              "line": 351,
+              "code": "mul.lo.s64 \t%rd86, %rd393, %rd383;"
+            },
+            {
+              "line": 426,
+              "code": "mul.lo.s64 \t%rd167, %rd891, %rd166;"
+            },
+            {
+              "line": 463,
+              "code": "mul.lo.s64 \t%rd905, %rd904, %rd166;"
+            },
+            {
+              "line": 479,
+              "code": "mul.lo.s64 \t%rd915, %rd914, %rd166;"
+            },
+            {
+              "line": 495,
+              "code": "mul.lo.s64 \t%rd925, %rd924, %rd166;"
+            },
+            {
+              "line": 511,
+              "code": "mul.lo.s64 \t%rd935, %rd934, %rd166;"
+            },
+            {
+              "line": 541,
+              "code": "mul.lo.s64 \t%rd948, %rd947, %rd166;"
+            },
+            {
+              "line": 565,
+              "code": "mul.lo.s64 \t%rd961, %rd960, %rd166;"
+            },
+            {
+              "line": 587,
+              "code": "mul.lo.s64 \t%rd974, %rd973, %rd166;"
+            },
+            {
+              "line": 627,
+              "code": "mul.lo.s64 \t%rd25, %rd198, %rd199;"
+            },
+            {
+              "line": 634,
+              "code": "mul.lo.s64 \t%rd26, %rd202, %rd199;"
+            },
+            {
+              "line": 640,
+              "code": "mul.lo.s64 \t%rd27, %rd205, %rd199;"
+            },
+            {
+              "line": 649,
+              "code": "mul.lo.s64 \t%rd28, %rd210, %rd199;"
+            },
+            {
+              "line": 658,
+              "code": "mul.lo.s64 \t%rd29, %rd215, %rd199;"
+            },
+            {
+              "line": 699,
+              "code": "mul.lo.s64 \t%rd92, %rd418, %rd417;"
+            },
+            {
+              "line": 706,
+              "code": "mul.lo.s64 \t%rd93, %rd421, %rd417;"
+            },
+            {
+              "line": 712,
+              "code": "mul.lo.s64 \t%rd94, %rd424, %rd417;"
+            },
+            {
+              "line": 743,
+              "code": "mul.lo.s64 \t%rd61, %rd324, %rd323;"
+            },
+            {
+              "line": 750,
+              "code": "mul.lo.s64 \t%rd62, %rd327, %rd323;"
+            },
+            {
+              "line": 756,
+              "code": "mul.lo.s64 \t%rd63, %rd330, %rd323;"
+            },
+            {
+              "line": 762,
+              "code": "mul.lo.s64 \t%rd64, %rd333, %rd323;"
+            },
+            {
+              "line": 799,
+              "code": "mul.lo.s64 \t%rd115, %rd494, %rd114;"
+            },
+            {
+              "line": 829,
+              "code": "mul.lo.s64 \t%rd504, %rd503, %rd114;"
+            },
+            {
+              "line": 843,
+              "code": "mul.lo.s64 \t%rd513, %rd512, %rd114;"
+            },
+            {
+              "line": 857,
+              "code": "mul.lo.s64 \t%rd522, %rd521, %rd114;"
+            },
+            {
+              "line": 871,
+              "code": "mul.lo.s64 \t%rd531, %rd530, %rd114;"
+            },
+            {
+              "line": 895,
+              "code": "mul.lo.s64 \t%rd540, %rd539, %rd114;"
+            },
+            {
+              "line": 912,
+              "code": "mul.lo.s64 \t%rd549, %rd548, %rd114;"
+            },
+            {
+              "line": 928,
+              "code": "mul.lo.s64 \t%rd558, %rd557, %rd114;"
+            },
+            {
+              "line": 975,
+              "code": "mul.lo.s64 \t%rd34, %rd237, %rd238;"
+            },
+            {
+              "line": 982,
+              "code": "mul.lo.s64 \t%rd35, %rd241, %rd238;"
+            },
+            {
+              "line": 988,
+              "code": "mul.lo.s64 \t%rd36, %rd244, %rd238;"
+            },
+            {
+              "line": 997,
+              "code": "mul.lo.s64 \t%rd37, %rd249, %rd238;"
+            },
+            {
+              "line": 1006,
+              "code": "mul.lo.s64 \t%rd38, %rd254, %rd238;"
+            },
+            {
+              "line": 1155,
+              "code": "mul.lo.s64 \t%rd100, %rd440, %rd439;"
+            },
+            {
+              "line": 1162,
+              "code": "mul.lo.s64 \t%rd101, %rd443, %rd439;"
+            },
+            {
+              "line": 1168,
+              "code": "mul.lo.s64 \t%rd102, %rd446, %rd439;"
+            },
+            {
+              "line": 1261,
+              "code": "mul.lo.s64 \t%rd70, %rd352, %rd351;"
+            },
+            {
+              "line": 1268,
+              "code": "mul.lo.s64 \t%rd71, %rd355, %rd351;"
+            },
+            {
+              "line": 1274,
+              "code": "mul.lo.s64 \t%rd72, %rd358, %rd351;"
+            },
+            {
+              "line": 1280,
+              "code": "mul.lo.s64 \t%rd73, %rd361, %rd351;"
+            },
+            {
+              "line": 1400,
+              "code": "mul.lo.s64 \t%rd122, %rd570, %rd121;"
+            },
+            {
+              "line": 1629,
+              "code": "mul.lo.s64 \t%rd706, %rd705, %rd121;"
+            },
+            {
+              "line": 1662,
+              "code": "mul.lo.s64 \t%rd719, %rd718, %rd121;"
+            },
+            {
+              "line": 1690,
+              "code": "mul.lo.s64 \t%rd728, %rd727, %rd121;"
+            },
+            {
+              "line": 1718,
+              "code": "mul.lo.s64 \t%rd737, %rd736, %rd121;"
+            },
+            {
+              "line": 1760,
+              "code": "mul.lo.s64 \t%rd748, %rd747, %rd121;"
+            },
+            {
+              "line": 1799,
+              "code": "mul.lo.s64 \t%rd762, %rd761, %rd121;"
+            },
+            {
+              "line": 1837,
+              "code": "mul.lo.s64 \t%rd776, %rd775, %rd121;"
+            },
+            {
+              "line": 1888,
+              "code": "mul.lo.s64 \t%rd623, %rd622, %rd121;"
+            },
+            {
+              "line": 1916,
+              "code": "mul.lo.s64 \t%rd632, %rd631, %rd121;"
+            },
+            {
+              "line": 1945,
+              "code": "mul.lo.s64 \t%rd641, %rd640, %rd121;"
+            },
+            {
+              "line": 1975,
+              "code": "mul.lo.s64 \t%rd650, %rd649, %rd121;"
+            },
+            {
+              "line": 2019,
+              "code": "mul.lo.s64 \t%rd664, %rd663, %rd121;"
+            },
+            {
+              "line": 2059,
+              "code": "mul.lo.s64 \t%rd679, %rd678, %rd121;"
+            },
+            {
+              "line": 2098,
+              "code": "mul.lo.s64 \t%rd694, %rd693, %rd121;"
+            },
+            {
+              "line": 2240,
+              "code": "mul.lo.s64 \t%rd790, %rd789, %rd121;"
+            },
+            {
+              "line": 2259,
+              "code": "mul.lo.s64 \t%rd799, %rd798, %rd121;"
+            },
+            {
+              "line": 2279,
+              "code": "mul.lo.s64 \t%rd809, %rd808, %rd121;"
+            },
+            {
+              "line": 2299,
+              "code": "mul.lo.s64 \t%rd819, %rd818, %rd121;"
+            },
+            {
+              "line": 2334,
+              "code": "mul.lo.s64 \t%rd832, %rd831, %rd121;"
+            },
+            {
+              "line": 2363,
+              "code": "mul.lo.s64 \t%rd846, %rd845, %rd121;"
+            },
+            {
+              "line": 2391,
+              "code": "mul.lo.s64 \t%rd860, %rd859, %rd121;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 85,
+            "add.f32": 39,
+            "max.f32": 40,
+            "setp.leu.f32": 11,
+            "div.rn.f32": 23,
+            "mul.f32": 23,
+            "setp.gt.f32": 23,
+            "selp.f32": 23,
+            "sub.f32": 23,
+            "rcp.rn.f32": 1
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "815b2f8d6a4154dd1549250784a34427cfa4fe6c6feda19faf0e28eebbe0a5e1",
+          "stride_parameter_ordinal": 19,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r117",
+              "line": 53,
+              "code": "ld.param.u32 \t%r117, [up_action_param_19];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 130,
+              "code": "mul.wide.u32 \t%rd50, %r152, %r117;"
+            },
+            {
+              "line": 136,
+              "code": "mul.wide.u32 \t%rd51, %r154, %r117;"
+            },
+            {
+              "line": 141,
+              "code": "mul.wide.u32 \t%rd52, %r156, %r117;"
+            },
+            {
+              "line": 149,
+              "code": "mul.wide.u32 \t%rd53, %r159, %r117;"
+            },
+            {
+              "line": 157,
+              "code": "mul.wide.u32 \t%rd54, %r162, %r117;"
+            },
+            {
+              "line": 237,
+              "code": "mul.wide.u32 \t%rd109, %r207, %r117;"
+            },
+            {
+              "line": 243,
+              "code": "mul.wide.u32 \t%rd110, %r209, %r117;"
+            },
+            {
+              "line": 248,
+              "code": "mul.wide.u32 \t%rd111, %r211, %r117;"
+            },
+            {
+              "line": 320,
+              "code": "mul.wide.u32 \t%rd83, %r184, %r117;"
+            },
+            {
+              "line": 326,
+              "code": "mul.wide.u32 \t%rd84, %r186, %r117;"
+            },
+            {
+              "line": 331,
+              "code": "mul.wide.u32 \t%rd85, %r188, %r117;"
+            },
+            {
+              "line": 336,
+              "code": "mul.wide.u32 \t%rd86, %r190, %r117;"
+            },
+            {
+              "line": 410,
+              "code": "mul.wide.u32 \t%rd167, %r339, %r117;"
+            },
+            {
+              "line": 447,
+              "code": "mul.lo.s64 \t%rd857, %rd856, %rd166;"
+            },
+            {
+              "line": 463,
+              "code": "mul.lo.s64 \t%rd867, %rd866, %rd166;"
+            },
+            {
+              "line": 479,
+              "code": "mul.lo.s64 \t%rd877, %rd876, %rd166;"
+            },
+            {
+              "line": 495,
+              "code": "mul.lo.s64 \t%rd887, %rd886, %rd166;"
+            },
+            {
+              "line": 525,
+              "code": "mul.lo.s64 \t%rd900, %rd899, %rd166;"
+            },
+            {
+              "line": 549,
+              "code": "mul.lo.s64 \t%rd913, %rd912, %rd166;"
+            },
+            {
+              "line": 571,
+              "code": "mul.lo.s64 \t%rd926, %rd925, %rd166;"
+            },
+            {
+              "line": 609,
+              "code": "mul.wide.u32 \t%rd25, %r126, %r117;"
+            },
+            {
+              "line": 615,
+              "code": "mul.wide.u32 \t%rd26, %r128, %r117;"
+            },
+            {
+              "line": 620,
+              "code": "mul.wide.u32 \t%rd27, %r130, %r117;"
+            },
+            {
+              "line": 628,
+              "code": "mul.wide.u32 \t%rd28, %r133, %r117;"
+            },
+            {
+              "line": 636,
+              "code": "mul.wide.u32 \t%rd29, %r136, %r117;"
+            },
+            {
+              "line": 675,
+              "code": "mul.wide.u32 \t%rd92, %r195, %r117;"
+            },
+            {
+              "line": 681,
+              "code": "mul.wide.u32 \t%rd93, %r197, %r117;"
+            },
+            {
+              "line": 686,
+              "code": "mul.wide.u32 \t%rd94, %r199, %r117;"
+            },
+            {
+              "line": 715,
+              "code": "mul.wide.u32 \t%rd61, %r168, %r117;"
+            },
+            {
+              "line": 721,
+              "code": "mul.wide.u32 \t%rd62, %r170, %r117;"
+            },
+            {
+              "line": 726,
+              "code": "mul.wide.u32 \t%rd63, %r172, %r117;"
+            },
+            {
+              "line": 731,
+              "code": "mul.wide.u32 \t%rd64, %r174, %r117;"
+            },
+            {
+              "line": 767,
+              "code": "mul.wide.u32 \t%rd115, %r215, %r117;"
+            },
+            {
+              "line": 797,
+              "code": "mul.lo.s64 \t%rd458, %rd457, %rd114;"
+            },
+            {
+              "line": 811,
+              "code": "mul.lo.s64 \t%rd467, %rd466, %rd114;"
+            },
+            {
+              "line": 825,
+              "code": "mul.lo.s64 \t%rd476, %rd475, %rd114;"
+            },
+            {
+              "line": 839,
+              "code": "mul.lo.s64 \t%rd485, %rd484, %rd114;"
+            },
+            {
+              "line": 863,
+              "code": "mul.lo.s64 \t%rd494, %rd493, %rd114;"
+            },
+            {
+              "line": 880,
+              "code": "mul.lo.s64 \t%rd503, %rd502, %rd114;"
+            },
+            {
+              "line": 896,
+              "code": "mul.lo.s64 \t%rd512, %rd511, %rd114;"
+            },
+            {
+              "line": 941,
+              "code": "mul.wide.u32 \t%rd34, %r139, %r117;"
+            },
+            {
+              "line": 947,
+              "code": "mul.wide.u32 \t%rd35, %r141, %r117;"
+            },
+            {
+              "line": 952,
+              "code": "mul.wide.u32 \t%rd36, %r143, %r117;"
+            },
+            {
+              "line": 960,
+              "code": "mul.wide.u32 \t%rd37, %r146, %r117;"
+            },
+            {
+              "line": 968,
+              "code": "mul.wide.u32 \t%rd38, %r149, %r117;"
+            },
+            {
+              "line": 1115,
+              "code": "mul.wide.u32 \t%rd100, %r201, %r117;"
+            },
+            {
+              "line": 1121,
+              "code": "mul.wide.u32 \t%rd101, %r203, %r117;"
+            },
+            {
+              "line": 1126,
+              "code": "mul.wide.u32 \t%rd102, %r205, %r117;"
+            },
+            {
+              "line": 1217,
+              "code": "mul.wide.u32 \t%rd70, %r176, %r117;"
+            },
+            {
+              "line": 1223,
+              "code": "mul.wide.u32 \t%rd71, %r178, %r117;"
+            },
+            {
+              "line": 1228,
+              "code": "mul.wide.u32 \t%rd72, %r180, %r117;"
+            },
+            {
+              "line": 1233,
+              "code": "mul.wide.u32 \t%rd73, %r182, %r117;"
+            },
+            {
+              "line": 1352,
+              "code": "mul.wide.u32 \t%rd122, %r242, %r117;"
+            },
+            {
+              "line": 1581,
+              "code": "mul.lo.s64 \t%rd659, %rd658, %rd121;"
+            },
+            {
+              "line": 1614,
+              "code": "mul.lo.s64 \t%rd672, %rd671, %rd121;"
+            },
+            {
+              "line": 1642,
+              "code": "mul.lo.s64 \t%rd681, %rd680, %rd121;"
+            },
+            {
+              "line": 1670,
+              "code": "mul.lo.s64 \t%rd690, %rd689, %rd121;"
+            },
+            {
+              "line": 1712,
+              "code": "mul.lo.s64 \t%rd701, %rd700, %rd121;"
+            },
+            {
+              "line": 1751,
+              "code": "mul.lo.s64 \t%rd715, %rd714, %rd121;"
+            },
+            {
+              "line": 1789,
+              "code": "mul.lo.s64 \t%rd729, %rd728, %rd121;"
+            },
+            {
+              "line": 1840,
+              "code": "mul.lo.s64 \t%rd576, %rd575, %rd121;"
+            },
+            {
+              "line": 1868,
+              "code": "mul.lo.s64 \t%rd585, %rd584, %rd121;"
+            },
+            {
+              "line": 1897,
+              "code": "mul.lo.s64 \t%rd594, %rd593, %rd121;"
+            },
+            {
+              "line": 1927,
+              "code": "mul.lo.s64 \t%rd603, %rd602, %rd121;"
+            },
+            {
+              "line": 1971,
+              "code": "mul.lo.s64 \t%rd617, %rd616, %rd121;"
+            },
+            {
+              "line": 2011,
+              "code": "mul.lo.s64 \t%rd632, %rd631, %rd121;"
+            },
+            {
+              "line": 2050,
+              "code": "mul.lo.s64 \t%rd647, %rd646, %rd121;"
+            },
+            {
+              "line": 2192,
+              "code": "mul.lo.s64 \t%rd743, %rd742, %rd121;"
+            },
+            {
+              "line": 2211,
+              "code": "mul.lo.s64 \t%rd752, %rd751, %rd121;"
+            },
+            {
+              "line": 2231,
+              "code": "mul.lo.s64 \t%rd762, %rd761, %rd121;"
+            },
+            {
+              "line": 2251,
+              "code": "mul.lo.s64 \t%rd772, %rd771, %rd121;"
+            },
+            {
+              "line": 2286,
+              "code": "mul.lo.s64 \t%rd785, %rd784, %rd121;"
+            },
+            {
+              "line": 2315,
+              "code": "mul.lo.s64 \t%rd799, %rd798, %rd121;"
+            },
+            {
+              "line": 2343,
+              "code": "mul.lo.s64 \t%rd813, %rd812, %rd121;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 85,
+            "add.f32": 39,
+            "max.f32": 40,
+            "setp.leu.f32": 11,
+            "div.rn.f32": 23,
+            "mul.f32": 23,
+            "setp.gt.f32": 23,
+            "selp.f32": 23,
+            "sub.f32": 23,
+            "rcp.rn.f32": 1
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      },
+      "up_action_eval": {
+        "baseline": {
+          "PTX_sha256": "75c57558af5840d26f69f4e3689e4702144b698db3a6b0b6071a4a13b7769407",
+          "stride_parameter_ordinal": 16,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r77",
+              "line": 43,
+              "code": "ld.param.u32 \t%r77, [up_action_eval_param_16];"
+            }
+          ],
+          "stride_signed64_extensions": [
+            {
+              "line": 92,
+              "code": "cvt.s64.s32 \t%rd33, %r77;"
+            },
+            {
+              "line": 295,
+              "code": "cvt.s64.s32 \t%rd9, %r77;"
+            },
+            {
+              "line": 474,
+              "code": "cvt.s64.s32 \t%rd15, %r77;"
+            },
+            {
+              "line": 806,
+              "code": "cvt.s64.s32 \t%rd29, %r77;"
+            }
+          ],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 93,
+              "code": "mul.lo.s64 \t%rd34, %rd323, %rd33;"
+            },
+            {
+              "line": 131,
+              "code": "mul.lo.s64 \t%rd337, %rd336, %rd33;"
+            },
+            {
+              "line": 147,
+              "code": "mul.lo.s64 \t%rd347, %rd346, %rd33;"
+            },
+            {
+              "line": 163,
+              "code": "mul.lo.s64 \t%rd357, %rd356, %rd33;"
+            },
+            {
+              "line": 179,
+              "code": "mul.lo.s64 \t%rd367, %rd366, %rd33;"
+            },
+            {
+              "line": 210,
+              "code": "mul.lo.s64 \t%rd380, %rd379, %rd33;"
+            },
+            {
+              "line": 234,
+              "code": "mul.lo.s64 \t%rd393, %rd392, %rd33;"
+            },
+            {
+              "line": 256,
+              "code": "mul.lo.s64 \t%rd406, %rd405, %rd33;"
+            },
+            {
+              "line": 296,
+              "code": "mul.lo.s64 \t%rd10, %rd58, %rd9;"
+            },
+            {
+              "line": 327,
+              "code": "mul.lo.s64 \t%rd68, %rd67, %rd9;"
+            },
+            {
+              "line": 341,
+              "code": "mul.lo.s64 \t%rd77, %rd76, %rd9;"
+            },
+            {
+              "line": 355,
+              "code": "mul.lo.s64 \t%rd86, %rd85, %rd9;"
+            },
+            {
+              "line": 369,
+              "code": "mul.lo.s64 \t%rd95, %rd94, %rd9;"
+            },
+            {
+              "line": 393,
+              "code": "mul.lo.s64 \t%rd104, %rd103, %rd9;"
+            },
+            {
+              "line": 411,
+              "code": "mul.lo.s64 \t%rd113, %rd112, %rd9;"
+            },
+            {
+              "line": 427,
+              "code": "mul.lo.s64 \t%rd122, %rd121, %rd9;"
+            },
+            {
+              "line": 475,
+              "code": "mul.lo.s64 \t%rd16, %rd135, %rd15;"
+            },
+            {
+              "line": 594,
+              "code": "mul.lo.s64 \t%rd165, %rd164, %rd15;"
+            },
+            {
+              "line": 617,
+              "code": "mul.lo.s64 \t%rd174, %rd173, %rd15;"
+            },
+            {
+              "line": 640,
+              "code": "mul.lo.s64 \t%rd183, %rd182, %rd15;"
+            },
+            {
+              "line": 664,
+              "code": "mul.lo.s64 \t%rd192, %rd191, %rd15;"
+            },
+            {
+              "line": 701,
+              "code": "mul.lo.s64 \t%rd206, %rd205, %rd15;"
+            },
+            {
+              "line": 732,
+              "code": "mul.lo.s64 \t%rd220, %rd219, %rd15;"
+            },
+            {
+              "line": 763,
+              "code": "mul.lo.s64 \t%rd234, %rd233, %rd15;"
+            },
+            {
+              "line": 807,
+              "code": "mul.lo.s64 \t%rd30, %rd245, %rd29;"
+            },
+            {
+              "line": 810,
+              "code": "mul.lo.s64 \t%rd31, %rd246, %rd29;"
+            },
+            {
+              "line": 845,
+              "code": "mul.lo.s64 \t%rd262, %rd261, %rd29;"
+            },
+            {
+              "line": 860,
+              "code": "mul.lo.s64 \t%rd271, %rd270, %rd29;"
+            },
+            {
+              "line": 875,
+              "code": "mul.lo.s64 \t%rd280, %rd279, %rd29;"
+            },
+            {
+              "line": 890,
+              "code": "mul.lo.s64 \t%rd289, %rd288, %rd29;"
+            },
+            {
+              "line": 915,
+              "code": "mul.lo.s64 \t%rd298, %rd297, %rd29;"
+            },
+            {
+              "line": 934,
+              "code": "mul.lo.s64 \t%rd307, %rd306, %rd29;"
+            },
+            {
+              "line": 951,
+              "code": "mul.lo.s64 \t%rd316, %rd315, %rd29;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 14,
+            "add.f32": 14,
+            "rcp.rn.f32": 1,
+            "max.f32": 14,
+            "setp.leu.f32": 2,
+            "div.rn.f32": 7,
+            "setp.gt.f32": 7,
+            "selp.f32": 7
+          },
+          "static_only": true
+        },
+        "candidate": {
+          "PTX_sha256": "3af8a14bcb3503bb55cbe198ad592f264aa2acea6028bb84d4c21aa99a5996cd",
+          "stride_parameter_ordinal": 16,
+          "stride_parameter_bindings": [
+            {
+              "register": "%r77",
+              "line": 43,
+              "code": "ld.param.u32 \t%r77, [up_action_eval_param_16];"
+            }
+          ],
+          "stride_signed64_extensions": [],
+          "stride_derived_wide_multiplies": [
+            {
+              "line": 92,
+              "code": "mul.wide.u32 \t%rd34, %r181, %r77;"
+            },
+            {
+              "line": 130,
+              "code": "mul.lo.s64 \t%rd332, %rd331, %rd33;"
+            },
+            {
+              "line": 146,
+              "code": "mul.lo.s64 \t%rd342, %rd341, %rd33;"
+            },
+            {
+              "line": 162,
+              "code": "mul.lo.s64 \t%rd352, %rd351, %rd33;"
+            },
+            {
+              "line": 178,
+              "code": "mul.lo.s64 \t%rd362, %rd361, %rd33;"
+            },
+            {
+              "line": 209,
+              "code": "mul.lo.s64 \t%rd375, %rd374, %rd33;"
+            },
+            {
+              "line": 233,
+              "code": "mul.lo.s64 \t%rd388, %rd387, %rd33;"
+            },
+            {
+              "line": 255,
+              "code": "mul.lo.s64 \t%rd401, %rd400, %rd33;"
+            },
+            {
+              "line": 294,
+              "code": "mul.wide.u32 \t%rd10, %r83, %r77;"
+            },
+            {
+              "line": 325,
+              "code": "mul.lo.s64 \t%rd67, %rd66, %rd9;"
+            },
+            {
+              "line": 339,
+              "code": "mul.lo.s64 \t%rd76, %rd75, %rd9;"
+            },
+            {
+              "line": 353,
+              "code": "mul.lo.s64 \t%rd85, %rd84, %rd9;"
+            },
+            {
+              "line": 367,
+              "code": "mul.lo.s64 \t%rd94, %rd93, %rd9;"
+            },
+            {
+              "line": 391,
+              "code": "mul.lo.s64 \t%rd103, %rd102, %rd9;"
+            },
+            {
+              "line": 409,
+              "code": "mul.lo.s64 \t%rd112, %rd111, %rd9;"
+            },
+            {
+              "line": 425,
+              "code": "mul.lo.s64 \t%rd121, %rd120, %rd9;"
+            },
+            {
+              "line": 472,
+              "code": "mul.wide.u32 \t%rd16, %r110, %r77;"
+            },
+            {
+              "line": 591,
+              "code": "mul.lo.s64 \t%rd163, %rd162, %rd15;"
+            },
+            {
+              "line": 614,
+              "code": "mul.lo.s64 \t%rd172, %rd171, %rd15;"
+            },
+            {
+              "line": 637,
+              "code": "mul.lo.s64 \t%rd181, %rd180, %rd15;"
+            },
+            {
+              "line": 661,
+              "code": "mul.lo.s64 \t%rd190, %rd189, %rd15;"
+            },
+            {
+              "line": 698,
+              "code": "mul.lo.s64 \t%rd204, %rd203, %rd15;"
+            },
+            {
+              "line": 729,
+              "code": "mul.lo.s64 \t%rd218, %rd217, %rd15;"
+            },
+            {
+              "line": 760,
+              "code": "mul.lo.s64 \t%rd232, %rd231, %rd15;"
+            },
+            {
+              "line": 803,
+              "code": "mul.wide.u32 \t%rd30, %r153, %r77;"
+            },
+            {
+              "line": 805,
+              "code": "mul.wide.u32 \t%rd31, %r154, %r77;"
+            },
+            {
+              "line": 840,
+              "code": "mul.lo.s64 \t%rd258, %rd257, %rd29;"
+            },
+            {
+              "line": 855,
+              "code": "mul.lo.s64 \t%rd267, %rd266, %rd29;"
+            },
+            {
+              "line": 870,
+              "code": "mul.lo.s64 \t%rd276, %rd275, %rd29;"
+            },
+            {
+              "line": 885,
+              "code": "mul.lo.s64 \t%rd285, %rd284, %rd29;"
+            },
+            {
+              "line": 910,
+              "code": "mul.lo.s64 \t%rd294, %rd293, %rd29;"
+            },
+            {
+              "line": 929,
+              "code": "mul.lo.s64 \t%rd303, %rd302, %rd29;"
+            },
+            {
+              "line": 946,
+              "code": "mul.lo.s64 \t%rd312, %rd311, %rd29;"
+            }
+          ],
+          "other_stride_derived_multiplications": [],
+          "float_arithmetic_compare_opcode_inventory": {
+            "fma.rn.f32": 14,
+            "add.f32": 14,
+            "rcp.rn.f32": 1,
+            "max.f32": 14,
+            "setp.leu.f32": 2,
+            "div.rn.f32": 7,
+            "setp.gt.f32": 7,
+            "selp.f32": 7
+          },
+          "static_only": true
+        },
+        "float_opcode_inventory_equal": true
+      }
+    }
+  },
+  "floating_source_dependencies_byte_exact": true,
+  "ABI_all9_headers_exact": true,
+  "all_CFVarithmetic_source_still_u64": true,
+  "new_CUDA_contexts_compilers_applicationkernels_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Conservative static scalar identity/derived-register trace,not fullPTX/FP-DAG/controlflow simulator. Same original sourcefloatdependency statements and exacttype reversal; emittedarithmetic inventories retained including anyloopunrolling differences. No devicefloat/numerical equivalence, dynamiclatency,completecycle oradoption claim. Native signterm/wideproduct review then all raw/engine/fullcanonical/ordinary/speed/adoption gates remain."
+}

@@ -1,0 +1,20 @@
+{
+  "id": "user-policy-1pct",
+  "at": "2026-10-16T22:22:26Z",
+  "human_instruction": "yea make the cutoff 1% if there's no tradeofffs",
+  "applies": "Prospective E037 measurement assessment and future smaller-gain confirmation; original historical outcomes remain unchanged.",
+  "supersedes": "Self-imposed 2% aggregate gate; pending design proposal to remove magnitude cutoffs is not adopted. Frozen E037 build/source identities stay preserved; a separate effective-policy assessment must be reviewed and pinned before native/timing.",
+  "aggregate_cutoff_pct": 1.0,
+  "initial_fixture_guard": "Reject if fixture median slowdown >0 and a strict majority (minimum two) of paired fixture slowdowns >0. All raw timing retained; this is a measured-repeatability guard, not proof of no slowdown in all workloads.",
+  "accuracy": "Exact full state, EV/exploitability, stopping and checkpoint equality; broader correctness remains required.",
+  "other_tradeoffs": "No material memory, compatibility or behavior costs; inspect source/resource evidence and report any unresolved cost before adoption.",
+  "confirmation": "A preliminary three-pair pass is not adoption. Freeze fresh 16 balanced pairs before confirmation; aggregate >=1%, median paired gain >0, at least13 positive pairs, positive block and order-stratum medians. All broader exactness/holdout/cumulative requirements remain. No sample extension or pooling old results.",
+  "pre_timing_evidence": {
+    "all_seven_native_run_directories_absent": true,
+    "compile_only_terminal_success": true,
+    "compile_complete_sha256": "d8b3541d95c684b5814bcce1a11f36bf3bb8313a369c35f5aedd8560b6cd5d26",
+    "gpu_only_build_session": 26916,
+    "native_or_timing_run_started": false
+  },
+  "candidate_accepted": false
+}

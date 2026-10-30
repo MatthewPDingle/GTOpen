@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-18T07:22:36.929205+00:00",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "tools/postflop_autoresearch.py",
+    "--id",
+    "V080-stored-candidate",
+    "--title",
+    "E080 broader V080-stored-candidate",
+    "--kind",
+    "validation",
+    "--binary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-feature-solver.exe",
+    "--build-manifest",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E080-feature-solver.manifest.json",
+    "--test",
+    "gpu::continuation::storage::device_tests::direct_gpu_storage_preserves_720_full_state_passes",
+    "--not-ignored"
+  ]
+}

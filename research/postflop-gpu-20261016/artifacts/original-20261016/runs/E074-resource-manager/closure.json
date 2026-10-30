@@ -1,0 +1,175 @@
+{
+  "at": "2026-10-18T03:05:02.447291+00:00",
+  "status": "rejected_compiled_prerequisite",
+  "report_sha256": "b5859babf55f0937da159a62c0a573b35ecab8c985c8e4d7fe0ec5645e14bf8d",
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "source_main_live_PTX_custody_pass": true,
+  "HTTP_byte_verified_files": [
+    {
+      "url": "evidence/E074-resource/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E074-resource/candidate.cu",
+      "sha256": "c8b6289a1520d728f43d240b4abd1bb4152db22a24354bc464f3fdbde40b1fd0"
+    },
+    {
+      "url": "evidence/E074-resource/probe.rs",
+      "sha256": "5e7c6abd379f7db4d2ed607b677d0eecb178dfb1b53ca311e7e545ae2ae312e5"
+    },
+    {
+      "url": "evidence/E074-resource/protocol.json",
+      "sha256": "68219c762a1adb9d0f3e99c4336881d8f7f0dc2134d25625865278b249520e3d"
+    },
+    {
+      "url": "evidence/E074-source/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E074-source/candidate.cu",
+      "sha256": "c8b6289a1520d728f43d240b4abd1bb4152db22a24354bc464f3fdbde40b1fd0"
+    },
+    {
+      "url": "evidence/E074-source/candidate.patch",
+      "sha256": "09cf1e5f63f10705b93d25702b5874ce5f23a40293550739c1a55b1d0f40601f"
+    },
+    {
+      "url": "evidence/E074-source/manifest.json",
+      "sha256": "ad353aab9d87a65dbd3cba0bba734ce996f48d0c556dccca149da1d4d31972be"
+    },
+    {
+      "url": "evidence/E074-source/source-review.json",
+      "sha256": "a60d0a7ec89dfafe9308b0aa2c28eda50ffbba91a6445dd61ff86998a7d4c87e"
+    },
+    {
+      "url": "evidence/D120-generic-call-boundary/history.json",
+      "sha256": "c0196c5ccf54dcc9e28fcb9d99a9cb0f09b08a474f303083cbc5f3fdc16ed508"
+    },
+    {
+      "url": "evidence/D120-generic-call-boundary/protocol.json",
+      "sha256": "96ce185af1cd1ff72e7056d7ecfbb032dc6e5ca6a27b3e07fa1254f998f22548"
+    },
+    {
+      "url": "evidence/D120-generic-call-boundary/publication.json",
+      "sha256": "896999afa9197b6a4f21425a5f4c52b2d656295edfbb64f898f616b9304a8057"
+    },
+    {
+      "url": "evidence/E074-resource-runners/D120-prepare.py",
+      "sha256": "bdc42dbddec50e71173a8cec07045802298289005ee52ede2daf1e8fda18e041"
+    },
+    {
+      "url": "evidence/E074-resource-runners/E074-prepare-resource.py",
+      "sha256": "61e39a421cfeab3c100976d7ec6c79e5f0ca580b6483c095f8e26b5ae13c10a6"
+    },
+    {
+      "url": "evidence/E074-resource-runners/E074-resource-execute.py",
+      "sha256": "6a82f824c371ce2bd76e4e981592e28d5c1bb73d0669256da0ba64105d1c57fc"
+    },
+    {
+      "url": "evidence/E074-resource-runners/E074-run-resource.py",
+      "sha256": "3dca53dea91e87435e42a752774974e06e258854a80c34be2edbb1737860f97a"
+    },
+    {
+      "url": "evidence/E074-resource/baseline.cu",
+      "sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+    },
+    {
+      "url": "evidence/E074-resource/candidate.cu",
+      "sha256": "c8b6289a1520d728f43d240b4abd1bb4152db22a24354bc464f3fdbde40b1fd0"
+    },
+    {
+      "url": "evidence/E074-resource/pre-resource-publication.json",
+      "sha256": "ada1b01d9329f6c741d153b256d2fe9a96249af2e6963eb5695c485af36e5cfc"
+    },
+    {
+      "url": "evidence/E074-resource/probe.rs",
+      "sha256": "5e7c6abd379f7db4d2ed607b677d0eecb178dfb1b53ca311e7e545ae2ae312e5"
+    },
+    {
+      "url": "evidence/E074-resource/protocol.json",
+      "sha256": "68219c762a1adb9d0f3e99c4336881d8f7f0dc2134d25625865278b249520e3d"
+    },
+    {
+      "url": "evidence/E074-resource/report.json",
+      "sha256": "b5859babf55f0937da159a62c0a573b35ecab8c985c8e4d7fe0ec5645e14bf8d"
+    },
+    {
+      "url": "evidence/E074-resource-execution/baseline-compute_120.ptx",
+      "sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12"
+    },
+    {
+      "url": "evidence/E074-resource-execution/baseline-compute_75.ptx",
+      "sha256": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70"
+    },
+    {
+      "url": "evidence/E074-resource-execution/before.json",
+      "sha256": "b728694b89cefc9369a248ac88a0ceacc7169114b9076583c6a69f261fbac94c"
+    },
+    {
+      "url": "evidence/E074-resource-execution/build-complete.json",
+      "sha256": "4edd53afe51410a27e9bcf081e553d0f49245e8c15c2dba0dc98c250cfb7d09b"
+    },
+    {
+      "url": "evidence/E074-resource-execution/candidate-compute_120.ptx",
+      "sha256": "248e98402df8290c24120004b56ac9a61d31af758d2644844ca6b202cb4d10a3"
+    },
+    {
+      "url": "evidence/E074-resource-execution/candidate-compute_75.ptx",
+      "sha256": "bb08a1a903e64747167680ce931e5659ea884ec6a21c64f61f2f912cf98137df"
+    },
+    {
+      "url": "evidence/E074-resource-execution/complete.json",
+      "sha256": "335d56fe933e563a78cffceb7d4755308c4275810ea1635ed89656ed3c5a5fcf"
+    },
+    {
+      "url": "evidence/E074-resource-execution/probe.exit.json",
+      "sha256": "e5c830e71d38f3f25201aa0774a36b9cbee4e70f214f0c78b1de2f4694bb8b79"
+    },
+    {
+      "url": "evidence/E074-resource-execution/probe.invocation.json",
+      "sha256": "b1516752cb6fb6fe47330121366efe265ad13fbbadb2cc238e5ba496299447dc"
+    },
+    {
+      "url": "evidence/E074-resource-execution/probe.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E074-resource-execution/probe.stdout.log",
+      "sha256": "e34c863c90faba21fd29431c4326d91c23f68eedc805275bc86219a6b5f3bdf4"
+    },
+    {
+      "url": "evidence/E074-resource-execution/rustc.exit.json",
+      "sha256": "bc12e32e274a28f9657709e26b060b1fcf0949a00d8da28926c923048155bb91"
+    },
+    {
+      "url": "evidence/E074-resource-execution/rustc.invocation.json",
+      "sha256": "f5108b9796f2e6803087ccb441bff9114add63144e8a38c3d1b591d50978e5d1"
+    },
+    {
+      "url": "evidence/E074-resource-execution/rustc.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E074-resource-execution/rustc.stdout.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E074-resource-manager/resource.exit.json",
+      "sha256": "0ed189416d318c2c23e0b69d28bdadd5631ad883b7257f7d056d95009ac700d5"
+    },
+    {
+      "url": "evidence/E074-resource-manager/resource.invocation.json",
+      "sha256": "9037c58548400a96a48480df7b83f49dda17a7fdb11ceaed987dd2811d79308a"
+    },
+    {
+      "url": "evidence/E074-resource-manager/resource.stderr.log",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "url": "evidence/E074-resource-manager/resource.stdout.log",
+      "sha256": "1a1979610cad0097f8510e2e6740a1a2d12e74796984b31cc570281b34870561"
+    }
+  ],
+  "reason": "Closed at compiler/resource prerequisite: compute_75:callee20parameters, target_actual_register_count_reduced, target_128thread_driver_occupancy_improved. No wrapper/helper/call/placement/arity-subset/dispatch variants, sweep or retry."
+}

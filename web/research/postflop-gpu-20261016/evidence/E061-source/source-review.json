@@ -1,0 +1,23 @@
+{
+  "id": "E061",
+  "at": "2026-10-17T09:08:39.245474+00:00",
+  "kind": "attributed_source_form_requalification",
+  "original_id": "E050",
+  "original_candidate_full_sha256": "a9f20efe596b88508abd099c8bb62ffe1bbac1368a5240fcc9e32a8e4fb6a39a",
+  "original_baseline_full_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "accepted_base": "E051",
+  "accepted_full_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_full_sha256": "8fd8272531dccd537c5f71b08ca75922f8806f53b7fabf8b06a7a4f5e0fa8d03",
+  "original_and_current_up_show_baseline_exact": true,
+  "original_and_new_up_show_candidate_exact": true,
+  "normalized_up_show_candidate_sha256": "24346d9620b44e027837f6da9e83813f0d6d59a2218c3d162bc7b075d0583e4e",
+  "outside_up_show_source_unchanged": true,
+  "audit_report_sha256": "c44748183c7832ce6715ad6f2f5ca481deae3e5f12cdf27199f6292f63f75b2d",
+  "docket_sha256": "52bfd2b3788ac1cb1329f0bac1bc978068528653ce296a4009873e7ed88ea1aa",
+  "policy_sha256": "b22522ec32c3fe940ac6c830dc4c79dbff2a31a111ed20d0a7daaf02b7520fd6",
+  "source_safety_review_sha256": "c1573c76e1402bcc88c50d30824616aaf7d2fb4d72d9772eabf863dde8800439",
+  "mechanism": "Exact original4byte cp.async.ca staging of disjoint aligned reach/card-position words, overlap existing independent CFVclear, per-thread wait_all then original CTAbarrier. Pre-sm80 fallback unchanged. Same floating operations/order, buffers/launch/ABI/quality; no width/guard/placement/source-form variant.",
+  "source_contract": "Existing separately allocated global inputs, aligned dynamic shared ranges and disjoint terminal output rows. Copies complete per thread before barrier; no consumer before wait+barrier. wait_all commits and waits prior copies; empty group completes. Full CPU/GPU actual numerical controls still required.",
+  "source_documentation_reference": "https://docs.nvidia.com/cuda/archive/12.9.1/parallel-thread-execution/index.html#data-movement-and-conversion-instructions-cp-async-wait-group-cp-async-wait-all",
+  "no_claim": "Root source review only, not external independence, numerical proof, speed or adoption."
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-18T23:26:55.675392+00:00",
+  "scope": "Only the existing local CFV stride in paired_sweep and eval_up becomes nh_p. All original kernel bytes, ordered float math, logical hand counts, CFV slot IDs and lifetimes, level/worklists, reach/learning state, allocated bytes/budget, root staging, graphs and save behavior remain. Physical scratch row addresses differ per traverser.",
+  "source_reverse_exact": true,
+  "D141_report_sha256": "0f536326da8f2400d7218dc9822f134641a02630fa9abd3aa076e2f75088f4b3",
+  "production_statements_changed": 2,
+  "new_persistent_fields": 0,
+  "device_allocation_formulas_changed": false,
+  "kernel_bytes_changed": false,
+  "root_contract": "Root CFV slot remains zero, root downloads remain first nh[p] floats. d_eval_roots offsets and allocation keep self.nh_max; only up-kernel stride arguments use nh_p.",
+  "lifetime_contract": "Every full up pass computes all logical rows from the current traverser before their consumers. Within-player BR/average terminal reuse retains that same stride. Switching players runs a full producer pass; no incoming other-player CFV bytes are required. Actual raw GPU/controller checks remain necessary.",
+  "risks": "Tighter row addresses can change cache-line sharing and coalescing, scheduling, performance or expose missed consumer assumptions. Smaller address envelope does not reduce allocated VRAM. No no-tradeoff claim from source/model.",
+  "distinct_from_closed": "No E025 padding or capacity change; no E076 row-ID/lifetime/coloring/alias change; no E018/E039 metadata translation. Same row map and allocation, per-traverser unpadded spacing only.",
+  "required": "Real full logical CFV/raw physical guard images and whole learning/reach equivalence versus immutable baseline, eager/graphs/evaluation/warm/locks/F32/compressed/algorithms/continuation. Fresh full builds and unchanged whole-solve1%/strictfixture/fresh16/broad/material/holdout/cumulative before adoption."
+}

@@ -1,0 +1,50 @@
+{
+  "id": "D057-script-preparation",
+  "at": "2026-10-16T18:24:56.703839+00:00",
+  "status": "PASS_SOURCE_ONLY_PREPARATION",
+  "accepted_source_entries_verified": 162,
+  "source_manifest_sha256": "2b761d68451d7e7d92f06fb06034466201f7554549420553f785511bf0eab5cd",
+  "source_review_sha256": "0a46215e31166b3b8dbce5bb7d53dd3517be783c9e2ef3f7ff1aa0acecb5caf3",
+  "source_artifact_pins_verified": 10,
+  "source_reference_pins_verified": 13,
+  "all_reference_pins_verified": 45,
+  "three_python_scripts_ast_pass": true,
+  "actual_marker_schema_matched": true,
+  "expected_markers": 22,
+  "fixed_sample_checkpoints": [
+    160,
+    180,
+    200
+  ],
+  "post_eval_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "expected_native_summary": {
+    "passed": 1,
+    "failed": 0,
+    "ignored": 0,
+    "measured": 0,
+    "filtered": 88
+  },
+  "new_test_count": 1,
+  "new_ignored_test_count": 1,
+  "unused_output_paths": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d057-evaluation-envelope",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-build",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-execution",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057R1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D057-solver.exe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D057-solver.manifest.json",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D057-evaluation-envelope-diagnostic"
+  ],
+  "compact_device_counts_separate_from_full_CPU_stores": true,
+  "source_R1_and_draft_corrections_preserved": true,
+  "native_stderr_merged_into_hashed_stdout": true,
+  "all_three_samples_retained_before_outer_guard": true,
+  "compiler_native_gpu_execution": false,
+  "production_source_changes": false,
+  "status_changes": false
+}

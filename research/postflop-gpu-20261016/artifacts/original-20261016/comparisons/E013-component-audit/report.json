@@ -1,0 +1,860 @@
+{
+  "schema_version": 1,
+  "id": "E013-component-audit",
+  "created_at": "2026-10-16T06:46:36.218108+00:00",
+  "scope": "Independent read-only evidence and timing decomposition; no acceptance decision change, GPU execution or source modification",
+  "sign_convention": "saved_ms = baseline minus candidate; positive is faster",
+  "original_decision": "rejected",
+  "original_decision_report": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E013-three-pair-comparison\\report.json",
+  "input_artifacts": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B029\\report.json",
+      "sha256": "9aa86e9e6211c40d4d5be70648dbcf2662b6a2a278972f79bfbf83db4e91cd8e"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B029\\stdout.log",
+      "sha256": "2d8473e6ab815a139ca16b0b57dc82e23dded9198c7f105b7d19e8944a42b5ba"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_autoresearch.exe",
+      "sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_autoresearch.manifest.json",
+      "sha256": "21c708b9e3732a9f501ca3afc713562d17a1537de62d77095192c84bb3d8cd4c"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013\\report.json",
+      "sha256": "a3d034cc4c11b664c5ac82adfab68a28f8714572bb2f60204d57f91e3e709348"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013\\stdout.log",
+      "sha256": "158e01e432cc26a347106c37878dd18b8be8c7faf4e82b92ff3c3555f53739f1"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E013-postflop_autoresearch.exe",
+      "sha256": "12b1dd3a5e85ccc3bfc5bbd4c651be5710a3ba383a32bf279aa1ec0ab25b0182"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E013-postflop_autoresearch.manifest.json",
+      "sha256": "4dde882c11324807bc9ecb975f9d72da7b261d77950fa24aecab469b47dc1ed6"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B030\\report.json",
+      "sha256": "73b5c0e6e50a27e7df8f65a12a034e74ee6bdcd4588e4c746907822850b41fe9"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B030\\stdout.log",
+      "sha256": "877189c9a790b867dda27639f70310a4c71644ebee984b2823a5426f95dc5ab7"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013R2\\report.json",
+      "sha256": "e5e853fd043a553ec5796dbe2cb0769e172b4f8aed016abc0f53009e26c0b14e"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013R2\\stdout.log",
+      "sha256": "b6fc040fa1db8d837989f844ef82bcbe14e9bc21b8ffb68b9c0d216812b27d07"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B031\\report.json",
+      "sha256": "8f60939ebfbd4013a9b21be608892e3ffeca19866554fc872183b039012b25b4"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B031\\stdout.log",
+      "sha256": "3aeab6f1c31e52c5286a07b603e5919ebe85d156998856531a941faa9e771fa9"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013R3\\report.json",
+      "sha256": "8ab9b368a53c839d6d64f75f83e42234112ca2597b592b1293b14bda935e356c"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013R3\\stdout.log",
+      "sha256": "d3b0a195b4b6560506658c98c8bb880f6fc5c5a3e1fb26441d04696b115535fa"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E013-three-pair-comparison\\report.json",
+      "sha256": "1ab16791f8105058192547bd62db9a6649d44a4db5569d5a0ced4099af3dc9b6"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D015-host-sse41-proof\\report.json",
+      "sha256": "2eb9cff85f15275118f94a616da458900103fd94b40cb05b78e4e6918d6546a0"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D015-host-sse41-proof\\prototype.rs",
+      "sha256": "71f10462d323419710fb6700b2416abe541fd2e2c78fdc92f91506dd6666898f"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D019-E013-final-codegen\\assembly-review.json",
+      "sha256": "35237c2ee5df647f33e8b56e1addb4c881ccb7cd864d3be3b7a24e09f3957aed"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D019-E013-final-codegen\\source-before.json",
+      "sha256": "27f93e2cbfe0f0e467c196576744a83fc1ae4db4d1a8c1b6a946c142171b554c"
+    }
+  ],
+  "integrity_checks": [
+    {
+      "run_id": "B029",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    },
+    {
+      "run_id": "E013",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    },
+    {
+      "run_id": "B030",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    },
+    {
+      "run_id": "E013R2",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    },
+    {
+      "run_id": "B031",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    },
+    {
+      "run_id": "E013R3",
+      "status_measured": true,
+      "process_success": true,
+      "one_test_passed": true,
+      "three_results": true,
+      "stdout_hash": true,
+      "stdout_matches_report": true,
+      "binary_hash": true,
+      "manifest_hash": true,
+      "manifest_data": true,
+      "manifest_binary": true,
+      "fixture_order": true
+    }
+  ],
+  "gpu_identity": [
+    "NVIDIA GeForce RTX 5090",
+    "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+    "610.88",
+    "32607"
+  ],
+  "environment": {
+    "RAYON_NUM_THREADS": "16",
+    "nvrtc_path": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": null,
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0"
+  },
+  "exact_comparison_keys": [
+    "algorithm",
+    "board",
+    "check_every",
+    "config",
+    "cpu_arena_bytes",
+    "exploit_bits",
+    "exploit_chips",
+    "exploit_pct_pot",
+    "fingerprint",
+    "fixture_id",
+    "fixture_index",
+    "flushed_progress_logging_included",
+    "iteration",
+    "max_iterations",
+    "nodes",
+    "runtime_nvrtc_jit_included",
+    "schema_version",
+    "stage",
+    "state_fingerprint",
+    "storage",
+    "target_met",
+    "target_pct",
+    "use_isomorphism"
+  ],
+  "all_18_fixture_records_match_reference_exactly": true,
+  "exact_references": {
+    "rainbow": {
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176,
+      "iteration": 200,
+      "target_met": true,
+      "config_sha256": "df5c4c5288b7f4b131a060fda30386ff642ce4f5fbfb311ea8b17be31a69d202",
+      "state_fingerprint_record_sha256": "3fbd83ed18b72276ae0d57eafa20ba4ee82585d2f85fb1e20909c73819912834",
+      "storage": "compressed",
+      "target_pct": 0.3,
+      "check_every": 20,
+      "max_iterations": 400,
+      "algorithm": "Dcfr",
+      "use_isomorphism": true
+    },
+    "two-tone": {
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664,
+      "iteration": 200,
+      "target_met": true,
+      "config_sha256": "d489341c35a356b4915ed28ebd99c9c60d4c690a297211f78c23298c75a85a85",
+      "state_fingerprint_record_sha256": "06e6d8a514c9de0ca434fa1ec2d6e701f39e69e36cf233bd41398116434d77ee",
+      "storage": "compressed",
+      "target_pct": 0.3,
+      "check_every": 20,
+      "max_iterations": 400,
+      "algorithm": "Dcfr",
+      "use_isomorphism": true
+    },
+    "river": {
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360,
+      "iteration": 60,
+      "target_met": true,
+      "config_sha256": "48499c640b98537c27af1992c98c8e68e4cde62c06feb903fc8174d4870fb3b7",
+      "state_fingerprint_record_sha256": "1e62eff95195ade878237f103fde783ab97d6ed0d8a4b748e9be497c1ad12ae4",
+      "storage": "compressed",
+      "target_pct": 0.3,
+      "check_every": 20,
+      "max_iterations": 400,
+      "algorithm": "Dcfr",
+      "use_isomorphism": true
+    }
+  },
+  "source_changes": [
+    {
+      "path": "crates/solver/src/gpu/arena.rs",
+      "baseline": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "candidate": "7b607f125059f2ffd7262ccd27eba25872944d2395b049fb33088241fe8145ca"
+    },
+    {
+      "path": "crates/solver/src/gpu/host_encode.rs",
+      "baseline": null,
+      "candidate": "7841e9d05cbd7177db58ce95708da78084e77431b16c859558b91755126ac0a2"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "baseline": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "candidate": "1d50c5aa5f08b8b12cf9af731b4653a7e7b66e08434b828c86c8aa783cfa3a1c"
+    },
+    {
+      "path": "crates/solver/tests/fixtures/postflop_quantization_prototype.cu",
+      "baseline": null,
+      "candidate": "bb8f5400d3354b7138fdc8e1154e3cf77dc312a9b94b0951c4cf6413d367fde4"
+    },
+    {
+      "path": "crates/solver/tests/postflop_quantization_proof.rs",
+      "baseline": null,
+      "candidate": "5e3f1bf10a9a70a48343f46ca3e0ad08f3417cc8d69089c4bd39d3f523eeb343"
+    }
+  ],
+  "paired_components": [
+    {
+      "baseline_id": "B029",
+      "candidate_id": "E013",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "baseline_ms": {
+            "build_ms": 84.8401,
+            "init_ms": 728.5854,
+            "solve_ms": 5654.7416,
+            "readback_ms": 402.39399999999995,
+            "full_cycle_ms": 6870.6344
+          },
+          "candidate_ms": {
+            "build_ms": 92.44479999999999,
+            "init_ms": 734.8112,
+            "solve_ms": 5490.6536,
+            "readback_ms": 384.841,
+            "full_cycle_ms": 6702.8081
+          },
+          "saved_ms": {
+            "build_ms": -7.60469999999998,
+            "init_ms": -6.225799999999936,
+            "solve_ms": 164.08800000000065,
+            "readback_ms": 17.55299999999994,
+            "full_cycle_ms": 167.82629999999972,
+            "unattributed_wall_remainder_ms": 0.015799999999046577
+          },
+          "full_cycle_gain_pct": 2.442660898970257
+        },
+        {
+          "fixture_id": "two-tone",
+          "baseline_ms": {
+            "build_ms": 498.20779999999996,
+            "init_ms": 494.41810000000004,
+            "solve_ms": 3452.9265,
+            "readback_ms": 283.8491,
+            "full_cycle_ms": 4729.4701000000005
+          },
+          "candidate_ms": {
+            "build_ms": 423.9657,
+            "init_ms": 555.8036,
+            "solve_ms": 3335.7226,
+            "readback_ms": 270.8182,
+            "full_cycle_ms": 4586.3788
+          },
+          "saved_ms": {
+            "build_ms": 74.24209999999994,
+            "init_ms": -61.38549999999992,
+            "solve_ms": 117.20389999999998,
+            "readback_ms": 13.030900000000031,
+            "full_cycle_ms": 143.09130000000005,
+            "unattributed_wall_remainder_ms": -9.999999997489795e-05
+          },
+          "full_cycle_gain_pct": 3.0255249948614757
+        },
+        {
+          "fixture_id": "river",
+          "baseline_ms": {
+            "build_ms": 0.24889999999999998,
+            "init_ms": 101.3135,
+            "solve_ms": 18.896199999999997,
+            "readback_ms": 0.9773,
+            "full_cycle_ms": 121.4682
+          },
+          "candidate_ms": {
+            "build_ms": 0.2195,
+            "init_ms": 89.2902,
+            "solve_ms": 17.124,
+            "readback_ms": 0.8731,
+            "full_cycle_ms": 107.5334
+          },
+          "saved_ms": {
+            "build_ms": 0.02939999999999998,
+            "init_ms": 12.023300000000006,
+            "solve_ms": 1.772199999999998,
+            "readback_ms": 0.10419999999999996,
+            "full_cycle_ms": 13.934799999999996,
+            "unattributed_wall_remainder_ms": 0.005699999999992045
+          },
+          "full_cycle_gain_pct": 11.471973734689405
+        }
+      ],
+      "sum_saved_ms": {
+        "build_ms": 66.66679999999995,
+        "init_ms": -55.58799999999985,
+        "solve_ms": 283.0641000000006,
+        "readback_ms": 30.68809999999997,
+        "full_cycle_ms": 324.85239999999976,
+        "unattributed_wall_remainder_ms": 0.021399999999063724
+      },
+      "baseline_sum_full_cycle_ms": 11721.5727,
+      "candidate_sum_full_cycle_ms": 11396.7203,
+      "full_cycle_gain_pct": 2.7714062635980556
+    },
+    {
+      "baseline_id": "B030",
+      "candidate_id": "E013R2",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "baseline_ms": {
+            "build_ms": 81.9203,
+            "init_ms": 673.1965,
+            "solve_ms": 5338.1785,
+            "readback_ms": 345.0657,
+            "full_cycle_ms": 6438.411300000001
+          },
+          "candidate_ms": {
+            "build_ms": 82.7971,
+            "init_ms": 679.821,
+            "solve_ms": 5288.119,
+            "readback_ms": 333.25919999999996,
+            "full_cycle_ms": 6384.043000000001
+          },
+          "saved_ms": {
+            "build_ms": -0.8768000000000029,
+            "init_ms": -6.624500000000012,
+            "solve_ms": 50.0595000000003,
+            "readback_ms": 11.806500000000028,
+            "full_cycle_ms": 54.36830000000009,
+            "unattributed_wall_remainder_ms": 0.003599999999778447
+          },
+          "full_cycle_gain_pct": 0.8444365770791947
+        },
+        {
+          "fixture_id": "two-tone",
+          "baseline_ms": {
+            "build_ms": 403.7937,
+            "init_ms": 460.96680000000003,
+            "solve_ms": 3249.6062,
+            "readback_ms": 294.07030000000003,
+            "full_cycle_ms": 4408.4971
+          },
+          "candidate_ms": {
+            "build_ms": 432.6991,
+            "init_ms": 493.99739999999997,
+            "solve_ms": 3188.3343,
+            "readback_ms": 263.22200000000004,
+            "full_cycle_ms": 4378.3151
+          },
+          "saved_ms": {
+            "build_ms": -28.905399999999986,
+            "init_ms": -33.030599999999936,
+            "solve_ms": 61.27190000000019,
+            "readback_ms": 30.848299999999995,
+            "full_cycle_ms": 30.18199999999979,
+            "unattributed_wall_remainder_ms": -0.0022000000004709364
+          },
+          "full_cycle_gain_pct": 0.6846324113494322
+        },
+        {
+          "fixture_id": "river",
+          "baseline_ms": {
+            "build_ms": 0.222,
+            "init_ms": 99.88289999999999,
+            "solve_ms": 19.0735,
+            "readback_ms": 0.8270000000000001,
+            "full_cycle_ms": 120.0338
+          },
+          "candidate_ms": {
+            "build_ms": 0.1653,
+            "init_ms": 95.7701,
+            "solve_ms": 16.763299999999997,
+            "readback_ms": 0.8621,
+            "full_cycle_ms": 113.5823
+          },
+          "saved_ms": {
+            "build_ms": 0.0567,
+            "init_ms": 4.112799999999993,
+            "solve_ms": 2.310200000000002,
+            "readback_ms": -0.03509999999999991,
+            "full_cycle_ms": 6.451499999999996,
+            "unattributed_wall_remainder_ms": 0.006900000000000794
+          },
+          "full_cycle_gain_pct": 5.374736115993992
+        }
+      ],
+      "sum_saved_ms": {
+        "build_ms": -29.72549999999999,
+        "init_ms": -35.542299999999955,
+        "solve_ms": 113.6416000000005,
+        "readback_ms": 42.61970000000002,
+        "full_cycle_ms": 91.00179999999988,
+        "unattributed_wall_remainder_ms": 0.008299999999308305
+      },
+      "baseline_sum_full_cycle_ms": 10966.9422,
+      "candidate_sum_full_cycle_ms": 10875.9404,
+      "full_cycle_gain_pct": 0.8297827994388446
+    },
+    {
+      "baseline_id": "B031",
+      "candidate_id": "E013R3",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "baseline_ms": {
+            "build_ms": 85.0733,
+            "init_ms": 681.5388,
+            "solve_ms": 5342.8831,
+            "readback_ms": 351.97610000000003,
+            "full_cycle_ms": 6461.518599999999
+          },
+          "candidate_ms": {
+            "build_ms": 83.9125,
+            "init_ms": 658.0635,
+            "solve_ms": 5346.4176,
+            "readback_ms": 345.8179,
+            "full_cycle_ms": 6434.2685
+          },
+          "saved_ms": {
+            "build_ms": 1.160800000000009,
+            "init_ms": 23.47530000000006,
+            "solve_ms": -3.5344999999997526,
+            "readback_ms": 6.158200000000022,
+            "full_cycle_ms": 27.250099999999293,
+            "unattributed_wall_remainder_ms": -0.00970000000104676
+          },
+          "full_cycle_gain_pct": 0.42172903440994963
+        },
+        {
+          "fixture_id": "two-tone",
+          "baseline_ms": {
+            "build_ms": 420.9918,
+            "init_ms": 445.952,
+            "solve_ms": 3249.6288,
+            "readback_ms": 268.35769999999997,
+            "full_cycle_ms": 4385.0035
+          },
+          "candidate_ms": {
+            "build_ms": 431.03580000000005,
+            "init_ms": 471.0621,
+            "solve_ms": 3302.4319,
+            "readback_ms": 278.7663,
+            "full_cycle_ms": 4483.3628
+          },
+          "saved_ms": {
+            "build_ms": -10.04400000000004,
+            "init_ms": -25.11009999999999,
+            "solve_ms": -52.803100000000086,
+            "readback_ms": -10.408600000000035,
+            "full_cycle_ms": -98.35930000000008,
+            "unattributed_wall_remainder_ms": 0.006500000000073669
+          },
+          "full_cycle_gain_pct": -2.2430837284394434
+        },
+        {
+          "fixture_id": "river",
+          "baseline_ms": {
+            "build_ms": 0.2359,
+            "init_ms": 93.9152,
+            "solve_ms": 17.0638,
+            "readback_ms": 0.7957,
+            "full_cycle_ms": 112.03200000000001
+          },
+          "candidate_ms": {
+            "build_ms": 0.2395,
+            "init_ms": 90.0427,
+            "solve_ms": 17.572,
+            "readback_ms": 0.6377,
+            "full_cycle_ms": 108.5193
+          },
+          "saved_ms": {
+            "build_ms": -0.003599999999999992,
+            "init_ms": 3.8725000000000023,
+            "solve_ms": -0.5081999999999987,
+            "readback_ms": 0.15799999999999992,
+            "full_cycle_ms": 3.5127000000000095,
+            "unattributed_wall_remainder_ms": -0.00599999999999401
+          },
+          "full_cycle_gain_pct": 3.135443444730085
+        }
+      ],
+      "sum_saved_ms": {
+        "build_ms": -8.886800000000031,
+        "init_ms": 2.237700000000075,
+        "solve_ms": -56.84579999999984,
+        "readback_ms": -4.092400000000014,
+        "full_cycle_ms": -67.59650000000077,
+        "unattributed_wall_remainder_ms": -0.009200000000967101
+      },
+      "baseline_sum_full_cycle_ms": 10958.5541,
+      "candidate_sum_full_cycle_ms": 11026.1506,
+      "full_cycle_gain_pct": -0.6168377632958117
+    }
+  ],
+  "fixture_component_medians": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_ms": {
+        "build_ms": 84.8401,
+        "init_ms": 681.5388,
+        "solve_ms": 5342.8831,
+        "readback_ms": 351.97610000000003,
+        "full_cycle_ms": 6461.518599999999
+      },
+      "candidate_ms": {
+        "build_ms": 83.9125,
+        "init_ms": 679.821,
+        "solve_ms": 5346.4176,
+        "readback_ms": 345.8179,
+        "full_cycle_ms": 6434.2685
+      },
+      "saved_ms": {
+        "build_ms": 0.9276000000000124,
+        "init_ms": 1.717800000000011,
+        "solve_ms": -3.5344999999997526,
+        "readback_ms": 6.158200000000022,
+        "full_cycle_ms": 27.250099999999293
+      },
+      "gain_pct": {
+        "build_ms": 1.0933509036410993,
+        "init_ms": 0.2520472788930008,
+        "solve_ms": -0.06615342192307656,
+        "readback_ms": 1.7496074307318086,
+        "full_cycle_ms": 0.42172903440994963
+      },
+      "baseline_range_ms": {
+        "build_ms": [
+          81.9203,
+          85.0733
+        ],
+        "init_ms": [
+          673.1965,
+          728.5854
+        ],
+        "solve_ms": [
+          5338.1785,
+          5654.7416
+        ],
+        "readback_ms": [
+          345.0657,
+          402.39399999999995
+        ],
+        "full_cycle_ms": [
+          6438.411300000001,
+          6870.6344
+        ]
+      },
+      "candidate_range_ms": {
+        "build_ms": [
+          82.7971,
+          92.44479999999999
+        ],
+        "init_ms": [
+          658.0635,
+          734.8112
+        ],
+        "solve_ms": [
+          5288.119,
+          5490.6536
+        ],
+        "readback_ms": [
+          333.25919999999996,
+          384.841
+        ],
+        "full_cycle_ms": [
+          6384.043000000001,
+          6702.8081
+        ]
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_ms": {
+        "build_ms": 420.9918,
+        "init_ms": 460.96680000000003,
+        "solve_ms": 3249.6288,
+        "readback_ms": 283.8491,
+        "full_cycle_ms": 4408.4971
+      },
+      "candidate_ms": {
+        "build_ms": 431.03580000000005,
+        "init_ms": 493.99739999999997,
+        "solve_ms": 3302.4319,
+        "readback_ms": 270.8182,
+        "full_cycle_ms": 4483.3628
+      },
+      "saved_ms": {
+        "build_ms": -10.04400000000004,
+        "init_ms": -33.030599999999936,
+        "solve_ms": -52.803100000000086,
+        "readback_ms": 13.030900000000031,
+        "full_cycle_ms": -74.86570000000029
+      },
+      "gain_pct": {
+        "build_ms": -2.385794687687513,
+        "init_ms": -7.165505194734183,
+        "solve_ms": -1.6248963573931916,
+        "readback_ms": 4.590784328715515,
+        "full_cycle_ms": -1.6982136610683105
+      },
+      "baseline_range_ms": {
+        "build_ms": [
+          403.7937,
+          498.20779999999996
+        ],
+        "init_ms": [
+          445.952,
+          494.41810000000004
+        ],
+        "solve_ms": [
+          3249.6062,
+          3452.9265
+        ],
+        "readback_ms": [
+          268.35769999999997,
+          294.07030000000003
+        ],
+        "full_cycle_ms": [
+          4385.0035,
+          4729.4701000000005
+        ]
+      },
+      "candidate_range_ms": {
+        "build_ms": [
+          423.9657,
+          432.6991
+        ],
+        "init_ms": [
+          471.0621,
+          555.8036
+        ],
+        "solve_ms": [
+          3188.3343,
+          3335.7226
+        ],
+        "readback_ms": [
+          263.22200000000004,
+          278.7663
+        ],
+        "full_cycle_ms": [
+          4378.3151,
+          4586.3788
+        ]
+      }
+    },
+    {
+      "fixture_id": "river",
+      "baseline_ms": {
+        "build_ms": 0.2359,
+        "init_ms": 99.88289999999999,
+        "solve_ms": 18.896199999999997,
+        "readback_ms": 0.8270000000000001,
+        "full_cycle_ms": 120.0338
+      },
+      "candidate_ms": {
+        "build_ms": 0.2195,
+        "init_ms": 90.0427,
+        "solve_ms": 17.124,
+        "readback_ms": 0.8621,
+        "full_cycle_ms": 108.5193
+      },
+      "saved_ms": {
+        "build_ms": 0.016399999999999998,
+        "init_ms": 9.840199999999996,
+        "solve_ms": 1.772199999999998,
+        "readback_ms": -0.03509999999999991,
+        "full_cycle_ms": 11.514499999999998
+      },
+      "gain_pct": {
+        "build_ms": 6.952098346757099,
+        "init_ms": 9.851736383304846,
+        "solve_ms": 9.37860522221398,
+        "readback_ms": -4.2442563482466635,
+        "full_cycle_ms": 9.592714718687569
+      },
+      "baseline_range_ms": {
+        "build_ms": [
+          0.222,
+          0.24889999999999998
+        ],
+        "init_ms": [
+          93.9152,
+          101.3135
+        ],
+        "solve_ms": [
+          17.0638,
+          19.0735
+        ],
+        "readback_ms": [
+          0.7957,
+          0.9773
+        ],
+        "full_cycle_ms": [
+          112.03200000000001,
+          121.4682
+        ]
+      },
+      "candidate_range_ms": {
+        "build_ms": [
+          0.1653,
+          0.2395
+        ],
+        "init_ms": [
+          89.2902,
+          95.7701
+        ],
+        "solve_ms": [
+          16.763299999999997,
+          17.572
+        ],
+        "readback_ms": [
+          0.6377,
+          0.8731
+        ],
+        "full_cycle_ms": [
+          107.5334,
+          113.5823
+        ]
+      }
+    }
+  ],
+  "sum_of_fixture_component_medians": {
+    "baseline_ms": {
+      "build_ms": 506.06780000000003,
+      "init_ms": 1242.3885,
+      "solve_ms": 8611.4081,
+      "readback_ms": 636.6522000000001,
+      "full_cycle_ms": 10990.0495
+    },
+    "candidate_ms": {
+      "build_ms": 515.1678,
+      "init_ms": 1263.8611,
+      "solve_ms": 8665.9735,
+      "readback_ms": 617.4982,
+      "full_cycle_ms": 11026.1506
+    },
+    "saved_ms": {
+      "build_ms": -9.100000000000023,
+      "init_ms": -21.472600000000057,
+      "solve_ms": -54.5653999999995,
+      "readback_ms": 19.15400000000011,
+      "full_cycle_ms": -36.10110000000168
+    },
+    "warning": "Component medians are separately selected and do not add to median full-cycle differences."
+  },
+  "frozen_primary_score": {
+    "baseline_ms": 10990.0495,
+    "candidate_ms": 11026.1506,
+    "gain_pct": -0.32848896631449825,
+    "matches_closed_decision": true
+  },
+  "mean_paired_suite_savings_ms": {
+    "build_ms": 9.351499999999977,
+    "init_ms": -29.630866666666577,
+    "solve_ms": 113.28663333333375,
+    "readback_ms": 23.071799999999993,
+    "full_cycle_ms": 116.08589999999963,
+    "unattributed_wall_remainder_ms": 0.006833333332468309
+  },
+  "first_pair_attribution_pct_of_full_cycle_saving": {
+    "build_ms": 20.522181766242145,
+    "init_ms": -17.11177137678524,
+    "solve_ms": 87.1362194030276,
+    "readback_ms": 9.446782600344031,
+    "unattributed_wall_remainder_ms": 0.006587607171461174
+  },
+  "readback_summed_fixture_medians_gain_pct": 3.0085500372102865,
+  "readback_median_saved_as_fraction_of_primary_baseline_pct": 0.17428492928990094,
+  "D019_same_source_inputs_as_measured_candidate": true,
+  "limitations": [
+    "Three pairs do not establish statistical causality or significance.",
+    "Component medians and paired means are diagnostic only; frozen primary score is unchanged.",
+    "D015 repeatedly encodes eight small source blocks to one reused destination on one thread; full readback also includes device-to-host transfer, synchronization, Rayon scheduling and large arena writes.",
+    "D019 is a matching-source final ThinLTO codegen build, not disassembly of the separately frozen measured E013 executable.",
+    "These timers do not isolate encoder work from transfer, scheduling or memory-bandwidth costs; they cannot identify which term dominates or prove a hardware/noise cause."
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "at": "2026-10-17T02:07:17.738327+00:00",
+  "status": "failed_observer_epoch_assumption",
+  "script_sha256": "caa45a5a3deac3a16f2e225fe754ce12f08c1570d8a99255951f457ad41baf55",
+  "returncode": 1,
+  "error": "AssertionError: strategy-only preserves complete previous raw regrets",
+  "cause": "The observer compared strategy-only readback with pre-materialization CPU arenas. The native sequence calls ensure_symmetric before that readback; it can fill sibling regrets. lock_node changes separate lock tables only. The retained materialized snapshot is the correct preceding regret state.",
+  "source_evidence": [
+    "crates/solver/src/cfr.rs:780",
+    "crates/solver/src/query.rs:837",
+    "E044-design/control-body.rs"
+  ],
+  "native_reexecuted": false,
+  "performance_measured": false
+}

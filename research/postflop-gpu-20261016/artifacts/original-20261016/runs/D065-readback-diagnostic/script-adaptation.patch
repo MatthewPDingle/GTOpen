@@ -1,0 +1,633 @@
+--- D044-constructor-diagnostic/build.py
++++ D065-readback-diagnostic/build.py
+@@ -1,4 +1,4 @@
+-"""Root-only build after accepted E020 server qualification and frozen D044 review."""
++"""Root-only build after accepted E020 server qualification and frozen D065 review."""
+ import json, os, shutil, signal, subprocess, sys, time
+ from pathlib import Path
+ 
+@@ -11,19 +11,19 @@
+ authorization_path = here / 'authorization.json'
+ assert ar.sha256(authorization_path) == sys.argv[1]
+ authorization = json.loads(authorization_path.read_text(encoding='utf-8'))
+-assert authorization['candidate'] == 'D044' and authorization['E020_accepted'] is True
++assert authorization['candidate'] == 'D065' and authorization['E020_accepted'] is True
+ assert authorization['E020_server_qualification_pass'] is True
+ assert authorization['independent_script_review_pass'] is True
+-for role in ['E020_acceptance', 'E020_server_qualification', 'D044_source_review', 'D044_script_review']:
++for role in ['E020_acceptance', 'E020_server_qualification', 'D065_source_review', 'D065_script_review']:
+     pin=authorization['prerequisites'][role]
+     assert ar.sha256(Path(pin['path'])) == pin['sha256']
+     assert authorization['evidence_sha256'][pin['path']] == pin['sha256']
+ assert authorization['independent_source_review_pass'] is True
+-owned = ('crates/solver/src/game.rs',)
++owned = ('crates/solver/src/gpu/mod.rs',)
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = 'f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a'
+-out = ar.RESEARCH / 'runs/D044-build'
+-target = ar.RESEARCH / 'build-d044-constructor'
++protocol_hash = 'dde52ea3701933f7ffea61d104dd7fd74fcf456cba655df90b2b5a8a6cbf3735'
++out = ar.RESEARCH / 'runs/D065-build'
++target = ar.RESEARCH / 'build-d065-readback'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+ for sig in [signal.SIGTERM, getattr(signal,'SIGBREAK',None)]:
+     if sig is not None: signal.signal(sig,interrupted)
+@@ -41,7 +41,7 @@
+         assert ar.sha256(here / name) == expected, name
+     for path, expected in script_seal['reference_sha256'].items():
+         assert ar.sha256(Path(path)) == expected, path
+-    design=ar.RESEARCH/'runs/D044-constructor-diagnostic'
++    design=ar.RESEARCH/'runs/D065-readback-diagnostic/source'
+     assert ar.sha256(design/'source-manifest.json')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['source_archive_sha256']
+     for name,expected in json.loads((design/'source-manifest.json').read_text(encoding='utf-8'))['artifact_sha256'].items():
+         assert ar.sha256(design/name)==expected,name
+@@ -60,16 +60,22 @@
+             assert current[name] == expected, name
+     expected_owned = json.loads((here / 'protocol.json').read_text(encoding='utf-8'))['accepted_owned_sha256']
+     assert {name: accepted[name] for name in owned} == expected_owned
+-    assert all(current[name] != accepted[name] for name in owned), 'The reviewed game constructor diagnostic file must change'
+-    changed = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+-    assert changed == sorted(owned), changed
++    assert all(current[name] != accepted[name] for name in owned), 'The reviewed GPU full-readback diagnostic file must change'
++    tracked = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
++    untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
++    preserved = json.loads((here/'protocol.json').read_text(encoding='utf-8'))['preexisting_target_artifacts']
++    assert set(preserved) == {'crates/solver/target/research-fixtures/postflop-latest.ptx', 'crates/solver/target/research-fixtures/preflop-latest.ptx'}
++    for name, pin in preserved.items():
++        assert name not in accepted and name not in current, name
++        assert ar.sha256(repo/name) == pin['sha256'] and (repo/name).stat().st_size == pin['bytes'], name
++    assert set(tracked) | (set(untracked) - set(preserved)) == set(owned), (tracked, untracked)
+ 
+ 
+ def heartbeat():
+     try:
+         with ar.exclusive_lock(ar.STATUS.with_suffix('.lock'), timeout=3):
+             status = json.loads(ar.STATUS.read_text(encoding='utf-8'))
+-            status.update(updated_at=ar.now(), stage='Building frozen D044 constructor diagnostic', active_experiment='D044',
++            status.update(updated_at=ar.now(), stage='Building frozen D065 full-readback diagnostic', active_experiment='D065',
+                           activity='Accepted E020 server qualification and source/script review passed. Building temporary instrumentation; exact-state and timing-perturbation checks pending. No performance acceptance.')
+             ar.atomic_json(ar.STATUS, status)
+     except Exception as error:
+@@ -84,9 +90,9 @@
+ with ar.exclusive_lock(ar.RESEARCH / 'gpu-run.lock'):
+     ar.refuse_active(ar.live_status())
+     assert shutil.disk_usage(ar.RESEARCH).free >= 54 * 1024**3
+-    assert not target.exists(), 'Fresh D044 target required; no clean/reuse workaround'
++    assert not target.exists(), 'Fresh D065 target required; no clean/reuse workaround'
+     verify()
+-    for name in ('D044-postflop_autoresearch',):
++    for name in ('D065-postflop_autoresearch',):
+         assert not (ar.RESEARCH / 'binaries' / (name + '.exe')).exists()
+         assert not (ar.RESEARCH / 'binaries' / (name + '.manifest.json')).exists()
+     out.mkdir(exist_ok=False)
+@@ -94,12 +100,13 @@
+     before = ar.source_identity()
+     ar.atomic_json(out / 'source-before.json', before)
+     source_copies = {}
+-    for name, output in zip(owned, ('candidate-game.rs',)):
++    for name, output in zip(owned, ('candidate-mod.rs',)):
+         destination = out / output
+         shutil.copyfile(repo / name, destination)
+         source_copies[name] = {'path': str(destination), 'sha256': ar.sha256(destination)}
+     patch = out / 'candidate.patch'
+-    patch.write_bytes(subprocess.check_output(['git', 'diff', '--binary', 'HEAD', '--', *owned], cwd=repo))
++    shutil.copyfile(ar.RESEARCH/'runs/D065-readback-diagnostic/source/candidate.patch', patch)
++    assert ar.sha256(patch)==ar.sha256(ar.RESEARCH/'runs/D065-readback-diagnostic/source/candidate.patch')
+     command = ['cargo', 'test', '--release', '--locked', '--offline', '-p', 'solver', '--features', 'gpu', '--test', 'postflop_autoresearch', '--no-run', '--message-format=json']
+     env = os.environ.copy()
+     override_keys={'RUSTFLAGS','CARGO_ENCODED_RUSTFLAGS','RUSTC','RUSTC_WRAPPER','RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_RUSTFLAGS','CARGO_BUILD_RUSTC','CARGO_BUILD_RUSTC_WRAPPER','CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER','CARGO_BUILD_TARGET'}
+@@ -110,7 +117,7 @@
+     ar.atomic_json(out/'build-environment.json',{'target_dir':str(target),'target_previously_absent':True,'compiler_override_absence':overrides,'RAYON_NUM_THREADS':'16','rustc':ar.read_command(['rustc','-Vv']),'cargo':ar.read_command(['cargo','-V'])})
+     log, err = out / 'build.jsonl', out / 'build.stderr.log'
+     heartbeat()
+-    print('Building source-frozen D044; no GPU tests run in this step.', flush=True)
++    print('Building source-frozen D065; no GPU tests run in this step.', flush=True)
+     process = None
+     started=time.monotonic()
+     fault = None
+@@ -142,7 +149,7 @@
+             for filename in item.get('filenames',[])+([item['executable']] if item.get('executable') else []):
+                 assert Path(filename).resolve().is_relative_to(target.resolve()), filename
+     solver_lib=[x for x in records if x.get('reason')=='compiler-artifact' and x['target']['name']=='solver' and x['target']['kind']==['lib'] and not x.get('profile',{}).get('test')]
+-    assert len(solver_lib)==1 and solver_lib[0]['fresh'] is False
++    assert len(solver_lib)==1 and solver_lib[0]['fresh'] is False and solver_lib[0]['features']==['gpu']
+     assert Path(solver_lib[0]['target']['src_path']).resolve()==(repo/'crates/solver/src/lib.rs').resolve()
+     assert Path(solver_lib[0]['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+     dependencies={f:ar.sha256(Path(f)) for x in records if x.get('reason')=='compiler-artifact' for f in x.get('filenames',[]) if Path(f).is_file() and Path(f).suffix in {'.rlib','.rmeta','.lib','.dll'}}
+@@ -154,27 +161,27 @@
+     assert len(artifacts) == 1 and artifacts[0]['target']['name'] == 'postflop_autoresearch'
+     for item in artifacts:
+         name = item['target']['name']
+-        assert item['fresh'] is False
++        assert item['fresh'] is False and item['features']==['gpu']
+         assert Path(item['manifest_path']).resolve()==(repo/'crates/solver/Cargo.toml').resolve()
+         expected_src=repo/('crates/solver/src/lib.rs' if name=='solver' else 'crates/solver/tests/postflop_autoresearch.rs')
+         assert Path(item['target']['src_path']).resolve()==expected_src.resolve()
+-        destination = ar.RESEARCH / 'binaries' / ('D044-' + name + '.exe')
++        destination = ar.RESEARCH / 'binaries' / ('D065-' + name + '.exe')
+         assert not destination.exists()
+         shutil.copyfile(item['executable'], destination)
+         data=destination.read_bytes()
+         accepted_cuda=(ar.RESEARCH/'runs/D037-showdown-cache-design/candidate/kernels.cu').read_bytes()
+         assert ar.sha256(ar.RESEARCH/'runs/D037-showdown-cache-design/candidate/kernels.cu')==json.loads((here/'protocol.json').read_text(encoding='utf-8'))['accepted_kernel_sha256']
+-        assert accepted_cuda in data and b'SPOT_CONSTRUCTOR_PROFILE' in data, 'Missing accepted CUDA or diagnostic marker'
++        assert accepted_cuda in data and b'LIFECYCLE_PROFILE' in data, 'Missing accepted CUDA or diagnostic marker'
+         assert ar.sha256(destination)!=json.loads((here/'protocol.json').read_text(encoding='utf-8'))['reference_binary_sha256']
+-        manifest = {**before, 'candidate': 'D044', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
++        manifest = {**before, 'candidate': 'D065', 'binary_sha256': ar.sha256(destination), 'built_at': ar.now(),
+                     'build_command': command,'cargo_artifact':item,'solver_artifact':solver_lib[0],'dependency_artifact_sha256':dependencies,'target_dir':str(target),'accepted_cuda_present':True,'diagnostic_marker_present':True, 'build_log': str(log), 'build_log_sha256': ar.sha256(log),
+                     'build_stderr_log': str(err), 'build_stderr_sha256': ar.sha256(err),
+                     'patch': str(patch), 'patch_sha256': ar.sha256(patch), 'source_matches_prebuild': True,
+                     'build_script_sha256': ar.sha256(Path(__file__)), 'primary_protocol_sha256': protocol_hash,
+                     'probe_authorization_sha256': sys.argv[1], 'probe_evidence_sha256': authorization['evidence_sha256'],
+                     'candidate_sources': authorization['candidate_sources'], 'source_copies': source_copies,
+-                    'prerequisite_scope': 'Accepted E020, completed server qualification and independent D044 source/script review; not numerical proof',
+-                    'change': 'Time unchanged Spot tree/river-table/symmetry construction stages and constructor envelope. Evaluator, CUDA, math, call order and errors unchanged. Diagnostic only, no performance acceptance.'}
++                    'prerequisite_scope': 'Accepted E020, completed server qualification and independent D065 source/script review; not numerical proof',
++                    'change': 'Time14 existing full sync_to_cpu host spans only. Evaluator, CUDA, math, call order and errors unchanged. Diagnostic only, no performance acceptance.'}
+         ar.atomic_json(destination.with_suffix('.manifest.json'), manifest)
+         print(name, manifest['binary_sha256'], flush=True)
+-    print('D044 build terminal success. Root must observe process exit before starting primary tests.', flush=True)
++    print('D065 build terminal success. Root must observe process exit before starting diagnostic solves.', flush=True)
+--- D044-constructor-diagnostic/cohort.py
++++ D065-readback-diagnostic/cohort.py
+@@ -1,4 +1,4 @@
+-"""Run all six fixed D044 diagnostic/control solves once, serially; no performance acceptance."""
++"""Run all six fixed D065 diagnostic/control solves once, serially; no performance acceptance."""
+ import json, os, re, shutil, signal, subprocess, sys
+ from pathlib import Path
+ 
+@@ -8,7 +8,7 @@
+ 
+ here = Path(__file__).resolve().parent
+ protocol_path = here / 'protocol.json'
+-assert ar.sha256(protocol_path) == 'f6565a31fccabb51e51ce9017026e7f5ba23e65c03e0a507f183ef6265aab58a'
++assert ar.sha256(protocol_path) == 'dde52ea3701933f7ffea61d104dd7fd74fcf456cba655df90b2b5a8a6cbf3735'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ assert authorization['E020_accepted'] is True and authorization['E020_server_qualification_pass'] is True
+@@ -24,14 +24,14 @@
+     assert ar.sha256(here / name) == expected, name
+ for path, expected in script_seal['reference_sha256'].items():
+     assert ar.sha256(Path(path)) == expected, path
+-assert protocol['order'] == ['D044B1', 'D044P1', 'D044P2', 'D044B2', 'D044B3', 'D044P3']
++assert protocol['order'] == ['D065B1', 'D065P1', 'D065P2', 'D065B2', 'D065B3', 'D065P3']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+ assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+ assert not (ar.RESEARCH / 'gpu-run.lock').exists(), 'Build or GPU work is still active'
+-assert json.loads((ar.RESEARCH / 'runs/D044-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
++assert json.loads((ar.RESEARCH / 'runs/D065-build/exit.json').read_text(encoding='utf-8'))['returncode'] == 0
+ current = ar.source_identity()['source_sha256']
+ binary_pins = {}
+-for name in ('D044-postflop_autoresearch',):
++for name in ('D065-postflop_autoresearch',):
+     manifest_path = ar.RESEARCH / 'binaries' / (name + '.manifest.json')
+     binary_path = ar.RESEARCH / 'binaries' / (name + '.exe')
+     manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+@@ -45,10 +45,11 @@
+ for identity in protocol['order']:
+     assert not (ar.RESEARCH / 'runs' / identity).exists(), identity
+     assert not any(row['id'] == identity for row in status['experiments']), identity
+-out = ar.RESEARCH / 'runs/D044-execution'
++out = ar.RESEARCH / 'runs/D065-execution'
+ out.mkdir(exist_ok=False)
+ env = os.environ.copy()
+ env.pop('POSTFLOP_AUTORESEARCH_FIXTURE',None)
++env.pop('POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE',None)
+ env.update(POSTFLOP_AUTORESEARCH_PROFILE='0', POSTFLOP_AUTORESEARCH_STORAGE='compressed', RAYON_NUM_THREADS='16')
+ ar.atomic_json(out / 'invocation.json', {'at': ar.now(), 'primary_protocol_sha256': ar.sha256(protocol_path),
+     'script_sha256': ar.sha256(Path(__file__)), 'order': protocol['order'], 'source_sha256': current, 'candidate_binary_pins': binary_pins,
+@@ -76,17 +77,19 @@
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.exe') == protocol['reference_binary_sha256']
+         assert ar.sha256(ar.RESEARCH / 'binaries/E020-postflop_autoresearch.manifest.json') == protocol['reference_manifest_sha256']
+     command = [sys.executable, 'tools/postflop_autoresearch.py', '--id', identity, '--title',
+-               'D044 instrumented constructor diagnostic' if binary.startswith('D044-') else 'D044 ordinary accepted E020 diagnostic reference',
++               'D065 instrumented full-readback diagnostic' if binary.startswith('D065-') else 'D065 ordinary accepted E020 diagnostic reference',
+                '--kind', kind, '--binary', str(ar.RESEARCH / 'binaries' / (binary + '.exe')),
+                '--build-manifest', str(ar.RESEARCH / 'binaries' / (binary + '.manifest.json')), '--test', test]
+     if ordinary:
+         command.append('--not-ignored')
+-    ar.atomic_json(out / (identity + '.invocation.json'), {'at': ar.now(), 'command': command})
++    run_env=env.copy()
++    run_env['POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE']='1' if binary.startswith('D065-') else '0'
++    ar.atomic_json(out / (identity + '.invocation.json'), {'at': ar.now(), 'command': command, 'environment_overrides':{'POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE':run_env['POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE']}})
+     print('Running', identity, flush=True)
+     proc=None;fault=None;cleanup=None
+     try:
+         with (out / (identity + '.stdout.log')).open('xb') as stdout, (out / (identity + '.stderr.log')).open('xb') as stderr:
+-            proc=subprocess.Popen(command,cwd=repo,env=env,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
++            proc=subprocess.Popen(command,cwd=repo,env=run_env,stdout=stdout,stderr=stderr,creationflags=subprocess.CREATE_NO_WINDOW)
+             proc.wait(timeout=900)
+     except BaseException as error:
+         fault=repr(error);cleanup=ar.cleanup_child(proc);raise
+@@ -105,7 +108,7 @@
+     print('Completed', identity, flush=True)
+ 
+ 
+-for identity, candidate in [('D044B1', False), ('D044P1', True), ('D044P2', True), ('D044B2', False), ('D044B3', False), ('D044P3', True)]:
+-    run(identity, 'D044-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'diagnostic', 'postflop_complete_cycle')
++for identity, candidate in [('D065B1', False), ('D065P1', True), ('D065P2', True), ('D065B2', False), ('D065B3', False), ('D065P3', True)]:
++    run(identity, 'D065-postflop_autoresearch' if candidate else 'E020-postflop_autoresearch', 'diagnostic', 'postflop_complete_cycle')
+ ar.atomic_json(out / 'complete.json', {'at': ar.now(), 'order': protocol['order'], 'accepted_performance_claim': False})
+-print('All fixed D044 runs complete; diagnostic exactness/usefulness assessment remains required.', flush=True)
++print('All fixed D065 runs complete; diagnostic exactness/usefulness assessment remains required.', flush=True)
+--- D044-constructor-diagnostic/assess.py
++++ D065-readback-diagnostic/assess.py
+@@ -1,4 +1,4 @@
+-"""Assess the fixed constructor diagnostic cohort; never accept a candidate."""
++"""Assess the fixed full-readback diagnostic cohort; never accept a candidate."""
+ import hashlib, json, math, re, statistics
+ from pathlib import Path
+ 
+@@ -9,16 +9,16 @@
+ def finite_nonnegative(value):return type(value) in (int,float) and math.isfinite(value) and value>=0
+ seal=read(HERE/'scripts-manifest.json')
+ authorization=read(HERE/'authorization.json')
+-assert authorization['candidate']=='D044'
++assert authorization['candidate']=='D065'
+ assert authorization['independent_source_review_pass'] is True and authorization['independent_script_review_pass'] is True
+ assert authorization['evidence_sha256'][str(HERE/'scripts-manifest.json')]==sha(HERE/'scripts-manifest.json')
+ for name,digest in seal['script_sha256'].items():assert sha(HERE/name)==digest,name
+ for path,digest in seal['reference_sha256'].items():assert sha(path)==digest,path
+ for path,digest in authorization['evidence_sha256'].items():assert sha(path)==digest,path
+-plan=read(HERE/'protocol.json');schema=read(HERE/'schema.json')
+-assert plan['candidate']=='D044' and plan['performance_acceptance'] is False
++plan=read(HERE/'protocol.json');schema=read(HERE/'source/schema.json')
++assert plan['candidate']=='D065' and plan['performance_acceptance'] is False
+ assert not (ROOT/'gpu-run.lock').exists()
+-assert read(ROOT/'runs/D044-execution/complete.json')['order']==plan['order']
++assert read(ROOT/'runs/D065-execution/complete.json')['order']==plan['order']
+ 
+ timing={'build_ms','init_ms','solve_ms','readback_ms','full_cycle_ms','fingerprint_ms_excluded'}
+ reference_results=reference_checks=None
+@@ -26,8 +26,8 @@
+ candidate_ids=[pair['candidate'] for pair in plan['pairs']]
+ baseline_ids=[pair['baseline'] for pair in plan['pairs']]
+ accepted_manifest=read(ROOT/'binaries/E020-postflop_autoresearch.manifest.json')
+-candidate_manifest=read(ROOT/'binaries/D044-postflop_autoresearch.manifest.json')
+-assert sha(ROOT/'binaries/D044-postflop_autoresearch.exe')==candidate_manifest['binary_sha256']
++candidate_manifest=read(ROOT/'binaries/D065-postflop_autoresearch.manifest.json')
++assert sha(ROOT/'binaries/D065-postflop_autoresearch.exe')==candidate_manifest['binary_sha256']
+ assert sha(ROOT/'binaries/E020-postflop_autoresearch.exe')==plan['reference_binary_sha256']
+ assert sha(ROOT/'binaries/E020-postflop_autoresearch.manifest.json')==plan['reference_manifest_sha256']
+ assert candidate_manifest['primary_protocol_sha256']==sha(HERE/'protocol.json')
+@@ -35,7 +35,7 @@
+ assert candidate_manifest['build_script_sha256']==sha(HERE/'build.py')
+ expected_sources={**accepted_manifest['source_sha256'],**plan['candidate_owned_sha256']}
+ assert candidate_manifest['source_sha256']==expected_sources
+-identities={v['fixture_id']:v for v in schema['expected_identity']}
++identities={v['fixture_id']:v for v in plan['expected_identity']}
+ 
+ for identity in plan['order']:
+     directory=ROOT/'runs'/identity
+@@ -43,7 +43,7 @@
+     assert report['id']==identity and report['kind']=='diagnostic'
+     assert report['status']=='measured' and report['returncode']==0 and report['test_pass_count']==1
+     instrumented=identity in candidate_ids
+-    binary_name='D044-postflop_autoresearch' if instrumented else 'E020-postflop_autoresearch'
++    binary_name='D065-postflop_autoresearch' if instrumented else 'E020-postflop_autoresearch'
+     expected_manifest=candidate_manifest if instrumented else accepted_manifest
+     assert report['binary_sha256']==expected_manifest['binary_sha256']
+     assert report['binary_build_manifest']['sha256']==sha(ROOT/'binaries'/(binary_name+'.manifest.json'))
+@@ -53,9 +53,13 @@
+     for key,value in {'RAYON_NUM_THREADS':'16','POSTFLOP_AUTORESEARCH_FIXTURE':None,
+                        'POSTFLOP_AUTORESEARCH_STORAGE':'compressed','POSTFLOP_AUTORESEARCH_PROFILE':'0'}.items():
+         assert report['environment'][key]==value
++    invocation=read(ROOT/'runs/D065-execution'/(identity+'.invocation.json'))
++    assert invocation['environment_overrides']=={plan['runtime_flag']:'1' if instrumented else '0'}
++    assert invocation['command'][invocation['command'].index('--id')+1]==identity
++    assert invocation['command'][invocation['command'].index('--binary')+1]==str(ROOT/'binaries'/(binary_name+'.exe'))
+     raw=(directory/'stdout.log').read_text(encoding='utf-8')
+     assert re.findall(r'test result: ok\. (\d+) passed; (\d+) failed; (\d+) ignored; (\d+) measured; (\d+) filtered out;',raw)==[('1','0','0','0','0')]
+-    results=[];checks=[];profiles=[];builds={};starts={}
++    results=[];checks=[];profiles=[];builds={};starts={};timings={}
+     fixture=stage=None
+     for line in raw.splitlines():
+         if 'AUTORESEARCH_STAGE ' in line:
+@@ -66,31 +70,39 @@
+             if stage=='build_complete':
+                 assert record['fixture_id']==fixture and fixture not in builds
+                 builds[fixture]=record
++            if stage=='timing_complete':
++                assert record['fixture_id']==fixture and fixture not in timings
++                timings[fixture]=record
+             if stage=='convergence_check':
+                 checks.append({key:record[key] for key in ['fixture_id','iteration','exploit_bits','exploit_pct_pot','exploit_chips']})
+         if 'AUTORESEARCH_RESULT ' in line:
+             results.append(json.loads(line.split('AUTORESEARCH_RESULT ',1)[1]))
+-        if 'SPOT_CONSTRUCTOR_PROFILE ' in line:
+-            assert stage=='fixture_start' and fixture in plan['expected_fixtures']
+-            record=json.loads(line.split('SPOT_CONSTRUCTOR_PROFILE ',1)[1])
+-            assert set(record)==set(schema['record'])
+-            assert record['schema_version']==1 and record['diagnostic_only'] is True
+-            assert record['instrumentation']=='D044_unconditional_source_only'
+-            assert record['extra_cuda_synchronizations']==0
+-            assert set(record['stage_us'])==set(plan['stage_names'])
+-            assert all(finite_nonnegative(v) for v in record['stage_us'].values())
+-            assert finite_nonnegative(record['constructor_us_before_logging'])
+-            assert record['constructor_us_before_logging']+1e-6>=sum(record['stage_us'].values())
+-            for key in ['board_mask','board_cards','node_count','suit_permutations']:
+-                assert type(record[key]) is int and record[key]>=0
+-            assert 1<=record['suit_permutations']<=24
+-            assert len(record['hands'])==2 and all(type(n) is int and n>0 for n in record['hands'])
+-            for key in ['board_mask','board_cards','hands','node_count']:assert record[key]==identities[fixture][key]
++        if 'LIFECYCLE_PROFILE ' in line:
++            assert stage=='convergence_check' and fixture in plan['expected_fixtures']
++            assert checks and checks[-1]['fixture_id']==fixture and checks[-1]['iteration']==plan['expected_stops'][fixture]
++            record=json.loads(line.split('LIFECYCLE_PROFILE ',1)[1])
++            assert set(record)==set(schema['fixed_fields'])|set(schema['fields'])
++            for key,value in schema['fixed_fields'].items():
++                assert type(record[key]) is type(value) and record[key]==value,key
++            assert isinstance(record['thread'],str) and record['thread']
++            assert record['note']==plan['expected_trace_note']
++            assert finite_nonnegative(record['wall_ms_before_logging'])
++            assert len(record['spans'])==len(schema['ordered_spans'])==plan['expected_spans_per_record']==14
++            for span,expected in zip(record['spans'],schema['ordered_spans']):
++                assert set(span)=={'stage','player','arena','bytes','wall_ms'}
++                assert finite_nonnegative(span['wall_ms'])
++                for key in ['stage','player','arena']:
++                    assert type(span[key]) is type(expected[key]) and span[key]==expected[key],key
++                if expected['player'] is None:assert span['bytes'] is None
++                else:
++                    assert type(span['bytes']) is int
++                    assert span['bytes']==plan['expected_device_arena_bytes'][fixture][expected['player']]
++            assert record['wall_ms_before_logging']+1e-6>=sum(span['wall_ms'] for span in record['spans'])
+             assert starts[fixture]['board']==identities[fixture]['board']
+             profiles.append({'run_id':identity,'fixture_id':fixture,**record})
+     assert results==report['results']
+     assert len(results)==3 and [v['fixture_id'] for v in results]==plan['expected_fixtures']
+-    assert list(starts)==list(builds)==plan['expected_fixtures']
++    assert list(starts)==list(builds)==list(timings)==plan['expected_fixtures']
+     assert len(checks)==plan['expected_convergence_records_per_run']==23
+     for result in results:
+         fixture=result['fixture_id'];build=builds[fixture]
+@@ -98,6 +110,7 @@
+         assert result['storage']=='compressed' and result['target_pct']==.3 and result['check_every']==20 and result['max_iterations']==400
+         assert all(finite_nonnegative(result[key]) for key in timing)
+         assert result['full_cycle_ms']>0 and result['build_ms']==build['build_ms']
++        assert result['readback_ms']==timings[fixture]['readback_ms']
+         assert result['nodes']==build['nodes']==identities[fixture]['node_count']
+         assert build['hands']==identities[fixture]['hands']
+         assert [c['iteration'] for c in checks if c['fixture_id']==fixture]==list(range(20,result['iteration']+1,20))
+@@ -108,11 +121,11 @@
+         assert len(profiles)==plan['expected_profile_records_per_run']==3
+         assert [v['fixture_id'] for v in profiles]==plan['expected_fixtures']
+         for record in profiles:
+-            assert builds[record['fixture_id']]['build_ms']*1000+1e-6>=record['constructor_us_before_logging']
++            assert timings[record['fixture_id']]['readback_ms']+1e-6>=record['wall_ms_before_logging']
+         all_profiles.extend(profiles)
+     else:assert identity in baseline_ids and not profiles
+     runs[identity]={'results':results,'profiles':profiles,'builds':builds,'process_wall_ms':report['process_wall_ms'],
+-                    'report_sha256':sha(directory/'report.json'),'stdout_sha256':sha(directory/'stdout.log')}
++                    'report_sha256':sha(directory/'report.json'),'stdout_sha256':sha(directory/'stdout.log'),'invocation_sha256':sha(ROOT/'runs/D065-execution'/(identity+'.invocation.json'))}
+ 
+ fixtures=[]
+ for index,fixture in enumerate(plan['expected_fixtures']):
+@@ -120,43 +133,53 @@
+     prof_values=[runs[name]['results'][index]['full_cycle_ms'] for name in candidate_ids]
+     b,p=statistics.median(base_values),statistics.median(prof_values)
+     records=[runs[name]['profiles'][index] for name in candidate_ids]
+-    assert len({v['suit_permutations'] for v in records})==1
+-    components=[]
+-    values_by_stage={name:[r['stage_us'][name]/1000 for r in records] for name in plan['stage_names']}
+-    values_by_stage['constructor_before_logging']=[r['constructor_us_before_logging']/1000 for r in records]
+-    values_by_stage['unprofiled_constructor_and_timer_overhead']=[(r['constructor_us_before_logging']-sum(r['stage_us'].values()))/1000 for r in records]
+-    values_by_stage['unprofiled_constructor_CPU_storage_and_timing_logging_overhead']=[runs[name]['results'][index]['build_ms']-sum(r['stage_us'].values())/1000 for name,r in zip(candidate_ids,records)]
+-    values_by_stage['outer_build_minus_constructor_CPU_storage_return_logging_other_overhead']=[runs[name]['results'][index]['build_ms']-r['constructor_us_before_logging']/1000 for name,r in zip(candidate_ids,records)]
+-    for name,values in values_by_stage.items():
+-        components.append({'stage':name,'all_profiled_ms':values,'median_ms':statistics.median(values),'range_ms':[min(values),max(values)]})
++    values_by_stage={name:[sum(s['wall_ms'] for s in r['spans'] if s['stage']==name) for r in records] for name in plan['stage_names']}
++    # Group within each run before taking medians; component medians need not add.
++    values_by_stage['transfer_host_ms']=[a+b for a,b in zip(values_by_stage['dtoh_host_call'],values_by_stage['dtoh_stream_wait'])]
++    values_by_stage['cpu_encode_scatter_restore_ms']=list(values_by_stage['encode_scatter_restore_cpu'])
++    values_by_stage['optimistic_overlap_ceiling_ms']=[min(t,e) for t,e in zip(values_by_stage['transfer_host_ms'],values_by_stage['cpu_encode_scatter_restore_ms'])]
++    values_by_stage['measured_span_sum_ms']=[sum(s['wall_ms'] for s in r['spans']) for r in records]
++    values_by_stage['full_readback_before_logging_ms']=[r['wall_ms_before_logging'] for r in records]
++    values_by_stage['trace_timer_bookkeeping_residual_ms']=[r['wall_ms_before_logging']-sum(s['wall_ms'] for s in r['spans']) for r in records]
++    values_by_stage['outer_readback_minus_trace_ms']=[runs[name]['results'][index]['readback_ms']-r['wall_ms_before_logging'] for name,r in zip(candidate_ids,records)]
++    components=[{'stage':name,'all_profiled_ms':values,'median_ms':statistics.median(values),'range_ms':[min(values),max(values)]} for name,values in values_by_stage.items()]
++    ordered_components=[]
++    for slot,expected in enumerate(schema['ordered_spans']):
++        values=[r['spans'][slot]['wall_ms'] for r in records]
++        ordered_components.append({'ordinal':slot,'stage':expected['stage'],'player':expected['player'],'arena':expected['arena'],
++            'bytes':records[0]['spans'][slot]['bytes'],'all_profiled_ms':values,'median_ms':statistics.median(values),'range_ms':[min(values),max(values)]})
+     fixtures.append({'fixture_id':fixture,'ordinary_full_cycles_ms':base_values,'instrumented_full_cycles_ms':prof_values,
+         'ordinary_median_ms':b,'instrumented_median_ms':p,'median_change_pct':100*(p/b-1),
+         'paired_change_pct':[100*(q/a-1) for a,q in zip(base_values,prof_values)],
+-        'ordinary_build_ms':[runs[name]['results'][index]['build_ms'] for name in baseline_ids],
+-        'instrumented_build_ms':[runs[name]['results'][index]['build_ms'] for name in candidate_ids],
+-        'identity':{**identities[fixture],'suit_permutations':records[0]['suit_permutations']},'components':components})
++        'ordinary_readback_ms':[runs[name]['results'][index]['readback_ms'] for name in baseline_ids],
++        'instrumented_readback_ms':[runs[name]['results'][index]['readback_ms'] for name in candidate_ids],
++        'identity':identities[fixture],'device_arena_bytes_per_player':plan['expected_device_arena_bytes'][fixture],
++        'components':components,'ordered_spans':ordered_components,
++        'optimistic_overlap_ceiling_pct_of_ordinary_fixture':100*statistics.median(values_by_stage['optimistic_overlap_ceiling_ms'])/b})
+ baseline_total=sum(f['ordinary_median_ms'] for f in fixtures)
+ profiled_total=sum(f['instrumented_median_ms'] for f in fixtures)
+ change=100*(profiled_total/baseline_total-1)
+ useful=abs(change)<=plan['usefulness_guard']['maximum_percent']
+-grouped={name:sum(next(c['median_ms'] for c in f['components'] if c['stage']==name) for f in fixtures) for name in plan['stage_names']}
+-result={'id':'D044-constructor-diagnostic','status':'pass' if useful else 'inconclusive',
+-    'scope':'Grouped diagnostic host spans only; no performance acceptance or projected saving.',
+-    'protocol_sha256':sha(HERE/'protocol.json'),'schema_sha256':sha(HERE/'schema.json'),
+-    'all_complete_states_exact':18,'convergence_checks_exact':138,'profile_records':len(all_profiles),'uninstrumented_records':0,
++grouped={name:sum(next(c['median_ms'] for c in f['components'] if c['stage']==name) for f in fixtures) for name in values_by_stage}
++result={'id':'D065-readback-diagnostic','status':'pass' if useful else 'inconclusive',
++    'scope':'Grouped diagnostic host spans only; optimistic measured-span overlap ceiling is not a saving or candidate qualification.',
++    'protocol_sha256':sha(HERE/'protocol.json'),'schema_sha256':sha(HERE/'source/schema.json'),
++    'all_complete_states_exact':18,'convergence_checks_exact':138,'profile_records':len(all_profiles),'ordered_spans':14*len(all_profiles),'uninstrumented_records':0,
+     'fixtures':fixtures,'raw_profiles':all_profiles,'ordinary_sum_fixture_medians_ms':baseline_total,
+     'instrumented_sum_fixture_medians_ms':profiled_total,'observed_outer_change_pct':change,
+     'absolute_change_limit_pct':10.0,'diagnostic_usefulness_guard_pass':useful,
+     'grouped_stage_sum_fixture_medians_ms':grouped,
+     'grouped_stage_fraction_of_ordinary_pct':{name:100*value/baseline_total for name,value in grouped.items()},
++    'optimistic_overlap_ceiling_pct_of_ordinary':100*grouped['optimistic_overlap_ceiling_ms']/baseline_total,
+     'possible_2pct_saving_established':False,
+-    'interpretation':'The river-table span contains the entire unchanged builder, not isolated ranking. No removable fraction is established. Residuals include unprofiled constructor/CPU storage and timing/logging overhead. Overlapping envelopes and residuals must not be summed as disjoint components. The10pct outer usefulness guard does not bound component bias or establish a performance saving.',
++    'interpretation':'Copy host call plus existing wait is transfer-related host elapsed, not isolated PCIe duration. CPU spans include encoding, scatter and inactive restore. min(transfer_host,CPUencode) is only an optimistic measured-span overlap ceiling; unavoidable startup/tail, extra pinned buffers, bandwidth/contention and implementation costs remain unmeasured. No actual saving, family attribution or full-cycle headroom is proven. Grouped components/envelopes overlap and must not be summed. The10pct outer usefulness guard does not bound component bias.',
+     'candidate_accepted':False,'deployment_changed':False,
+     'native_process_wall_ms_including_teardown':{name:runs[name]['process_wall_ms'] for name in plan['order']},
+-    'evidence':{name:{'report_sha256':runs[name]['report_sha256'],'stdout_sha256':runs[name]['stdout_sha256']} for name in plan['order']},
++    'evidence':{name:{'report_sha256':runs[name]['report_sha256'],'stdout_sha256':runs[name]['stdout_sha256'],'invocation_sha256':runs[name]['invocation_sha256']} for name in plan['order']},
+     'binary_manifests':{'ordinary':sha(ROOT/'binaries/E020-postflop_autoresearch.manifest.json'),
+-                        'instrumented':sha(ROOT/'binaries/D044-postflop_autoresearch.manifest.json')}}
++                        'instrumented':sha(ROOT/'binaries/D065-postflop_autoresearch.manifest.json')}}
+ assert len(all_profiles)==9
+-destination=ROOT/'comparisons/D044-constructor-diagnostic';destination.mkdir(exist_ok=False)
++
++destination=ROOT/'comparisons/D065-readback-diagnostic';destination.mkdir(exist_ok=False)
+ (destination/'report.json').write_text(json.dumps(result,indent=2,allow_nan=False)+'\n',encoding='utf-8',newline='\n')
+-print(json.dumps({key:result[key] for key in ['status','observed_outer_change_pct','grouped_stage_sum_fixture_medians_ms','candidate_accepted']},indent=2))
++print(json.dumps({key:result[key] for key in ['status','observed_outer_change_pct','grouped_stage_sum_fixture_medians_ms','optimistic_overlap_ceiling_pct_of_ordinary','candidate_accepted']},indent=2))
+--- D044-constructor-diagnostic/protocol.json
++++ D065-readback-diagnostic/protocol.json
+@@ -1,43 +1,43 @@
+ {
+-  "id": "D044-constructor-diagnostic",
+-  "at": "2026-10-16T13:16:39.479041+00:00",
+-  "status": "prospective diagnostic only",
+-  "candidate": "D044",
++  "id": "D065-readback-diagnostic",
++  "at": "2026-10-16T20:29:16.799499+00:00",
++  "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
++  "candidate": "D065",
+   "reference": "accepted E020",
+   "order": [
+-    "D044B1",
+-    "D044P1",
+-    "D044P2",
+-    "D044B2",
+-    "D044B3",
+-    "D044P3"
++    "D065B1",
++    "D065P1",
++    "D065P2",
++    "D065B2",
++    "D065B3",
++    "D065P3"
+   ],
+   "pairs": [
+     {
+-      "baseline": "D044B1",
+-      "candidate": "D044P1"
++      "baseline": "D065B1",
++      "candidate": "D065P1"
+     },
+     {
+-      "baseline": "D044B2",
+-      "candidate": "D044P2"
++      "baseline": "D065B2",
++      "candidate": "D065P2"
+     },
+     {
+-      "baseline": "D044B3",
+-      "candidate": "D044P3"
++      "baseline": "D065B3",
++      "candidate": "D065P3"
+     }
+   ],
+   "owned_sources": [
+-    "crates/solver/src/game.rs"
++    "crates/solver/src/gpu/mod.rs"
+   ],
+   "accepted_owned_sha256": {
+-    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
++    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+   },
+   "candidate_owned_sha256": {
+-    "crates/solver/src/game.rs": "fef5db1cac90a2797d6bc5ad85870b8ee1247681f69f17c27a7dc0862bec2e35"
++    "crates/solver/src/gpu/mod.rs": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca"
+   },
+   "source_entry_count": 162,
+-  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\source-manifest.json",
+-  "source_archive_sha256": "8f522e9f4c2c71537495492119b95be8c50f48be117d57206a3a2c602f59b013",
++  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\source-manifest.json",
++  "source_archive_sha256": "742d75d2acd0ad495e35b3a5feb7507bd441518297390cd9bb01f9d91c31efd8",
+   "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+   "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+   "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+@@ -54,22 +54,22 @@
+   },
+   "expected_convergence_records_per_run": 23,
+   "expected_profile_records_per_run": 3,
+-  "profile_order_per_fixture": "Exactly one successful constructor record between fixture_start and build_complete",
+-  "marker": "SPOT_CONSTRUCTOR_PROFILE",
++  "profile_order_per_fixture": "Exactly one full_readback record after final convergence_check and before timing_complete",
++  "marker": "LIFECYCLE_PROFILE",
+   "compiled_diagnostic_markers": true,
+-  "runtime_flag": null,
++  "runtime_flag": "POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE",
+   "storage": "compressed",
+   "profile_eager_path": "disabled",
+   "fixture_filter": "explicitly removed",
+   "RAYON_NUM_THREADS": "16",
+-  "exactness": "All18 complete results/configuration/state objects and138 convergence checks exact across6 runs. Exactly3 constructor markers per instrumented run, none in ordinary controls; identities match frozen schema and build_complete stages.",
++  "exactness": "All18 complete results/configuration/state objects and138 convergence checks exact across6 runs. Exactly3 full_readback records with14 ordered spans each per profiledrun, none in ordinary controls.",
+   "usefulness_guard": {
+     "metric": "absolute percentage change in sum of per-fixture full-cycle medians, instrumented versus ordinary",
+     "maximum_percent": 10.0,
+     "fixture_and_pair_changes": "all reported separately; no exclusions",
+     "failure_status": "inconclusive diagnostic usefulness; retain all evidence and do not infer savings"
+   },
+-  "component_aggregation": "For each fixture/stage retain all3 profiled spans and raw ranges, then report median. Sum per-fixture medians only as grouped diagnostic host time, not measured saving.",
++  "component_aggregation": "Sum matching stage spans per run/fixture first, then median/range of all3. transfer_host_ms sums host calls plus completion waits; CPUencode sums encode_scatter_restore_cpu; optimistic min(T,E) is calculated per run before medians. Grouped medians are diagnostic host spans, not savings.",
+   "exclusions": [],
+   "outcome_triggered_extensions": false,
+   "performance_acceptance": false,
+@@ -77,16 +77,18 @@
+   "live_server_mutations": false,
+   "new_cuda_syncs": 0,
+   "extra_device_or_arena_allocations": 0,
+-  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d044-constructor",
++  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d065-readback",
+   "build_target_must_be_previously_absent": true,
+   "build_timeout_seconds": 1800,
+   "primary_child_timeout_seconds": 900,
+-  "restore": "Reverse only exact game.rs instrumentation patch after fixed cohort/audit; verify all162 acceptedE020 source hashes. Preserve every log and artifact.",
+-  "schema_sha256": "f36d5ced23c7f1a16ebe89c5de87175255307d22f7dde5b25505cf2ab11721e2",
++  "restore": "Reverse only exact gpu/mod.rs instrumentation after fixed cohort/audit; verify all162 accepted E020 source hashes. Preserve every log and artifact.",
++  "schema_sha256": "b64fc23a3d00c8b620bc900decc450314dd6596a70cd330ab03a91a39a7b5399",
+   "stage_names": [
+-    "tree_build",
+-    "river_table",
+-    "suit_symmetry"
++    "initial_stream_wait",
++    "dtoh_host_call",
++    "dtoh_stream_wait",
++    "encode_scatter_restore_cpu",
++    "publish_iteration_and_symmetry_flag_cpu"
+   ],
+   "expected_identity": [
+     {
+@@ -123,8 +125,48 @@
+       "node_count": 33
+     }
+   ],
+-  "component_interpretation": "River-table span includes the unchanged entire table builder, not isolated ranking time. Tree and symmetry spans similarly include their existing work. No projected saving or 2% candidate qualification follows.",
+-  "residual_interpretation": "constructor minus3stage spans is unprofiled constructor work/timer overhead. Outer build minus3spans is unprofiled constructor/CPU storage and timing/logging overhead. Outer build minus constructor includes CPU storage, return/logging/timer/evaluator overhead; do not attribute it to ranking or allocation alone.",
++  "component_interpretation": "dtoh_host_call plus dtoh_stream_wait is transfer-related host elapsed, not isolated PCIe time. encode_scatter_restore_cpu includes unchanged conversion/scatter/inactive restoration. No removable fraction or speed acceptance established.",
++  "residual_interpretation": "Trace envelope minus14span sum is timer/bookkeeping overhead; outer readback minus trace includes surrounding existing sync, logging/return/evaluator overhead. Envelopes and grouped components overlap and must not be added as disjoint costs.",
+   "additional_solver_work": 0,
+-  "extra_host_census": 0
++  "extra_host_census": 0,
++  "runtime_flag_profile": "1",
++  "runtime_flag_ordinary": "0",
++  "expected_spans_per_record": 14,
++  "optimistic_overlap_ceiling": "Per record min(sum(dtoh_host_call+dtoh_stream_wait),sum(encode_scatter_restore_cpu)). This deliberately optimistic measured-span ceiling excludes startup/tail, extra pinned allocation/bandwidth contention, scatter dependencies and implementation overhead. Those costs are unmeasured and must be measured before any candidate; no predicted complete-cycle gain or general bound on cache effects.",
++  "trace_host_allocation": "D009 helper uses one Vec with capacity16 for enabled14 spans; disabled trace capacity0. This observer allocation and timers/logging stay inside measured readback; no extra GPU or arena allocation.",
++  "preexisting_target_artifacts": {
++    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
++      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
++      "bytes": 239582
++    },
++    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
++      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
++      "bytes": 431937
++    }
++  },
++  "root_preparation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-root-decisions\\preparation.json",
++  "root_preparation_sha256": "067bee97303018dd3808f6ec6eeb13a08988b6c16dc3f38c3c4cbf28455b753b",
++  "runtime_flag_evidence": "The unchanged shared runner does not include this flag in report.environment; each frozen cohort invocation records the exact per-child override passed in run_env. Profile records plus fixed source verify enabled behavior.",
++  "schema_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\schema.json",
++  "expected_device_arena_bytes": {
++    "rainbow": [
++      624083380,
++      740688652
++    ],
++    "two-tone": [
++      373525176,
++      442981120
++    ],
++    "river": [
++      14912,
++      17920
++    ]
++  },
++  "expected_device_arena_bytes_provenance": {
++    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D009\\stdout.log",
++    "sha256": "dd03590e4fcb53aff50c1158c09f3c698885602be778721cdc96c04fac1653f3",
++    "phase": "full_readback",
++    "scope": "Actual downloaded f32 device arena bytes; not CPU compressed entries or inactive restore traffic."
++  },
++  "expected_trace_note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification."
+ }

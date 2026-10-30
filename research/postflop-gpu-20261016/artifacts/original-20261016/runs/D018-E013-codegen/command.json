@@ -1,0 +1,26 @@
+{
+  "argv": [
+    "cargo",
+    "rustc",
+    "--release",
+    "-p",
+    "solver",
+    "--features",
+    "gpu",
+    "--lib",
+    "--",
+    "--emit=asm"
+  ],
+  "cwd": "X:\\Dev\\GTOpen-gpu-research-20261016",
+  "environment_overrides": {
+    "CARGO_TARGET_DIR": "S:\\GTOpen-research\\postflop-gpu-20261016\\build",
+    "RAYON_NUM_THREADS": "16"
+  },
+  "existing_rustflags": null,
+  "existing_encoded_rustflags": null,
+  "started_at": "2026-10-16T06:31:59.893134+00:00",
+  "changed_sources_vs_D017": [
+    "crates\\solver\\src\\gpu\\host_encode.rs"
+  ],
+  "scope": "one compilation-only diagnostic; no test, executable, or GPU launch"
+}

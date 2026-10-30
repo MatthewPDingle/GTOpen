@@ -1,0 +1,13 @@
+# Common reserved-panel comparison
+
+This run follows successful evaluator requalification and both frozen 2,000-iteration training endpoints. Use the unchanged retained streamed evaluator, original subtree and `expansion-reserved-95-evaluation-v1.json`. Its exact board/weight identity is audited in `reserved-evaluation-manifest-v1-review.json`. Read no reserved strategy outcomes before both source policies are frozen.
+
+Evaluate weighted-112, equal-112 and the frozen old 47-board reference on every one of the 95 boards. Use board order from the manifest and source order weighted, equal, report47 at each board. Every worker runs exactly 2,000 postflop iterations. Preserve all preflop probabilities bit-for-bit. Do not select boards, tune weights, extend favorable workers or omit difficult results.
+
+Run 285 workers sequentially. Each has at most 900 seconds under the existing production-idle and memory-reserve guard; the entire invocation has a 12-hour ceiling. There are no automatic retries or deadline extensions. Before each worker, require disk space for the remaining 256-MiB-per-worker evidence budget plus a 32-GB free-space reserve on the repository volume. Retain raw results, verified gzip copies, inputs, logs, resource samples, reviews and their hashes. A failure retains partial evidence and stops for review. Production is never restarted or mutated.
+
+Audit each worker using the existing transfer reviewer: exact policy import, probability/chip/rake accounting, physical-pair and class accounting, and independently accumulated postflop residuals. Aggregate all per-terminal counterfactual values over the complete panel before taking a preflop maximum. Recheck every worker and source hash before aggregation. For each source report EV, expected rake, full deviation, postflop residual and root frequencies separately.
+
+Require each source's aggregate postflop residual below 0.01 bb before interpreting the comparison as settled responses. If any source misses that criterion, preserve all three results and mark the comparison underconverged; do not declare a winner or silently extend training. Training-panel gaps remain separate from these reserved-panel quantities. Any root policy comparison uses the previously frozen common entry prior, not these board-conditioned EV normalizers.
+
+These results concern the restricted two-live-player game and the reserved sample's eligible population (15,320 of 22,100 physical flops). Earlier folded cards remain omitted. Comparing the old reference with new training does not isolate flop coverage from the difference in training updates. Completion produces evidence for scientific review, not a production deployment or a claim of full-deck or multiway accuracy.

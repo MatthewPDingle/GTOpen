@@ -1,0 +1,42 @@
+{
+  "id": "E018-design",
+  "created_at": "2026-10-16T08:46:24.368089+00:00",
+  "base": "accepted E015; E016/E017 rejected and absent",
+  "base_source_sha256": {
+    "mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+    "crates/solver/src/gpu/plan.rs": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+    "crates/solver/src/gpu/kernels.cu": "de0c0b34dbe89005c7a175618c5ece3f187686089f1775a97d781967c8c02ec4",
+    "crates/solver/src/gpu/continuation_capacity.rs": "a8fa73b0a84fa4276df4458d13b571e04e74c9b9213f6bc1d74702012e91601e"
+  },
+  "patch_sha256": "85246f6d6506350f9030374566bcf5ea4c93e57834bb94da57e3f8e0f4d4589e",
+  "protected_source_sha256": {
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  },
+  "mechanical_checks": {
+    "sweep": true,
+    "iterate": true,
+    "iterate_profiled": true,
+    "eval_down": true,
+    "update_locks": true,
+    "research_continuation_sweep_impl": true,
+    "legacy_down": true,
+    "paired_sweep_only_mapped_pointer_changed": true,
+    "cuda_exact_D031_candidate": true,
+    "E016_E017_absent": true
+  },
+  "syntax_check": "rustfmt --edition 2021 --emit stdout --config skip_children=true [three Rust files] > $null: exit 0; no writes",
+  "whitespace_check": "git diff --check: exit 0",
+  "tests_executed": false,
+  "builds_executed": false,
+  "gpu_executed": false,
+  "independent_review": "pending",
+  "first_measurement_id": "E018R1; E018 reserved logical dashboard row"
+}

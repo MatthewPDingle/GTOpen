@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-17T07:08:32.328537+00:00",
+  "id": "E056",
+  "status": "pass_root_scoped_plan_permutation",
+  "owned_source": "crates/solver/src/gpu/plan.rs",
+  "transform": "Ascending actual arity within existing action_by_level lists, in-place unstable sort before flattening; exactly the CPU-control candidate bytes. No threshold or dispatch/key variants.",
+  "history_review": {
+    "E005": "Already reordered shared work lists with two-action prefixes plus new direct kernel, spans, dispatch and 4096 threshold.",
+    "E014": "Already reordered three-action prefixes plus direct3 launches/count metadata and 4096 threshold.",
+    "new_intervention": "Ordering alone across all actual arities using unchanged dispatch and one launch per span. No direct entrypoint, threshold, new metadata/span or scratch Vec. This decomposes earlier composites, not their retest or resource rescue. No key/arity/threshold sweep."
+  },
+  "cpu_controls": {
+    "cases": 12,
+    "plan_fields_per_case": 53,
+    "root_checks": 35694318,
+    "all52nonorder_fields_exact": true,
+    "all_vec_capacities_struct_sizes_equal": true,
+    "all_level_multisets_and_concrete_ownership_pass": true,
+    "report_sha256": "724be58144d61e220a01342e0116832ad061d3261e805ace6d8f9f06f0fd7536"
+  },
+  "resource_scope": "Unchanged CUDA source, entrypoints, ABI, host launch/graph code, buffer lengths, offsets and span counts. Existing device resources are not a new optimization mechanism. Sorting cost remains in the full clock. Actual captured-graph, peak memory, lifecycle/F32/menu/save/resume/continuation checks still required before adoption if timing qualifies.",
+  "cuda_source_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "kernel_raw_test_scope": "No CUDA kernel change; rerunning single-node kernel controls would not validate multi-node order. CPU ownership controls plus full exact states and subsequent actual graph/lifecycle controls validate the changed mechanism.",
+  "reviewer": "Root review and raw replay; not an external independent audit",
+  "performance_measured": false,
+  "optimization_accepted": false
+}

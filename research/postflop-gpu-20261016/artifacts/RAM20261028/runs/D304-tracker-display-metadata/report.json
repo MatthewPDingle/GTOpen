@@ -1,0 +1,40 @@
+{
+  "id": "D304",
+  "at": "2026-10-29T20:09:58.326478+00:00",
+  "status": "pass_evidence_bound_display_metadata_reconciliation",
+  "plan_sha256": "fb10bcc30e7ec3d912991deffec733ccd343c7d80548937fb624a6043b941f9e",
+  "original_rows_retained": 1486,
+  "patched_rows": 161,
+  "dates_recovered": 160,
+  "aggregate_scores_recovered": 20,
+  "unresolved": [
+    {
+      "row_index": 1226,
+      "id": "E097",
+      "field": "at",
+      "reason": "No same-ID published JSON with a valid explicit timezone timestamp. Left unrecorded; no filesystem date inferred."
+    },
+    {
+      "row_index": 1283,
+      "id": "D214",
+      "field": "at",
+      "reason": "No same-ID published JSON with a valid explicit timezone timestamp. Left unrecorded; no filesystem date inferred."
+    },
+    {
+      "row_index": 1360,
+      "id": "E112",
+      "field": "score",
+      "reason": "No identical same-ID published performance object with explicit sum-of-medians aggregation; no timing inferred."
+    },
+    {
+      "row_index": 1361,
+      "id": "D255",
+      "field": "at",
+      "reason": "No same-ID published JSON with a valid explicit timezone timestamp. Left unrecorded; no filesystem date inferred."
+    }
+  ],
+  "all_original_row_content_and_top_level_fields_recovered_by_reversal": true,
+  "no_status_accepted_measurement_baseline_quality_or_raw_artifact_changes": true,
+  "new_native_GPU_solver_or_speed_samples": 0,
+  "limits": "Display metadata only. Each date identifies a published evidence timestamp, not necessarily run start. Composite score explicitly labeled sum of fixture medians; no new speed or optimizer gain. Original data preserved in before-status.json."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "E070-input-contract-correction-diagnosis",
+  "at": "2026-10-18T01:14:11.892045+00:00",
+  "original_execution_plan_sha256": "e274ca3b0aa5927691740141f7f8a3efb186fa57309c7f9223b8b3e821cbfb09",
+  "original_failure_sha256": "8441799605fc1da9d21ed76bad0a634960e635b70ab74f2365f40af3954dbcec",
+  "original_down_binary_sha256": "e0b8662351aff3d50ec1a9f144df8064acad7985f56bde4bd2bbace624cb11d5",
+  "original_down_source_sha256": "45a3d60661a45d1393d5b2165c8974b02b8f7d762a7f38e9156726edb91b1954",
+  "completed_original_down_cases": 1172,
+  "original_case_ids_complete": [
+    0,
+    1171
+  ],
+  "remaining_original_case_ids": [
+    1172,
+    1195
+  ],
+  "invalid_signed_actor_ids": [
+    1172,
+    1173,
+    1176,
+    1177,
+    1180,
+    1181,
+    1184,
+    1185,
+    1188,
+    1189,
+    1192,
+    1193
+  ],
+  "cause": "Twelve inherited noncanonical actor cases use -1, outside the original Node.player:u8 source domain. Packing guard panicked at the first such case before its H2D allocation or kernel launch. No observed numerical mismatch.",
+  "source_semantics": "down_action_impl consumes actor only through actor==0 tests, so -1 and255 select the same player1 branch, widths, physical rows and float inputs. The valid byte sentinel255 is used in both arms for the12unexecuted signed cases.",
+  "amendment": "Preserve all prior data; audit completed1172down and819up cases without rerunning them. Normalize only12unexecuted -1actor descriptors to255, retain all original1196case IDs and remaining24geometries. Execute remaining24cases once, then original three unstarted components. No candidate/source/precision/width/float data/timing evaluator change. Total case pairs and kernel launches remain5953/11906; process count increases by one because the first down process stopped on an invalid fixture.",
+  "no_timing_samples_before_correction": true,
+  "candidate_cuda_sha256": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8",
+  "prefix_audit_sha256": "2792bdde1dd559849631c40532a62eb39fe3e57665d5dc8c8abb6a9e554b10a7",
+  "status": "diagnosed_harness_input_contract_error_not_candidate_numerical_failure"
+}

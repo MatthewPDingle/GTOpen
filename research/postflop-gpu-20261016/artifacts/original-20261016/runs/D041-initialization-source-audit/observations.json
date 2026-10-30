@@ -1,0 +1,177 @@
+{
+  "scope": "Source-only extraction of preserved historical diagnostic host spans and recent accepted E020 reference measurements; no new timing",
+  "historical_traces": {
+    "D009": [
+      {
+        "fixture": "rainbow",
+        "wall_ms": 692.3919,
+        "spans": {
+          "plan_and_budget_cpu": 141.22889999999998,
+          "context_stream_and_device_info_host_calls": 131.4494,
+          "ptx_acquire_or_compile_cpu": 57.8602,
+          "module_load_host_call": 1.3477000000000001,
+          "pinned_alloc_host_call": 60.8606,
+          "arena_layouts_cpu": 12.1206,
+          "arena_upload_calls_with_existing_waits": 239.8176,
+          "locks_and_fold_tables_cpu": 0.7573000000000001,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 46.949200000000005
+        }
+      },
+      {
+        "fixture": "two-tone",
+        "wall_ms": 434.8725,
+        "spans": {
+          "plan_and_budget_cpu": 139.2466,
+          "context_stream_and_device_info_host_calls": 73.7473,
+          "ptx_acquire_or_compile_cpu": 0.0257,
+          "module_load_host_call": 1.3497999999999999,
+          "pinned_alloc_host_call": 30.7582,
+          "arena_layouts_cpu": 21.5903,
+          "arena_upload_calls_with_existing_waits": 135.1911,
+          "locks_and_fold_tables_cpu": 1.7119,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 31.251300000000004
+        }
+      },
+      {
+        "fixture": "river",
+        "wall_ms": 95.2682,
+        "spans": {
+          "plan_and_budget_cpu": 0.0472,
+          "context_stream_and_device_info_host_calls": 91.2218,
+          "ptx_acquire_or_compile_cpu": 0.025400000000000002,
+          "module_load_host_call": 1.5146000000000002,
+          "pinned_alloc_host_call": 0.5327,
+          "arena_layouts_cpu": 0.0023,
+          "arena_upload_calls_with_existing_waits": 1.0632000000000001,
+          "locks_and_fold_tables_cpu": 0.053399999999999996,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 0.8075
+        }
+      }
+    ],
+    "D009R2": [
+      {
+        "fixture": "rainbow",
+        "wall_ms": 662.8892,
+        "spans": {
+          "plan_and_budget_cpu": 128.84699999999998,
+          "context_stream_and_device_info_host_calls": 125.21760000000002,
+          "ptx_acquire_or_compile_cpu": 61.5325,
+          "module_load_host_call": 1.2566000000000002,
+          "pinned_alloc_host_call": 52.9602,
+          "arena_layouts_cpu": 15.0862,
+          "arena_upload_calls_with_existing_waits": 231.9405,
+          "locks_and_fold_tables_cpu": 0.7079,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 45.3404
+        }
+      },
+      {
+        "fixture": "two-tone",
+        "wall_ms": 453.3816,
+        "spans": {
+          "plan_and_budget_cpu": 108.1862,
+          "context_stream_and_device_info_host_calls": 76.9615,
+          "ptx_acquire_or_compile_cpu": 0.022099999999999998,
+          "module_load_host_call": 1.322,
+          "pinned_alloc_host_call": 57.588899999999995,
+          "arena_layouts_cpu": 17.793699999999998,
+          "arena_upload_calls_with_existing_waits": 155.1278,
+          "locks_and_fold_tables_cpu": 2.2254,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 34.1538
+        }
+      },
+      {
+        "fixture": "river",
+        "wall_ms": 97.5886,
+        "spans": {
+          "plan_and_budget_cpu": 0.034999999999999996,
+          "context_stream_and_device_info_host_calls": 90.3785,
+          "ptx_acquire_or_compile_cpu": 0.0242,
+          "module_load_host_call": 1.97,
+          "pinned_alloc_host_call": 0.5611,
+          "arena_layouts_cpu": 0.002,
+          "arena_upload_calls_with_existing_waits": 1.0977000000000001,
+          "locks_and_fold_tables_cpu": 0.060399999999999995,
+          "function_lookup_metadata_upload_and_workbuffer_submit": 3.4595
+        }
+      }
+    ],
+    "D012": [
+      {
+        "fixture": "rainbow",
+        "wall_ms": 694.3671999999999,
+        "spans": {
+          "plan_and_budget_cpu": 123.6772,
+          "context_create_host_call": 121.1223,
+          "stream_create_host_call_with_existing_context_wait": 0.032100000000000004,
+          "context_configuration_and_device_info_host_calls": 0.0026,
+          "ptx_acquire_or_compile_cpu": 55.9444,
+          "module_load_host_call": 1.4212,
+          "pinned_staging_allocation_host_call": 50.278999999999996,
+          "arena_layouts_cpu": 9.7922,
+          "arena_upload_calls_with_existing_waits": 257.1672,
+          "locks_log_and_fold_tables_cpu": 0.7112,
+          "function_lookup_metadata_upload_and_basebuffers_host_calls": 47.5941,
+          "quantized_readback_try_new_with_existing_waits": 26.6231,
+          "final_return_cpu": 0.00039999999999999996
+        }
+      },
+      {
+        "fixture": "two-tone",
+        "wall_ms": 430.6822,
+        "spans": {
+          "plan_and_budget_cpu": 91.1229,
+          "context_create_host_call": 86.9394,
+          "stream_create_host_call_with_existing_context_wait": 0.0096,
+          "context_configuration_and_device_info_host_calls": 0.004,
+          "ptx_acquire_or_compile_cpu": 0.0262,
+          "module_load_host_call": 1.5007,
+          "pinned_staging_allocation_host_call": 47.2128,
+          "arena_layouts_cpu": 24.1181,
+          "arena_upload_calls_with_existing_waits": 130.4368,
+          "locks_log_and_fold_tables_cpu": 0.7805000000000001,
+          "function_lookup_metadata_upload_and_basebuffers_host_calls": 32.4946,
+          "quantized_readback_try_new_with_existing_waits": 16.035899999999998,
+          "final_return_cpu": 0.00039999999999999996
+        }
+      },
+      {
+        "fixture": "river",
+        "wall_ms": 178.3906,
+        "spans": {
+          "plan_and_budget_cpu": 87.2595,
+          "context_create_host_call": 86.95129999999999,
+          "stream_create_host_call_with_existing_context_wait": 0.0121,
+          "context_configuration_and_device_info_host_calls": 0.0045000000000000005,
+          "ptx_acquire_or_compile_cpu": 0.0306,
+          "module_load_host_call": 1.6017,
+          "pinned_staging_allocation_host_call": 0.2981,
+          "arena_layouts_cpu": 0.0022,
+          "arena_upload_calls_with_existing_waits": 0.9984,
+          "locks_log_and_fold_tables_cpu": 0.0562,
+          "function_lookup_metadata_upload_and_basebuffers_host_calls": 1.028,
+          "quantized_readback_try_new_with_existing_waits": 0.1479,
+          "final_return_cpu": 0.0
+        }
+      }
+    ]
+  },
+  "E020_reference_run_ids": [
+    "B068",
+    "B069",
+    "B070"
+  ],
+  "E020_per_fixture_medians_ms": {
+    "rainbow": 5774.477400000001,
+    "two-tone": 3895.5301000000004,
+    "river": 103.6156
+  },
+  "E020_sum_medians_ms": 9773.6231,
+  "two_percent_ms": 195.472462,
+  "historical_first_ptx_span_ms": 61.5325,
+  "illustrative_historical_ptx_over_recent_total_pct": 0.6295771728705192,
+  "historical_grouped_arena_upload_span_sum_ms": 388.166,
+  "illustrative_historical_upload_over_recent_total_pct": 3.971567104935732,
+  "current_E020_nvrtc_cost_measured": false,
+  "zero_proof_cpu_share_measured": false,
+  "cross_cohort_ratios_are_not_current_bounds_or_speed_predictions": true
+}

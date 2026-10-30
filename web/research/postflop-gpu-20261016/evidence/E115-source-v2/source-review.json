@@ -1,0 +1,88 @@
+{
+  "id": "E115-source-review",
+  "at": "2026-10-29T07:49:02.538361+00:00",
+  "status": "pass_literal_inverse_and_static_scope_only",
+  "manifest_sha256": "e9a9976d9c241583be0d91cf7191c88a75506110401d9c88cb2a90fc33497006",
+  "reviewer_sha256": "dd6293548db44fed00376d8968013b4e353bb8da4801b0a42f909844bec78472",
+  "generator_sha256": "9e166eb1a21f5131e9f9189223ec87be2eb8d1d2d4db81abe9869da6bb8fcfb1",
+  "four_existing_sources": [
+    {
+      "path": "crates/solver/src/gpu/arena.rs",
+      "literal_edits_replayed_and_inverted": 4,
+      "full_original_byte_reversal": true,
+      "original_sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "candidate_sha256": "e87bbce61522626980686c5caa68359cc545d09c0883d3c13c7712eaf74b797b"
+    },
+    {
+      "path": "crates/solver/src/gpu/mod.rs",
+      "literal_edits_replayed_and_inverted": 9,
+      "full_original_byte_reversal": true,
+      "original_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "candidate_sha256": "5250dcf07d8f7543dcda37fc1d82b5354bdd1982c15bfecb6bff1e66b3893f48"
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation.rs",
+      "literal_edits_replayed_and_inverted": 1,
+      "full_original_byte_reversal": true,
+      "original_sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+      "candidate_sha256": "5c0e391b6683e29bdf48a665ead036cda92f219f699306e28bc98eb86b6e90b7"
+    },
+    {
+      "path": "crates/solver/src/gpu/continuation_paging.rs",
+      "literal_edits_replayed_and_inverted": 1,
+      "full_original_byte_reversal": true,
+      "original_sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+      "candidate_sha256": "79321c687f8718595e8348a3f279ed966d7870c6ecb8cd0751e57578d8e13ea8"
+    }
+  ],
+  "only_new_module": {
+    "base": null,
+    "base_sha256": null,
+    "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E115-source-v2\\candidate\\metadata.rs",
+    "candidate_sha256": "8137bb78de92874ed044deb2f08cc7657903bba919fc5c18c6cb8abcc9720811"
+  },
+  "CUDA_plan_workloads_all_other_accepted_sources_byte_exact": true,
+  "all_existing_eager_graph_training_evaluation_continuation_bridge_sync_methods_byte_exact": true,
+  "14_per_node_fields_plus_full_lock_offsets": [
+    "node_player",
+    "node_na",
+    "node_data_off",
+    "node_children_start",
+    "node_twin",
+    "node_tlose",
+    "node_ttie",
+    "node_cdiv",
+    "node_river_slot",
+    "cc_start",
+    "cc_count",
+    "cfv_slot",
+    "reach_slot[0]",
+    "reach_slot[1]"
+  ],
+  "node_value_arrays": [
+    "action_nodes",
+    "chance_nodes",
+    "fold_nodes",
+    "show_nodes",
+    "chance_parents",
+    "chance_children",
+    "cc_child",
+    "tree.children"
+  ],
+  "physical_reach_CFV_arena_children_start_values_not_relabelled": true,
+  "no_CTA_worklist_span_count_or_within_frontier_order_changes": true,
+  "caller_review": {
+    "ordinary": "new/new_with_budget allow fixed capability predicate; both compact/checked aligned preexisting scratch. No fixture/quality/timing threshold.",
+    "symmetric": "Explicit original-layout private constructor protects stabilizer masks/public_orbits/projection/transport arrays indexed by CPU node ID, including tight budgets.",
+    "stored": "StoredContinuationGpu::new constructs SymmetricContinuationGpu::new_explicit_reference, therefore keeps original CPU IDs for pack_nodes/pack_offsets/source checks/copy kernel.",
+    "paged": "Explicit original-layout private constructor; parked F32 upload and seven-buffer workspace unchanged.",
+    "capacity": "All device array lengths and original capacity planners unchanged by inspection, not actual measured capacity or graph proof.",
+    "future_action_locks": "Same sigma order; binary search both actual sorted action active/inactive records. Device ID additions fit record padding and actual wrapper4448/record32,40/ArenaLayout160 all unchanged in D269.",
+    "manual_nonaction_locks": "Lazy original plan/map rebuild instead of retained N-map. Compatibility, transient CPU/memory/latency cost remain unqualified; no no-tradeoff claim."
+  },
+  "new_pinned_metadata_upload_fence": "Explicit stream drain before children scratch can be reused or dropped. Included in future full-cycle initialization and material cost.",
+  "source_diff_sha256": "0bde9624ef07ef774e84af11d597d6739aa2911993ed8a0f379ef1324c7bbf54",
+  "same_agent_shared_generator_literal_replay_not_external_or_formal_audit": true,
+  "new_compilers_or_native_runs_in_this_review": 0,
+  "remaining": "Actual production metadata helper CPU replay against frozen complete originals, actual selected/fallback paths and all lock/projection callers; original engine/fullcanonical CPU/all66device physical and lifecycle numerical checks; full ordinary builds/units and all frozen complete-solve qualification/material/holdout/cumulative/application gates. Source feasibility only; zero candidate GPU or speed samples."
+}

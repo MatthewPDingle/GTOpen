@@ -1,0 +1,34 @@
+{
+  "id": "E118-kernel-control",
+  "at": "2026-10-29T16:16:54.515981+00:00",
+  "status": "pass_scoped_full_zero_tie_raw_equivalence",
+  "checks": 704131,
+  "root_cross_check_only": true,
+  "inventory": {
+    "device_input_word_checks": 116648900,
+    "device_input_buffer_checks": 509880,
+    "active_words_compared": 6974120,
+    "output_guard_word_checks": 57976920,
+    "full_output_words_both_arms": 71925160,
+    "comparison_pairs": 12140,
+    "rounding_witness_checks": 2
+  },
+  "kernel_launches": 24280,
+  "tested_block_widths": [
+    1,
+    32,
+    64,
+    128,
+    256
+  ],
+  "whole_physical_outputs_bitwise_equal": true,
+  "all_actual_inputs_match_exact_expected": true,
+  "all21_input_buffers_identical": true,
+  "raw_sha256": "5342e2c974df1af50df7c2367930a091e3eb591df07bd59f2d8b03ace7565dc6",
+  "raw_bytes": 1588630074,
+  "protocol_sha256": "6dff54796f6a3114e13f29a76986517cc382c76cb6517026e3cd8ef1f504d53f",
+  "source_main_live_PTX_custody_pass": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Finite declared12140pair corpus and root decoder, not universal NaN/illegal-address proof or external independent review. Same physical output geometry; all21metadata inputs byte-identical and every complete input image checked against the original explicit expected bits. Full solver/state/save/resume/material/speed qualification remains."
+}

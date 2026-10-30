@@ -1,0 +1,85 @@
+{
+  "id": "E040-primary",
+  "at": "2026-10-17T01:08:14.461539+00:00",
+  "status": "FROZEN_PRE_PRIMARY_NATIVE",
+  "baseline": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-root-decisions\\baseline.json",
+    "sha256": "22d1b4b2c2ade026e8c1dbb34b049eb07db2076efd3476061c6a0ba5661f890f"
+  },
+  "baseline_binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.exe",
+    "sha256": "7e73b8fd4f5bb792cdd4285befa140d08f943db73a78ea4ec457daed4735ef62",
+    "manifest": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.manifest.json",
+    "manifest_sha256": "dc0407911d88fd1040ec44ef7ab81ab2f6cab4d7d0f0c15cdc1a3740014dbea6"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/arena.rs": "51d89f4561a95b1380f77c56ec573186880a27af96e3921403b86ad0dff0ddb6",
+    "crates/solver/src/gpu/mod.rs": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44"
+  },
+  "build_protocol_sha256": "1a97bf03aa2e8002d08a5af95612feccda4883dbeabb3e4bc4254e102ea2bb36",
+  "gpu_control_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E040-gpu-readback-control\\report.json",
+    "sha256": "301800bafd47bb499ccf3add25923cd4f9a4ac178219f1a168997bf7dbbc0b5a"
+  },
+  "control_ids": [
+    "V040-unit"
+  ],
+  "measurement_order": [
+    "B125",
+    "E040R1",
+    "E040R2",
+    "B126",
+    "B127",
+    "E040R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B125",
+      "candidate": "E040R1"
+    },
+    {
+      "baseline": "B126",
+      "candidate": "E040R2"
+    },
+    {
+      "baseline": "B127",
+      "candidate": "E040R3"
+    }
+  ],
+  "policy": {
+    "minimum_complete_cycle_gain_pct": 1.0,
+    "fixture_guard": "Unrounded positive median slowdown and at least2/3 positive paired slowdowns rejects; no epsilon.",
+    "exactness": "All18 full non-timing result payloads and138 checkpoints match accepted E020C1.",
+    "sampling": "Fixed three pairs, no historical timing pooling/exclusions/extensions/rescue samples.",
+    "scope": "Initial primary screen only; no automatic acceptance or statistical-confidence claim."
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-primary-plan\\assess.py": "9bb830654346c5a9792fbc918ef849ca1012eb6061189eb756588e47d9e79978",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-primary-plan\\native.py": "48edb34f23d8010cac78cd536eec03bb370c7dc07b53aff0001981ddb7f083e7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E040-gpu-readback-control\\report.json": "301800bafd47bb499ccf3add25923cd4f9a4ac178219f1a168997bf7dbbc0b5a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\manifest.json": "04b63a1534765a80fb717959d0cdc6294e4f6d2dbb22f355748a9fc82ac7264b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\build-protocol.json": "1a97bf03aa2e8002d08a5af95612feccda4883dbeabb3e4bc4254e102ea2bb36",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\complete.json": "69aadbc08fddfd73069091410da4758a36e0a2567b96495123686a0fffbdd7d4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\terminal.json": "cc6d465590793bfd1958c43e84cf6158448e3295b61e4a79ce3def0853087250",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-gpu-control-plan\\protocol.json": "8a6b3c240a79b7818c859779bb333dbd9ea3c3df27842800ed77f553d1fa576a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-gpu-control-plan\\execution-seal.json": "3d37ccaad82b67f10fa049c1428588d4a3f51a8e92e23b17a1656dfe746165c5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-gpu-control-execution\\complete.json": "1684a74b4663e1ad8954b5cc666bb8f29fac0c663960af6e56f8ee6e539cdded",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\qualification-policy-20261017.md": "2b4f173b98863272279c39302017608aa8a0976074a709fe09e61af5a4b0735f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-solver.exe": "2401a5139305b27561f6097a405f82648eda130b35bcab80e7043700103b3185",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-solver.manifest.json": "5990974cd004c24cc97368fb1389d2a6b9c4f0fc0301d0c7761f281a7cb4fafd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-postflop_autoresearch.exe": "43d9387725915cb3d81f7ec8d98fc99cf75950e0e806f4edefeb44f44ec01307",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E040-postflop_autoresearch.manifest.json": "be7f247ccd3af59fdabc0b5795a185a150df45322bb3efdf9e2e5ca997d6ea4d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.exe": "7e73b8fd4f5bb792cdd4285befa140d08f943db73a78ea4ec457daed4735ef62",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\SG-E020-postflop_autoresearch.manifest.json": "dc0407911d88fd1040ec44ef7ab81ab2f6cab4d7d0f0c15cdc1a3740014dbea6"
+  },
+  "adoption_requirements": [
+    "Separately frozen fresh16-pair confirmation: aggregate>=1%,at least13positive pairs,positive pair/block/order medians,no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/resume/continuation, fixed holdout, and fresh-original cumulative qualification.",
+    "No material memory/capacity/compatibility/behavior costs; verify current production path, resource lifetimes and descriptor overhead before adoption."
+  ],
+  "source_scope": "Only two Rust files. Complete-node chunks overlap existing pinned DMA windows with unchanged Store encoders; compact inactive snapshots and F32/default/mixed fallbacks exact in scoped controls. CUDA/plan/store source and GPU fields/constructor unchanged. Test hooks and serial reference cfg(test) only.",
+  "scope": "Initial warm-cache compressed complete-cycle screen only; no performance profiling or cache reset, no historic timing pooling, no retries/exclusions/extensions.",
+  "runtime_authority": "Ongoing user-authorized local GPU autoresearch; root review only. No live deployment."
+}

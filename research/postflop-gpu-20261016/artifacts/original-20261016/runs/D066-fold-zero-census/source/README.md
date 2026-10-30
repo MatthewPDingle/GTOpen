@@ -1,0 +1,11 @@
+# D066 frozen test-only fold-reach census
+
+Only accepted mod.rs gains a cfg(test) module declaration. All production methods, kernels, allocation layouts, graph construction and the fixed evaluator remain byte-identical E020. The new ignored module uses ordinary GpuSolver instances and the existing D045 bounded reader/admission/CPU comparison/fingerprint helpers. No event instrumentation or fast path exists.
+
+Three immutable compressed DCFR/isomorphism fixtures run their original every20 exploitability schedule. Both solvers' reach arrays are compared bitwise only at20 and final200/200/60, before either evaluation. Accepted E015 leaves reach1 equal to the last player0 fold input and reach0 equal to the last player1 fold input at this boundary; up sweeps do not write reach. The sampled values are not labeled arbitrary current-strategy reaches. All23 exploit bits and three full final CPU states are checked against original B065 and E020C1 anchors. Compact device arena lengths stay distinct from full CPU stores.
+
+Every actual fold_nodes CTA is counted via reach_slot[opponent], checked against both solvers' uploaded metadata. Logical row widths are nh[q], with no padding in accepted E020; bounds and full span coverage are checked. Independent -0/nonzero/nonfinite row flags span chunk boundaries. All+0 is strict bits0. Finite selected payout eligibility is separate, and does not authorize skipped stores or imply +0 output.
+
+Fifteen create-new compact files retain full fold mappings and row flags; raw float payloads are not retained. Their exact codec and39-marker sequence are in output-schema.json. Count recomputation is possible from those files; paired raw equality remains a native assertion, not something proved by the retained noncryptographic hash alone. No incidence, resource, timing or performance threshold selects outcomes.
+
+The preliminary cleanup finding is preserved in draft-r1. The corrected success path holds each solver's own context wrapper across destruction and checks all wrappers before reporting cleanup_complete. Parse and read-only patch checks passed; no compiler, GPU, native test or solver execution occurred during preparation. Root must separately authorize execution after independent review.

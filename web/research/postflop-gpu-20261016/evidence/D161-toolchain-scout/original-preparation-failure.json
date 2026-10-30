@@ -1,0 +1,13 @@
+{
+  "at": "2026-10-28T13:30:43.758306+00:00",
+  "original_script": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D160-close-D161-stage.py",
+  "original_script_sha256": "5a16a11c42c464a418851d9ff056721a497f998de70eddda44eabee4cacb64dc",
+  "observed_exec_returncode": 1,
+  "error": "AssertionError: nvidia/cuda_nvrtc/bin/nvrtc64_130_0.dll",
+  "location": "D160-close-D161-stage.py:81",
+  "original_retrieval_protocol_sha256": "1e303b969ef4ae6173c72aadd7c7eed6bda760b33e96b866c663405714872642",
+  "wheel_download_complete_and_checksum_exact": true,
+  "candidate_DLL_loads_compiles_or_kernels": 0,
+  "status": "invalid_extraction_layout_assumption_preserved",
+  "scope": "Original preparation assumed CUDA12 wheel paths. Actual CUDA13 wheel uses nvidia/cu13/bin/x86_64 and nvidia/cu13/include. Failure before any extraction/native code. Preserve original protocol and failure,do not redownload or relabel original successful."
+}

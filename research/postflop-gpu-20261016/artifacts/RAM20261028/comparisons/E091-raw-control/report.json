@@ -1,0 +1,29 @@
+{
+  "id": "E091-raw-control",
+  "at": "2026-10-28T09:02:58.693707+00:00",
+  "status": "pass_scoped_down_action_raw_equivalence",
+  "protocol_sha256": "76441c3323fda1a42df629021ad9b971fb286ef5e88a6c589ec2bf390e9059e4",
+  "checks": 9933133,
+  "cases": 1530,
+  "kernel_launches": 3060,
+  "output_words_both_arms": 22231384,
+  "immutable_words_both_arms": 14734776,
+  "guard_words_both_arms": 17676372,
+  "positive_negative_zero_witness_words": [
+    881200,
+    883326
+  ],
+  "nonfinite_output_words_both_arms": 528294,
+  "all_full_actual_inputs_and_outputs_exact": true,
+  "raw_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-raw-control\\output\\baseline-inputs.bin": "660081192516617addc2d43ce2853aba0bfff99769b7c20af3cef1976663aaa9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-raw-control\\output\\baseline.bin": "b701bed104d9a1787df02906b40ba479013fd30cf621213980ef128b4b2dc140",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-raw-control\\output\\candidate-inputs.bin": "660081192516617addc2d43ce2853aba0bfff99769b7c20af3cef1976663aaa9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-raw-control\\output\\candidate.bin": "b701bed104d9a1787df02906b40ba479013fd30cf621213980ef128b4b2dc140",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E091-raw-control\\output\\inputs.bin": "04e9e2867a137fd1a3ea42778b6845e277d885c1a80fc0c3a108e414baf1318d"
+  },
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "source_main_live_PTX_custody_pass": true,
+  "scope": "Finite declared matrix only. All physical outputs and twelve actual immutable input vectors compared in full, with whole guards. Independent CPU ordered-f32 classification verifies both signed-zero output invariants for finite sums. No universal NaN/layout, trained-game, production incidence, cost/capacity or speed claim."
+}

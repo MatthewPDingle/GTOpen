@@ -1,0 +1,51 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -121,19 +121,20 @@
+     const u32* __restrict__ parents, const u32* __restrict__ childs,
+     const u32* __restrict__ cards, int start, int count,
+     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+-    const u64* __restrict__ mask0, const u64* __restrict__ mask1,
++    const u32* __restrict__ card1_0, const u32* __restrict__ card2_0,
++    const u32* __restrict__ card1_1, const u32* __restrict__ card2_1,
+     float* reach0, float* reach1, int nh0, int nh1)
+ {
+     int e = blockIdx.x;
+     if (e >= count) return;
+     u32 pn = parents[start + e], cn = childs[start + e];
+-    u64 cm = 1ull << cards[start + e];
++    u32 card = cards[start + e];
+     const float* pr0 = reach0 + (u64)rsrc0[pn] * nh0;
+     const float* pr1 = reach1 + (u64)rsrc1[pn] * nh1;
+     for (int i = threadIdx.x; i < nh0; i += blockDim.x)
+-        reach0[(u64)rsrc0[cn] * nh0 + i] = (mask0[i] & cm) ? 0.f : pr0[i];
++        reach0[(u64)rsrc0[cn] * nh0 + i] = (card1_0[i] == card || card2_0[i] == card) ? 0.f : pr0[i];
+     for (int j = threadIdx.x; j < nh1; j += blockDim.x)
+-        reach1[(u64)rsrc1[cn] * nh1 + j] = (mask1[j] & cm) ? 0.f : pr1[j];
++        reach1[(u64)rsrc1[cn] * nh1 + j] = (card1_1[j] == card || card2_1[j] == card) ? 0.f : pr1[j];
+ }
+ 
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+@@ -302,7 +303,7 @@
+     const u32* __restrict__ cc_card, const u32* __restrict__ cc_child,
+     const u32* __restrict__ cc_perm,
+     const float* __restrict__ node_cdiv,
+-    const u64* __restrict__ mask_p,
++    const u32* __restrict__ card1_p, const u32* __restrict__ card2_p,
+     const u32* __restrict__ hand_perm_p, // perm k at [k*nh_p, (k+1)*nh_p)
+     const u32* __restrict__ cfv_slot, float* cfv, int nh_p, int nh_max)
+ {
+@@ -313,11 +314,11 @@
+     u32 t1 = t0 + cc_count[n];
+     float inv = node_cdiv[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+-        u64 hm = mask_p[i];
++        u32 c1 = card1_p[i], c2 = card2_p[i];
+         float acc = 0.f;
+         for (u32 t = t0; t < t1; t++) {
+-            u64 cm = 1ull << cc_card[t];
+-            if (hm & cm) continue;
++            u32 card = cc_card[t];
++            if (c1 == card || c2 == card) continue;
+             u32 k = cc_perm[t];
+             int idx = k == 0 ? i : (int)hand_perm_p[(u64)k * nh_p + i];
+             acc += cfv[(u64)cfv_slot[cc_child[t]] * nh_max + idx];

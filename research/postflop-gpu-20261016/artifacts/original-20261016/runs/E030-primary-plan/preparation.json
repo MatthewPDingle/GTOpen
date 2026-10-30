@@ -1,0 +1,71 @@
+{
+  "id": "E030-primary-preparation",
+  "at": "2026-10-16T17:44:19.243830+00:00",
+  "accepted_source_count": 162,
+  "current_accepted_source_map_exact": true,
+  "owned_sources": [
+    "crates/solver/src/game.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs"
+  ],
+  "auxiliary_sources": [],
+  "source_manifest_sha256": "0ad81cd54e33062d2cfc53dfebd3f0db60d3675b9d10458799e4f95aeb3f6681",
+  "ast_parse_only": [
+    "assess.py",
+    "build.py",
+    "compile_check.py",
+    "prepare.py",
+    "primary.py",
+    "seal.py"
+  ],
+  "unused_run_ids": [
+    "V030-unit",
+    "B098",
+    "E030R1",
+    "E030R2",
+    "B099",
+    "B100",
+    "E030R3"
+  ],
+  "unused_fresh_targets": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-primary-e030",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\build-check-e030-research"
+  ],
+  "fixed_gates_and_evaluator_unchanged": true,
+  "expected_unit_inventory": {
+    "passed": 85,
+    "ignored": 4,
+    "total": 89
+  },
+  "direct_gate": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E030-direct-independent-review\\validation.json",
+    "prepared_manifest_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-fold-card-order-exact\\prepared-manifest.json",
+    "prepared_manifest_sha256_binding": "Root authorization.evidence_sha256 pins canonical prepared manifest; terminal report must match that hash.",
+    "id": "E030-direct",
+    "verdict": "PASS_EXACT_COMPLETE_UP_FOLD_COMPARISON",
+    "comparison_pairs": 180,
+    "kernel_launches": 360,
+    "production_threads": 128,
+    "block_shapes": [
+      128,
+      16,
+      32,
+      64,
+      256
+    ],
+    "each_pair_same_block_shape": true,
+    "performance_measurement": false,
+    "candidate_accepted": false
+  },
+  "direct_prepared_and_terminal_pins": "Future canonical artifacts must be included in immutable root execution authorization; no fabricated hash or execution permission in this plan.",
+  "pre_seal_corrections": [
+    "Inherited V029-unit identifier fixed to authorized V030-unit before seal; original complete draft preserved under draft-r1.",
+    "Host preparation script encoding alias typo corrected from utf8-sig to utf-8-sig; no native/compiler execution or evidence loss."
+  ],
+  "compiler_native_gpu_execution": false,
+  "production_edits": false,
+  "status_edits": false,
+  "candidate_accepted": false
+}

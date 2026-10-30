@@ -1,0 +1,229 @@
+{
+  "id": "D267-root",
+  "at": "2026-10-29T07:30:45.924832+00:00",
+  "status": "pass_full_inverse_CPU_model_replay",
+  "protocol_sha256": "aa0dd7589a50c020663469ac6ca354476a5684977281e30ac1ece73f3cf65266",
+  "model_report_sha256": "4e3641ef0072b983792212ce59f7a543834f62135efe0b664250d018f184f000",
+  "checks": 114256513,
+  "projection_words_replayed": 114255649,
+  "cases": [
+    {
+      "id": "rainbow-iso-on",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 114934308,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 1179929,
+          "new": 164967
+        },
+        "8byte_node_fields": {
+          "old": 1273289,
+          "new": 329901
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    },
+    {
+      "id": "two-tone-iso-on",
+      "nodes": 1346813,
+      "visited_nodes": 802913,
+      "changed_node_IDs": 1346809,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 112214136,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 729023,
+          "new": 100398
+        },
+        "8byte_node_fields": {
+          "old": 777492,
+          "new": 200759
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    },
+    {
+      "id": "river-iso-on",
+      "nodes": 33,
+      "visited_nodes": 33,
+      "changed_node_IDs": 30,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 2768,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 33,
+          "new": 19
+        },
+        "8byte_node_fields": {
+          "old": 33,
+          "new": 21
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    },
+    {
+      "id": "rainbow-iso-off",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 114934308,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 1179929,
+          "new": 164967
+        },
+        "8byte_node_fields": {
+          "old": 1273289,
+          "new": 329901
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    },
+    {
+      "id": "two-tone-iso-off",
+      "nodes": 1346813,
+      "visited_nodes": 1319520,
+      "changed_node_IDs": 1346810,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 114934308,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 1179929,
+          "new": 164967
+        },
+        "8byte_node_fields": {
+          "old": 1273289,
+          "new": 329901
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    },
+    {
+      "id": "river-iso-off",
+      "nodes": 33,
+      "visited_nodes": 33,
+      "changed_node_IDs": 30,
+      "projected_arrays": 24,
+      "all_projection_words_exactly_reversed": true,
+      "projected_payload_bytes": 2768,
+      "summed_frontier_relative_32B_groups": {
+        "4byte_node_fields": {
+          "old": 33,
+          "new": 19
+        },
+        "8byte_node_fields": {
+          "old": 33,
+          "new": 21
+        }
+      },
+      "footprint_is_not_measured_cache_misses_or_time": true
+    }
+  ],
+  "negative_reader_fixtures": [
+    {
+      "case": "rainbow-iso-on",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "rainbow-iso-on",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "rainbow-iso-on",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-on",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-on",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-on",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-on",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-on",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-on",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    },
+    {
+      "case": "rainbow-iso-off",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "rainbow-iso-off",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "rainbow-iso-off",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-off",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-off",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "two-tone-iso-off",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-off",
+      "fixture": "identity_inverse_for_changed_node",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-off",
+      "fixture": "unmapped_child_ID",
+      "rejected": true
+    },
+    {
+      "case": "river-iso-off",
+      "fixture": "mistaken_remap_of_physical_CFV_slot_value",
+      "rejected": true
+    }
+  ],
+  "all24proposed_arrays_every_word_reversed": true,
+  "all_N_rows_spans_CTAorder_payload_lengths_unchanged": true,
+  "candidate_or_GPU_output_created": false,
+  "new_compiler_CUDA_kernel_solver_or_speed_runs": 0,
+  "same_agent_root_replay_shared_frame_parser_not_external_audit": true,
+  "limits": "Only a reversible source-derived metadata model and relative address footprint. Actual private host layout, pinned staging reuse/alignment, locks/nonaction inputs, all experimental projection callers, CPU/GPU costs and every original correctness/performance/adoption gate remain. No candidate admitted by footprint counts."
+}

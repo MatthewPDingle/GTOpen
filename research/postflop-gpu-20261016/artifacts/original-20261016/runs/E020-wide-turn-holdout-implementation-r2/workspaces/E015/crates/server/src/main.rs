@@ -1,0 +1,3505 @@
+//! Local web server hosting the solver and the browser UI.
+
+use axum::extract::{Query, State};
+use axum::http::StatusCode;
+use axum::routing::{get, post};
+use axum::{Json, Router};
+use serde::{Deserialize, Serialize};
+use solver::cfr::{Algorithm, Solver};
+use solver::game::{Spot, SpotConfig};
+use solver::query::PathStep;
+use solver::range::Range;
+use solver::store::Storage;
+use solver::tree::{parse_sizes, StreetSizing, TreeConfig};
+use std::sync::atomic::{AtomicBool, Ordering};
+use std::sync::{Arc, Mutex};
+
+type ApiError = (StatusCode, String);
+
+#[cfg(all(test, feature = "gpu"))]
+mod report_tests;
+
+#[cfg(test)]
+mod evidence_tests;
+#[cfg(test)]
+mod preflop_preview_tests;
+
+#[cfg(test)]
+mod postflop_context_tests;
+
+fn bad_request(msg: impl Into<String>) -> ApiError {
+    (StatusCode::BAD_REQUEST, msg.into())
+}
+
+/// Human-readable panic payload (panics carry a `&str` or `String`).
+fn panic_msg(p: &(dyn std::any::Any + Send)) -> &str {
+    p.downcast_ref::<&str>()
+        .copied()
+        .or_else(|| p.downcast_ref::<String>().map(String::as_str))
+        .unwrap_or("unknown panic")
+}
+
+/// Lock a mutex even if a panicking task poisoned it. The unwind guards
+/// below MUST be able to clear their `running` state no matter where the
+/// panic hit, and every solver lock goes through here too: a panic inside a
+/// browse handler's blocking closure used to poison the solver mutex, and
+/// the next handler that unwrapped it while holding the session guard then
+/// poisoned the SESSION mutex — after which every endpoint died until a
+/// restart. The solver state after a browse panic is a read-side state; a
+/// recovered guard is far better than a wedged server.
+fn lock_unpoisoned<T>(m: &Mutex<T>) -> std::sync::MutexGuard<'_, T> {
+    match m.lock() {
+        Ok(g) => g,
+        Err(poisoned) => {
+            m.clear_poison();
+            poisoned.into_inner()
+        }
+    }
+}
+
+/// Handlers waiting on the preflop solver mutex. The solve worker holds
+/// that mutex for a whole iteration and re-takes it immediately, and std's
+/// mutex is not fair (a woken waiter loses to the re-locking worker on
+/// Windows and Linux alike), so browse/export requests starved for minutes
+/// — and, queued in the browser's per-host connection limit, took the
+/// status polls down with them. Handlers lock through `pf_solver_lock`; the
+/// worker yields to registered waiters between iterations.
+static PF_WAITERS: std::sync::atomic::AtomicUsize = std::sync::atomic::AtomicUsize::new(0);
+
+fn pf_solver_lock(m: &Mutex<solver::preflop::PreflopSolver>) -> std::sync::MutexGuard<'_, solver::preflop::PreflopSolver> {
+    PF_WAITERS.fetch_add(1, Ordering::SeqCst);
+    let g = lock_unpoisoned(m);
+    PF_WAITERS.fetch_sub(1, Ordering::SeqCst);
+    g
+}
+
+/// Worker side of the handoff: with the solver unlocked, give every waiting
+/// handler a chance to take it (bounded: a handler that never wakes cannot
+/// stall the solve).
+fn pf_yield_to_waiters() {
+    for _ in 0..200 {
+        if PF_WAITERS.load(Ordering::SeqCst) == 0 {
+            return;
+        }
+        std::thread::sleep(std::time::Duration::from_millis(1));
+    }
+}
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+
+#[derive(Default)]
+struct AppState {
+    session: Mutex<Option<Session>>,
+    status: Mutex<StatusInfo>,
+    preflop: Mutex<Option<PreflopSession>>,
+    report: Mutex<ReportStatus>,
+    report_stop: Arc<AtomicBool>,
+    /// The most recently queried report's per-board line summaries, parsed
+    /// once (a 184-flop report is ~100 MB of JSON on disk).
+    report_cache: Mutex<Option<Arc<LoadedReport>>>,
+}
+
+/// A report's per-board line summaries (see solver::report), in memory.
+struct LoadedReport {
+    name: String,
+    flops: Vec<FlopLines>,
+}
+
+struct FlopLines {
+    board: String,
+    weight: u32,
+    exploit_pct: f64,
+    lines: std::collections::HashMap<String, solver::report::LineSummary>,
+}
+
+#[derive(Clone, Serialize, Default)]
+struct ReportStatus {
+    running: bool,
+    name: String,
+    done: usize,
+    total: usize,
+    board: String,
+    error: String,
+    seconds: f64,
+}
+
+struct PreflopSession {
+    solver: Arc<Mutex<solver::preflop::PreflopSolver>>,
+    stop: Arc<AtomicBool>,
+    status: Arc<Mutex<PreflopStatus>>,
+    /// Solve worker thread, if one was ever started. Always joined before the
+    /// session is replaced — pf_stop_and_join up front, and pf_install_session
+    /// at swap time for a worker that raced in while the build/load ran with
+    /// the mutex free — so no zombie solve keeps burning the rayon pool or
+    /// holding VRAM into the next session.
+    worker: Option<std::thread::JoinHandle<()>>,
+}
+
+#[derive(Clone, Serialize, Default)]
+struct PreflopStatus {
+    /// "idle" | "running" | "done" | "stopped"
+    state: String,
+    /// While running: "iterating" or "measuring" (the best-response
+    /// accuracy pass — long on big trees; the UI explains the pause).
+    #[serde(default)]
+    phase: String,
+    /// True while the preflop solve runs on the GPU.
+    #[serde(default)]
+    gpu: bool,
+    /// Why it isn't on the GPU (fallback reason), when applicable.
+    #[serde(default)]
+    gpu_note: String,
+    iteration: u32,
+    /// Latest coherent CPU strategy snapshot available to node/export handlers.
+    published_iteration: u32,
+    /// The gap belongs to this snapshot, not the live iteration counter.
+    accuracy_iteration: Option<u32>,
+    target_gap: Option<f64>,
+    stop_reason: String,
+    preview_note: String,
+    /// Per-player best-response gaps (bb). For a frozen or fully-ruled seat
+    /// the gap is its BLEED against its pinned strategy (it never converges).
+    gaps: Vec<f64>,
+    /// Sum of the gaps of the seats still learning — the convergence metric
+    /// for the preflop model (multiway has no exploitability proper) and
+    /// what the solve's target_gap is compared against.
+    gap_total: f64,
+    evs: Vec<f64>,
+    /// Engine truth for the lab UI: the current hero seat (None/null =
+    /// table mode). Mirrored from the solver at build/load/table/hero time —
+    /// mutations are rejected while a solve runs, so the mirror stays exact.
+    hero: Option<usize>,
+    /// Engine truth: per-seat frozen flags, positions order.
+    frozen: Vec<bool>,
+    /// Set when the solve worker died on a panic (state goes to "stopped");
+    /// cleared when a new solve starts.
+    #[serde(default)]
+    error: String,
+    /// Non-empty when the game asked for calibrated realization but the fit
+    /// file could not be loaded and the engine fell back to static pricing
+    /// (mirrors gpu_note: a silent model downgrade is not acceptable).
+    #[serde(default)]
+    realization_note: String,
+    /// Versioned multiway payoff model; saved games retain their original model.
+    #[serde(default)]
+    multiway_equity_model: String,
+}
+
+struct Session {
+    solver: Arc<Mutex<Solver>>,
+    stop: Arc<AtomicBool>,
+    worker: Option<std::thread::JoinHandle<()>>,
+    /// Bumped whenever locks change so a running GPU solve can refresh.
+    lock_gen: Arc<std::sync::atomic::AtomicU64>,
+}
+
+#[derive(Clone, Serialize, Default)]
+struct TreeInfo {
+    nodes: usize,
+    action_nodes: usize,
+    /// Estimated solver-arena RAM (MB) for the active storage mode.
+    arena_mb: f64,
+    /// Estimated VRAM (MB) to solve this spot on the GPU.
+    #[serde(default)]
+    vram_mb: f64,
+    /// VRAM ceiling (MB); a spot above this runs on the CPU.
+    #[serde(default)]
+    gpu_cap_mb: u64,
+    /// Whether the GPU solver is compiled in and enabled (SOLVER_GPU != 0).
+    #[serde(default)]
+    gpu_available: bool,
+    hands_oop: usize,
+    hands_ip: usize,
+    board: String,
+}
+
+#[derive(Clone, Serialize, Default)]
+struct StatusInfo {
+    /// idle | ready | running | done | stopped
+    state: String,
+    /// True while the current/last solve ran on the GPU.
+    #[serde(default)]
+    gpu: bool,
+    /// Why the solve is (not) on the GPU — set on fallback so the UI can
+    /// explain it (empty when on GPU or solving on CPU by choice).
+    #[serde(default)]
+    gpu_note: String,
+    iteration: u32,
+    exploit_chips: f64,
+    exploit_pct: f64,
+    elapsed_secs: f64,
+    history: Vec<HistoryPoint>,
+    tree: Option<TreeInfo>,
+    spot_request: Option<SpotRequest>,
+    /// Set when the solve worker died on a panic (state goes to "stopped");
+    /// cleared when a new solve starts.
+    #[serde(default)]
+    error: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+struct HistoryPoint {
+    iteration: u32,
+    exploit_pct: f64,
+}
+
+// ---------------------------------------------------------------------------
+// Wire formats
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SizesRequest {
+    bet: String,
+    raise: String,
+    donk: String,
+}
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SpotRequest {
+    board: String,
+    range_oop: String,
+    range_ip: String,
+    starting_pot: f64,
+    effective_stack: f64,
+    /// Percent, e.g. 5 for 5% rake.
+    #[serde(default)]
+    rake_pct: f64,
+    #[serde(default)]
+    rake_cap: f64,
+    /// Percent, e.g. 85.
+    #[serde(default = "default_allin_threshold")]
+    allin_threshold: f64,
+    #[serde(default)]
+    add_allin: bool,
+    #[serde(default = "default_max_raises")]
+    max_raises: u8,
+    /// [flop, turn, river]
+    oop: Vec<SizesRequest>,
+    ip: Vec<SizesRequest>,
+}
+
+fn default_allin_threshold() -> f64 {
+    85.0
+}
+fn default_max_raises() -> u8 {
+    10
+}
+
+fn convert_sizing(streets: &[SizesRequest]) -> Result<[StreetSizing; 3], String> {
+    if streets.len() != 3 {
+        return Err("need sizing for exactly 3 streets".to_string());
+    }
+    let mut out: [StreetSizing; 3] = Default::default();
+    for (i, s) in streets.iter().enumerate() {
+        out[i] = StreetSizing {
+            bet: parse_sizes(&s.bet)?,
+            raise: parse_sizes(&s.raise)?,
+            donk: parse_sizes(&s.donk)?,
+        };
+    }
+    Ok(out)
+}
+
+impl SpotRequest {
+    fn to_spot_config(&self) -> Result<SpotConfig, String> {
+        Ok(SpotConfig {
+            board: self.board.clone(),
+            range_oop: self.range_oop.clone(),
+            range_ip: self.range_ip.clone(),
+            tree: TreeConfig {
+                starting_pot: self.starting_pot,
+                effective_stack: self.effective_stack,
+                rake_pct: self.rake_pct / 100.0,
+                rake_cap: self.rake_cap,
+                oop: convert_sizing(&self.oop)?,
+                ip: convert_sizing(&self.ip)?,
+                allin_threshold: self.allin_threshold / 100.0,
+                add_allin: self.add_allin,
+                max_raises: self.max_raises,
+                carry_aggressor_through_checks: None, // new build: Spot records Some(false)
+            },
+        })
+    }
+}
+
+// ---------------------------------------------------------------------------
+// Handlers
+// ---------------------------------------------------------------------------
+
+/// GPU solving: on when compiled with the `gpu` feature unless SOLVER_GPU=0.
+#[cfg(feature = "gpu")]
+fn gpu_enabled() -> bool {
+    std::env::var("SOLVER_GPU").as_deref() != Ok("0")
+}
+
+/// Safety headroom (MB) kept free on top of the VRAM estimate, for the CUDA
+/// context, plan arrays and lock tables not counted in the estimate.
+#[cfg(feature = "gpu")]
+const GPU_MARGIN_MB: u64 = 512;
+
+/// Effective GPU memory budget (MB) and whether the GPU is usable for this run.
+/// By default the budget is the card's *live free* VRAM minus a safety margin,
+/// so a spot uses as much VRAM as physically fits; SOLVER_GPU_MEM_MB overrides
+/// it with a fixed manual cap. Falls back to 20 GB if VRAM can't be queried.
+fn gpu_budget() -> (u64, bool) {
+    let manual = std::env::var("SOLVER_GPU_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<u64>().ok());
+    #[cfg(feature = "gpu")]
+    {
+        if gpu_enabled() {
+            if let Some((free_mb, _total)) = solver::gpu::vram_info_mb() {
+                return (manual.unwrap_or(free_mb.saturating_sub(GPU_MARGIN_MB)), true);
+            }
+        }
+    }
+    (manual.unwrap_or(20_000), false)
+}
+
+/// Build the tree-info summary returned to the UI, including the RAM (arena)
+/// and estimated VRAM footprint plus the live GPU budget for this spot.
+fn tree_info(spot: &Spot, arena_mb: f64) -> TreeInfo {
+    let (gpu_cap_mb, gpu_available) = gpu_budget();
+    TreeInfo {
+        nodes: spot.tree.nodes.len(),
+        action_nodes: spot.num_action_nodes(),
+        arena_mb,
+        vram_mb: spot.vram_estimate_bytes() as f64 / 1e6,
+        gpu_cap_mb,
+        gpu_available,
+        hands_oop: spot.hands[0].len(),
+        hands_ip: spot.hands[1].len(),
+        board: spot.config.board.clone(),
+    }
+}
+
+/// Solver-arena RAM cap (MB): SOLVER_MEM_MB override, else 80% of currently
+/// available system memory (never above 48 GB), so a laptop refuses a spot
+/// sized for a workstation instead of thrashing into OOM.
+fn mem_cap_mb() -> f64 {
+    if let Some(v) = std::env::var("SOLVER_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+    {
+        return v;
+    }
+    match solver::sysmem::avail_mem_mb() {
+        Some(a) => (a * 0.8).min(48_000.0),
+        None => 48_000.0, // no memory probe on this platform: keep the old cap
+    }
+}
+
+/// Arena storage for new/loaded solves: compressed unless SOLVER_COMPRESS=0.
+fn storage_from_env() -> Storage {
+    match std::env::var("SOLVER_COMPRESS").as_deref() {
+        Ok("0") => Storage::F32,
+        _ => Storage::Compressed,
+    }
+}
+
+/// True when the memory cap is a manual SOLVER_MEM_MB override (an absolute
+/// arena budget) rather than the dynamic 80%-of-MemAvailable estimate.
+fn mem_cap_is_manual() -> bool {
+    std::env::var("SOLVER_MEM_MB")
+        .ok()
+        .and_then(|v| v.parse::<f64>().ok())
+        .is_some()
+}
+
+/// Arena MB of the CURRENT session (0 when none) — validation now runs
+/// before the old session is dropped, so the dynamic memory cap gets this
+/// credited back (dropping the session frees it before the new arena is
+/// allocated). A manual SOLVER_MEM_MB cap gets no credit: it is an absolute
+/// arena budget and only one arena exists at allocation time.
+fn old_arena_credit_mb(state: &AppState) -> f64 {
+    if mem_cap_is_manual() {
+        return 0.0;
+    }
+    let old = state
+        .status
+        .lock()
+        .unwrap()
+        .tree
+        .as_ref()
+        .map(|t| t.arena_mb)
+        .unwrap_or(0.0);
+    // the cap is 80% of MemAvailable, so freed memory is credited at 80% too
+    0.8 * old
+}
+
+/// Tree-node budget for `Spot::new_with_limit`, derived from the arena
+/// memory cap: the tree build aborts early once the node count alone proves
+/// the precise post-build arena gate must refuse the spot, instead of
+/// OOMing mid-build. Uses the same cost model as `Spot::arena_bytes_for`
+/// with deliberately LOW per-node constants (>= 2 actions on >= 1/4 of the
+/// nodes, the smaller range's hand count) plus 4x headroom, so it only
+/// fires on spots the precise gate could never accept.
+fn node_budget(cap_mb: f64, config: &SpotConfig, storage: Storage) -> usize {
+    // hands per player after board-card removal (best effort — a bad board
+    // or range produces its proper error inside Spot::new_with_limit)
+    let board_mask = solver::cards::parse_cards(&config.board)
+        .map(|b| b.iter().fold(0u64, |m, &c| m | solver::cards::card_mask(c)))
+        .unwrap_or(0);
+    let nh_min = [&config.range_oop, &config.range_ip]
+        .iter()
+        .filter_map(|r| Range::parse(r).ok())
+        .map(|r| {
+            (0..solver::cards::NUM_COMBOS)
+                .filter(|&i| {
+                    r.weights[i] > 0.0 && {
+                        let (c1, c2) = solver::cards::combo_from_index(i);
+                        (solver::cards::card_mask(c1) | solver::cards::card_mask(c2))
+                            & board_mask
+                            == 0
+                    }
+                })
+                .count()
+        })
+        .min()
+        .unwrap_or(1)
+        .max(1);
+    let per_entry = match storage {
+        Storage::F32 => 8.0,        // two f32 arenas
+        Storage::Compressed => 4.0, // two i16 arenas
+    };
+    let per_node = 0.25 * 2.0 * nh_min as f64 * per_entry
+        + if storage == Storage::Compressed { 16.0 } else { 0.0 };
+    let cap_bytes = cap_mb.max(0.0) * 1e6;
+    let arena_budget = (cap_bytes * 4.0) / per_node;
+    // The tree itself (64-byte Node + child slots + actions, ~100 B/node)
+    // is NOT low-balled like the arena constants, so it gets no headroom:
+    // with a tiny range the arena term shrinks to ~18 B/node and the arena
+    // budget alone admitted a Vec<Node> far larger than physical RAM — the
+    // OOM killer, not this gate, ended those builds (postflop AND preflop
+    // sessions lost).
+    let tree_budget = cap_bytes / TREE_BYTES_PER_NODE;
+    (arena_budget.min(tree_budget).ceil() as usize).max(1_000)
+}
+
+/// Rough bytes per tree node (`Tree::bytes` measures the real thing after
+/// the build): a 64-byte Node plus its share of the child-slot and action
+/// arenas.
+const TREE_BYTES_PER_NODE: f64 = 100.0;
+
+async fn build_spot(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<SpotRequest>,
+) -> Result<Json<TreeInfo>, ApiError> {
+    let config = req.to_spot_config().map_err(bad_request)?;
+
+    // Validate-then-swap: build and size-check the NEW spot before touching
+    // the current session, so a refused build (bad board/range, memory cap)
+    // leaves the existing — possibly unsaved — solve intact. Memory during
+    // validation: old session (tree + arenas) plus the new spot (tree, NO
+    // arenas); the new arenas are allocated only after the old session is
+    // dropped below.
+    let storage = storage_from_env();
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let node_cap = node_budget(cap_mb, &config, storage);
+    let spot =
+        tokio::task::spawn_blocking(move || Spot::new_with_limit(config, Some(node_cap)))
+            .await
+            .map_err(|e| bad_request(e.to_string()))?
+            .map_err(bad_request)?;
+
+    let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
+    let tree_mb = spot.tree_bytes() as f64 / 1e6;
+    if arena_mb + tree_mb > cap_mb {
+        return Err(bad_request(format!(
+            "tree too large ({arena_mb:.0} MB of solver data + {tree_mb:.0} MB of tree, cap {cap_mb:.0} MB); \
+             reduce bet sizes or set SOLVER_MEM_MB to override"
+        )));
+    }
+
+    let info = tree_info(&spot, arena_mb);
+
+    // The new spot is valid and fits: NOW stop any running solve and drop
+    // the old session, freeing its arena before the new one is allocated.
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || stop_current(&st, true))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+
+    let solver =
+        tokio::task::spawn_blocking(move || Solver::with_storage(Arc::new(spot), storage))
+            .await
+            .map_err(|e| bad_request(e.to_string()))?;
+
+    let session = Session {
+        solver: Arc::new(Mutex::new(solver)),
+        stop: Arc::new(AtomicBool::new(false)),
+        worker: None,
+        lock_gen: Arc::new(std::sync::atomic::AtomicU64::new(0)),
+    };
+    let status = StatusInfo {
+        state: "ready".to_string(),
+        tree: Some(info.clone()),
+        spot_request: Some(req),
+        ..Default::default()
+    };
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || install_session(&st, session, status))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(info))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SolveRequest {
+    #[serde(default = "default_max_iterations")]
+    max_iterations: u32,
+    #[serde(default = "default_target")]
+    target_exploit_pct: f64,
+    #[serde(default = "default_check_every")]
+    check_every: u32,
+    /// "dcfr" (default), "cfr+" or "pcfr+".
+    #[serde(default)]
+    algorithm: Option<String>,
+}
+
+fn default_max_iterations() -> u32 {
+    2000
+}
+fn default_target() -> f64 {
+    0.3
+}
+fn default_check_every() -> u32 {
+    20
+}
+
+async fn start_solve(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<SolveRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let mut session_guard = state.session.lock().unwrap();
+    let session = session_guard
+        .as_mut()
+        .ok_or_else(|| bad_request("no spot built yet"))?;
+
+    {
+        let status = state.status.lock().unwrap();
+        if status.state == "running" {
+            return Err((StatusCode::CONFLICT, "already running".to_string()));
+        }
+    }
+
+    if let Some(name) = &req.algorithm {
+        let algo = Algorithm::parse(name).map_err(bad_request)?;
+        let mut solver = lock_unpoisoned(&session.solver);
+        // PCFR+ allocates a third, regret-sized arena pair on its first
+        // iteration — outside the build-time gate, which sized the spot for
+        // two. Re-check the cap here so a spot admitted near the limit can't
+        // grow 50% past it on the worker thread and take the server down.
+        if algo == Algorithm::PcfrPlus && !solver.has_preds() {
+            let storage = solver.storage;
+            let extra_mb = solver.spot.pred_bytes_for(storage, algo) as f64 / 1e6;
+            let have_mb = solver.arena_bytes() as f64 / 1e6;
+            let tree_mb = solver.spot.tree_bytes() as f64 / 1e6;
+            let cap_mb = mem_cap_mb();
+            // same accounting as the build gate: a manual cap is an absolute
+            // budget for arenas + tree; the dynamic cap is 80% of what is
+            // free NOW (the current arenas already came out of it)
+            let over = if mem_cap_is_manual() {
+                have_mb + tree_mb + extra_mb > cap_mb
+            } else {
+                extra_mb > cap_mb
+            };
+            if over {
+                return Err(bad_request(format!(
+                    "pcfr+ needs another {extra_mb:.0} MB of prediction arenas ({:.0} MB with the \
+                     tree, 1.5x the DCFR footprint) — over the RAM cap ({cap_mb:.0} MB); use dcfr or \
+                     cfr+, or set SOLVER_MEM_MB to override",
+                    have_mb + tree_mb + extra_mb
+                )));
+            }
+            drop(solver);
+            // the status readout's "RAM" must show what the solve will hold
+            if let Some(t) = state.status.lock().unwrap().tree.as_mut() {
+                t.arena_mb = t.arena_mb.max(have_mb + extra_mb);
+            }
+            solver = lock_unpoisoned(&session.solver);
+        }
+        solver.algo = algo;
+    }
+
+    session.stop.store(false, Ordering::Relaxed);
+    let solver = session.solver.clone();
+    let stop = session.stop.clone();
+    let lock_gen = session.lock_gen.clone();
+    let app = state.clone();
+
+    {
+        let mut status = state.status.lock().unwrap();
+        status.state = "running".to_string();
+        status.gpu = false;
+        status.gpu_note = String::new();
+        status.error = String::new();
+        status.history.clear();
+    }
+
+    let handle = std::thread::spawn(move || {
+        // Unwind guard: the worker's "not running" states are set only on
+        // its normal exits, so an uncaught panic would leave state ==
+        // "running" forever and every later /api/solve would 409 until a
+        // rebuild. Catch it, record it, and always leave a resolvable state.
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            // Per-run iteration budget: the solver's counter is CUMULATIVE
+            // (it survives stop/resume and save/load — DCFR discounting
+            // needs it), so this run measures itself against max_iterations
+            // from its own base. Without this, RE-SOLVE after a maxed-out or
+            // loaded solve exits after one iteration and never adapts to new
+            // locks.
+            let base = lock_unpoisoned(&solver).iteration;
+            #[cfg(feature = "gpu")]
+            if gpu_enabled() {
+                match gpu_solve_loop(&solver, &stop, &lock_gen, &app, &req, base) {
+                    Ok(()) => return,
+                    Err(err) => {
+                        // gpu_solve_loop leaves the CPU solver on a COHERENT
+                        // regret+strategy checkpoint (see its doc comment);
+                        // the CPU loop resumes from that iteration.
+                        let resume_it = lock_unpoisoned(&solver).iteration;
+                        println!(
+                            "gpu solve unavailable ({err}); falling back to CPU \
+                             (resuming from iteration {resume_it})"
+                        );
+                        let mut st = app.status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note = format!("GPU unavailable: {err} — running on CPU");
+                        // don't leave the counter/chart ahead of the state we
+                        // actually resume from
+                        st.iteration = resume_it;
+                        st.history.retain(|h| h.iteration <= resume_it);
+                    }
+                }
+            }
+            let _ = &lock_gen;
+            cpu_solve_loop(&solver, &stop, &app, &req, base);
+        }));
+        if let Err(p) = result {
+            let msg = panic_msg(p.as_ref());
+            eprintln!("solve worker panicked: {msg}");
+            // un-poison the solver mutex so browse/save handlers keep
+            // working on the last coherent-enough state instead of panicking
+            solver.clear_poison();
+            let mut st = lock_unpoisoned(&app.status);
+            st.state = "stopped".to_string();
+            st.error = format!("solve crashed: {msg}");
+        }
+    });
+    session.worker = Some(handle);
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+/// CPU solve loop. `base` is the solver's cumulative iteration at the start
+/// of THIS run: termination compares (iteration - base) against the request's
+/// max_iterations (per-run semantics, like report_solve), while the status
+/// keeps reporting the cumulative counter the UI expects.
+fn cpu_solve_loop(
+    solver: &Arc<Mutex<Solver>>,
+    stop: &AtomicBool,
+    app: &Arc<AppState>,
+    req: &SolveRequest,
+    base: u32,
+) {
+    let start = std::time::Instant::now();
+    let pot = lock_unpoisoned(&solver).spot.tree.config.starting_pot;
+    loop {
+        if stop.load(Ordering::Relaxed) {
+            lock_unpoisoned(&solver).ensure_symmetric();
+            let mut st = app.status.lock().unwrap();
+            st.state = "stopped".to_string();
+            break;
+        }
+        let it = {
+            let mut s = lock_unpoisoned(&solver);
+            s.iterate();
+            s.iteration
+        };
+        let run_it = it.saturating_sub(base);
+        let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
+        if check {
+            let e = {
+                let s = lock_unpoisoned(&solver);
+                s.exploitability()
+            };
+            let pct = e / pot * 100.0;
+            let mut st = app.status.lock().unwrap();
+            st.iteration = it;
+            st.exploit_chips = e;
+            st.exploit_pct = pct;
+            st.elapsed_secs = start.elapsed().as_secs_f64();
+            st.history.push(HistoryPoint {
+                iteration: it,
+                exploit_pct: pct,
+            });
+            if pct <= req.target_exploit_pct || run_it >= req.max_iterations {
+                drop(st);
+                lock_unpoisoned(&solver).ensure_symmetric();
+                let mut st = app.status.lock().unwrap();
+                st.state = "done".to_string();
+                break;
+            }
+        } else {
+            let mut st = app.status.lock().unwrap();
+            st.iteration = it;
+            st.elapsed_secs = start.elapsed().as_secs_f64();
+        }
+    }
+}
+
+/// GPU-backed solve loop: iterations run in VRAM; the CPU solver is FULLY
+/// refreshed (regrets + strategy, sync_to_cpu) every 4th exploitability check
+/// and at stop/finish, so between syncs the CPU always holds a coherent
+/// (regret, strategy, iteration) triple from the same GPU checkpoint.
+///
+/// Fallback guarantee: on any mid-solve GPU error this function attempts one
+/// final full sync before returning Err. If that sync succeeds the CPU solver
+/// is at the exact failure point; if the context is too broken even for the
+/// download, the CPU solver still holds the last full checkpoint. Either way
+/// the CPU fallback resumes from a coherent regret+strategy pair — never a
+/// mix of a converged average with pre-solve regrets (the old strategy-only
+/// sync could leave exactly that).
+#[cfg(feature = "gpu")]
+fn gpu_solve_loop(
+    solver: &Arc<Mutex<Solver>>,
+    stop: &AtomicBool,
+    lock_gen: &std::sync::atomic::AtomicU64,
+    app: &Arc<AppState>,
+    req: &SolveRequest,
+    base: u32,
+) -> Result<(), String> {
+    use solver::gpu::GpuSolver;
+    let (mut gpu, pot) = {
+        let s = lock_unpoisoned(&solver);
+        let cap_mb = gpu_budget().0;
+        (GpuSolver::new_with_budget(&s, cap_mb * 1_000_000)?,
+            s.spot.tree.config.starting_pot)
+    };
+    {
+        let mut st = app.status.lock().unwrap();
+        st.gpu = true;
+        st.gpu_note = String::new();
+    }
+    println!("solving on GPU");
+    let result = gpu_solve_inner(&mut gpu, solver, stop, lock_gen, app, req, base, pot);
+    if result.is_err() {
+        // best-effort final sync — see the fallback guarantee above
+        let mut s = lock_unpoisoned(&solver);
+        let _ = gpu.sync_to_cpu(&mut s);
+    }
+    result
+}
+
+#[cfg(feature = "gpu")]
+#[allow(clippy::too_many_arguments)]
+fn gpu_solve_inner(
+    gpu: &mut solver::gpu::GpuSolver,
+    solver: &Arc<Mutex<Solver>>,
+    stop: &AtomicBool,
+    lock_gen: &std::sync::atomic::AtomicU64,
+    app: &Arc<AppState>,
+    req: &SolveRequest,
+    base: u32,
+    pot: f64,
+) -> Result<(), String> {
+    let start = std::time::Instant::now();
+    let mut seen_gen = lock_gen.load(Ordering::Relaxed);
+    let mut check_n = 0u32;
+    loop {
+        if stop.load(Ordering::Relaxed) {
+            let mut s = lock_unpoisoned(&solver);
+            gpu.sync_to_cpu(&mut s)?;
+            s.ensure_symmetric();
+            drop(s);
+            let mut st = app.status.lock().unwrap();
+            st.state = "stopped".to_string();
+            return Ok(());
+        }
+        let g = lock_gen.load(Ordering::Relaxed);
+        if g != seen_gen {
+            seen_gen = g;
+            let s = lock_unpoisoned(&solver);
+            gpu.update_locks(&s)?;
+        }
+        gpu.iterate()?;
+        let it = gpu.iteration;
+        // per-run budget: cumulative counter, per-run termination (like the
+        // CPU loop — RE-SOLVE must not exit after one iteration)
+        let run_it = it.saturating_sub(base);
+        let check = run_it % req.check_every.max(1) == 0 || run_it >= req.max_iterations;
+        if check {
+            check_n += 1;
+            let (e, finished) = {
+                let mut s = lock_unpoisoned(&solver);
+                // best response runs on the GPU (~50ms); the full arena
+                // download is only paid at checkpoints and when it ends
+                let e = gpu.exploitability(&s)?;
+                let pct = e / pot * 100.0;
+                let finished = pct <= req.target_exploit_pct || run_it >= req.max_iterations;
+                if finished {
+                    gpu.sync_to_cpu(&mut s)?;
+                    s.ensure_symmetric();
+                } else if check_n % 4 == 0 {
+                    // FULL sync, not strategy-only: keeps mid-solve browsing
+                    // fresh without paying PCIe at every check, and leaves a
+                    // coherent regret+strategy checkpoint for the CPU
+                    // fallback (a strategy-only sync would strand the CPU on
+                    // fresh averages over stale regrets if the GPU dies)
+                    gpu.sync_to_cpu(&mut s)?;
+                }
+                (e, finished)
+            };
+            let pct = e / pot * 100.0;
+            let mut st = app.status.lock().unwrap();
+            st.iteration = it;
+            st.exploit_chips = e;
+            st.exploit_pct = pct;
+            st.elapsed_secs = start.elapsed().as_secs_f64();
+            st.history.push(HistoryPoint {
+                iteration: it,
+                exploit_pct: pct,
+            });
+            if finished {
+                st.state = "done".to_string();
+                return Ok(());
+            }
+        } else {
+            let mut st = app.status.lock().unwrap();
+            st.iteration = it;
+            st.elapsed_secs = start.elapsed().as_secs_f64();
+        }
+    }
+}
+
+async fn stop_solve(State(state): State<Arc<AppState>>) -> Json<serde_json::Value> {
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || stop_current(&st, false))
+        .await
+        .ok();
+    Json(serde_json::json!({"ok": true}))
+}
+
+/// Install a new postflop session under the session lock. Any session that
+/// acquired a solve worker while the caller was building or loading (the
+/// window between its stop_current and this install — the slot is None, so
+/// a concurrent build's stop_current joins nothing) is stopped and joined
+/// first. Otherwise that worker ran on as an orphan, writing iteration and
+/// history into the NEW session's status, unstoppable until max_iterations.
+fn install_session(state: &Arc<AppState>, session: Session, status: StatusInfo) {
+    let mut guard = lock_unpoisoned(&state.session);
+    if let Some(old) = guard.as_mut() {
+        old.stop.store(true, Ordering::Relaxed);
+        if let Some(handle) = old.worker.take() {
+            let _ = handle.join();
+        }
+    }
+    *guard = Some(session);
+    *lock_unpoisoned(&state.status) = status;
+}
+
+fn stop_current(state: &Arc<AppState>, drop_session: bool) {
+    let mut guard = state.session.lock().unwrap();
+    if let Some(session) = guard.as_mut() {
+        session.stop.store(true, Ordering::Relaxed);
+        if let Some(handle) = session.worker.take() {
+            let _ = handle.join();
+        }
+        if drop_session {
+            *guard = None;
+            let mut status = state.status.lock().unwrap();
+            *status = StatusInfo {
+                state: "idle".to_string(),
+                ..Default::default()
+            };
+        }
+    }
+}
+
+async fn get_status(State(state): State<Arc<AppState>>) -> Json<StatusInfo> {
+    Json(state.status.lock().unwrap().clone())
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct NodeRequest {
+    path: Vec<PathStep>,
+}
+
+async fn get_node(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<NodeRequest>,
+) -> Result<Json<solver::query::NodeView>, ApiError> {
+    let solver = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| s.solver.clone())
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let view = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.ensure_symmetric();
+        s.node_view(&req.path)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(view))
+}
+
+// ---------------------------------------------------------------------------
+// Preflop solver (multiway, equity-model postflop)
+// ---------------------------------------------------------------------------
+
+/// The 169-class pairwise equity table: built once (Monte Carlo, rayon) and
+/// cached on disk; ~1 minute cold, instant afterwards.
+fn preflop_equity() -> Arc<solver::preflop::equity::EquityTable> {
+    static T: std::sync::OnceLock<Arc<solver::preflop::equity::EquityTable>> =
+        std::sync::OnceLock::new();
+    T.get_or_init(|| {
+        let samples = std::env::var("PREFLOP_EQ_SAMPLES")
+            .ok()
+            .and_then(|v| v.parse().ok())
+            .unwrap_or(20_000);
+        Arc::new(solver::preflop::equity::EquityTable::load_or_build(
+            "cache/preflop_eq169.bin",
+            samples,
+        ))
+    })
+    .clone()
+}
+
+/// Stop a running preflop solve AND reap its worker thread before the
+/// session is replaced: a merely-signalled worker keeps running through its
+/// current (possibly long) measuring pass, burning the shared rayon pool and
+/// holding its VRAM into the next session's build/solve.
+async fn pf_stop_and_join(state: &Arc<AppState>) -> Result<(), ApiError> {
+    let old_worker = {
+        let mut guard = state.preflop.lock().unwrap();
+        guard.as_mut().and_then(|s| {
+            s.stop.store(true, Ordering::Relaxed);
+            s.worker.take()
+        })
+    };
+    if let Some(h) = old_worker {
+        tokio::task::spawn_blocking(move || {
+            let _ = h.join();
+        })
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    }
+    Ok(())
+}
+
+/// Install a freshly built/loaded preflop session, reaping any worker that
+/// raced in against the OLD session first. `pf_stop_and_join` runs before the
+/// long build/load, but the preflop mutex is free WHILE it runs, so a
+/// concurrent pf_solve can pass its 409 check (the old worker was just
+/// joined, status is no longer "running") and legitimately spawn a worker
+/// against the session about to be replaced. pf_solve holds the mutex for its
+/// whole body, so its spawn+store is atomic with respect to the lock scopes
+/// here: each round either finds that worker's handle in the session (signal
+/// its stop flag — the session's own, so the signal reaches it — take it, and
+/// join OUTSIDE the lock), or finds no worker and swaps the session in the
+/// SAME scope. Old workers are therefore always joined exactly once, none can
+/// outlive its session, and a worker can only ever be spawned against the
+/// session currently in AppState.
+async fn pf_install_session(
+    state: &Arc<AppState>,
+    session: PreflopSession,
+) -> Result<(), ApiError> {
+    let mut session = Some(session);
+    loop {
+        let old_worker = {
+            let mut guard = state.preflop.lock().unwrap();
+            let worker = guard.as_mut().and_then(|s| {
+                s.stop.store(true, Ordering::Relaxed);
+                s.worker.take()
+            });
+            match worker {
+                Some(h) => h,
+                None => {
+                    *guard = session.take();
+                    return Ok(());
+                }
+            }
+        };
+        tokio::task::spawn_blocking(move || {
+            let _ = old_worker.join();
+        })
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    }
+}
+
+#[derive(Default, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfBuildOptions {
+    #[serde(default)]
+    multiway_model: Option<String>,
+}
+impl PfBuildOptions {
+    fn model(&self) -> Result<&str, ApiError> {
+        match self.multiway_model.as_deref().unwrap_or("coupled_deck_v1") {
+            model @ "coupled_deck_v1" => Ok(model),
+            _ => Err(bad_request("unsupported fresh-build multiway_model; production builds support coupled_deck_v1 only")),
+        }
+    }
+}
+
+async fn pf_build(
+    State(state): State<Arc<AppState>>,
+    Query(options): Query<PfBuildOptions>,
+    Json(cfg): Json<solver::preflop::PreflopConfig>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    // Reject model selection before touching the old session or stop flag.
+    // JSON config is unchanged; saved-game load/RE-SOLVE never uses this option.
+    let model = options.model()?.to_string();
+    // stop AND join a running preflop solve before replacing the session
+    pf_stop_and_join(&state).await?;
+    let built = tokio::task::spawn_blocking(move || {
+        let eq = preflop_equity();
+        let mut built = solver::preflop::PreflopSolver::new(cfg, eq)?;
+        built.set_multiway_equity_model(&model)?;
+        Ok::<_, String>(built)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    let nodes = built.nodes.len();
+    let action_nodes = built.nodes.iter().filter(|n| n.kind == 0).count();
+    let arena_mb = built.arena_mb();
+    let multiway_equity_model = built.multiway_equity_model();
+    let mut status = PreflopStatus::default();
+    status.state = "idle".into();
+    status.hero = built.hero;
+    status.frozen = built.seat_frozen.clone();
+    status.realization_note = built.realization_note.clone();
+    status.multiway_equity_model = multiway_equity_model.into();
+    pf_install_session(
+        &state,
+        PreflopSession {
+            solver: Arc::new(Mutex::new(built)),
+            stop: Arc::new(AtomicBool::new(false)),
+            status: Arc::new(Mutex::new(status)),
+            worker: None,
+        },
+    )
+    .await?;
+    Ok(Json(serde_json::json!({
+        "nodes": nodes, "action_nodes": action_nodes, "arena_mb": arena_mb,
+        "multiway_equity_model": multiway_equity_model
+    })))
+}
+
+/// Dry-run tree sizing for the lab's live estimate — no state touched.
+async fn pf_estimate(
+    Json(cfg): Json<solver::preflop::PreflopConfig>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let est = tokio::task::spawn_blocking(move || solver::preflop::estimate_tree(&cfg))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let arena_mb = est.arena_len as f64 * 8.0 / 1e6;
+    let (limit_nodes, limit_mb) =
+        (solver::preflop::limit_nodes(), solver::preflop::limit_arena_mb());
+    let ok = !est.truncated && est.nodes <= limit_nodes && arena_mb <= limit_mb;
+    Ok(Json(serde_json::json!({
+        "nodes": est.nodes,
+        "action_nodes": est.action_nodes,
+        "arena_mb": arena_mb,
+        "truncated": est.truncated,
+        "ok": ok,
+        "limit_nodes": limit_nodes,
+        "limit_arena_mb": limit_mb,
+    })))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfSolveRequest {
+    #[serde(default = "pf_default_iterations")]
+    iterations: u32,
+    #[serde(default = "pf_default_check")]
+    check_every: u32,
+    /// Stop when the summed best-response gap (bb) drops below this.
+    #[serde(default = "pf_default_target")]
+    target_gap: f64,
+    /// Versioned opt-in: publish real learned snapshots at iteration2, then every10.
+    #[serde(default)]
+    early_preview: bool,
+}
+fn pf_default_iterations() -> u32 {
+    2000
+}
+fn pf_default_check() -> u32 {
+    50
+}
+fn pf_default_target() -> f64 {
+    0.01
+}
+
+/// Cadence is independent of the accuracy/convergence schedule and solver math.
+fn pf_preview_due(done: u32, enabled: bool) -> bool {
+    enabled && (done == 2 || (done >= 10 && done % 10 == 0))
+}
+
+/// Caller holds the solver mutex throughout the transactional download and
+/// metadata commit. Failed transfers leave the previous CPU generation tagged.
+/// The download callback must itself stage both arenas before modifying either.
+#[cfg(any(feature = "gpu", test))]
+fn pf_publish_gpu_snapshot(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    iteration: u32,
+    download: impl FnOnce(&mut solver::preflop::PreflopSolver) -> Result<(), String>,
+) -> Result<(), String> {
+    download(s)?;
+    s.iteration = iteration;
+    status.lock().unwrap().published_iteration = iteration;
+    Ok(())
+}
+
+/// Caller holds the solver mutex. Publish terminal state only after clearing
+/// cancellation, so a reader observing stopped/done cannot receive canceled
+/// zero-valued evaluations. Interrupted native arenas retain existing counter
+/// semantics, but are never advertised with a stale measured accuracy.
+fn pf_finish_preflop(
+    s: &mut solver::preflop::PreflopSolver,
+    status: &Mutex<PreflopStatus>,
+    reason: &str,
+    interrupted: bool,
+    error: Option<String>,
+) {
+    s.set_stop_flag(None);
+    let mut st = lock_unpoisoned(status);
+    if interrupted {
+        st.invalidate_accuracy(s.iteration);
+        st.preview_note = "Snapshot may include an interrupted player sweep; accuracy has not been measured for this snapshot.".into();
+    }
+    st.iteration = s.iteration;
+    st.published_iteration = s.iteration;
+    st.stop_reason = reason.into();
+    st.phase = "idle".into();
+    if let Some(error) = error { st.error = error; }
+    st.state = if interrupted {"stopped"} else {"done"}.into();
+}
+
+#[derive(Clone, Serialize)]
+struct PfPublication {
+    multiway_model: String,
+    published_iteration: u32,
+    accuracy_iteration: Option<u32>,
+    gap_total: Option<f64>,
+    target_gap: Option<f64>,
+    converged: bool,
+}
+impl PreflopStatus {
+    fn publication(&self) -> PfPublication {
+        PfPublication {
+            multiway_model: self.multiway_equity_model.clone(),
+            published_iteration: self.published_iteration,
+            accuracy_iteration: self.accuracy_iteration,
+            gap_total: self.accuracy_iteration.map(|_| self.gap_total),
+            target_gap: self.target_gap,
+            converged: self.stop_reason == "target_reached"
+                && self.accuracy_iteration == Some(self.published_iteration),
+        }
+    }
+    fn invalidate_accuracy(&mut self, iteration: u32) {
+        self.iteration = iteration;
+        self.published_iteration = iteration;
+        self.accuracy_iteration = None;
+        self.gaps.clear();
+        self.evs.clear();
+        self.gap_total = 0.0;
+        self.stop_reason.clear();
+        self.preview_note.clear();
+    }
+}
+#[derive(Serialize)]
+struct PfPublished<T> {
+    #[serde(flatten)]
+    result: T,
+    publication: PfPublication,
+}
+
+fn pf_session(
+    state: &AppState,
+) -> Result<(Arc<Mutex<solver::preflop::PreflopSolver>>, Arc<AtomicBool>, Arc<Mutex<PreflopStatus>>), ApiError>
+{
+    state
+        .preflop
+        .lock()
+        .unwrap()
+        .as_ref()
+        .map(|s| (s.solver.clone(), s.stop.clone(), s.status.clone()))
+        .ok_or_else(|| bad_request("no preflop game built yet"))
+}
+
+/// Guard for solver mutations (table/hero/point locks): 409 while a preflop
+/// solve is RUNNING — a GPU solve snapshots the game at engine construction,
+/// so a mid-solve mutation would be silently ignored and then clobbered by
+/// the next checkpoint sync; a CPU solve would half-apply it mid-run.
+///
+/// Call with the SOLVER lock held (the worker's lock order is also
+/// solver → status): the check is then atomic with the mutation — the worker
+/// can't be mid-iteration, and a solve that flipped to "running" before we
+/// got the solver lock is seen. The worker leaves "running" only AFTER its
+/// final sync_to_cpu, right before exiting, so there is no spurious-409
+/// window during post-run bookkeeping (the frontend re-POSTs /hero as soon
+/// as status leaves "running").
+fn pf_reject_if_running(status: &Mutex<PreflopStatus>) -> Result<(), ApiError> {
+    if status.lock().unwrap().state == "running" {
+        return Err((
+            StatusCode::CONFLICT,
+            "a solve is running — STOP it or let it finish before changing the table"
+                .to_string(),
+        ));
+    }
+    Ok(())
+}
+
+async fn pf_solve(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfSolveRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    if !req.target_gap.is_finite() || req.target_gap < 0.0 {
+        return Err(bad_request("target_gap must be finite and nonnegative"));
+    }
+    let mut guard = state.preflop.lock().unwrap();
+    let session = guard
+        .as_mut()
+        .ok_or_else(|| bad_request("no preflop game built yet"))?;
+    let (solver, stop, status) = (
+        session.solver.clone(),
+        session.stop.clone(),
+        session.status.clone(),
+    );
+    {
+        // check-and-set in ONE lock scope: a second POST while a solve runs
+        // gets 409 instead of spawning a second thread over the same solver
+        let mut st = status.lock().unwrap();
+        if st.state == "running" {
+            return Err((
+                StatusCode::CONFLICT,
+                "a preflop solve is already running".to_string(),
+            ));
+        }
+        stop.store(false, Ordering::Relaxed);
+        st.state = "running".into();
+        st.stop_reason.clear();
+        st.preview_note.clear();
+        st.target_gap = Some(req.target_gap);
+        st.error = String::new();
+    }
+    // the previous worker (if any) has finished — its last act is setting a
+    // non-"running" state — so this join is instant; it reaps the thread
+    // (and, on GPU builds, its VRAM) before the new solve starts
+    if let Some(h) = session.worker.take() {
+        let _ = h.join();
+    }
+    let handle = std::thread::spawn(move || {
+        // Unwind guard: like the postflop worker, state leaves "running"
+        // only on the loop's normal exits — an uncaught panic would 409
+        // every later pf_solve AND every pf_reject_if_running mutation
+        // (table, hero, locks) until a rebuild. The join in pf_solve stays
+        // instant too: even a panicked worker's last act is setting a
+        // non-"running" state.
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let max = req.iterations.max(1);
+        let check = req.check_every.max(1);
+        let mut done = 0u32;
+        // cooperative stop: the CPU traversal polls this at its fan-out
+        // nodes and the GPU engine between per-player sweeps, so STOP lands
+        // within a fraction of an iteration instead of after a whole one
+        // (plus a full accuracy pass) on big games
+        lock_unpoisoned(&solver).set_stop_flag(Some(stop.clone()));
+        // ...and cleared on every exit (normal, stopped, panic) so a later
+        // browse/export/hero traversal never sees a stale "stop" and bails
+        struct ClearStop(Arc<Mutex<solver::preflop::PreflopSolver>>);
+        impl Drop for ClearStop {
+            fn drop(&mut self) {
+                // A concurrent snapshot reader may briefly own this lock. Do
+                // not leave a stopped flag attached merely because it won.
+                lock_unpoisoned(&self.0).set_stop_flag(None);
+            }
+        }
+        let _clear_stop = ClearStop(solver.clone());
+
+        // GPU when built with the feature, enabled, and the game fits the
+        // VRAM budget; anything else — including a mid-solve CUDA error —
+        // falls back to the CPU + system RAM without losing progress.
+        #[cfg(feature = "gpu")]
+        let mut gpu: Option<solver::preflop::gpu::PreflopGpu> = if gpu_enabled() {
+            let budget = gpu_budget().0;
+            let s = lock_unpoisoned(&solver);
+            match solver::preflop::gpu::PreflopGpu::new_throughput(&s, budget) {
+                Ok((g,selection)) => {
+                    let mut st = status.lock().unwrap();
+                    st.gpu = true;
+                    st.gpu_note = if selection.mode == "retained_cohorts" {
+                        "Shared GPU evaluation".into()
+                    } else if selection.static_cdf {
+                        "Memory-efficient GPU evaluation".into()
+                    } else {
+                        format!("Standard GPU evaluation: {}",selection.fallback_reason.as_deref().unwrap_or("shared evaluation unavailable"))
+                    };
+                    println!("preflop solving on GPU: {}",serde_json::to_string(&selection).unwrap());
+                    Some(g)
+                }
+                Err(err) => {
+                    println!("preflop gpu unavailable ({err}); solving on CPU");
+                    let mut st = status.lock().unwrap();
+                    st.gpu = false;
+                    st.gpu_note =
+                        format!("GPU unavailable: {err} — solving on CPU + system RAM");
+                    None
+                }
+            }
+        } else {
+            None
+        };
+
+        // The host solver remains the last coherent published snapshot while
+        // device work runs. Only the device worker advances this private clock.
+        #[cfg(feature = "gpu")]
+        let mut gpu_iteration = lock_unpoisoned(&solver).iteration;
+
+        loop {
+            pf_yield_to_waiters();
+            if stop.load(Ordering::Relaxed) {
+                #[cfg(feature = "gpu")]
+                if let Some(g) = gpu.as_ref() {
+                    let mut s = lock_unpoisoned(&solver);
+                    if let Err(err) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                        // final download failed: browse/save keep serving
+                        // the last successful checkpoint — say so instead
+                        // of silently presenting stale data as current
+                        println!(
+                            "preflop gpu final sync failed ({err}); \
+                             CPU data is from the last checkpoint"
+                        );
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note = format!(
+                            "GPU final sync failed: {err} — browse/save show \
+                             the last completed checkpoint"
+                        );
+                        s.iteration = st.published_iteration;
+                    } else {
+                        status.lock().unwrap().published_iteration = s.iteration;
+                    }
+                }
+                let mut s = lock_unpoisoned(&solver);
+                pf_finish_preflop(&mut s, &status, "stopped", true, None);
+                return;
+            }
+            let mut s = lock_unpoisoned(&solver);
+            #[cfg(feature = "gpu")]
+            {
+                let mut failed: Option<String> = None;
+                match gpu.as_mut() {
+                    Some(g) => {
+                        // GPU state is self-contained after construction. Do not
+                        // make each click wait for another full device iteration.
+                        drop(s);
+                        let result = g.try_iterate_counter(&mut gpu_iteration, Some(&stop));
+                        s = lock_unpoisoned(&solver);
+                        if let Err(err) = result {
+                            failed = Some(err);
+                        }
+                    }
+                    None => {
+                        s.try_iterate();
+                    }
+                }
+                if let Some(err) = failed {
+                    println!("preflop gpu failed mid-solve ({err}); continuing on CPU");
+                    if let Some(g) = gpu.take() {
+                        if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                            println!(
+                                "preflop gpu sync after failure also failed ({e2}); \
+                                 CPU resumes from the last checkpoint"
+                            );
+                        }
+                    }
+                    {
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note =
+                            format!("GPU failed mid-solve: {err} — continuing on CPU");
+                    }
+                    s.try_iterate();
+                }
+            }
+            #[cfg(not(feature = "gpu"))]
+            s.try_iterate();
+            if stop.load(Ordering::Relaxed) {
+                // interrupted pass: nothing to publish, the loop head
+                // finalizes (GPU sync + "stopped")
+                drop(s);
+                continue;
+            }
+            done += 1;
+            #[cfg(feature = "gpu")]
+            let iteration = if gpu.is_some() { gpu_iteration } else { s.iteration };
+            #[cfg(not(feature = "gpu"))]
+            let iteration = s.iteration;
+            let checkpoint = done % check == 0 || done >= max;
+            if !checkpoint {
+                // Real learned preview: no extra CFR or accuracy pass. A GPU
+                // download stages BOTH arenas transactionally for coherent reads.
+                #[cfg(feature = "gpu")]
+                let published = if let Some(g) = gpu.as_ref() {
+                    if pf_preview_due(done, req.early_preview) {
+                        status.lock().unwrap().phase = "publishing".into();
+                        match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                            Ok(()) => true,
+                            Err(err) => {
+                                status.lock().unwrap().preview_note = format!(
+                                    "Early preview unavailable ({err}); keeping the previous snapshot.");
+                                false
+                            }
+                        }
+                    } else { false }
+                } else { true }; // CPU arenas already contain the completed pass.
+                #[cfg(not(feature = "gpu"))]
+                let published = true;
+                let mut st = status.lock().unwrap();
+                st.iteration = iteration;
+                st.phase = "iterating".into();
+                if published {
+                    st.published_iteration = iteration;
+                    st.preview_note.clear();
+                }
+                drop(st);
+                drop(s);
+                continue;
+            }
+            {
+                // Announce accuracy work before it runs. GPU measurement leaves
+                // the published host snapshot available; CPU work holds it.
+                {
+                    let mut st = status.lock().unwrap();
+                    st.iteration = iteration;
+                    st.phase = "measuring".into();
+                }
+                #[cfg(feature = "gpu")]
+                let (gaps, evs) = {
+                    // a failed checkpoint download counts as a GPU failure
+                    // too: the device can no longer keep the CPU in sync,
+                    // so fall back instead of silently serving stale data
+                    let mut gpu_err: Option<String> = None;
+                    let mut ge_gpu: Option<(Vec<f64>, Vec<f64>)> = None;
+                    if let Some(g) = gpu.as_mut() {
+                        // Accuracy uses device buffers only. Readers may keep
+                        // using the previous host snapshot while it is measured.
+                        drop(s);
+                        let measured = g.gaps_and_evs();
+                        s = lock_unpoisoned(&solver);
+                        match measured {
+                            Ok(ge) => {
+                                // keep browse/export in sync with the device
+                                match pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                                    Ok(()) => ge_gpu = Some(ge),
+                                    Err(err) => {
+                                        gpu_err =
+                                            Some(format!("checkpoint sync failed: {err}"))
+                                    }
+                                }
+                            }
+                            Err(err) => gpu_err = Some(err),
+                        }
+                    }
+                    if let Some(err) = gpu_err {
+                        println!("preflop gpu checkpoint failed ({err}); on CPU");
+                        if let Some(g) = gpu.take() {
+                            if let Err(e2) = pf_publish_gpu_snapshot(&mut s, &status, gpu_iteration, |s| g.sync_to_cpu(s)) {
+                                println!(
+                                    "preflop gpu sync after failure also failed ({e2}); \
+                                     CPU resumes from the last checkpoint"
+                                );
+                            }
+                        }
+                        let mut st = status.lock().unwrap();
+                        st.gpu = false;
+                        st.gpu_note = format!("GPU failed: {err} — continuing on CPU");
+                        drop(st);
+                        s.gaps_and_evs()
+                    } else {
+                        match ge_gpu {
+                            Some(ge) => ge,
+                            None => s.gaps_and_evs(),
+                        }
+                    }
+                };
+                #[cfg(not(feature = "gpu"))]
+                let (gaps, evs) = s.gaps_and_evs();
+                // Convergence is measured on the seats still LEARNING: a
+                // frozen or fully-ruled seat's gap is its bleed against its
+                // pinned strategy and never converges, so summing it made
+                // the target unreachable in table/hero mode (every such solve
+                // ran to max iterations) and turned the "BR gap" readout into
+                // a bleed total.
+                let live = s.live_seats();
+                // Failed GPU transfers can leave an older host snapshot for
+                // CPU evaluation; label the generation actually measured.
+                let iteration = s.iteration;
+                // Update the snapshot tag while holding the same solver lock as
+                // its arenas. Node/export cannot observe mixed generations.
+                status.lock().unwrap().published_iteration = s.iteration;
+                if stop.load(Ordering::Relaxed) {
+                    // the accuracy pass was cut short — its numbers are
+                    // partial, keep the last published checkpoint
+                    continue;
+                }
+                let total: f64 = gaps
+                    .iter()
+                    .zip(&live)
+                    .filter(|(_, l)| **l)
+                    .map(|(g, _)| g)
+                    .sum();
+                let mut st = status.lock().unwrap();
+                st.iteration = iteration;
+                st.phase = "iterating".into();
+                st.accuracy_iteration = Some(iteration);
+                st.preview_note.clear();
+                st.gaps = gaps;
+                st.gap_total = total;
+                st.evs = evs;
+                if total < req.target_gap || done >= max {
+                    let reason = if total < req.target_gap {"target_reached"} else {"iteration_limit"};
+                    drop(st);
+                    pf_finish_preflop(&mut s, &status, reason, false, None);
+                    return;
+                }
+            }
+        }
+        }));
+        if let Err(p) = result {
+            let msg = panic_msg(p.as_ref());
+            eprintln!("preflop solve worker panicked: {msg}");
+            // un-poison the solver mutex so browse/save handlers keep
+            // working instead of panicking on a poisoned lock
+            solver.clear_poison();
+            let mut s = lock_unpoisoned(&solver);
+            pf_finish_preflop(&mut s, &status, "error", true, Some(format!("solve crashed: {msg}")));
+        }
+    });
+    session.worker = Some(handle);
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_stop(State(state): State<Arc<AppState>>) -> Result<Json<serde_json::Value>, ApiError> {
+    let (_, stop, _) = pf_session(&state)?;
+    stop.store(true, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_status(State(state): State<Arc<AppState>>) -> Json<PreflopStatus> {
+    let st = state
+        .preflop
+        .lock()
+        .unwrap()
+        .as_ref()
+        .map(|s| s.status.lock().unwrap().clone())
+        .unwrap_or_default();
+    Json(st)
+}
+
+#[derive(Deserialize)]
+struct PfPathRequest {
+    path: Vec<usize>,
+}
+
+// ---- player profiles ----
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfSeatModel {
+    #[serde(default)]
+    frozen: bool,
+    #[serde(default)]
+    profile: Option<solver::preflop::SeatProfile>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfTableRequest {
+    seats: Vec<PfSeatModel>,
+    /// Keep the learned strategy sums (evaluate a strategy solved against
+    /// one table against another). Default false: a changed table resets.
+    #[serde(default)]
+    keep_learned: bool,
+}
+
+/// Best-response gaps and EVs (bb/hand) of the current average strategies,
+/// without iterating: pair with `keep_learned` table swaps to evaluate a
+/// solved strategy against other opponents.
+async fn pf_evaluate(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        let (gaps, evs) = s.gaps_and_evs();
+        Ok::<serde_json::Value, ApiError>(
+            serde_json::json!({ "iteration": s.iteration, "gaps": gaps, "evs": evs }),
+        )
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(out))
+}
+
+async fn pf_table(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfTableRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let overrides = tokio::task::spawn_blocking(move || {
+        let mut s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        let frozen = req.seats.iter().map(|x| x.frozen).collect();
+        let profiles = req.seats.into_iter().map(|x| x.profile).collect();
+        if req.keep_learned {
+            s.set_table_keep(frozen, profiles).map_err(bad_request)?;
+        } else {
+            s.set_table(frozen, profiles).map_err(bad_request)?;
+        }
+        // mirror engine truth (set_table clears hero and may reset learning)
+        let mut st = status.lock().unwrap();
+        st.hero = s.hero;
+        st.frozen = s.seat_frozen.clone();
+        st.invalidate_accuracy(s.iteration);
+        Ok::<bool, ApiError>(s.has_overrides())
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(serde_json::json!({"ok": true, "overrides": overrides})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfGenerateRequest {
+    seat: usize,
+    stats: solver::preflop::HudStats,
+    #[serde(default)]
+    name: String,
+    #[serde(default = "default_adaptive_from")]
+    adaptive_from: Option<f64>,
+}
+
+fn default_adaptive_from() -> Option<f64> { Some(0.25) }
+
+/// Pure model inspection. It does not acquire or replace either live solver.
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfContextualPreviewRequest {
+    version: String,
+    cfg: solver::preflop::PreflopConfig,
+    seat: usize,
+    context: solver::preflop::contextual::ContextualInput,
+}
+
+async fn pf_contextual_preview(
+    Json(req): Json<PfContextualPreviewRequest>,
+) -> Result<Json<solver::preflop::contextual::ContextualPrediction>, ApiError> {
+    solver::preflop::contextual::predict(&req.version, &req.cfg, req.seat, &req.context)
+        .map(Json)
+        .map_err(bad_request)
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfModelEvidenceRequest {
+    cfg: solver::preflop::PreflopConfig,
+    seat: usize,
+    profile: solver::preflop::SeatProfile,
+    bucket: u8,
+    #[serde(default)]
+    cold: bool,
+    #[serde(default)]
+    limp_context: Option<solver::preflop::evidence::LimpEvidenceContext>,
+    #[serde(default)]
+    context: Option<solver::preflop::contextual::ContextualInput>,
+}
+
+/// Pure provenance inspection; no AppState or live solver lock is involved.
+async fn pf_capabilities() -> Json<serde_json::Value> {
+    Json(serde_json::json!({"raise_multiples":true,"model_evidence_sizing":true,"early_preview_v1":true,"fresh_build_multiway_models":["coupled_deck_v1"]}))
+}
+
+async fn pf_model_evidence(
+    Json(req): Json<PfModelEvidenceRequest>,
+) -> Result<Json<solver::preflop::evidence::ModelEvidence>, ApiError> {
+    let context=solver::preflop::evidence::EvidenceContext {
+        bucket:req.bucket,cold:req.cold,limp_context:req.limp_context,context:req.context,
+    };
+    solver::preflop::evidence::profile_evidence(&req.cfg,req.seat,&req.profile,&context)
+        .map(Json).map_err(bad_request)
+}
+
+async fn pf_generate(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfGenerateRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, _) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        let name = if req.name.is_empty() { "custom" } else { &req.name };
+        let (mut profile, implied) = s.generate_profile(req.seat, &req.stats, name)?;
+        if req.adaptive_from.is_some_and(|f| !f.is_finite() || f <= 0.0 || f > 1.0) {
+            return Err("adaptive_from must be a stack fraction in (0, 1]".to_string());
+        }
+        profile.response.get_or_insert_with(Default::default).adaptive_from = req.adaptive_from;
+        let mut implied=serde_json::to_value(implied).map_err(|e|e.to_string())?;
+        implied["model_evidence"]=serde_json::to_value(solver::preflop::evidence::generated_evidence(&s.cfg,req.seat,&profile)).map_err(|e|e.to_string())?;
+        Ok((profile, implied))
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(serde_json::json!({"profile": out.0, "implied": out.1})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ProfileLocksRequest {
+    /// Villain seat in the postflop spot: 0 = OOP, 1 = IP.
+    player: usize,
+    stats: solver::query::PostflopStats,
+    /// Who arrives at the flop with the initiative (last preflop raiser).
+    #[serde(default)]
+    aggressor: Option<usize>,
+    #[serde(default)]
+    pot_type: Option<solver::query::PostflopPotType>,
+}
+
+/// Compile a postflop stat profile into node locks across the villain's
+/// whole tree. Returns {locked, rows: [{label, target, achieved}]}.
+async fn profile_locks(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ProfileLocksRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let summary = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.lock_profile_context(req.player, &req.stats, req.aggressor, req.pot_type)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!(summary)))
+}
+
+async fn profile_locks_clear(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let n = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.clear_profile_locks()
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"cleared": n})))
+}
+
+fn pf_game_path(name: &str) -> Result<std::path::PathBuf, String> {
+    let clean: String = name
+        .chars()
+        .filter(|c| c.is_alphanumeric() || *c == ' ' || *c == '-' || *c == '_')
+        .collect();
+    if clean.trim().is_empty() {
+        return Err("give the save a name".into());
+    }
+    Ok(std::path::PathBuf::from("saves/preflop").join(format!("{}.gtop", clean.trim())))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfGameName {
+    name: String,
+}
+
+async fn pf_save_game(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfGameName>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    if status.lock().unwrap().state == "running" {
+        return Err(bad_request("stop the solve first, then save"));
+    }
+    let path = pf_game_path(&req.name).map_err(bad_request)?;
+    std::fs::create_dir_all("saves/preflop").map_err(|e| bad_request(e.to_string()))?;
+    let iteration = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        if status.lock().unwrap().state == "running" {
+            return Err("stop the solve first, then save".to_string());
+        }
+        s.save_game(path.to_str().unwrap())?;
+        Ok::<u32, String>(s.iteration)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(serde_json::json!({ "ok": true, "iteration": iteration })))
+}
+
+async fn pf_load_game(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfGameName>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    // stop AND join a running preflop solve before replacing the session
+    pf_stop_and_join(&state).await?;
+    let path = pf_game_path(&req.name).map_err(bad_request)?;
+    let loaded = tokio::task::spawn_blocking(move || {
+        solver::preflop::PreflopSolver::load_game(path.to_str().unwrap(), preflop_equity())
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    let seats: Vec<serde_json::Value> = (0..loaded.cfg.positions.len())
+        .map(|i| {
+            serde_json::json!({
+                "frozen": loaded.seat_frozen[i],
+                "profile": loaded.seat_profiles[i],
+            })
+        })
+        .collect();
+    let out = serde_json::json!({
+        "config": loaded.cfg,
+        "multiway_equity_model": loaded.multiway_equity_model(),
+        "nodes": loaded.nodes.len(),
+        "action_nodes": loaded.nodes.iter().filter(|n| n.kind == 0).count(),
+        "arena_mb": loaded.arena_mb(),
+        "iteration": loaded.iteration,
+        "seats": seats,
+    });
+    let status = PreflopStatus {
+        state: "stopped".into(),
+        iteration: loaded.iteration,
+        published_iteration: loaded.iteration,
+        hero: loaded.hero,
+        frozen: loaded.seat_frozen.clone(),
+        realization_note: loaded.realization_note.clone(),
+        multiway_equity_model: loaded.multiway_equity_model().into(),
+        ..Default::default()
+    };
+    pf_install_session(
+        &state,
+        PreflopSession {
+            solver: Arc::new(Mutex::new(loaded)),
+            stop: Arc::new(AtomicBool::new(false)),
+            status: Arc::new(Mutex::new(status)),
+            worker: None,
+        },
+    )
+    .await?;
+    Ok(Json(out))
+}
+
+/// The live preflop session — config, seat models, iteration, hero/frozen
+/// and solve state — in the shape `/api/preflop/load` returns, so a
+/// reloaded lab tab can adopt the running (or solved) game instead of
+/// showing an empty lab whose next BUILD/SOLVE would silently kill it.
+async fn pf_session_info(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        let st = status.lock().unwrap();
+        let seats: Vec<serde_json::Value> = (0..s.n)
+            .map(|i| {
+                serde_json::json!({
+                    "frozen": s.seat_frozen[i],
+                    "profile": s.seat_profiles[i],
+                })
+            })
+            .collect();
+        serde_json::json!({
+            "config": s.cfg,
+            "nodes": s.nodes.len(),
+            "action_nodes": s.nodes.iter().filter(|n| n.kind == 0).count(),
+            "arena_mb": s.arena_mb(),
+            "iteration": s.iteration,
+            "publication": st.publication(),
+            "seats": seats,
+            "hero": s.hero,
+            "frozen": s.seat_frozen,
+            "realization_note": s.realization_note,
+            "multiway_equity_model": s.multiway_equity_model(),
+            "state": st.state,
+        })
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(out))
+}
+
+async fn pf_list_games() -> Json<serde_json::Value> {
+    let mut entries: Vec<(String, std::time::SystemTime)> = Vec::new();
+    if let Ok(rd) = std::fs::read_dir("saves/preflop") {
+        for e in rd.flatten() {
+            let p = e.path();
+            if p.extension().and_then(|x| x.to_str()) == Some("gtop") {
+                if let Some(stem) = p.file_stem().and_then(|x| x.to_str()) {
+                    let t = e.metadata().and_then(|m| m.modified()).unwrap_or(std::time::UNIX_EPOCH);
+                    entries.push((stem.to_string(), t));
+                }
+            }
+        }
+    }
+    entries.sort_by(|a, b| b.1.cmp(&a.1)); // newest first
+    Json(serde_json::json!(entries.into_iter().map(|(n, _)| n).collect::<Vec<_>>()))
+}
+
+// ---------------------------------------------------------------------------
+// Flop reports: solve one spot config across a canonical flop subset in a
+// background thread, extracting per-flop aggregates (and optionally locking
+// a villain to his postflop profile before measuring).
+// ---------------------------------------------------------------------------
+
+#[derive(Clone, Serialize, Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ReportVillain {
+    /// 0 = OOP, 1 = IP.
+    player: usize,
+    name: String,
+    stats: solver::query::PostflopStats,
+    #[serde(default)]
+    aggressor: Option<usize>,
+    #[serde(default)]
+    pot_type: Option<solver::query::PostflopPotType>,
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ReportRequest {
+    name: String,
+    spot: SpotRequest,
+    #[serde(default = "report_dflt_flops")]
+    flops: usize,
+    #[serde(default = "report_dflt_iters")]
+    max_iterations: u32,
+    #[serde(default = "report_dflt_target")]
+    target: f64,
+    #[serde(default)]
+    villain: Option<ReportVillain>,
+}
+fn report_dflt_flops() -> usize {
+    95
+}
+fn report_dflt_iters() -> u32 {
+    600
+}
+fn report_dflt_target() -> f64 {
+    0.35
+}
+
+/// Per-board line summaries live beside the report JSON: `<name>.lines/<board>.json`.
+fn report_lines_dir(name: &str) -> Result<std::path::PathBuf, String> {
+    let json = report_path(name)?;
+    Ok(json.with_extension("lines"))
+}
+
+fn report_path(name: &str) -> Result<std::path::PathBuf, String> {
+    let clean: String = name
+        .chars()
+        .filter(|c| c.is_alphanumeric() || *c == ' ' || *c == '-' || *c == '_')
+        .collect();
+    if clean.trim().is_empty() {
+        return Err("give the report a name".into());
+    }
+    Ok(std::path::PathBuf::from("saves/reports").join(format!("{}.json", clean.trim())))
+}
+
+/// Per-player EV/EQ aggregates (weighted by reach x valid, the convention
+/// used everywhere else — per-hand EVs are normalized by the card-removal-
+/// adjusted opponent mass, so only the pair mass aggregates them back to a
+/// true range EV with EV_OOP + EV_IP = pot) + reach-weighted action
+/// frequencies at a node.
+fn report_node_stats(
+    view: &solver::query::NodeView,
+    pot: f64,
+) -> (Vec<serde_json::Value>, Option<serde_json::Value>) {
+    let mut players = Vec::new();
+    for p in 0..2 {
+        let (mut wev, mut weq, mut wt) = (0f64, 0f64, 0f64);
+        for h in &view.players[p].hands {
+            if let (Some(eq), Some(ev)) = (h.eq, h.ev) {
+                let w = h.reach as f64 * h.valid as f64;
+                wev += ev as f64 * w;
+                weq += eq as f64 * w;
+                wt += w;
+            }
+        }
+        let (ev, eq) = if wt > 1e-12 { (wev / wt, weq / wt) } else { (0.0, 0.0) };
+        let eqr = if eq > 0.02 { ev / (pot * eq) } else { 0.0 };
+        players.push(serde_json::json!({"ev": ev, "eq": eq, "eqr": eqr}));
+    }
+    let strat = view.player.map(|actor| {
+        let actor = actor as usize;
+        let na = view.actions.len();
+        let (mut sums, mut total) = (vec![0f64; na], 0f64);
+        for h in &view.players[actor].hands {
+            if let Some(st) = &h.strategy {
+                total += h.reach as f64;
+                for a in 0..na {
+                    sums[a] += st[a] as f64 * h.reach as f64;
+                }
+            }
+        }
+        let freqs: Vec<f64> =
+            sums.iter().map(|s| if total > 1e-12 { s / total } else { 0.0 }).collect();
+        serde_json::json!({
+            "actor": actor,
+            "actions": view.actions.iter().map(|a| a.label.clone()).collect::<Vec<_>>(),
+            "kinds": view.actions.iter().map(|a| a.kind.clone()).collect::<Vec<_>>(),
+            "freqs": freqs,
+        })
+    });
+    (players, strat)
+}
+
+async fn report_run(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ReportRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = report_path(&req.name).map_err(bad_request)?;
+    std::fs::create_dir_all("saves/reports").map_err(|e| bad_request(e.to_string()))?;
+    // validate the config once before going background — the sizing strings
+    // AND the parts the tree builder used to discover only inside the worker
+    // (ranges, pot/stack, villain seat): by then the claim write below had
+    // replaced a same-named finished report with an empty partial, and the
+    // reason was never persisted
+    let mut probe = req.spot.clone();
+    probe.board = "AhKs2d".into();
+    probe.to_spot_config().map_err(bad_request)?;
+    for (who, text) in [("OOP", &req.spot.range_oop), ("IP", &req.spot.range_ip)] {
+        let r = Range::parse(text).map_err(|e| bad_request(format!("{who} range: {e}")))?;
+        if r.weights.iter().all(|w| *w <= 0.0) {
+            return Err(bad_request(format!("{who} range is empty")));
+        }
+    }
+    let (pot, stack) = (req.spot.starting_pot, req.spot.effective_stack);
+    if !(pot.is_finite() && pot > 0.0 && stack.is_finite() && stack > 0.0) {
+        return Err(bad_request("pot and stacks must be positive finite numbers"));
+    }
+    if let Some(v) = &req.villain {
+        if v.player > 1 {
+            return Err(bad_request("villain must be 0 (OOP) or 1 (IP)"));
+        }
+        if v.aggressor.is_some_and(|p| p > 1) {
+            return Err(bad_request("aggressor must be 0 (OOP) or 1 (IP)"));
+        }
+        if let Some(data) = &v.stats.contextual_betting {
+            data.validate().map_err(bad_request)?;
+        }
+    }
+
+    let flops = solver::cards::canonical_flops_subset(req.flops);
+    let lines_dir = report_lines_dir(&req.name).map_err(bad_request)?;
+    // a re-run must not inherit boards from an older run of the same name
+    let _ = std::fs::remove_dir_all(&lines_dir);
+    std::fs::create_dir_all(&lines_dir).map_err(|e| bad_request(e.to_string()))?;
+    {
+        // check-and-set in ONE lock scope: two racing POSTs can't both pass
+        // the running check and spawn two workers over the same status/file
+        let mut r = state.report.lock().unwrap();
+        if r.running {
+            return Err((StatusCode::CONFLICT, "a report is already running".into()));
+        }
+        state.report_stop.store(false, Ordering::Relaxed);
+        *r = ReportStatus {
+            running: true,
+            name: req.name.clone(),
+            total: flops.len(),
+            ..Default::default()
+        };
+    }
+    let app = state.clone();
+    std::thread::spawn(move || {
+        let t0 = std::time::Instant::now();
+        // Unwind guard: running=false was set only at the loop's normal end,
+        // so an uncaught panic anywhere in the worker (a solver bug, a bad
+        // save, an fs surprise) left running=true forever and every later
+        // /api/reports/run returned 409 until a server restart. The panic is
+        // recorded as the report error instead.
+        let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+        let mut rows: Vec<serde_json::Value> = Vec::new();
+        let mut err = String::new();
+        let mut stopped = false;
+        // Claim the report file up front (empty partial): the first periodic
+        // write below overwrites a same-named file anyway, and the panic
+        // path outside may only annotate a file that belongs to THIS run.
+        let _ = write_report(&path, &req, &rows, false);
+        // The same node budget + arena gate the BUILD TREE path applies:
+        // reports.js sends the SETUP fields straight here without building,
+        // so an oversized sizing config must abort cheaply mid-build instead
+        // of OOMing the server once per flop. The config is identical for
+        // every flop (only the board changes), so a refused first flop fails
+        // the whole report fast through the existing error break, before any
+        // solving starts. The cap is snapshotted once so every flop is judged
+        // against the same budget; no old-arena credit — the report never
+        // drops the browse session, whose memory MemAvailable already
+        // excludes.
+        let storage = Storage::Compressed;
+        let cap_mb = mem_cap_mb();
+        for (i, (board, weight)) in flops.iter().enumerate() {
+            if app.report_stop.load(Ordering::Relaxed) {
+                stopped = true;
+                break;
+            }
+            {
+                let mut r = app.report.lock().unwrap();
+                r.done = i;
+                r.board = board.clone();
+                r.seconds = t0.elapsed().as_secs_f64();
+            }
+            let mut sr = req.spot.clone();
+            sr.board = board.clone();
+            let cfg = match sr.to_spot_config() {
+                Ok(c) => c,
+                Err(e) => {
+                    err = e;
+                    break;
+                }
+            };
+            // STRICT build (this is a new tree, not a saved one), under the
+            // node budget derived from the memory cap.
+            let node_cap = node_budget(cap_mb, &cfg, storage);
+            let spot = match Spot::new_with_limit(cfg, Some(node_cap)) {
+                Ok(s) => s,
+                Err(e) => {
+                    err = format!("{board}: {e}");
+                    break;
+                }
+            };
+            let arena_mb = spot.arena_bytes_for(storage) as f64 / 1e6;
+            if arena_mb > cap_mb {
+                err = format!(
+                    "{board}: tree too large ({arena_mb:.0} MB of solver data, \
+                     cap {cap_mb:.0} MB); reduce bet sizes or set SOLVER_MEM_MB to override"
+                );
+                break;
+            }
+            let mut solver = Solver::with_storage(Arc::new(spot), storage);
+            let bt0 = std::time::Instant::now();
+            let (iters, pct, engine) =
+                report_solve(&mut solver, req.max_iterations, req.target, &app.report_stop);
+            if pct < 0.0 {
+                // STOP arrived mid-solve (the -1 sentinel): the flop is
+                // unconverged — discard it instead of recording a garbage
+                // row, and mark the report partial below
+                stopped = true;
+                break;
+            }
+            let mut lock_summary = serde_json::Value::Null;
+            if let Some(v) = &req.villain {
+                match solver.lock_profile_context(v.player, &v.stats, v.aggressor, v.pot_type) {
+                    Ok(sm) => {
+                        lock_summary = serde_json::json!({
+                            "locked": sm.locked,
+                            "root_evidence": sm.root_evidence,
+                        });
+                        // hero re-adapts against the locked villain
+                        let (_, pct2, _) = report_solve(
+                            &mut solver,
+                            req.max_iterations / 2,
+                            req.target,
+                            &app.report_stop,
+                        );
+                        if pct2 < 0.0 {
+                            // STOP mid-re-adapt: hero is half-adapted to the
+                            // locked villain — discard this flop too
+                            stopped = true;
+                            break;
+                        }
+                    }
+                    Err(e) => {
+                        err = format!("villain lock failed on {board}: {e}");
+                        break;
+                    }
+                }
+            }
+            solver.ensure_symmetric();
+            let view = match solver.node_view(&[]) {
+                Ok(v) => v,
+                Err(e) => {
+                    err = e;
+                    break;
+                }
+            };
+            let pot = req.spot.starting_pot;
+            let (players, root_strat) = report_node_stats(&view, pot);
+            // IP's response after a root check, when the root has one
+            let mut vs_check = serde_json::Value::Null;
+            if let Some(ci) = view.actions.iter().position(|a| a.kind == "check") {
+                if let Ok(v2) = solver.node_view(&[solver::query::PathStep::Action { index: ci }])
+                {
+                    let (_, st2) = report_node_stats(&v2, pot);
+                    if let Some(st2) = st2 {
+                        vs_check = st2;
+                    }
+                }
+            }
+            // every recorded node of this board, for any-node aggregation
+            // (a few MB per board; the solve itself is never kept)
+            let lt0 = std::time::Instant::now();
+            let lines = solver.report_lines();
+            let lines_secs = lt0.elapsed().as_secs_f64();
+            match serde_json::to_string(&lines) {
+                Ok(text) => {
+                    let p = lines_dir.join(format!("{board}.json"));
+                    if let Err(e) = std::fs::write(&p, text) {
+                        err = format!("{board}: writing line summaries: {e}");
+                        break;
+                    }
+                }
+                Err(e) => {
+                    err = format!("{board}: serializing line summaries: {e}");
+                    break;
+                }
+            }
+            rows.push(serde_json::json!({
+                "board": board, "weight": weight, "iterations": iters,
+                "exploit_pct": pct, "seconds": bt0.elapsed().as_secs_f64(), "engine": engine,
+                "lines_seconds": lines_secs, "n_lines": lines.len(),
+                "players": players, "root": root_strat, "vs_check": vs_check,
+                "villain_lock": lock_summary,
+            }));
+            // a report that was open in the tab must not serve stale boards
+            app.report_cache.lock().unwrap().take();
+            if rows.len() % 8 == 0 {
+                let _ = write_report(&path, &req, &rows, false);
+            }
+        }
+        let done = rows.len();
+        // a user STOP is not an error, but the report is NOT complete: the
+        // library must show it as PARTIAL, not pass it off as a full study
+        if let Err(e) = write_report(&path, &req, &rows, err.is_empty() && !stopped) {
+            if err.is_empty() {
+                err = e;
+            }
+        }
+        // the file must say WHY it is partial once the transient status is
+        // gone (only the panic path used to stamp an error)
+        if !err.is_empty() {
+            mark_report_failed(&path, &err);
+        }
+        (done, err)
+        }));
+        let mut r = lock_unpoisoned(&app.report);
+        r.running = false;
+        r.seconds = t0.elapsed().as_secs_f64();
+        match outcome {
+            Ok((done, err)) => {
+                r.done = done;
+                r.error = err;
+            }
+            Err(p) => {
+                // r.done keeps the last flop index the loop published
+                let msg = format!("report crashed: {}", panic_msg(p.as_ref()));
+                eprintln!("report worker panicked: {}", panic_msg(p.as_ref()));
+                r.error = msg.clone();
+                drop(r); // no file IO under the status lock
+                mark_report_failed(&path, &msg);
+            }
+        }
+    });
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+struct ReportLinesRequest {
+    name: String,
+    /// Line key: `a<i>` per action step, `c` per (any) card step, comma
+    /// separated; "" = the flop root.
+    #[serde(default)]
+    line: String,
+}
+
+/// Load (or reuse) a report's per-board line summaries.
+fn load_report_lines(state: &AppState, name: &str) -> Result<Arc<LoadedReport>, String> {
+    if let Some(r) = state.report_cache.lock().unwrap().as_ref() {
+        if r.name == name {
+            return Ok(r.clone());
+        }
+    }
+    let path = report_path(name)?;
+    let text = std::fs::read_to_string(&path).map_err(|e| e.to_string())?;
+    let v: serde_json::Value = serde_json::from_str(&text).map_err(|e| e.to_string())?;
+    if v.get("lines").and_then(|x| x.as_bool()) != Some(true) {
+        return Err("this report predates line summaries — re-run it to browse it by node".into());
+    }
+    let dir = report_lines_dir(name)?;
+    let mut flops = Vec::new();
+    for row in v.get("flops").and_then(|f| f.as_array()).cloned().unwrap_or_default() {
+        let Some(board) = row.get("board").and_then(|b| b.as_str()) else { continue };
+        let p = dir.join(format!("{board}.json"));
+        let Ok(text) = std::fs::read_to_string(&p) else { continue };
+        let lines: std::collections::HashMap<String, solver::report::LineSummary> =
+            serde_json::from_str(&text).map_err(|e| format!("{board}: {e}"))?;
+        flops.push(FlopLines {
+            board: board.to_string(),
+            weight: row.get("weight").and_then(|w| w.as_u64()).unwrap_or(1) as u32,
+            exploit_pct: row.get("exploit_pct").and_then(|x| x.as_f64()).unwrap_or(0.0),
+            lines,
+        });
+    }
+    if flops.is_empty() {
+        return Err("no per-board line summaries found for this report".into());
+    }
+    let loaded = Arc::new(LoadedReport { name: name.to_string(), flops });
+    *state.report_cache.lock().unwrap() = Some(loaded.clone());
+    Ok(loaded)
+}
+
+/// All-board aggregate of one line (for the ribbon): frequencies and EVs
+/// pooled with flop weight x pair mass.
+fn aggregate_line(rep: &LoadedReport, key: &str) -> Option<serde_json::Value> {
+    let mut proto: Option<&solver::report::LineSummary> = None;
+    let mut fsum: Vec<f64> = Vec::new();
+    let mut fw = 0f64;
+    let mut pev = [0f64; 2];
+    let mut pw = [0f64; 2];
+    let mut n = 0usize;
+    for f in &rep.flops {
+        let Some(s) = f.lines.get(key) else { continue };
+        n += 1;
+        if proto.is_none() {
+            proto = Some(s);
+            fsum = vec![0.0; s.freqs.len()];
+        }
+        let wf = f.weight as f64;
+        if let Some(a) = s.actor {
+            let w = wf * s.players.get(a as usize).map_or(1.0, |p| p.w as f64);
+            for (x, y) in fsum.iter_mut().zip(&s.freqs) {
+                *x += w * *y as f64;
+            }
+            fw += w;
+        }
+        for p in 0..2 {
+            if let Some(ps) = s.players.get(p) {
+                let w = wf * ps.w as f64;
+                pev[p] += w * ps.ev as f64;
+                pw[p] += w;
+            }
+        }
+    }
+    let s = proto?;
+    Some(serde_json::json!({
+        "key": key,
+        "kind": s.kind, "street": s.street, "pot": s.pot, "actor": s.actor,
+        "actions": s.actions, "kinds": s.kinds,
+        "freqs": fsum.iter().map(|x| if fw > 1e-12 { x / fw } else { 0.0 }).collect::<Vec<_>>(),
+        "ev": (0..2).map(|p| if pw[p] > 1e-12 { pev[p] / pw[p] } else { 0.0 }).collect::<Vec<_>>(),
+        "n_flops": n,
+    }))
+}
+
+/// One line of a report across every board: the per-board summaries (the
+/// tab filters/sorts/aggregates them client-side) plus the all-board
+/// aggregate of every prefix of the line for the action ribbon.
+async fn report_lines(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ReportLinesRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let name = req.name.clone();
+    let rep = tokio::task::spawn_blocking(move || load_report_lines(&state, &name))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let key = req.line.trim().to_string();
+    // prefixes: "", "a0", "a0,c", ...
+    let steps: Vec<&str> = if key.is_empty() { Vec::new() } else { key.split(',').collect() };
+    let mut history = Vec::new();
+    for i in 0..=steps.len() {
+        let k = steps[..i].join(",");
+        match aggregate_line(&rep, &k) {
+            Some(h) => history.push(h),
+            None => {
+                return Err(bad_request(format!(
+                    "line {k:?} is not recorded in this report (river lines are kept to the first response)"
+                )))
+            }
+        }
+    }
+    let rows: Vec<serde_json::Value> = rep
+        .flops
+        .iter()
+        .filter_map(|f| {
+            f.lines.get(&key).map(|s| {
+                serde_json::json!({
+                    "board": f.board, "weight": f.weight, "exploit_pct": f.exploit_pct, "s": s,
+                })
+            })
+        })
+        .collect();
+    Ok(Json(serde_json::json!({
+        "name": rep.name, "line": key, "history": history, "rows": rows,
+    })))
+}
+
+/// (iterations, exploitability % of pot, engine) — engine is "gpu" or "cpu"
+/// so a report never hides which one solved a board.
+fn report_solve(
+    solver: &mut Solver,
+    max_iterations: u32,
+    target: f64,
+    stop: &AtomicBool,
+) -> (u32, f64, &'static str) {
+    let pot = solver.spot.tree.config.starting_pot;
+    let base = solver.iteration;
+    // Both fresh and profile-adaptation solves can run on the GPU. New
+    // devices upload the current arenas and locks, preserving the baseline.
+    #[cfg(feature = "gpu")]
+    if gpu_enabled() {
+        match solver::gpu::GpuSolver::new(solver) {
+          Err(e) => {
+            // LOUD fallback: a report silently crawling on CPU because the
+            // trees don't fit VRAM is the worst way to lose an afternoon
+            println!(
+                "report: GPU unavailable for {} ({e}); solving on CPU",
+                solver.spot.config.board
+            );
+          }
+          Ok(mut gpu) => {
+            loop {
+                if stop.load(Ordering::Relaxed) {
+                    let _ = gpu.sync_to_cpu(solver);
+                    return (gpu.iteration, -1.0, "gpu");
+                }
+                if gpu.iterate().is_err() {
+                    println!("report: GPU failed mid-solve on {}; continuing on CPU", solver.spot.config.board);
+                    break; // fall through to CPU
+                }
+                // max_iterations is an ADDITIONAL iteration budget, just
+                // like the CPU path (adaptation starts at a nonzero base).
+                let it = gpu.iteration - base;
+                if it % 20 == 0 || it >= max_iterations {
+                    let e = match gpu.exploitability(solver) {
+                        Ok(e) => e,
+                        Err(_) => break,
+                    };
+                    let pct = e / pot * 100.0;
+                    if pct <= target || it >= max_iterations {
+                        if gpu.sync_to_cpu(solver).is_ok() {
+                            return (gpu.iteration, pct, "gpu");
+                        }
+                        break;
+                    }
+                }
+            }
+          }
+        }
+    }
+    loop {
+        if stop.load(Ordering::Relaxed) {
+            return (solver.iteration, -1.0, "cpu");
+        }
+        solver.iterate();
+        let it = solver.iteration - base;
+        if it % 20 == 0 || it >= max_iterations {
+            let pct = solver.exploitability() / pot * 100.0;
+            if pct <= target || it >= max_iterations {
+                return (solver.iteration, pct, "cpu");
+            }
+        }
+    }
+}
+
+fn write_report(
+    path: &std::path::Path,
+    req: &ReportRequest,
+    rows: &[serde_json::Value],
+    complete: bool,
+) -> Result<(), String> {
+    let out = serde_json::json!({
+        "name": req.name,
+        "created": std::time::SystemTime::now()
+            .duration_since(std::time::UNIX_EPOCH)
+            .map(|d| d.as_secs())
+            .unwrap_or(0),
+        "spot": req.spot,
+        "villain": req.villain,
+        "target_pct": req.target,
+        "complete": complete,
+        "lines": true,
+        "flops": rows,
+    });
+    let text = serde_json::to_string(&out).map_err(|e| e.to_string())?;
+    // temp file + rename: report_get/report_list read this path while the
+    // worker rewrites it every 8 flops — a truncate-in-place write would
+    // hand them empty/partial JSON. The .tmp extension keeps report_list
+    // (which only picks up .json) from ever seeing the staging file.
+    let tmp = path.with_extension("json.tmp");
+    std::fs::write(&tmp, text).map_err(|e| e.to_string())?;
+    std::fs::rename(&tmp, path).map_err(|e| e.to_string())
+}
+
+/// Best-effort: stamp the partial report file of a crashed run with the
+/// failure, so the library shows WHY the study is incomplete. The worker
+/// claims the file before its first flop, so the file always belongs to the
+/// run that died; every failure here is swallowed (the report status already
+/// carries the error).
+fn mark_report_failed(path: &std::path::Path, error: &str) {
+    let Ok(text) = std::fs::read_to_string(path) else { return };
+    let Ok(mut v) = serde_json::from_str::<serde_json::Value>(&text) else { return };
+    v["complete"] = serde_json::Value::Bool(false);
+    v["error"] = serde_json::Value::String(error.to_string());
+    let Ok(out) = serde_json::to_string(&v) else { return };
+    let tmp = path.with_extension("json.tmp");
+    if std::fs::write(&tmp, out).is_ok() {
+        let _ = std::fs::rename(&tmp, path);
+    }
+}
+
+async fn report_status(State(state): State<Arc<AppState>>) -> Json<ReportStatus> {
+    Json(state.report.lock().unwrap().clone())
+}
+
+async fn report_stop_run(State(state): State<Arc<AppState>>) -> Json<serde_json::Value> {
+    state.report_stop.store(true, Ordering::Relaxed);
+    Json(serde_json::json!({"ok": true}))
+}
+
+async fn report_list() -> Json<serde_json::Value> {
+    let mut out = Vec::new();
+    if let Ok(rd) = std::fs::read_dir("saves/reports") {
+        for e in rd.flatten() {
+            let p = e.path();
+            if p.extension().and_then(|x| x.to_str()) != Some("json") {
+                continue;
+            }
+            if let Ok(text) = std::fs::read_to_string(&p) {
+                if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
+                    out.push(serde_json::json!({
+                        "name": v.get("name"),
+                        "created": v.get("created"),
+                        "n_flops": v.get("flops").and_then(|f| f.as_array()).map(|a| a.len()),
+                        "complete": v.get("complete"),
+                        "lines": v.get("lines").and_then(|x| x.as_bool()).unwrap_or(false),
+                        "villain": v.get("villain").and_then(|x| x.get("name")),
+                        "board_sample": v.get("flops").and_then(|f| f.get(0)).and_then(|r| r.get("board")),
+                    }));
+                }
+            }
+        }
+    }
+    out.sort_by_key(|v| -(v.get("created").and_then(|c| c.as_i64()).unwrap_or(0)));
+    Json(serde_json::json!(out))
+}
+
+#[derive(Deserialize)]
+struct ReportName {
+    name: String,
+}
+
+async fn report_get(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = report_path(&req.name).map_err(bad_request)?;
+    let text = std::fs::read_to_string(&path).map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::from_str(&text).map_err(|e| bad_request(e.to_string()))?))
+}
+
+async fn report_delete(Json(req): Json<ReportName>) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = report_path(&req.name).map_err(bad_request)?;
+    if let Ok(dir) = report_lines_dir(&req.name) {
+        let _ = std::fs::remove_dir_all(dir);
+    }
+    std::fs::remove_file(&path).map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_archetypes() -> Json<serde_json::Value> {
+    let mut list: Vec<serde_json::Value> = solver::preflop::archetypes_all()
+        .into_iter()
+        .map(|a| serde_json::json!({"name": a.name, "stats": a.stats, "postflop": a.postflop, "note": a.note}))
+        .collect();
+    // Separate opt-in entry: no rewrite of the installed source or saved
+    // profiles. Derive the unchanged situations from the same measured pool.
+    if let Some(mut candidate) = list.iter().find(|a| a["name"] == "Data · Ignition · NL10 regular · Pool").cloned() {
+        if candidate["stats"]["dataset"].is_object() {
+            candidate["name"] = serde_json::json!("Data · Ignition · NL10 regular · Contextual v1");
+            candidate["stats"]["dataset"]["contextual_reraise"] = serde_json::json!(solver::preflop::contextual::MODEL_ID);
+            candidate["note"] = serde_json::json!("Experimental contextual re-raise model v1. Uses actual prior entry, raise depth and call price. Retrospective Ignition NL10 evaluation: 9.3% lower log loss, not a win-rate estimate. Supported on 3–6 player tables without antes, with 0.5/1 blinds; other formats retain the existing measured fallback. Opening, vs-limp and single-raise policies stay with the measured pool. Older profiles and saved games are unchanged.");
+            list.push(candidate);
+        }
+    }
+    Json(serde_json::json!(list))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfHeroRequest {
+    seat: Option<usize>,
+}
+
+async fn pf_hero(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfHeroRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    tokio::task::spawn_blocking(move || {
+        let mut s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        s.set_hero(req.seat).map_err(bad_request)?;
+        // mirror engine truth (hero mode rewrites the frozen mask)
+        let mut st = status.lock().unwrap();
+        st.hero = s.hero;
+        st.frozen = s.seat_frozen.clone();
+        st.invalidate_accuracy(s.iteration);
+        Ok::<(), ApiError>(())
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+fn profile_path(name: &str) -> Result<std::path::PathBuf, String> {
+    let clean: String = name
+        .chars()
+        .filter(|c| c.is_alphanumeric() || *c == ' ' || *c == '-' || *c == '_')
+        .collect();
+    if clean.trim().is_empty() {
+        return Err("profile needs a name".into());
+    }
+    Ok(std::path::PathBuf::from("saves/profiles").join(format!("{}.json", clean.trim())))
+}
+
+async fn pf_profiles_list() -> Json<serde_json::Value> {
+    let mut names: Vec<String> = std::fs::read_dir("saves/profiles")
+        .map(|rd| {
+            rd.flatten()
+                .filter_map(|e| {
+                    e.path()
+                        .file_stem()
+                        .map(|s| s.to_string_lossy().to_string())
+                })
+                .collect()
+        })
+        .unwrap_or_default();
+    names.sort();
+    Json(serde_json::json!(names))
+}
+
+#[derive(Deserialize)]
+struct PfProfileSave {
+    name: String,
+    /// Stored as sent (after checking it IS a SeatProfile): the editor keeps
+    /// the HUD stats the ranges were generated from under `stats`, which the
+    /// engine's struct doesn't carry — the file must round-trip them.
+    profile: serde_json::Value,
+}
+
+async fn pf_profile_save(
+    Json(req): Json<PfProfileSave>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = profile_path(&req.name).map_err(bad_request)?;
+    serde_json::from_value::<solver::preflop::SeatProfile>(req.profile.clone())
+        .map_err(|e| bad_request(format!("not a valid profile: {e}")))?;
+    std::fs::create_dir_all("saves/profiles").map_err(|e| bad_request(e.to_string()))?;
+    std::fs::write(
+        &path,
+        serde_json::to_vec_pretty(&req.profile).map_err(|e| bad_request(e.to_string()))?,
+    )
+    .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+struct PfProfileGet {
+    name: String,
+}
+
+async fn pf_profile_get(
+    Json(req): Json<PfProfileGet>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = profile_path(&req.name).map_err(bad_request)?;
+    let bytes = std::fs::read(&path).map_err(|e| bad_request(e.to_string()))?;
+    let v: serde_json::Value =
+        serde_json::from_slice(&bytes).map_err(|e| bad_request(e.to_string()))?;
+    serde_json::from_value::<solver::preflop::SeatProfile>(v.clone())
+        .map_err(|e| bad_request(format!("saved profile is not valid: {e}")))?;
+    Ok(Json(v))
+}
+
+// ---- user scenarios (the lab's SET UP THE SCENARIO presets, saved) ----
+
+fn scenario_path(name: &str) -> Result<std::path::PathBuf, String> {
+    // "$2/2" is a normal scenario name: slashes and colons become '-' on disk only (the
+    // name inside the file is kept verbatim)
+    let clean: String = name
+        .chars()
+        .map(|c| if c == '/' || c == '\\' || c == ':' { '-' } else { c })
+        .filter(|c| c.is_alphanumeric() || " -_.,:%$+()".contains(*c))
+        .collect();
+    if clean.trim().is_empty() {
+        return Err("scenario needs a name".into());
+    }
+    Ok(std::path::PathBuf::from("saves/scenarios").join(format!("{}.json", clean.trim())))
+}
+
+/// Every saved scenario, name + the field values the lab form holds.
+async fn pf_scenarios_list() -> Json<serde_json::Value> {
+    let mut out: Vec<serde_json::Value> = Vec::new();
+    if let Ok(rd) = std::fs::read_dir("saves/scenarios") {
+        for e in rd.flatten() {
+            if let Ok(text) = std::fs::read_to_string(e.path()) {
+                if let Ok(v) = serde_json::from_str::<serde_json::Value>(&text) {
+                    out.push(v);
+                }
+            }
+        }
+    }
+    out.sort_by(|a, b| {
+        a.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase()
+            .cmp(&b.get("name").and_then(|x| x.as_str()).unwrap_or("").to_lowercase())
+    });
+    Json(serde_json::json!(out))
+}
+
+#[derive(Deserialize)]
+struct PfScenarioSave {
+    name: String,
+    scenario: serde_json::Value,
+}
+
+async fn pf_scenario_save(
+    Json(req): Json<PfScenarioSave>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = scenario_path(&req.name).map_err(bad_request)?;
+    if !req.scenario.is_object() {
+        return Err(bad_request("scenario must be an object"));
+    }
+    let mut v = req.scenario;
+    v["name"] = serde_json::Value::String(req.name.trim().to_string());
+    std::fs::create_dir_all("saves/scenarios").map_err(|e| bad_request(e.to_string()))?;
+    std::fs::write(&path, serde_json::to_vec_pretty(&v).map_err(|e| bad_request(e.to_string()))?)
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+struct PfScenarioName {
+    name: String,
+}
+
+async fn pf_scenario_delete(
+    Json(req): Json<PfScenarioName>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let path = scenario_path(&req.name).map_err(bad_request)?;
+    std::fs::remove_file(&path).map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct PfPointLockRequest {
+    path: Vec<usize>,
+    #[serde(default)]
+    policy: Option<solver::preflop::BucketPolicy>,
+}
+
+async fn pf_lock(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPointLockRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    tokio::task::spawn_blocking(move || {
+        let mut s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        s.lock_point(&req.path, req.policy).map_err(bad_request)?;
+        status.lock().unwrap().invalidate_accuracy(s.iteration);
+        Ok::<(), ApiError>(())
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn pf_unlock(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let removed = tokio::task::spawn_blocking(move || {
+        let mut s = pf_solver_lock(&solver);
+        pf_reject_if_running(&status)?;
+        let removed = s.unlock_point(&req.path).map_err(bad_request)?;
+        if removed { status.lock().unwrap().invalidate_accuracy(s.iteration); }
+        Ok::<_, ApiError>(removed)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))??;
+    Ok(Json(serde_json::json!({"ok": true, "removed": removed})))
+}
+
+async fn pf_node(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<PfPublished<solver::preflop::PreflopNodeView>>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let view = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        let mut result = s.node_view(&req.path)?;
+        if let Some(note) = result.history.iter().find_map(|h| h.strategy_note.clone()) {
+            result.strategy_note = Some(note);
+            result.strategy = None;
+            result.exportable = false;
+        }
+        let publication = status.lock().unwrap().publication();
+        Ok::<_, String>(PfPublished { result, publication })
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(view))
+}
+
+async fn pf_export(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<PfPathRequest>,
+) -> Result<Json<PfPublished<solver::preflop::PreflopExport>>, ApiError> {
+    let (solver, _, status) = pf_session(&state)?;
+    let out = tokio::task::spawn_blocking(move || {
+        let s = pf_solver_lock(&solver);
+        let view = s.node_view(&req.path)?;
+        if let Some(note) = view.history.iter().find_map(|h| h.strategy_note.clone()) {
+            return Err(note);
+        }
+        let result = s.export_spot(&req.path)?;
+        let publication = status.lock().unwrap().publication();
+        Ok(PfPublished { result, publication })
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(out))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct ExploitRequest {
+    path: Vec<PathStep>,
+    /// 0 = OOP, 1 = IP: the player whose best response to compute.
+    exploiter: u8,
+}
+
+async fn exploit_view(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<ExploitRequest>,
+) -> Result<Json<solver::query::ExploitView>, ApiError> {
+    let solver = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| s.solver.clone())
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let view = tokio::task::spawn_blocking(move || {
+        let s = lock_unpoisoned(&solver);
+        s.exploit_view(&req.path, req.exploiter as usize)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(view))
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct LockRequest {
+    path: Vec<PathStep>,
+    /// How to build the lock: freeze / range frequencies / per-hand edits.
+    mode: solver::query::LockMode,
+    #[serde(default)]
+    label: String,
+}
+
+async fn lock_node(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<LockRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.lock_node(&req.path, req.mode, req.label)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+async fn unlock_node(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<NodeRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    let (solver, lock_gen) = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| (s.solver.clone(), s.lock_gen.clone()))
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let removed = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.unlock_node(&req.path)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    lock_gen.fetch_add(1, Ordering::Relaxed);
+    Ok(Json(serde_json::json!({"ok": true, "removed": removed})))
+}
+
+async fn list_locks(
+    State(state): State<Arc<AppState>>,
+) -> Result<Json<Vec<String>>, ApiError> {
+    let solver = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| s.solver.clone())
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let locks = tokio::task::spawn_blocking(move || {
+        let s = lock_unpoisoned(&solver);
+        s.list_locks()
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(locks))
+}
+
+async fn runouts(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<NodeRequest>,
+) -> Result<Json<solver::query::RunoutsReport>, ApiError> {
+    let solver = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| s.solver.clone())
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let report = tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.ensure_symmetric();
+        s.runouts(&req.path)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(report))
+}
+
+#[derive(Deserialize)]
+struct ParseRangeRequest {
+    text: String,
+}
+
+#[derive(Serialize)]
+struct ParseRangeResponse {
+    weights: Vec<f32>,
+    combos: f32,
+    compact: String,
+}
+
+async fn parse_range(Json(req): Json<ParseRangeRequest>) -> Result<Json<ParseRangeResponse>, ApiError> {
+    let range = Range::parse(&req.text).map_err(bad_request)?;
+    Ok(Json(ParseRangeResponse {
+        combos: range.num_combos(),
+        compact: range.to_string_compact(),
+        weights: range.weights,
+    }))
+}
+
+// ---------------------------------------------------------------------------
+// Save / load
+// ---------------------------------------------------------------------------
+
+fn saves_dir() -> std::path::PathBuf {
+    let dir = std::path::PathBuf::from("saves");
+    std::fs::create_dir_all(&dir).ok();
+    dir
+}
+
+fn sanitize_name(name: &str) -> Result<String, ApiError> {
+    let clean: String = name
+        .chars()
+        .filter(|c| c.is_alphanumeric() || *c == '-' || *c == '_' || *c == ' ' || *c == '.')
+        .collect();
+    let clean = clean.trim().to_string();
+    if clean.is_empty() {
+        return Err(bad_request("invalid save name"));
+    }
+    Ok(clean)
+}
+
+#[derive(Deserialize)]
+#[serde(deny_unknown_fields)]
+struct SaveRequest {
+    name: String,
+}
+
+async fn save_solve(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<SaveRequest>,
+) -> Result<Json<serde_json::Value>, ApiError> {
+    // While a GPU solve is running, the CPU-side arenas hold the last full
+    // checkpoint (they refresh every 4th check), so a save now would
+    // checkpoint stale data. Stop first to force a final sync.
+    if state.status.lock().unwrap().state == "running" {
+        return Err((
+            StatusCode::CONFLICT,
+            "stop the solve before saving (mid-solve saves can checkpoint stale data)".to_string(),
+        ));
+    }
+    let name = sanitize_name(&req.name)?;
+    let solver = {
+        let guard = state.session.lock().unwrap();
+        guard
+            .as_ref()
+            .map(|s| s.solver.clone())
+            .ok_or_else(|| bad_request("no spot built yet"))?
+    };
+    let path = saves_dir().join(format!("{name}.gto"));
+    let path_str = path.to_str().unwrap().to_string();
+    tokio::task::spawn_blocking(move || {
+        let mut s = lock_unpoisoned(&solver);
+        s.ensure_symmetric();
+        s.save(&path_str)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+    Ok(Json(serde_json::json!({"ok": true})))
+}
+
+/// Mirrors solver::save's on-disk magic so a save can be validated without
+/// loading it (the full loader stays in solver::save and remains the single
+/// authority on the format).
+const SAVE_MAGIC: &[u8] = b"GTOSOLVE2\n";
+
+/// The subset of the save header load_solve needs for pre-validation;
+/// unknown header fields (labels, future additions) are ignored.
+#[derive(Deserialize)]
+struct SaveHeaderPeek {
+    config: SpotConfig,
+    #[serde(default)]
+    #[allow(dead_code)]
+    iteration: u32,
+    #[serde(default)]
+    locks: Vec<(u32, Vec<f32>)>,
+}
+
+/// Validate a .gto save WITHOUT allocating solver arenas: file exists, magic
+/// matches, header JSON and config parse, the spot rebuilds (LENIENT, under
+/// the tree node budget — vetting must match the real lenient load path so
+/// pre-fix saves with a raise-only token in a bet list still pass), the lock
+/// section is well-formed for that tree, every arena section's recorded
+/// length matches the rebuilt tree, and the file actually contains all the
+/// bytes. Returns the rebuilt spot so the caller can size-check it against
+/// the memory cap. The real load re-reads the file afterwards.
+fn peek_save(path: &str, cap_mb: f64, storage: Storage) -> Result<Spot, String> {
+    use std::io::{Read, Seek, SeekFrom};
+    let file = std::fs::File::open(path).map_err(|e| e.to_string())?;
+    let file_len = file.metadata().map_err(|e| e.to_string())?.len();
+    let mut r = std::io::BufReader::new(file);
+    let mut magic = [0u8; 10];
+    r.read_exact(&mut magic).map_err(|e| e.to_string())?;
+    if magic != SAVE_MAGIC {
+        return Err("not a solver save file".to_string());
+    }
+    let mut header_line = Vec::new();
+    loop {
+        let mut b = [0u8; 1];
+        r.read_exact(&mut b)
+            .map_err(|_| "file truncated (unterminated header)".to_string())?;
+        if b[0] == b'\n' {
+            break;
+        }
+        header_line.push(b[0]);
+    }
+    let header: SaveHeaderPeek =
+        serde_json::from_slice(&header_line).map_err(|e| format!("bad header: {e}"))?;
+    let node_cap = node_budget(cap_mb, &header.config, storage);
+    // a save without the shape switch predates the check-through fix (the
+    // loader in solver::save does the same): rebuild it the way it was built
+    let mut config = header.config;
+    config.tree.carry_aggressor_through_checks.get_or_insert(true);
+    let spot = Spot::new_lenient_with_limit(config, Some(node_cap))?;
+    // Malformed lock entries would panic at the first query once installed:
+    // refuse them HERE, while the current session (and its unsaved solve)
+    // still exists — load_with_storage validates too, but by then the old
+    // session is already gone.
+    solver::save::validate_locks(&spot, &header.locks)
+        .map_err(|e| format!("bad lock section: {e}"))?;
+    // Four arena sections (regrets x2, strategy x2), each length-prefixed:
+    // verify the recorded lengths and the total file size, so a truncated or
+    // config-mismatched save is refused BEFORE the current session is lost.
+    let mut pos = r.stream_position().map_err(|e| e.to_string())?;
+    for arena in 0..4usize {
+        let p = arena % 2;
+        let mut len_bytes = [0u8; 8];
+        r.read_exact(&mut len_bytes)
+            .map_err(|_| "file truncated (missing arena)".to_string())?;
+        let len = u64::from_le_bytes(len_bytes);
+        let expected = spot.tree.data_size[p];
+        if len != expected {
+            return Err(format!(
+                "arena size mismatch: file {len}, expected {expected} (tree config changed?)"
+            ));
+        }
+        pos += 8 + len * 4;
+        r.seek(SeekFrom::Start(pos)).map_err(|e| e.to_string())?;
+    }
+    if pos > file_len {
+        return Err(format!(
+            "file truncated ({file_len} bytes, arenas need {pos})"
+        ));
+    }
+    Ok(spot)
+}
+
+async fn load_solve(
+    State(state): State<Arc<AppState>>,
+    Json(req): Json<SaveRequest>,
+) -> Result<Json<TreeInfo>, ApiError> {
+    let name = sanitize_name(&req.name)?;
+    let path = saves_dir().join(format!("{name}.gto"));
+    let path_str = path
+        .to_str()
+        .ok_or_else(|| bad_request("bad path"))?
+        .to_string();
+
+    // Validate-then-swap: fully vet the save (and enforce the same memory
+    // cap the build path enforces) BEFORE dropping the current session, so a
+    // missing/corrupt/oversized file can't destroy unsaved work. Only the
+    // probe spot (tree, no arenas) coexists with the old session; the loaded
+    // arenas are allocated after the old ones are freed.
+    let storage = storage_from_env();
+    let cap_mb = mem_cap_mb() + old_arena_credit_mb(&state);
+    let probe_path = path_str.clone();
+    let probe = tokio::task::spawn_blocking(move || peek_save(&probe_path, cap_mb, storage))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?
+        .map_err(bad_request)?;
+    let probe_arena_mb = probe.arena_bytes_for(storage) as f64 / 1e6;
+    // Gate on the loader's true PEAK, not the steady-state arena size:
+    // load_with_storage allocates all four arenas up front, then decodes each
+    // section through a transient vec![0f32; data_size[p]] staging buffer
+    // while the arenas are fully resident, so the peak is arenas + the larger
+    // player's section as f32 (worst under Compressed, where one section's
+    // staging is roughly half the whole arena footprint). Gating the steady
+    // state alone admits saves that thrash into swap mid-load — after the old
+    // session is already gone.
+    let staging_mb = probe.tree.data_size[0].max(probe.tree.data_size[1]) as f64 * 4.0 / 1e6;
+    let peak_mb = probe_arena_mb + staging_mb;
+    if peak_mb > cap_mb {
+        return Err(bad_request(format!(
+            "save too large to load ({probe_arena_mb:.0} MB of solver data \
+             + {staging_mb:.0} MB load staging = {peak_mb:.0} MB peak, cap {cap_mb:.0} MB); \
+             set SOLVER_MEM_MB to override"
+        )));
+    }
+    drop(probe); // free the probe tree before the real load rebuilds it
+
+    // The save is vetted: now stop any running solve and drop the old
+    // session (a disk race between the peek and this load remains possible
+    // but the cheap failure modes are all caught above).
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || stop_current(&st, true))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    let solver = tokio::task::spawn_blocking(move || {
+        Solver::load_with_storage(&path_str, storage)
+    })
+    .await
+    .map_err(|e| bad_request(e.to_string()))?
+    .map_err(bad_request)?;
+
+    let spot = &solver.spot;
+    let info = tree_info(spot, solver.arena_bytes() as f64 / 1e6);
+    let iteration = solver.iteration;
+    let spot_request = spot_request_from_config(&spot.config);
+    let session = Session {
+        solver: Arc::new(Mutex::new(solver)),
+        stop: Arc::new(AtomicBool::new(false)),
+        worker: None,
+        lock_gen: Arc::new(std::sync::atomic::AtomicU64::new(0)),
+    };
+    let status = StatusInfo {
+        state: "done".to_string(),
+        iteration,
+        tree: Some(info.clone()),
+        spot_request,
+        ..Default::default()
+    };
+    let st = state.clone();
+    tokio::task::spawn_blocking(move || install_session(&st, session, status))
+        .await
+        .map_err(|e| bad_request(e.to_string()))?;
+    Ok(Json(info))
+}
+
+fn sizes_to_string(sizes: &[solver::tree::BetSize]) -> String {
+    sizes
+        .iter()
+        .map(|s| match s {
+            solver::tree::BetSize::PotPct(p) => format!("{p}"),
+            solver::tree::BetSize::PrevMult(m) => format!("{m}x"),
+            solver::tree::BetSize::AllIn => "a".to_string(),
+        })
+        .collect::<Vec<_>>()
+        .join(" ")
+}
+
+fn spot_request_from_config(config: &SpotConfig) -> Option<SpotRequest> {
+    let t = &config.tree;
+    let conv = |s: &[StreetSizing; 3]| -> Vec<SizesRequest> {
+        s.iter()
+            .map(|x| SizesRequest {
+                bet: sizes_to_string(&x.bet),
+                raise: sizes_to_string(&x.raise),
+                donk: sizes_to_string(&x.donk),
+            })
+            .collect()
+    };
+    Some(SpotRequest {
+        board: config.board.clone(),
+        range_oop: config.range_oop.clone(),
+        range_ip: config.range_ip.clone(),
+        starting_pot: t.starting_pot,
+        effective_stack: t.effective_stack,
+        rake_pct: t.rake_pct * 100.0,
+        rake_cap: t.rake_cap,
+        allin_threshold: t.allin_threshold * 100.0,
+        add_allin: t.add_allin,
+        max_raises: t.max_raises,
+        oop: conv(&t.oop),
+        ip: conv(&t.ip),
+    })
+}
+
+async fn list_saves() -> Json<Vec<String>> {
+    let mut names = Vec::new();
+    if let Ok(entries) = std::fs::read_dir(saves_dir()) {
+        for e in entries.flatten() {
+            if let Some(name) = e.file_name().to_str() {
+                if let Some(stem) = name.strip_suffix(".gto") {
+                    names.push(stem.to_string());
+                }
+            }
+        }
+    }
+    names.sort();
+    Json(names)
+}
+
+async fn get_presets() -> Json<serde_json::Value> {
+    Json(serde_json::json!([
+        {
+            "name": "BTN open (~44%)",
+            "range": "22+,A2s+,K5s+,Q7s+,J7s+,T7s+,96s+,86s+,75s+,64s+,54s,43s,A2o+,K9o+,Q9o+,J9o+,T8o+,98o,87o"
+        },
+        {
+            "name": "BB defend vs BTN open",
+            "range": "55-22,A8s-A2s,K9s-K2s,Q9s-Q4s,J9s-J6s,T9s-T6s,98s-95s,87s-84s,76s-74s,65s-63s,54s-52s,43s,42s,32s,AJo-A2o,KTo-K8o,QTo-Q8o,JTo-J8o,T9o-T8o,98o,87o,76o,65o"
+        },
+        {
+            "name": "CO open (~30%)",
+            "range": "22+,A2s+,K8s+,Q9s+,J9s+,T8s+,97s+,86s+,76s,65s,54s,A8o+,A5o,KTo+,QTo+,JTo,T9o"
+        },
+        {
+            "name": "UTG open (~18%)",
+            "range": "44+,A5s-A2s,ATs+,KTs+,QTs+,JTs,T9s,98s,87s,76s,AJo+,KQo"
+        },
+        {
+            "name": "3-bettor (BB vs BTN 3bet)",
+            "range": "99+,AJs+,KQs,A5s-A4s,KJs,QJs,JTs,T9s,AQo+,76s,65s"
+        },
+        {
+            "name": "BTN call vs BB 3bet",
+            "range": "JJ-22,AQs-A9s,A5s-A4s,KTs+,QTs+,J9s+,T8s+,97s+,87s,76s,65s,54s,AQo-AJo,KQo"
+        },
+        {
+            "name": "Polarized river example",
+            "range": "AA,KK,A5s-A2s"
+        },
+        {
+            "name": "Condensed river example",
+            "range": "QQ-88,AJs-A9s,KQs,KJs"
+        }
+    ]))
+}
+
+// ---------------------------------------------------------------------------
+
+fn init_rayon() {
+    let threads = std::env::var("SOLVER_THREADS")
+        .ok()
+        .and_then(|s| s.parse::<usize>().ok())
+        .unwrap_or_else(|| {
+            // SMT hurts this memory-bound workload; default to physical cores.
+            (std::thread::available_parallelism()
+                .map(|n| n.get())
+                .unwrap_or(8)
+                / 2)
+            .max(1)
+        });
+    rayon::ThreadPoolBuilder::new()
+        .num_threads(threads)
+        .build_global()
+        .ok();
+    println!("solver threads: {threads}");
+}
+
+#[tokio::main]
+async fn main() {
+    init_rayon();
+    let state = Arc::new(AppState {
+        session: Mutex::new(None),
+        status: Mutex::new(StatusInfo {
+            state: "idle".to_string(),
+            ..Default::default()
+        }),
+        preflop: Mutex::new(None),
+        report: Mutex::new(ReportStatus::default()),
+        report_stop: Arc::new(AtomicBool::new(false)),
+        report_cache: Mutex::new(None),
+    });
+
+    // The UI is a no-build set of ES modules; without a Cache-Control the
+    // browser heuristically caches them for a while and users run stale JS
+    // after an update (with a working index.html). no-cache = always
+    // revalidate (Last-Modified makes that a cheap 304).
+    let serve_dir = tower_http::services::ServeDir::new("web")
+        .append_index_html_on_directories(true);
+    async fn no_cache(mut res: axum::response::Response) -> axum::response::Response {
+        res.headers_mut().insert(
+            axum::http::header::CACHE_CONTROL,
+            axum::http::HeaderValue::from_static("no-cache"),
+        );
+        res
+    }
+
+    let app = Router::new()
+        .route("/api/spot", post(build_spot))
+        .route("/api/solve", post(start_solve))
+        .route("/api/stop", post(stop_solve))
+        .route("/api/status", get(get_status))
+        .route("/api/node", post(get_node))
+        .route("/api/exploit", post(exploit_view))
+        .route("/api/lock", post(lock_node))
+        .route("/api/profile_locks", post(profile_locks).delete(profile_locks_clear))
+        .route("/api/reports/run", post(report_run))
+        .route("/api/reports/status", get(report_status))
+        .route("/api/reports/stop", post(report_stop_run))
+        .route("/api/reports", get(report_list))
+        .route("/api/reports/get", post(report_get))
+        .route("/api/reports/lines", post(report_lines))
+        .route("/api/reports/delete", post(report_delete))
+        .route("/api/unlock", post(unlock_node))
+        .route("/api/locks", get(list_locks))
+        .route("/api/runouts", post(runouts))
+        .route("/api/range/parse", post(parse_range))
+        .route("/api/save", post(save_solve))
+        .route("/api/load", post(load_solve))
+        .route("/api/saves", get(list_saves))
+        .route("/api/presets", get(get_presets))
+        .route("/api/preflop/spot", post(pf_build))
+        .route("/api/preflop/estimate", post(pf_estimate))
+        .route("/api/preflop/solve", post(pf_solve))
+        .route("/api/preflop/stop", post(pf_stop))
+        .route("/api/preflop/status", get(pf_status))
+        .route("/api/preflop/evaluate", get(pf_evaluate))
+        .route("/api/preflop/session", get(pf_session_info))
+        .route("/api/preflop/node", post(pf_node))
+        .route("/api/preflop/export", post(pf_export))
+        // Nine empirical profiles can legitimately exceed Axum's 2 MiB default.
+        .route("/api/preflop/table", post(pf_table).layer(axum::extract::DefaultBodyLimit::max(64 * 1024 * 1024)))
+        .route("/api/preflop/generate", post(pf_generate).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route("/api/preflop/contextual-preview", post(pf_contextual_preview))
+        .route("/api/preflop/model-evidence", post(pf_model_evidence).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route("/api/preflop/capabilities", get(pf_capabilities))
+        .route("/api/preflop/archetypes", get(pf_archetypes))
+        .route("/api/preflop/save", post(pf_save_game))
+        .route("/api/preflop/load", post(pf_load_game))
+        .route("/api/preflop/saves", get(pf_list_games))
+        .route("/api/preflop/hero", post(pf_hero))
+        .route("/api/preflop/profiles", get(pf_profiles_list))
+        .route("/api/preflop/profiles/save", post(pf_profile_save).layer(axum::extract::DefaultBodyLimit::max(8 * 1024 * 1024)))
+        .route("/api/preflop/profiles/get", post(pf_profile_get))
+        .route("/api/preflop/scenarios", get(pf_scenarios_list))
+        .route("/api/preflop/scenarios/save", post(pf_scenario_save))
+        .route("/api/preflop/scenarios/delete", post(pf_scenario_delete))
+        .route("/api/preflop/lock", post(pf_lock))
+        .route("/api/preflop/unlock", post(pf_unlock))
+        // Aggregate research artifacts share the app's local-only listener.
+        .nest_service("/research/preflop-evolution", tower_http::services::ServeDir::new("research/preflop-evolution"))
+        .nest_service("/research/ignition-reraise", tower_http::services::ServeDir::new("research/ignition-reraise"))
+        .nest_service("/research/ignition-action-sizes", tower_http::services::ServeDir::new("research/ignition-action-sizes"))
+        .nest_service("/docs", tower_http::services::ServeDir::new("docs"))
+        .fallback_service(serve_dir)
+        .layer(axum::middleware::map_response(no_cache))
+        .with_state(state);
+
+    let port: u16 = std::env::var("PORT")
+        .ok()
+        .and_then(|s| s.parse().ok())
+        .unwrap_or(3737);
+    let addr = format!("127.0.0.1:{port}");
+    println!("GTO solver running at http://{addr}");
+    let listener = tokio::net::TcpListener::bind(&addr).await.unwrap();
+    axum::serve(listener, app).await.unwrap();
+}
+
+#[cfg(test)]
+mod scenario_filename_tests {
+    use super::scenario_path;
+
+    #[test]
+    fn scenario_names_cannot_create_windows_alternate_streams() {
+        let name = "8-max 150bb $2/2: limps + 10%, 9 cap rake";
+        let path = scenario_path(name).unwrap();
+        assert_eq!(path.parent().unwrap(), std::path::Path::new("saves/scenarios"));
+        assert_eq!(path.file_name().unwrap().to_str().unwrap(),
+                   "8-max 150bb $2-2- limps + 10%, 9 cap rake.json");
+        assert!(!path.file_name().unwrap().to_str().unwrap().contains(':'));
+    }
+}

@@ -1,0 +1,145 @@
+{
+  "at": "2026-10-28T15:35:18.545687+00:00",
+  "status": "independent_log_pool_science_process_math_and_decision_replay_pass",
+  "checks": 290,
+  "outcomes": {
+    "8": {
+      "reference_ms": 9581.0123,
+      "candidate_ms": 9571.2414,
+      "gain_pct": 0.10198191687948807,
+      "guards": [
+        {
+          "fixture": "rainbow",
+          "median_slowdown_pct": -0.23408983666669547,
+          "slower_pairs": 1,
+          "failed": false
+        },
+        {
+          "fixture": "two-tone",
+          "median_slowdown_pct": 0.0602884433316353,
+          "slower_pairs": 1,
+          "failed": false
+        },
+        {
+          "fixture": "river",
+          "median_slowdown_pct": 1.4557442733386994,
+          "slower_pairs": 2,
+          "failed": true
+        }
+      ],
+      "process_median_change_pct": {
+        "CPU_ms": -15.813117699910151,
+        "lifetime_ms": -0.22935981076895873
+      },
+      "failed_gates": [
+        "aggregate_ge1pct",
+        "strict_fixture_clear"
+      ]
+    },
+    "32": {
+      "reference_ms": 9581.0123,
+      "candidate_ms": 9564.314499999999,
+      "gain_pct": 0.17428012277994606,
+      "guards": [
+        {
+          "fixture": "rainbow",
+          "median_slowdown_pct": -0.2775019887534591,
+          "slower_pairs": 1,
+          "failed": false
+        },
+        {
+          "fixture": "two-tone",
+          "median_slowdown_pct": -0.10587135539844583,
+          "slower_pairs": 1,
+          "failed": false
+        },
+        {
+          "fixture": "river",
+          "median_slowdown_pct": 3.470780543110963,
+          "slower_pairs": 3,
+          "failed": true
+        }
+      ],
+      "process_median_change_pct": {
+        "CPU_ms": 23.090745732255158,
+        "lifetime_ms": -0.1839306738289359
+      },
+      "failed_gates": [
+        "aggregate_ge1pct",
+        "strict_fixture_clear",
+        "CPU_ms_median_regression_le1pct"
+      ]
+    }
+  },
+  "D168_retained_extents_verified": 99,
+  "D168_full_reader_report_sha256": "363d523140a077e0ccdaa3ac44954f5f7d82e0917e5675ed9b0b15738622386a",
+  "D168_full_raw_comparison_not_repeated": true,
+  "D169_report_sha256": "901df9ce405b5ddb9a4e347790275d258cd464d923557490e6597b74d2fbdb9c",
+  "retained_log_receipt_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U16\\stdout.log": "678ccca9dfabf45174d16d1f954c783a74331ad2cf59be4432cb05e49a4931d8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U16\\report.json": "b531cb0748d07a2eabad82902bd4cd74482d7a7100c1a4657c57a7e300403048",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U16\\exit.json": "bbc1024ea10463a818b7a1987860e7f310756c7da6e956f45b99a0f798542337",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U16\\invocation.json": "ff08546bbf4f79e60bbd252b0b5a06e75c5667912182e438bb90bb31dd9a0404",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U8\\stdout.log": "43cb04590e80473aebad464755fbceadb869ac8ffb8e3dac0966928fab021893",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U8\\report.json": "e48d3d35d32abbf9dc8d57b22405e2ea9af3433998a662a981a92371793a9dc3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U8\\exit.json": "335faf1a7a5bb6b352dab5cf64b6924af98836c21c11f39859c638a93bd3e8b8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U8\\invocation.json": "3834c190695ea41d504b5431546ccbc34d798a915f48f642af60d80f66f766cf",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U32\\stdout.log": "61b75ac827943d6e3d6a3667ab56086ae3635f597b2015aea504c2d43df1bb4d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U32\\report.json": "35dc7b2224f859b347db993913c13b741e3d84f973b3049cd5988f0be108c50d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U32\\exit.json": "be657f7e7dad92286961175058f7e547b9ed7f4730bc16166ea1c10ced8f589f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-U32\\invocation.json": "10f3a47ae7b38f8a09d0917b247b9fdac1a288526030fa76f50a63ecc0e17e73",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W16\\stdout.log": "65e9bb247e76779935c91314fa29ba8e3b874d75320abd9036f9ddadb6e3462a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W16\\report.json": "c8560cedb3a78276e542303e3d6f9daf7d9ddcfff92792e4999d9a1e2d53e4b9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W16\\exit.json": "c830fddffe8ae046ce71945242d047e85006145f0179809afdfdf7e457999fb9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W16\\invocation.json": "8615612f08d6ed1d53ef65135653fbad00951f8d2a971003582d8a60cf2f39be",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W8\\stdout.log": "5838e7949d19244cbd8bc61dc69df52593d30513af83ad015132014683389b90",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W8\\report.json": "2dc6c3de20ab28d80838262e159c38fc7a803f070205f6bbda2af635b3d91116",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W8\\exit.json": "832345110cafb03f7161e17e98608d689b4b0877ac568429dc4440c0040e132a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W8\\invocation.json": "7845aedacdd03821ac1d609b09baf0bd52559d9b03ffd19c1880cf0a2e51d0b6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W32\\stdout.log": "6e741d00e6a61da8cfe5ea87aad71893375afb393d72c3249781e8855117b818",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W32\\report.json": "73d83c7eac0ccaba74e81ab48f7f0de8e5a5fd9b5a9bd5ea51514eaf581dda8a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W32\\exit.json": "34571266f0abe3ea1eff69a2ff9fa69f6b23e52a31bd556e7e9daade6ef0635e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-W32\\invocation.json": "54efca045e0750217bef2d1c9c410e9777f29aa30845abdf804afbae46089744",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R1\\stdout.log": "1202709abf090088cd81706312b313938bb0deac64dc0f7464335bb2572c49c8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R1\\report.json": "378e56754104cfe1075db4e2a33844b57f7cbce17dd2501da2ceb9c85e84a931",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R1\\exit.json": "ef0fda80ea5a452d7e1fda31cda5cb36121b7ea5bf77586260c2e2c6b677597c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R1\\invocation.json": "ed895dd37a36a74d7329de6605533d7a7939d59120d4603e7877ade9cfaf1218",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R1\\stdout.log": "23bf18ec544cbd8b132bf61a7f20a71609c35f77425da3dac9df6c29270447d7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R1\\report.json": "bef42eb3c4b0a547db715d86a4404d732aa72a0834332e46ed85d6b3e7e217be",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R1\\exit.json": "1392cc225a97e50e7717625063289dd3723f8e3dc35cd42e79d1f5f7bd82c439",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R1\\invocation.json": "742d5714909e8c0a08495ac0edfad4e0cbbffa2814990b11b537be646af3fe4a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R1\\stdout.log": "9f5eec4ab1a8b4c243d9d704286428d968df8be6e46eaf96ab979b54cb3fbf8a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R1\\report.json": "9385d6fefd631124eb4de5be673751768942e278f0927a01b6aff584fa51e54a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R1\\exit.json": "e290673055ce03a3b27be43df5cd9af4c637607a7b45314e88854cb208e6c4c2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R1\\invocation.json": "abea9678c0cfbf1ee1805005afd89949a6686c9a4652d58587c3e98c372d1e33",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R2\\stdout.log": "8a01b501bbe32c405ec5a555906b7fa566bab285c529324a9d1efcec0a3385f3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R2\\report.json": "6984d154c96dd1d6c4d38f5c6d7166ad0e9742c30a6403c8fbd82e5d96bacc3c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R2\\exit.json": "97197193cd8e5e3c2add98a07017f16fb9221124252a7b850e019d3a00051504",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R2\\invocation.json": "98ecffca10f644e20f76aa815202be39870a2e1a988c09ee408a1837575d2f13",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R2\\stdout.log": "028f41cc9fde32c83b12eabf793f3edc57872c538f01464666a084e8c010feeb",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R2\\report.json": "7724a50c92d651817022521992ec28e71027565cb8f402d8e8c9406281f2ef0b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R2\\exit.json": "3667ddc9424c03885bb2de7c9a33e3afbbb56379f7017c30161ceb71444da154",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R2\\invocation.json": "8c9f428e29a9d49a2e31bc6c5edb31668a2a62a6743b46ad4c3d8616cdadf41d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R2\\stdout.log": "a1b8bc0c3c6a14faf3697a0cb75970af40916a125351950d8290b145f9810df1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R2\\report.json": "5938fc114a9009c25ea1f37252d836b86dd65dc39e00e2c1f9295094bd95b33a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R2\\exit.json": "46d79913bc8795b2c2a0913959db87ebdfb2bfe1b6f928323f7fc8eedd2daf61",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R2\\invocation.json": "da8e7c1c04b5fcdce0b78f78c3e794d85e37cae90f373e156a0b6957ab87204f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R3\\stdout.log": "58a12fede612f31c1ce0ba0302f26a0b1a0f5e182bff5215439c829d4fe7df24",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R3\\report.json": "a475dfc9f0277e06482262b2d11e89dd0e6fcbf58e47dbbc49eeb79e7466474a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R3\\exit.json": "f4b18253b563af9c40f2b4cc2bb2bbcd04cfc1581c86906cf96372fc3ba11326",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T32-R3\\invocation.json": "46aac21a6b67755315ce6fc813fdee7e1ffd292d59cdd9ac74c1e9b39af205b6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R3\\stdout.log": "d3310d772bb29ea07caf060f9220c899ccb03d4b8e89a0df33b64dfee1f57b81",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R3\\report.json": "83c41c748dea4547a3c72e18cf89290da115d1818cf3db426640aa0f5d31b5dd",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R3\\exit.json": "7ef3b0aa1d989afba8265bfc67e2f14acf4a07f5ca9f25e303426bf5eda2cef4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T16-R3\\invocation.json": "5ff13e14fdb7fc83df618e7b4ccf72ceb7b928ddb1aa706a94676aaad71805c9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R3\\stdout.log": "5516f013e665fc9825de26ae8c83af33aeee1aac7f255aac0baad45444db795f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R3\\report.json": "b9e32b825c7773f925713755ddeeb64692a92215bb4b8fd148799ba2ca732830",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R3\\exit.json": "be78bfb436299fbc20ba4589ff173b19636b580ce07118aee56c8f0a4e9e0c0d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D169-T8-R3\\invocation.json": "adeb449f17ef5b82a13148dfc8c5e02a3cba6089d5743609e731db07e1f9884c"
+  },
+  "no_native_or_extra_timing_runs": true,
+  "best_qualified_workers": 16,
+  "new_gain_accepted": false,
+  "RAM20261028_original_baseline_ms": 10456.4109,
+  "matched_harness_absolute_control_not_pooled_with_original_baseline": true
+}

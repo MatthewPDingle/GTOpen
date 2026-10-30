@@ -1,0 +1,355 @@
+--- a/crates/solver/src/gpu/arena.rs
++++ b/crates/solver/src/gpu/arena.rs
+@@ -21,6 +21,14 @@
+     // usize::MAX represents a block of positive-zero bits. Signed zero and
+     // every other initial bit pattern have an explicit snapshot.
+     initial: [usize; 2],
++}
++
++#[derive(Clone, Debug)]
++pub(super) struct ReadbackChunk {
++    pub(super) first: usize,
++    pub(super) past: usize,
++    pub(super) start: usize,
++    pub(super) len: usize,
+ }
+ 
+ pub(super) struct ArenaLayout {
+@@ -172,6 +180,88 @@
+         Ok(device)
+     }
+ 
++    /// Complete-node groups, validated before any asynchronous transfer.
++    pub(super) fn readback_chunks(
++        &self, solver: &Solver, p: usize, window: usize, pieces: usize, min_words: usize,
++    ) -> Option<Vec<ReadbackChunk>> {
++        const MAX_CHUNKS: usize = 16;
++        if pieces < 2 || pieces > 14 || self.len == 0 { return None; }
++        let target = self.len.checked_add(pieces - 1)? / pieces;
++        if target < min_words || target > window || window == 0 { return None; }
++        let mut chunks = Vec::with_capacity(MAX_CHUNKS);
++        let (mut first, mut past, mut start, mut len, mut covered) = (0, 0, 0, 0usize, 0usize);
++        let mut append = |index: usize, device: usize, words: usize| -> Option<()> {
++            if words == 0 || words > window || device != covered { return None; }
++            let next = covered.checked_add(words)?;
++            if next > self.len { return None; }
++            if len != 0 && len.checked_add(words)? > target {
++                if chunks.len() >= MAX_CHUNKS - 1 { return None; }
++                chunks.push(ReadbackChunk { first, past, start, len });
++                len = 0;
++            }
++            if len == 0 { first = index; start = device; }
++            past = index.checked_add(1)?;
++            len = len.checked_add(words)?;
++            covered = next;
++            Some(())
++        };
++        if self.compact {
++            for (i, block) in self.active.iter().enumerate() {
++                append(i, block.device, block.len)?;
++            }
++        } else {
++            let nh = solver.spot.hands[p].len();
++            for (i, node) in solver.spot.tree.nodes.iter().enumerate() {
++                if node.kind == KIND_ACTION && node.player as usize == p {
++                    append(i, usize::try_from(node.data_offset).ok()?,
++                        (node.num_children as usize).checked_mul(nh)?)?;
++                }
++            }
++        }
++        drop(append);
++        if covered != self.len || len == 0 { return None; }
++        chunks.push(ReadbackChunk { first, past, start, len });
++        if chunks.len() < 2 { return None; }
++        Some(chunks)
++    }
++
++    /// Encode only complete nodes whose device words are in this chunk.
++    pub(super) fn write_readback_chunk(
++        &self, solver: &Solver, p: usize, which: usize, chunk: &ReadbackChunk, data: &[f32],
++    ) {
++        debug_assert_eq!(chunk.len, data.len());
++        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
++        if self.compact {
++            self.active[chunk.first..chunk.past].par_iter().for_each(|block| {
++                let off = block.device - chunk.start;
++                unsafe { store.write_f32(block.node, block.host, block.len,
++                    &data[off..off + block.len]); }
++            });
++        } else {
++            let nh = solver.spot.hands[p].len();
++            solver.spot.tree.nodes[chunk.first..chunk.past].par_iter().enumerate()
++                .for_each(|(local, node)| {
++                    if node.kind == KIND_ACTION && node.player as usize == p {
++                        let count = node.num_children as usize * nh;
++                        let off = node.data_offset as usize - chunk.start;
++                        unsafe { store.write_f32((chunk.first + local) as u32,
++                            node.data_offset, count, &data[off..off + count]); }
++                    }
++                });
++        }
++    }
++
++    pub(super) fn write_readback_inactive(&self, solver: &Solver, p: usize, which: usize) {
++        if !self.compact { return; }
++        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
++        self.inactive.par_iter().for_each(|block| {
++            let start = block.initial[which];
++            let values = if start == usize::MAX { &self.zeros[..block.len] }
++                else { &self.initial[which][start..start + block.len] };
++            unsafe { store.write_f32(block.node, block.host, block.len, values); }
++        });
++    }
++
+     pub(super) fn write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+         if !self.compact {
+             write_arena(solver, which != 0, p, data);
+@@ -292,4 +382,93 @@
+         layout.initial[0].clear();
+         assert!(!layout.can_upload_zeros(&store, 0));
+     }
+-}
++    fn readback_spot() -> Arc<crate::game::Spot> {
++        use crate::{Spot, SpotConfig, StreetSizing, TreeConfig, parse_sizes};
++        let sizing = || StreetSizing { bet: parse_sizes("50").unwrap(), raise: vec![], donk: vec![] };
++        Arc::new(Spot::new_with_limit(SpotConfig {
++            board: "KsQs2dJd".into(),
++            range_oop: "AA,KK,QQ,JJ,AKs,AQs,AKo".into(),
++            range_ip: "AA,QQ,TT,77,AQs,KQs,AQo".into(),
++            tree: TreeConfig { starting_pot: 10.0, effective_stack: 20.0,
++                oop: [sizing(), sizing(), sizing()], ip: [sizing(), sizing(), sizing()],
++                ..Default::default() },
++        }, Some(20_000)).unwrap())
++    }
++
++    fn assert_raw_stores_equal(a: &Solver, b: &Solver) {
++        for (left, right) in a.regrets.iter().chain(&a.strat).zip(b.regrets.iter().chain(&b.strat)) {
++            match (left, right) {
++                (Store::I16 { q: lq, scale: ls }, Store::I16 { q: rq, scale: rs }) => {
++                    assert_eq!(lq.as_slice(), rq.as_slice());
++                    assert_eq!(ls.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
++                        rs.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>());
++                }
++                (Store::U16 { q: lq, scale: ls }, Store::U16 { q: rq, scale: rs }) => {
++                    assert_eq!(lq.as_slice(), rq.as_slice());
++                    assert_eq!(ls.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>(),
++                        rs.as_slice().iter().map(|x| x.to_bits()).collect::<Vec<_>>());
++                }
++                _ => panic!("compressed stores required"),
++            }
++        }
++    }
++
++    #[test]
++    fn readback_chunks_match_full_encoding_and_inactive_restore() {
++        let spot = readback_spot();
++        for iso in [false, true] {
++            let mut original = Solver::with_storage(spot.clone(), crate::store::Storage::Compressed);
++            let mut chunked = Solver::with_storage(spot.clone(), crate::store::Storage::Compressed);
++            original.use_isomorphism = iso; chunked.use_isomorphism = iso;
++            let plan = GpuPlan::build(&spot, iso);
++            for p in 0..2 {
++                let mut layout = ArenaLayout::new(&original, &plan, p);
++                assert_eq!(layout.compact, iso);
++                for block in &mut layout.inactive {
++                    for which in 0..2 {
++                        block.initial[which] = layout.initial[which].len();
++                        layout.initial[which].extend((0..block.len).map(|i|
++                            if i % 7 == 0 { -0.0 } else { (i as f32 - 13.0) * 0.125 }));
++                    }
++                }
++                let window = layout.len / 2;
++                let chunks = layout.readback_chunks(&original, p, window, 8, 1).unwrap();
++                assert!(chunks.len() >= 2 && chunks.len() <= 16);
++                assert_eq!(chunks[0].start, 0);
++                assert_eq!(chunks.last().unwrap().start + chunks.last().unwrap().len, layout.len);
++                for pair in chunks.windows(2) { assert_eq!(pair[0].start + pair[0].len, pair[1].start); }
++                for chunk in &chunks { assert!(chunk.len <= window && chunk.first < chunk.past); }
++                let values: Vec<f32> = (0..layout.len).map(|i|
++                    if i % 23 == 0 { -0.0 } else { ((i % 97) as f32 - 45.0) * 0.125 }).collect();
++                for which in 0..2 {
++                    layout.write(&original, p, which, &values);
++                    for chunk in &chunks {
++                        layout.write_readback_chunk(&chunked, p, which, chunk,
++                            &values[chunk.start..chunk.start + chunk.len]);
++                    }
++                    layout.write_readback_inactive(&chunked, p, which);
++                    assert_raw_stores_equal(&original, &chunked);
++                }
++            }
++        }
++    }
++
++    #[test]
++    fn readback_chunks_decline_small_or_invalid_geometry() {
++        let spot = readback_spot();
++        let solver = Solver::with_storage(spot.clone(), crate::store::Storage::Compressed);
++        for iso in [false, true] {
++            let plan = GpuPlan::build(&spot, iso);
++            let mut layout = ArenaLayout::new(&solver, &plan, 0);
++            let window = layout.len / 2;
++            assert!(layout.readback_chunks(&solver, 0, window, 0, 1).is_none());
++            assert!(layout.readback_chunks(&solver, 0, window, usize::MAX, 1).is_none());
++            assert!(layout.readback_chunks(&solver, 0, 1, 8, 1).is_none());
++            assert!(layout.readback_chunks(&solver, 0, window, 8, layout.len).is_none());
++            assert!(layout.readback_chunks(&solver, 0, window, 8, 1).is_some());
++            if layout.compact { layout.active[0].device += 1; } else { layout.len += 1; }
++            assert!(layout.readback_chunks(&solver, 0, window, 8, 1).is_none());
++        }
++    }
++
++}
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -19,7 +19,7 @@
+ mod continuation_paging;
+ #[cfg(feature = "preflop-research")]
+ pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};
+-use arena::ArenaLayout;
++use arena::{ArenaLayout, ReadbackChunk};
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -30,6 +30,86 @@
+ use plan::{GpuPlan, LevelSpan};
+ use std::sync::Arc;
+ use rayon::prelude::*;
++
++#[derive(Clone, Copy)]
++struct ReadbackPolicy {
++    pieces: usize,
++    min_words: usize,
++    #[cfg(test)]
++    fault: Option<(usize, bool)>, // queued copy ordinal, panic instead of Err
++}
++impl Default for ReadbackPolicy {
++    fn default() -> Self {
++        Self { pieces: 8, min_words: 16 * 1024 * 1024 / 4,
++            #[cfg(test)] fault: None }
++    }
++}
++
++#[cfg(test)]
++static READBACK_DRAIN_CALLS: std::sync::atomic::AtomicUsize =
++    std::sync::atomic::AtomicUsize::new(0);
++
++// A queued DMA may still own a pinned window during encoding or an unwind.
++struct ReadbackDrain {
++    stream: Arc<CudaStream>,
++    pending: bool,
++}
++impl Drop for ReadbackDrain {
++    fn drop(&mut self) {
++        if self.pending {
++            let result = self.stream.synchronize();
++            #[cfg(test)] READBACK_DRAIN_CALLS.fetch_add(1, std::sync::atomic::Ordering::SeqCst);
++            if let Err(error) = result { eprintln!("READBACK_DRAIN_ERROR {error:?}"); }
++        }
++    }
++}
++
++fn readback_chunks(
++    stream: &Arc<CudaStream>, layout: &ArenaLayout, staging: &mut PinnedBuf,
++    device: &CudaSlice<f32>, solver: &Solver, p: usize, which: usize,
++    chunks: &[ReadbackChunk], policy: ReadbackPolicy,
++) -> Result<(), String> {
++    let mut drain = ReadbackDrain { stream: stream.clone(), pending: false };
++    let half = staging.len / 2;
++    let (left, right) = staging.as_mut_slice().split_at_mut(half);
++    let first = &chunks[0];
++    drain.pending = true;
++    stream.memcpy_dtoh(&device.slice(first.start..first.start + first.len),
++        &mut left[..first.len]).map_err(e)?;
++    #[cfg(test)]
++    if let Some((1, panic)) = policy.fault {
++        if panic { panic!("injected readback unwind after first queue"); }
++        return Err("injected readback error after first queue".into());
++    }
++    stream.synchronize().map_err(e)?;
++    drain.pending = false;
++    for (index, current) in chunks.iter().enumerate() {
++        let (ready, next_buffer): (&[f32], &mut [f32]) = if index % 2 == 0 {
++            (&left[..], &mut right[..])
++        } else { (&right[..], &mut left[..]) };
++        if let Some(next) = chunks.get(index + 1) {
++            drain.pending = true;
++            stream.memcpy_dtoh(&device.slice(next.start..next.start + next.len),
++                &mut next_buffer[..next.len]).map_err(e)?;
++            #[cfg(test)]
++            if let Some((ordinal, panic)) = policy.fault {
++                if ordinal == index + 2 {
++                    if panic { panic!("injected readback unwind after next queue"); }
++                    return Err("injected readback error after next queue".into());
++                }
++            }
++        }
++        // The next DMA writes a disjoint window while this immutable slice is read.
++        layout.write_readback_chunk(solver, p, which, current, &ready[..current.len]);
++        if drain.pending {
++            stream.synchronize().map_err(e)?;
++            drain.pending = false;
++        }
++    }
++    layout.write_readback_inactive(solver, p, which);
++    let _ = policy; // test-only fault controls disappear from the production build
++    Ok(())
++}
+ 
+ const BLOCK: u32 = 128;
+ 
+@@ -995,27 +1075,42 @@
+     /// Copy GPU arenas back into the CPU solver (for queries/BR/saves).
+     /// Works for both f32 and compressed CPU storage (encodes per node).
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
++        self.sync_to_cpu_policy(solver, ReadbackPolicy::default()).map(|_| ())
++    }
++
++    fn sync_to_cpu_policy(&mut self, solver: &mut Solver, policy: ReadbackPolicy) -> Result<usize, String> {
+         self.stream.synchronize().map_err(e)?;
++        let mut pipelined = 0;
+         for p in 0..2 {
+             let len = self.d_regrets[p].len();
+-            self.stream
+-                .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
+-            self.stream
+-                .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+-                .map_err(e)?;
+-            self.stream.synchronize().map_err(e)?;
+-            self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            let chunks = if solver.storage == crate::store::Storage::Compressed {
++                self.arena_layout[p].readback_chunks(solver, p, self.h_staging.len / 2,
++                    policy.pieces, policy.min_words)
++            } else { None };
++            if let Some(chunks) = chunks {
++                readback_chunks(&self.stream, &self.arena_layout[p], &mut self.h_staging,
++                    &self.d_regrets[p], solver, p, 0, &chunks, policy)?;
++                readback_chunks(&self.stream, &self.arena_layout[p], &mut self.h_staging,
++                    &self.d_strat[p], solver, p, 1, &chunks, policy)?;
++                pipelined += 2;
++            } else {
++                self.stream
++                    .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
++                self.stream
++                    .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
++                    .map_err(e)?;
++                self.stream.synchronize().map_err(e)?;
++                self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            }
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+-            // only representative branches hold fresh data; queries/saves
+-            // re-materialize siblings via Solver::ensure_symmetric
+             solver.mark_sym_dirty();
+         }
+-        Ok(())
++        Ok(pipelined)
+     }
+ 
+     /// Copy only the cumulative strategy back — all that exploitability

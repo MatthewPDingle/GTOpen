@@ -1,0 +1,192 @@
+{
+  "id": "D307",
+  "at": "2026-10-29T20:33:16.368553+00:00",
+  "status": "captured_guarded_normal_division_native_review_pending",
+  "protocol_sha256": "d957f2d48e5054c4e06822ed4f51aa1a4ff8e870c3442721e04a7aa7773de863",
+  "candidate_CUBIN_sha256": "ace04a9f9d43ea8607017ae8686b11ef53af2d061cfaba384bd18ac84130e6b8",
+  "candidate_SASS_sha256": "0acd39079cfc5c1a83dd9b1092c2ad7b575f220a2df056ce47c147e731d8b02a",
+  "baseline_CUBIN_sha256": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47",
+  "baseline_SASS_sha256": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061",
+  "entry_sections": {
+    "baseline": {
+      "down_action": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\baseline\\down_action.sass.txt",
+        "sha256": "b428e9d6538e80d327e89cd84d693b34a3771fb9036b9dd21c4f5863ed9c39b6"
+      },
+      "up_action": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\baseline\\up_action.sass.txt",
+        "sha256": "79d52fa4356c63837d4f7d60a2edf94ccc8bd31de3cecee2a81e11c7a37f7a36"
+      }
+    },
+    "candidate": {
+      "down_action": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\candidate\\down_action.sass.txt",
+        "sha256": "5c0e53ea357ff53ffd58276764870eae605d15ab94c60edc85a9a8af0da8a9b3"
+      },
+      "up_action": {
+        "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D307-normal-division-native\\execution\\candidate\\up_action.sass.txt",
+        "sha256": "7ab8662800fb2faa8af8f7ab7f1e5332e1f84fee49a1cea7d0713bafae994bf6"
+      }
+    }
+  },
+  "candidate_markers": {
+    "D098_DEVICE": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "major": 12,
+        "minor": 0,
+        "driver_api_version": 13030
+      }
+    ],
+    "D098_KERNEL": [
+      {
+        "name": "copy_root",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_action",
+        "registers": 40,
+        "local": 32,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_fold",
+        "registers": 39,
+        "local": 0,
+        "shared": 1232,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_show",
+        "registers": 38,
+        "local": 0,
+        "shared": 1040,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action",
+        "registers": 64,
+        "local": 64,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          16,
+          8,
+          4
+        ]
+      },
+      {
+        "name": "copy_span",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action_eval",
+        "registers": 40,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      }
+    ],
+    "D098_MODULE": [
+      {
+        "index": 0,
+        "module_id": 21,
+        "bytes": 206040,
+        "same_owned_context": true,
+        "elf_magic": true
+      }
+    ],
+    "D098_COMPLETE": [
+      {
+        "callback_errors": 0,
+        "modules": 1,
+        "kernel_launches": 0,
+        "solver_executions": 0,
+        "performance_measured": false
+      }
+    ]
+  },
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_compilers_NVRTC_applicationkernels_solver_or_speed_samples": 0,
+  "candidate_adopted": false,
+  "limits": "One existing checksum-bound CUPTI resource-module callback capture of sealed candidate PTX and one nvdisasm. Reuse exact accepted same-driver baseline. Two normalization sections. No new compiler/NVRTC/application kernel/counter/injection/solver/performance/source activation."
+}

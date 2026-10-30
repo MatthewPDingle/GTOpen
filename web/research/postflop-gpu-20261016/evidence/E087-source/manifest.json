@@ -1,0 +1,29 @@
+{
+  "id": "E087",
+  "at": "2026-10-18T11:08:23.342414+00:00",
+  "owned": {
+    "crates/solver/src/gpu/arena.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\baseline\\arena.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\candidate\\arena.rs"
+    },
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\baseline\\mod.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\candidate\\mod.rs"
+    },
+    "crates/solver/src/gpu/continuation_paging.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\baseline\\continuation_paging.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\candidate\\continuation_paging.rs"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/arena.rs": "440e2dbec7418e191c2a098ceb95eb8626b59ced881fd4e87a49f17bc51d36cb",
+    "crates/solver/src/gpu/mod.rs": "4b3264c7811679dacb9624a89a842f52c7dbc146b126da1c51c770fa1ec0fac0",
+    "crates/solver/src/gpu/continuation_paging.rs": "e83d86727481e19b6d2a7219456bae3119402b91684fdf737b4ce77e8d637e93"
+  },
+  "scope": "Bound actual host pinned allocation with one serial complete-node transfer window;3host files,CUDA unchanged.",
+  "fixed_window_bytes": 67108864,
+  "D138_report_sha256": "7e7a0bf3e836e55cb42948c95e8108a6e6cc10537ca56e4cdc8c6955f2d65e53",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

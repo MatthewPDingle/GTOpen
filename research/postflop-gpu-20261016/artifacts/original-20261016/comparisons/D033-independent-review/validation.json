@@ -1,0 +1,5054 @@
+{
+  "id": "D033-independent-review",
+  "created_at": "2026-10-16T09:43:01.155491+00:00",
+  "verdict": "PASS_EXACT_PROTOCOL_DIAGNOSTIC; MATERIAL_INSTRUMENTATION_PERTURBATION_LIMITS_NATIVE_HOTSPOT_INFERENCE",
+  "performance_accepted": false,
+  "actual_run": "D033R1",
+  "source_revision": 2,
+  "binary_sha256": "713eef623cf21b9d702f9dafadab27f7162c8587023c4f8c51e3527a09d10d34",
+  "build_manifest_sha256": "8b5d43676c3c65f7f860fb5708d1d1d9e30e23bb5e18c3ec065a6d58a8e037d1",
+  "checks_passed": 1099,
+  "checks": [
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\report.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\stdout.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\report.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\stdout.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\report.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\stdout.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-f32-candidate\\report.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-f32-candidate\\stdout.log",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\base-mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\base-mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-graph_device_events.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate.patch",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\manifest.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\README.md",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-graph_device_events-r1.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\binding-evidence.txt",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-graph_device_events.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate.patch",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\manifest.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\r1-to-r2.patch",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\README.md",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.jsonl",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.stderr.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\exit.json",
+    "R1 compile failure preserved with no-run command",
+    "R2 build and native run succeeded",
+    "one actual diagnostic test, no acceptance",
+    "actual and logical IDs preserved",
+    "build completed before native launch and native completion",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.manifest.json",
+    "embedded build manifest exact",
+    "invocation manifest identity exact",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.exe",
+    "frozen R2 binary identity",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\build.jsonl",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\build.stderr.log",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\candidate.patch",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\protocol.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\anchor-rainbow.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\README.md",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\source-manifest.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json",
+    "runtime fixed external inputs exact",
+    "R2 build patch exact",
+    "build and run source identities equal",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.lock",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.toml",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\Cargo.toml",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\best_response.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\bin\\solve_cli.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cards.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\contextual_postflop.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\evaluator.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_disk_state_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_host_paging_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_projection.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_replay_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_ssd_paging_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage_copy.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_stored_device_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\graph_device_events.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\lib.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\checkpoint_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\contextual.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\continuation.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_behavioral_transition.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_fixed_units.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_policy_repair.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_quality.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_refine.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_refine_gpu.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_research.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\dataset.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\equity.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\evidence.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\adaptive_throughput\\allocation_recovery.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\adaptive_throughput.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\average_opponents.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\average_opponents.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_interleave.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_zero.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_zero_predicate.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cohort_reuse\\tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cohort_reuse.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\conditional_sampling.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cross_player_inventory\\cohorts.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cross_player_inventory.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_research.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_research.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse\\tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse_inventory.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exploration.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exploration.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\fixed_history_units.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\fixed_history_units.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\frontier_research.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\history_units.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\learned.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\learned_interface.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_cdf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_offsets\\tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_offsets.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\normalized_regret.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\normalized_regret.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\pair_control.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\pair_control.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive_tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rank_pipeline.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rank_pipeline.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rm_plus.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rm_plus.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf\\ordinary\\tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf\\ordinary.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_locality.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_tiles.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_unroll\\tests.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_unroll.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\kernels.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\mod.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\multiway.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\particle_batches_research.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\reference.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\save.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\query.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\range.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\report.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\scratch.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\sysmem.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\action_sizing.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\build_validation.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\capacity_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\contextual_preflop.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_bridge.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_bridge_accumulation.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_coherent_symmetry.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_diagnostics.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_large.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_storage.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_storage_v2.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_paging.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_policy_json.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_settled_ranges.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_symmetry.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_zero_reach_contract.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\convergence.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\cuda_resources.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\fixtures\\postflop_quantization_prototype.cu",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu_bench.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu_check_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\load_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\model_evidence.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_action_menus.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_capacity_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_full_memory_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_memory_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_profile.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_quantization_proof.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_resume_state.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_state_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_action_evs.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_bench.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_budget.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_generic_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_gpu.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_rake_sizing.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_straddle.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_target_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_throughput.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_variants.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\realization.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\report_lines.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\research_perf.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_atomic.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_compat.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_locks.rs",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\program.md",
+    "artifact X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+    "all163 source entries unchanged at post-runtime independent review",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source\\mod.rs",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source\\graph_device_events.rs",
+    "fixed runtime environment",
+    "exact native diagnostic filter and one test thread",
+    "recorded live-solve preflight live_status_before",
+    "recorded live-solve preflight live_status_at_launch",
+    "native1pass0fail",
+    "no error or cleanup failure through native process exit",
+    "orchestration stderr empty",
+    "all22 markers in registered source/control-flow order",
+    "every warm exploit checkpoint through140",
+    "all4 raw-before-evaluation checkpoints",
+    "all3 explicit post-sample compressed checkpoints",
+    "exploit anchor 20",
+    "exploit anchor 40",
+    "exploit anchor 60",
+    "exploit anchor 80",
+    "exploit anchor 100",
+    "exploit anchor 120",
+    "exploit anchor 140",
+    "exploit anchor 160",
+    "exploit anchor 180",
+    "exploit anchor 200",
+    "full final historical state object exact, including all arena/root fields",
+    "final fixed200 fingerprint/exploit",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\stdout.log",
+    "historical raw results equal report B038",
+    "full historical anchor/config B038",
+    "raw original convergence anchors B038",
+    "artifact S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\stdout.log",
+    "historical raw results equal report E015C1",
+    "full historical anchor/config E015C1",
+    "raw original convergence anchors E015C1",
+    "original and accepted E015 entire non-timing rainbow records exact",
+    "raw exact before eval 140",
+    "bounded raw comparison 140",
+    "all8 raw arrays 140",
+    "three direct checked discount words 140",
+    "raw exact before eval 160",
+    "bounded raw comparison 160",
+    "all8 raw arrays 160",
+    "raw array lengths stable 160",
+    "three direct checked discount words 160",
+    "raw exact before eval 180",
+    "bounded raw comparison 180",
+    "all8 raw arrays 180",
+    "raw array lengths stable 180",
+    "three direct checked discount words 180",
+    "raw exact before eval 200",
+    "bounded raw comparison 200",
+    "all8 raw arrays 200",
+    "raw array lengths stable 200",
+    "three direct checked discount words 200",
+    "raw and frozen full arena length (0, 'regrets')",
+    "raw and frozen full arena length (0, 'strategy')",
+    "weights unchanged player0",
+    "raw and frozen full arena length (1, 'regrets')",
+    "raw and frozen full arena length (1, 'strategy')",
+    "weights unchanged player1",
+    "registered CPU arena and scratch size",
+    "dual device admission formula",
+    "dual host admission formula",
+    "admission headroom positive",
+    "both ordinary paired graphs",
+    "N+1 events graph0",
+    "original chain graph0",
+    "all2N ordered event edges graph0",
+    "all ordered original kernel descriptors/no setters graph0",
+    "unchanged valid launch descriptors graph0",
+    "N+1 events graph1",
+    "original chain graph1",
+    "all2N ordered event edges graph1",
+    "all ordered original kernel descriptors/no setters graph1",
+    "unchanged valid launch descriptors graph1",
+    "registered batch/order 160",
+    "fixed20 iteration arm (160, 'native')",
+    "finite outer times (160, 'native')",
+    "fixed20 iteration arm (160, 'instrumented')",
+    "finite outer times (160, 'instrumented')",
+    "setup excluded 160",
+    "finite intergraph gap 160",
+    "both final graph replay samples 160",
+    "last replay iteration (160, 0)",
+    "all ordered node samples (160, 0)",
+    "valid node (160, 0, 0)",
+    "near-resolution flag (160, 0, 0)",
+    "valid node (160, 0, 1)",
+    "near-resolution flag (160, 0, 1)",
+    "valid node (160, 0, 2)",
+    "near-resolution flag (160, 0, 2)",
+    "valid node (160, 0, 3)",
+    "near-resolution flag (160, 0, 3)",
+    "valid node (160, 0, 4)",
+    "near-resolution flag (160, 0, 4)",
+    "valid node (160, 0, 5)",
+    "near-resolution flag (160, 0, 5)",
+    "valid node (160, 0, 6)",
+    "near-resolution flag (160, 0, 6)",
+    "valid node (160, 0, 7)",
+    "near-resolution flag (160, 0, 7)",
+    "valid node (160, 0, 8)",
+    "near-resolution flag (160, 0, 8)",
+    "valid node (160, 0, 9)",
+    "near-resolution flag (160, 0, 9)",
+    "valid node (160, 0, 10)",
+    "near-resolution flag (160, 0, 10)",
+    "valid node (160, 0, 11)",
+    "near-resolution flag (160, 0, 11)",
+    "valid node (160, 0, 12)",
+    "near-resolution flag (160, 0, 12)",
+    "valid node (160, 0, 13)",
+    "near-resolution flag (160, 0, 13)",
+    "valid node (160, 0, 14)",
+    "near-resolution flag (160, 0, 14)",
+    "valid node (160, 0, 15)",
+    "near-resolution flag (160, 0, 15)",
+    "valid node (160, 0, 16)",
+    "near-resolution flag (160, 0, 16)",
+    "valid node (160, 0, 17)",
+    "near-resolution flag (160, 0, 17)",
+    "valid node (160, 0, 18)",
+    "near-resolution flag (160, 0, 18)",
+    "valid node (160, 0, 19)",
+    "near-resolution flag (160, 0, 19)",
+    "valid node (160, 0, 20)",
+    "near-resolution flag (160, 0, 20)",
+    "valid node (160, 0, 21)",
+    "near-resolution flag (160, 0, 21)",
+    "valid node (160, 0, 22)",
+    "near-resolution flag (160, 0, 22)",
+    "valid node (160, 0, 23)",
+    "near-resolution flag (160, 0, 23)",
+    "valid node (160, 0, 24)",
+    "near-resolution flag (160, 0, 24)",
+    "valid node (160, 0, 25)",
+    "near-resolution flag (160, 0, 25)",
+    "valid node (160, 0, 26)",
+    "near-resolution flag (160, 0, 26)",
+    "valid node (160, 0, 27)",
+    "near-resolution flag (160, 0, 27)",
+    "valid node (160, 0, 28)",
+    "near-resolution flag (160, 0, 28)",
+    "valid node (160, 0, 29)",
+    "near-resolution flag (160, 0, 29)",
+    "valid node (160, 0, 30)",
+    "near-resolution flag (160, 0, 30)",
+    "valid node (160, 0, 31)",
+    "near-resolution flag (160, 0, 31)",
+    "valid node (160, 0, 32)",
+    "near-resolution flag (160, 0, 32)",
+    "valid node (160, 0, 33)",
+    "near-resolution flag (160, 0, 33)",
+    "valid node (160, 0, 34)",
+    "near-resolution flag (160, 0, 34)",
+    "valid node (160, 0, 35)",
+    "near-resolution flag (160, 0, 35)",
+    "valid node (160, 0, 36)",
+    "near-resolution flag (160, 0, 36)",
+    "valid node (160, 0, 37)",
+    "near-resolution flag (160, 0, 37)",
+    "valid node (160, 0, 38)",
+    "near-resolution flag (160, 0, 38)",
+    "valid node (160, 0, 39)",
+    "near-resolution flag (160, 0, 39)",
+    "valid node (160, 0, 40)",
+    "near-resolution flag (160, 0, 40)",
+    "valid node (160, 0, 41)",
+    "near-resolution flag (160, 0, 41)",
+    "valid node (160, 0, 42)",
+    "near-resolution flag (160, 0, 42)",
+    "valid node (160, 0, 43)",
+    "near-resolution flag (160, 0, 43)",
+    "valid node (160, 0, 44)",
+    "near-resolution flag (160, 0, 44)",
+    "valid node (160, 0, 45)",
+    "near-resolution flag (160, 0, 45)",
+    "valid node (160, 0, 46)",
+    "near-resolution flag (160, 0, 46)",
+    "valid node (160, 0, 47)",
+    "near-resolution flag (160, 0, 47)",
+    "valid node (160, 0, 48)",
+    "near-resolution flag (160, 0, 48)",
+    "valid node (160, 0, 49)",
+    "near-resolution flag (160, 0, 49)",
+    "valid node (160, 0, 50)",
+    "near-resolution flag (160, 0, 50)",
+    "valid node (160, 0, 51)",
+    "near-resolution flag (160, 0, 51)",
+    "valid node (160, 0, 52)",
+    "near-resolution flag (160, 0, 52)",
+    "valid node (160, 0, 53)",
+    "near-resolution flag (160, 0, 53)",
+    "valid node (160, 0, 54)",
+    "near-resolution flag (160, 0, 54)",
+    "valid node (160, 0, 55)",
+    "near-resolution flag (160, 0, 55)",
+    "valid node (160, 0, 56)",
+    "near-resolution flag (160, 0, 56)",
+    "valid node (160, 0, 57)",
+    "near-resolution flag (160, 0, 57)",
+    "valid node (160, 0, 58)",
+    "near-resolution flag (160, 0, 58)",
+    "valid node (160, 0, 59)",
+    "near-resolution flag (160, 0, 59)",
+    "valid node (160, 0, 60)",
+    "near-resolution flag (160, 0, 60)",
+    "valid node (160, 0, 61)",
+    "near-resolution flag (160, 0, 61)",
+    "valid node (160, 0, 62)",
+    "near-resolution flag (160, 0, 62)",
+    "recomputed family sums (160, 0)",
+    "finite graph envelope (160, 0)",
+    "last replay iteration (160, 1)",
+    "all ordered node samples (160, 1)",
+    "valid node (160, 1, 0)",
+    "near-resolution flag (160, 1, 0)",
+    "valid node (160, 1, 1)",
+    "near-resolution flag (160, 1, 1)",
+    "valid node (160, 1, 2)",
+    "near-resolution flag (160, 1, 2)",
+    "valid node (160, 1, 3)",
+    "near-resolution flag (160, 1, 3)",
+    "valid node (160, 1, 4)",
+    "near-resolution flag (160, 1, 4)",
+    "valid node (160, 1, 5)",
+    "near-resolution flag (160, 1, 5)",
+    "valid node (160, 1, 6)",
+    "near-resolution flag (160, 1, 6)",
+    "valid node (160, 1, 7)",
+    "near-resolution flag (160, 1, 7)",
+    "valid node (160, 1, 8)",
+    "near-resolution flag (160, 1, 8)",
+    "valid node (160, 1, 9)",
+    "near-resolution flag (160, 1, 9)",
+    "valid node (160, 1, 10)",
+    "near-resolution flag (160, 1, 10)",
+    "valid node (160, 1, 11)",
+    "near-resolution flag (160, 1, 11)",
+    "valid node (160, 1, 12)",
+    "near-resolution flag (160, 1, 12)",
+    "valid node (160, 1, 13)",
+    "near-resolution flag (160, 1, 13)",
+    "valid node (160, 1, 14)",
+    "near-resolution flag (160, 1, 14)",
+    "valid node (160, 1, 15)",
+    "near-resolution flag (160, 1, 15)",
+    "valid node (160, 1, 16)",
+    "near-resolution flag (160, 1, 16)",
+    "valid node (160, 1, 17)",
+    "near-resolution flag (160, 1, 17)",
+    "valid node (160, 1, 18)",
+    "near-resolution flag (160, 1, 18)",
+    "valid node (160, 1, 19)",
+    "near-resolution flag (160, 1, 19)",
+    "valid node (160, 1, 20)",
+    "near-resolution flag (160, 1, 20)",
+    "valid node (160, 1, 21)",
+    "near-resolution flag (160, 1, 21)",
+    "valid node (160, 1, 22)",
+    "near-resolution flag (160, 1, 22)",
+    "valid node (160, 1, 23)",
+    "near-resolution flag (160, 1, 23)",
+    "valid node (160, 1, 24)",
+    "near-resolution flag (160, 1, 24)",
+    "valid node (160, 1, 25)",
+    "near-resolution flag (160, 1, 25)",
+    "valid node (160, 1, 26)",
+    "near-resolution flag (160, 1, 26)",
+    "valid node (160, 1, 27)",
+    "near-resolution flag (160, 1, 27)",
+    "valid node (160, 1, 28)",
+    "near-resolution flag (160, 1, 28)",
+    "valid node (160, 1, 29)",
+    "near-resolution flag (160, 1, 29)",
+    "valid node (160, 1, 30)",
+    "near-resolution flag (160, 1, 30)",
+    "valid node (160, 1, 31)",
+    "near-resolution flag (160, 1, 31)",
+    "valid node (160, 1, 32)",
+    "near-resolution flag (160, 1, 32)",
+    "valid node (160, 1, 33)",
+    "near-resolution flag (160, 1, 33)",
+    "valid node (160, 1, 34)",
+    "near-resolution flag (160, 1, 34)",
+    "valid node (160, 1, 35)",
+    "near-resolution flag (160, 1, 35)",
+    "valid node (160, 1, 36)",
+    "near-resolution flag (160, 1, 36)",
+    "valid node (160, 1, 37)",
+    "near-resolution flag (160, 1, 37)",
+    "valid node (160, 1, 38)",
+    "near-resolution flag (160, 1, 38)",
+    "valid node (160, 1, 39)",
+    "near-resolution flag (160, 1, 39)",
+    "valid node (160, 1, 40)",
+    "near-resolution flag (160, 1, 40)",
+    "valid node (160, 1, 41)",
+    "near-resolution flag (160, 1, 41)",
+    "valid node (160, 1, 42)",
+    "near-resolution flag (160, 1, 42)",
+    "valid node (160, 1, 43)",
+    "near-resolution flag (160, 1, 43)",
+    "valid node (160, 1, 44)",
+    "near-resolution flag (160, 1, 44)",
+    "valid node (160, 1, 45)",
+    "near-resolution flag (160, 1, 45)",
+    "valid node (160, 1, 46)",
+    "near-resolution flag (160, 1, 46)",
+    "valid node (160, 1, 47)",
+    "near-resolution flag (160, 1, 47)",
+    "valid node (160, 1, 48)",
+    "near-resolution flag (160, 1, 48)",
+    "valid node (160, 1, 49)",
+    "near-resolution flag (160, 1, 49)",
+    "valid node (160, 1, 50)",
+    "near-resolution flag (160, 1, 50)",
+    "valid node (160, 1, 51)",
+    "near-resolution flag (160, 1, 51)",
+    "valid node (160, 1, 52)",
+    "near-resolution flag (160, 1, 52)",
+    "valid node (160, 1, 53)",
+    "near-resolution flag (160, 1, 53)",
+    "valid node (160, 1, 54)",
+    "near-resolution flag (160, 1, 54)",
+    "valid node (160, 1, 55)",
+    "near-resolution flag (160, 1, 55)",
+    "valid node (160, 1, 56)",
+    "near-resolution flag (160, 1, 56)",
+    "valid node (160, 1, 57)",
+    "near-resolution flag (160, 1, 57)",
+    "valid node (160, 1, 58)",
+    "near-resolution flag (160, 1, 58)",
+    "valid node (160, 1, 59)",
+    "near-resolution flag (160, 1, 59)",
+    "valid node (160, 1, 60)",
+    "near-resolution flag (160, 1, 60)",
+    "valid node (160, 1, 61)",
+    "near-resolution flag (160, 1, 61)",
+    "valid node (160, 1, 62)",
+    "near-resolution flag (160, 1, 62)",
+    "recomputed family sums (160, 1)",
+    "finite graph envelope (160, 1)",
+    "registered batch/order 180",
+    "fixed20 iteration arm (180, 'native')",
+    "finite outer times (180, 'native')",
+    "fixed20 iteration arm (180, 'instrumented')",
+    "finite outer times (180, 'instrumented')",
+    "setup excluded 180",
+    "finite intergraph gap 180",
+    "both final graph replay samples 180",
+    "last replay iteration (180, 0)",
+    "all ordered node samples (180, 0)",
+    "valid node (180, 0, 0)",
+    "near-resolution flag (180, 0, 0)",
+    "valid node (180, 0, 1)",
+    "near-resolution flag (180, 0, 1)",
+    "valid node (180, 0, 2)",
+    "near-resolution flag (180, 0, 2)",
+    "valid node (180, 0, 3)",
+    "near-resolution flag (180, 0, 3)",
+    "valid node (180, 0, 4)",
+    "near-resolution flag (180, 0, 4)",
+    "valid node (180, 0, 5)",
+    "near-resolution flag (180, 0, 5)",
+    "valid node (180, 0, 6)",
+    "near-resolution flag (180, 0, 6)",
+    "valid node (180, 0, 7)",
+    "near-resolution flag (180, 0, 7)",
+    "valid node (180, 0, 8)",
+    "near-resolution flag (180, 0, 8)",
+    "valid node (180, 0, 9)",
+    "near-resolution flag (180, 0, 9)",
+    "valid node (180, 0, 10)",
+    "near-resolution flag (180, 0, 10)",
+    "valid node (180, 0, 11)",
+    "near-resolution flag (180, 0, 11)",
+    "valid node (180, 0, 12)",
+    "near-resolution flag (180, 0, 12)",
+    "valid node (180, 0, 13)",
+    "near-resolution flag (180, 0, 13)",
+    "valid node (180, 0, 14)",
+    "near-resolution flag (180, 0, 14)",
+    "valid node (180, 0, 15)",
+    "near-resolution flag (180, 0, 15)",
+    "valid node (180, 0, 16)",
+    "near-resolution flag (180, 0, 16)",
+    "valid node (180, 0, 17)",
+    "near-resolution flag (180, 0, 17)",
+    "valid node (180, 0, 18)",
+    "near-resolution flag (180, 0, 18)",
+    "valid node (180, 0, 19)",
+    "near-resolution flag (180, 0, 19)",
+    "valid node (180, 0, 20)",
+    "near-resolution flag (180, 0, 20)",
+    "valid node (180, 0, 21)",
+    "near-resolution flag (180, 0, 21)",
+    "valid node (180, 0, 22)",
+    "near-resolution flag (180, 0, 22)",
+    "valid node (180, 0, 23)",
+    "near-resolution flag (180, 0, 23)",
+    "valid node (180, 0, 24)",
+    "near-resolution flag (180, 0, 24)",
+    "valid node (180, 0, 25)",
+    "near-resolution flag (180, 0, 25)",
+    "valid node (180, 0, 26)",
+    "near-resolution flag (180, 0, 26)",
+    "valid node (180, 0, 27)",
+    "near-resolution flag (180, 0, 27)",
+    "valid node (180, 0, 28)",
+    "near-resolution flag (180, 0, 28)",
+    "valid node (180, 0, 29)",
+    "near-resolution flag (180, 0, 29)",
+    "valid node (180, 0, 30)",
+    "near-resolution flag (180, 0, 30)",
+    "valid node (180, 0, 31)",
+    "near-resolution flag (180, 0, 31)",
+    "valid node (180, 0, 32)",
+    "near-resolution flag (180, 0, 32)",
+    "valid node (180, 0, 33)",
+    "near-resolution flag (180, 0, 33)",
+    "valid node (180, 0, 34)",
+    "near-resolution flag (180, 0, 34)",
+    "valid node (180, 0, 35)",
+    "near-resolution flag (180, 0, 35)",
+    "valid node (180, 0, 36)",
+    "near-resolution flag (180, 0, 36)",
+    "valid node (180, 0, 37)",
+    "near-resolution flag (180, 0, 37)",
+    "valid node (180, 0, 38)",
+    "near-resolution flag (180, 0, 38)",
+    "valid node (180, 0, 39)",
+    "near-resolution flag (180, 0, 39)",
+    "valid node (180, 0, 40)",
+    "near-resolution flag (180, 0, 40)",
+    "valid node (180, 0, 41)",
+    "near-resolution flag (180, 0, 41)",
+    "valid node (180, 0, 42)",
+    "near-resolution flag (180, 0, 42)",
+    "valid node (180, 0, 43)",
+    "near-resolution flag (180, 0, 43)",
+    "valid node (180, 0, 44)",
+    "near-resolution flag (180, 0, 44)",
+    "valid node (180, 0, 45)",
+    "near-resolution flag (180, 0, 45)",
+    "valid node (180, 0, 46)",
+    "near-resolution flag (180, 0, 46)",
+    "valid node (180, 0, 47)",
+    "near-resolution flag (180, 0, 47)",
+    "valid node (180, 0, 48)",
+    "near-resolution flag (180, 0, 48)",
+    "valid node (180, 0, 49)",
+    "near-resolution flag (180, 0, 49)",
+    "valid node (180, 0, 50)",
+    "near-resolution flag (180, 0, 50)",
+    "valid node (180, 0, 51)",
+    "near-resolution flag (180, 0, 51)",
+    "valid node (180, 0, 52)",
+    "near-resolution flag (180, 0, 52)",
+    "valid node (180, 0, 53)",
+    "near-resolution flag (180, 0, 53)",
+    "valid node (180, 0, 54)",
+    "near-resolution flag (180, 0, 54)",
+    "valid node (180, 0, 55)",
+    "near-resolution flag (180, 0, 55)",
+    "valid node (180, 0, 56)",
+    "near-resolution flag (180, 0, 56)",
+    "valid node (180, 0, 57)",
+    "near-resolution flag (180, 0, 57)",
+    "valid node (180, 0, 58)",
+    "near-resolution flag (180, 0, 58)",
+    "valid node (180, 0, 59)",
+    "near-resolution flag (180, 0, 59)",
+    "valid node (180, 0, 60)",
+    "near-resolution flag (180, 0, 60)",
+    "valid node (180, 0, 61)",
+    "near-resolution flag (180, 0, 61)",
+    "valid node (180, 0, 62)",
+    "near-resolution flag (180, 0, 62)",
+    "recomputed family sums (180, 0)",
+    "finite graph envelope (180, 0)",
+    "last replay iteration (180, 1)",
+    "all ordered node samples (180, 1)",
+    "valid node (180, 1, 0)",
+    "near-resolution flag (180, 1, 0)",
+    "valid node (180, 1, 1)",
+    "near-resolution flag (180, 1, 1)",
+    "valid node (180, 1, 2)",
+    "near-resolution flag (180, 1, 2)",
+    "valid node (180, 1, 3)",
+    "near-resolution flag (180, 1, 3)",
+    "valid node (180, 1, 4)",
+    "near-resolution flag (180, 1, 4)",
+    "valid node (180, 1, 5)",
+    "near-resolution flag (180, 1, 5)",
+    "valid node (180, 1, 6)",
+    "near-resolution flag (180, 1, 6)",
+    "valid node (180, 1, 7)",
+    "near-resolution flag (180, 1, 7)",
+    "valid node (180, 1, 8)",
+    "near-resolution flag (180, 1, 8)",
+    "valid node (180, 1, 9)",
+    "near-resolution flag (180, 1, 9)",
+    "valid node (180, 1, 10)",
+    "near-resolution flag (180, 1, 10)",
+    "valid node (180, 1, 11)",
+    "near-resolution flag (180, 1, 11)",
+    "valid node (180, 1, 12)",
+    "near-resolution flag (180, 1, 12)",
+    "valid node (180, 1, 13)",
+    "near-resolution flag (180, 1, 13)",
+    "valid node (180, 1, 14)",
+    "near-resolution flag (180, 1, 14)",
+    "valid node (180, 1, 15)",
+    "near-resolution flag (180, 1, 15)",
+    "valid node (180, 1, 16)",
+    "near-resolution flag (180, 1, 16)",
+    "valid node (180, 1, 17)",
+    "near-resolution flag (180, 1, 17)",
+    "valid node (180, 1, 18)",
+    "near-resolution flag (180, 1, 18)",
+    "valid node (180, 1, 19)",
+    "near-resolution flag (180, 1, 19)",
+    "valid node (180, 1, 20)",
+    "near-resolution flag (180, 1, 20)",
+    "valid node (180, 1, 21)",
+    "near-resolution flag (180, 1, 21)",
+    "valid node (180, 1, 22)",
+    "near-resolution flag (180, 1, 22)",
+    "valid node (180, 1, 23)",
+    "near-resolution flag (180, 1, 23)",
+    "valid node (180, 1, 24)",
+    "near-resolution flag (180, 1, 24)",
+    "valid node (180, 1, 25)",
+    "near-resolution flag (180, 1, 25)",
+    "valid node (180, 1, 26)",
+    "near-resolution flag (180, 1, 26)",
+    "valid node (180, 1, 27)",
+    "near-resolution flag (180, 1, 27)",
+    "valid node (180, 1, 28)",
+    "near-resolution flag (180, 1, 28)",
+    "valid node (180, 1, 29)",
+    "near-resolution flag (180, 1, 29)",
+    "valid node (180, 1, 30)",
+    "near-resolution flag (180, 1, 30)",
+    "valid node (180, 1, 31)",
+    "near-resolution flag (180, 1, 31)",
+    "valid node (180, 1, 32)",
+    "near-resolution flag (180, 1, 32)",
+    "valid node (180, 1, 33)",
+    "near-resolution flag (180, 1, 33)",
+    "valid node (180, 1, 34)",
+    "near-resolution flag (180, 1, 34)",
+    "valid node (180, 1, 35)",
+    "near-resolution flag (180, 1, 35)",
+    "valid node (180, 1, 36)",
+    "near-resolution flag (180, 1, 36)",
+    "valid node (180, 1, 37)",
+    "near-resolution flag (180, 1, 37)",
+    "valid node (180, 1, 38)",
+    "near-resolution flag (180, 1, 38)",
+    "valid node (180, 1, 39)",
+    "near-resolution flag (180, 1, 39)",
+    "valid node (180, 1, 40)",
+    "near-resolution flag (180, 1, 40)",
+    "valid node (180, 1, 41)",
+    "near-resolution flag (180, 1, 41)",
+    "valid node (180, 1, 42)",
+    "near-resolution flag (180, 1, 42)",
+    "valid node (180, 1, 43)",
+    "near-resolution flag (180, 1, 43)",
+    "valid node (180, 1, 44)",
+    "near-resolution flag (180, 1, 44)",
+    "valid node (180, 1, 45)",
+    "near-resolution flag (180, 1, 45)",
+    "valid node (180, 1, 46)",
+    "near-resolution flag (180, 1, 46)",
+    "valid node (180, 1, 47)",
+    "near-resolution flag (180, 1, 47)",
+    "valid node (180, 1, 48)",
+    "near-resolution flag (180, 1, 48)",
+    "valid node (180, 1, 49)",
+    "near-resolution flag (180, 1, 49)",
+    "valid node (180, 1, 50)",
+    "near-resolution flag (180, 1, 50)",
+    "valid node (180, 1, 51)",
+    "near-resolution flag (180, 1, 51)",
+    "valid node (180, 1, 52)",
+    "near-resolution flag (180, 1, 52)",
+    "valid node (180, 1, 53)",
+    "near-resolution flag (180, 1, 53)",
+    "valid node (180, 1, 54)",
+    "near-resolution flag (180, 1, 54)",
+    "valid node (180, 1, 55)",
+    "near-resolution flag (180, 1, 55)",
+    "valid node (180, 1, 56)",
+    "near-resolution flag (180, 1, 56)",
+    "valid node (180, 1, 57)",
+    "near-resolution flag (180, 1, 57)",
+    "valid node (180, 1, 58)",
+    "near-resolution flag (180, 1, 58)",
+    "valid node (180, 1, 59)",
+    "near-resolution flag (180, 1, 59)",
+    "valid node (180, 1, 60)",
+    "near-resolution flag (180, 1, 60)",
+    "valid node (180, 1, 61)",
+    "near-resolution flag (180, 1, 61)",
+    "valid node (180, 1, 62)",
+    "near-resolution flag (180, 1, 62)",
+    "recomputed family sums (180, 1)",
+    "finite graph envelope (180, 1)",
+    "registered batch/order 200",
+    "fixed20 iteration arm (200, 'native')",
+    "finite outer times (200, 'native')",
+    "fixed20 iteration arm (200, 'instrumented')",
+    "finite outer times (200, 'instrumented')",
+    "setup excluded 200",
+    "finite intergraph gap 200",
+    "both final graph replay samples 200",
+    "last replay iteration (200, 0)",
+    "all ordered node samples (200, 0)",
+    "valid node (200, 0, 0)",
+    "near-resolution flag (200, 0, 0)",
+    "valid node (200, 0, 1)",
+    "near-resolution flag (200, 0, 1)",
+    "valid node (200, 0, 2)",
+    "near-resolution flag (200, 0, 2)",
+    "valid node (200, 0, 3)",
+    "near-resolution flag (200, 0, 3)",
+    "valid node (200, 0, 4)",
+    "near-resolution flag (200, 0, 4)",
+    "valid node (200, 0, 5)",
+    "near-resolution flag (200, 0, 5)",
+    "valid node (200, 0, 6)",
+    "near-resolution flag (200, 0, 6)",
+    "valid node (200, 0, 7)",
+    "near-resolution flag (200, 0, 7)",
+    "valid node (200, 0, 8)",
+    "near-resolution flag (200, 0, 8)",
+    "valid node (200, 0, 9)",
+    "near-resolution flag (200, 0, 9)",
+    "valid node (200, 0, 10)",
+    "near-resolution flag (200, 0, 10)",
+    "valid node (200, 0, 11)",
+    "near-resolution flag (200, 0, 11)",
+    "valid node (200, 0, 12)",
+    "near-resolution flag (200, 0, 12)",
+    "valid node (200, 0, 13)",
+    "near-resolution flag (200, 0, 13)",
+    "valid node (200, 0, 14)",
+    "near-resolution flag (200, 0, 14)",
+    "valid node (200, 0, 15)",
+    "near-resolution flag (200, 0, 15)",
+    "valid node (200, 0, 16)",
+    "near-resolution flag (200, 0, 16)",
+    "valid node (200, 0, 17)",
+    "near-resolution flag (200, 0, 17)",
+    "valid node (200, 0, 18)",
+    "near-resolution flag (200, 0, 18)",
+    "valid node (200, 0, 19)",
+    "near-resolution flag (200, 0, 19)",
+    "valid node (200, 0, 20)",
+    "near-resolution flag (200, 0, 20)",
+    "valid node (200, 0, 21)",
+    "near-resolution flag (200, 0, 21)",
+    "valid node (200, 0, 22)",
+    "near-resolution flag (200, 0, 22)",
+    "valid node (200, 0, 23)",
+    "near-resolution flag (200, 0, 23)",
+    "valid node (200, 0, 24)",
+    "near-resolution flag (200, 0, 24)",
+    "valid node (200, 0, 25)",
+    "near-resolution flag (200, 0, 25)",
+    "valid node (200, 0, 26)",
+    "near-resolution flag (200, 0, 26)",
+    "valid node (200, 0, 27)",
+    "near-resolution flag (200, 0, 27)",
+    "valid node (200, 0, 28)",
+    "near-resolution flag (200, 0, 28)",
+    "valid node (200, 0, 29)",
+    "near-resolution flag (200, 0, 29)",
+    "valid node (200, 0, 30)",
+    "near-resolution flag (200, 0, 30)",
+    "valid node (200, 0, 31)",
+    "near-resolution flag (200, 0, 31)",
+    "valid node (200, 0, 32)",
+    "near-resolution flag (200, 0, 32)",
+    "valid node (200, 0, 33)",
+    "near-resolution flag (200, 0, 33)",
+    "valid node (200, 0, 34)",
+    "near-resolution flag (200, 0, 34)",
+    "valid node (200, 0, 35)",
+    "near-resolution flag (200, 0, 35)",
+    "valid node (200, 0, 36)",
+    "near-resolution flag (200, 0, 36)",
+    "valid node (200, 0, 37)",
+    "near-resolution flag (200, 0, 37)",
+    "valid node (200, 0, 38)",
+    "near-resolution flag (200, 0, 38)",
+    "valid node (200, 0, 39)",
+    "near-resolution flag (200, 0, 39)",
+    "valid node (200, 0, 40)",
+    "near-resolution flag (200, 0, 40)",
+    "valid node (200, 0, 41)",
+    "near-resolution flag (200, 0, 41)",
+    "valid node (200, 0, 42)",
+    "near-resolution flag (200, 0, 42)",
+    "valid node (200, 0, 43)",
+    "near-resolution flag (200, 0, 43)",
+    "valid node (200, 0, 44)",
+    "near-resolution flag (200, 0, 44)",
+    "valid node (200, 0, 45)",
+    "near-resolution flag (200, 0, 45)",
+    "valid node (200, 0, 46)",
+    "near-resolution flag (200, 0, 46)",
+    "valid node (200, 0, 47)",
+    "near-resolution flag (200, 0, 47)",
+    "valid node (200, 0, 48)",
+    "near-resolution flag (200, 0, 48)",
+    "valid node (200, 0, 49)",
+    "near-resolution flag (200, 0, 49)",
+    "valid node (200, 0, 50)",
+    "near-resolution flag (200, 0, 50)",
+    "valid node (200, 0, 51)",
+    "near-resolution flag (200, 0, 51)",
+    "valid node (200, 0, 52)",
+    "near-resolution flag (200, 0, 52)",
+    "valid node (200, 0, 53)",
+    "near-resolution flag (200, 0, 53)",
+    "valid node (200, 0, 54)",
+    "near-resolution flag (200, 0, 54)",
+    "valid node (200, 0, 55)",
+    "near-resolution flag (200, 0, 55)",
+    "valid node (200, 0, 56)",
+    "near-resolution flag (200, 0, 56)",
+    "valid node (200, 0, 57)",
+    "near-resolution flag (200, 0, 57)",
+    "valid node (200, 0, 58)",
+    "near-resolution flag (200, 0, 58)",
+    "valid node (200, 0, 59)",
+    "near-resolution flag (200, 0, 59)",
+    "valid node (200, 0, 60)",
+    "near-resolution flag (200, 0, 60)",
+    "valid node (200, 0, 61)",
+    "near-resolution flag (200, 0, 61)",
+    "valid node (200, 0, 62)",
+    "near-resolution flag (200, 0, 62)",
+    "recomputed family sums (200, 0)",
+    "finite graph envelope (200, 0)",
+    "last replay iteration (200, 1)",
+    "all ordered node samples (200, 1)",
+    "valid node (200, 1, 0)",
+    "near-resolution flag (200, 1, 0)",
+    "valid node (200, 1, 1)",
+    "near-resolution flag (200, 1, 1)",
+    "valid node (200, 1, 2)",
+    "near-resolution flag (200, 1, 2)",
+    "valid node (200, 1, 3)",
+    "near-resolution flag (200, 1, 3)",
+    "valid node (200, 1, 4)",
+    "near-resolution flag (200, 1, 4)",
+    "valid node (200, 1, 5)",
+    "near-resolution flag (200, 1, 5)",
+    "valid node (200, 1, 6)",
+    "near-resolution flag (200, 1, 6)",
+    "valid node (200, 1, 7)",
+    "near-resolution flag (200, 1, 7)",
+    "valid node (200, 1, 8)",
+    "near-resolution flag (200, 1, 8)",
+    "valid node (200, 1, 9)",
+    "near-resolution flag (200, 1, 9)",
+    "valid node (200, 1, 10)",
+    "near-resolution flag (200, 1, 10)",
+    "valid node (200, 1, 11)",
+    "near-resolution flag (200, 1, 11)",
+    "valid node (200, 1, 12)",
+    "near-resolution flag (200, 1, 12)",
+    "valid node (200, 1, 13)",
+    "near-resolution flag (200, 1, 13)",
+    "valid node (200, 1, 14)",
+    "near-resolution flag (200, 1, 14)",
+    "valid node (200, 1, 15)",
+    "near-resolution flag (200, 1, 15)",
+    "valid node (200, 1, 16)",
+    "near-resolution flag (200, 1, 16)",
+    "valid node (200, 1, 17)",
+    "near-resolution flag (200, 1, 17)",
+    "valid node (200, 1, 18)",
+    "near-resolution flag (200, 1, 18)",
+    "valid node (200, 1, 19)",
+    "near-resolution flag (200, 1, 19)",
+    "valid node (200, 1, 20)",
+    "near-resolution flag (200, 1, 20)",
+    "valid node (200, 1, 21)",
+    "near-resolution flag (200, 1, 21)",
+    "valid node (200, 1, 22)",
+    "near-resolution flag (200, 1, 22)",
+    "valid node (200, 1, 23)",
+    "near-resolution flag (200, 1, 23)",
+    "valid node (200, 1, 24)",
+    "near-resolution flag (200, 1, 24)",
+    "valid node (200, 1, 25)",
+    "near-resolution flag (200, 1, 25)",
+    "valid node (200, 1, 26)",
+    "near-resolution flag (200, 1, 26)",
+    "valid node (200, 1, 27)",
+    "near-resolution flag (200, 1, 27)",
+    "valid node (200, 1, 28)",
+    "near-resolution flag (200, 1, 28)",
+    "valid node (200, 1, 29)",
+    "near-resolution flag (200, 1, 29)",
+    "valid node (200, 1, 30)",
+    "near-resolution flag (200, 1, 30)",
+    "valid node (200, 1, 31)",
+    "near-resolution flag (200, 1, 31)",
+    "valid node (200, 1, 32)",
+    "near-resolution flag (200, 1, 32)",
+    "valid node (200, 1, 33)",
+    "near-resolution flag (200, 1, 33)",
+    "valid node (200, 1, 34)",
+    "near-resolution flag (200, 1, 34)",
+    "valid node (200, 1, 35)",
+    "near-resolution flag (200, 1, 35)",
+    "valid node (200, 1, 36)",
+    "near-resolution flag (200, 1, 36)",
+    "valid node (200, 1, 37)",
+    "near-resolution flag (200, 1, 37)",
+    "valid node (200, 1, 38)",
+    "near-resolution flag (200, 1, 38)",
+    "valid node (200, 1, 39)",
+    "near-resolution flag (200, 1, 39)",
+    "valid node (200, 1, 40)",
+    "near-resolution flag (200, 1, 40)",
+    "valid node (200, 1, 41)",
+    "near-resolution flag (200, 1, 41)",
+    "valid node (200, 1, 42)",
+    "near-resolution flag (200, 1, 42)",
+    "valid node (200, 1, 43)",
+    "near-resolution flag (200, 1, 43)",
+    "valid node (200, 1, 44)",
+    "near-resolution flag (200, 1, 44)",
+    "valid node (200, 1, 45)",
+    "near-resolution flag (200, 1, 45)",
+    "valid node (200, 1, 46)",
+    "near-resolution flag (200, 1, 46)",
+    "valid node (200, 1, 47)",
+    "near-resolution flag (200, 1, 47)",
+    "valid node (200, 1, 48)",
+    "near-resolution flag (200, 1, 48)",
+    "valid node (200, 1, 49)",
+    "near-resolution flag (200, 1, 49)",
+    "valid node (200, 1, 50)",
+    "near-resolution flag (200, 1, 50)",
+    "valid node (200, 1, 51)",
+    "near-resolution flag (200, 1, 51)",
+    "valid node (200, 1, 52)",
+    "near-resolution flag (200, 1, 52)",
+    "valid node (200, 1, 53)",
+    "near-resolution flag (200, 1, 53)",
+    "valid node (200, 1, 54)",
+    "near-resolution flag (200, 1, 54)",
+    "valid node (200, 1, 55)",
+    "near-resolution flag (200, 1, 55)",
+    "valid node (200, 1, 56)",
+    "near-resolution flag (200, 1, 56)",
+    "valid node (200, 1, 57)",
+    "near-resolution flag (200, 1, 57)",
+    "valid node (200, 1, 58)",
+    "near-resolution flag (200, 1, 58)",
+    "valid node (200, 1, 59)",
+    "near-resolution flag (200, 1, 59)",
+    "valid node (200, 1, 60)",
+    "near-resolution flag (200, 1, 60)",
+    "valid node (200, 1, 61)",
+    "near-resolution flag (200, 1, 61)",
+    "valid node (200, 1, 62)",
+    "near-resolution flag (200, 1, 62)",
+    "recomputed family sums (200, 1)",
+    "finite graph envelope (200, 1)",
+    "complete covers exactly registered checkpoints and no acceptance"
+  ],
+  "artifact_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\report.json": "04d04b5661f0bcc99f06ce4c706724b59db3b623d93241ccfe9b82bb8bd23766",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\protocol.json": "3c0187465cbcf7faa347a11fe2f769dfafd5e29ec027eb5754e60f10c20745e2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\anchor-rainbow.json": "94e7d8299c7ea549e59d5b33cf12a37cd1a74cbc9d652850f06e23adb5e11e52",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\report.json": "87694ef4d7cef44ee3632f303c3b9250205e6c39ade0ad8f54744270172e9044",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B038\\stdout.log": "c36d80a3792d5beeda5a1eafd32108a906c95c15e5bb2eddc19b355bb06012c0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.manifest.json": "87b207b9232af1effd890554b3a46b348e38630d6283fbcd3642c7968f047411",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\baseline-complete.exe": "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\report.json": "9a1ccb80a329b52fee7123ef5f0795348b0017df673b526569ad5cf10b319e88",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015C1\\stdout.log": "0d598d04caa2becf905bfd070677a56057db11db84384eda77c41c0eb8f26559",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.manifest.json": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E015-postflop_autoresearch.exe": "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\report.json": "4553cd2196b4faec001f7bb63a425920cc71420f05bb1a1438a59867a29cd651",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V004-f32-baseline\\stdout.log": "6d1142ef0c1eb0efa1da84fcca5fa22f8acaaabe75c3a443dc751c55e2ec8740",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-f32-candidate\\report.json": "84551f1ac2f13d923a4cca17a9a98505faa8de8aa44cd10890d322b16a4bdbcc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V015-f32-candidate\\stdout.log": "a770d9f75b7bc9faf57c91dc783db2f33d444022372d8eec6cb1d4f6fbd6b2eb",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\checksums.json": "65c33a8aede935f14b6c31f3776edcd998689d6978fdd8245b097f4760435fa8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-graph_device_events.rs": "98e9da085c98198bbcddb77756697b6b50a5042d305627dd46b9679d79879b4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate.patch": "144b2eee69a6c1ffd32d81453e7819f209b1174000ce6d44eddf5794137df355",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\manifest.json": "68ab7ea42b5d301ded632518cf28a858808b70f00cf1df3af8a6bcd6beb67c33",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\README.md": "fad0191f8d9bd7dadab9f18d21e75eec19737d3e4baefe44af074c5b12ca63dd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\checksums.json": "27816167db5cb1621faa6b8442f9212af6c74269efa296076c7420af2fdf76b1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-graph_device_events-r1.rs": "98e9da085c98198bbcddb77756697b6b50a5042d305627dd46b9679d79879b4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\binding-evidence.txt": "9a904c7c6c64f2a6cb32d35222f4f732cb3436f7c46916d1c5ad5f7861b6a1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate.patch": "03ee2b153fbe508e1bd27ef24fa94a393d04df2b96eaae9ff7233c8bf93d93a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\manifest.json": "a26b1fd9550099fe3ad2f9e833ce30fb1423a85a8c5be92c380f1337b57d3158",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\r1-to-r2.patch": "7481149c021257dce8ec2e0791ef28bff269095630e80b1192539b18aa20408e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\README.md": "83138a9e3f515bf86e7640227beba1e3293bb09188d536726b67f0ee60265402",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.jsonl": "098bea3b9252be562fe4357ab53774ba2fefbe23b87fe89ed9cc507077c6965f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\build.stderr.log": "83a09fe053c7f85cbe3b9d0be0b212ee6bdf7264e3d3fcb041821431982c6020",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\exit.json": "55e8ab788f3e5fb40a2dbe044cb750aa922c4c1f08126e045557c61a5a420fe6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\exit.json": "c86bbc26fa732f62e80ece1cbc1b98c3e6f2dcd167845fb009d28660a95057a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-execution\\invocation.json": "08431fbc34f0268637ff8f4b056174f517d46bec2b123501da4025a4502ee861",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-execution\\exit.json": "c4541dd420e1c39bec0d56121c50cce984a4cb33877999c7e5a5c3c652ecaf0b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build.py": "f424bdf2ed9a89639ffa0eef2750eaf91fc928928d737a82ece3307d4e39598c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2.py": "b6803c4f4b3d958b20b7fc3cd8e180fc997964240f840a524acab9a0b97b0d21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-run.py": "2ea93e970a655c0a640f2200d5a03e5a1af2937922037f60e95b9555f8d69022",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-execution\\stdout.log": "54f8680cb745aaae3285325d742a92bd4c32fbb409a1e7cc0acbdd075ab485df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-execution\\stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-build-runtime-review\\runtime-checklist.json": "316b74d60bb9c0dab4a436c208cb9d0d159fa7878f0a997280fb86c448e3ddc6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-build-runtime-review\\build-review.json": "7154196d2436ba934d33b257c78763badde7cbe855754be731c25c96d0206679",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-build-runtime-review\\r2-provenance-addendum.json": "9666c80f308254debd092e0213d34bc267e7aef2e3d4d24892a741bf2440b18d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-source-review-r2\\review.md": "ab0e34c42b726cacf63eee04e225d810da31738f6b39ac4685c6795d735710d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D033-source-review-r2\\manifest.json": "213f8c3e163f515b537d78dbbb685273c89697aafa00fe2808ca9842703eec42",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.manifest.json": "8b5d43676c3c65f7f860fb5708d1d1d9e30e23bb5e18c3ec065a6d58a8e037d1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.exe": "713eef623cf21b9d702f9dafadab27f7162c8587023c4f8c51e3527a09d10d34",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\build.jsonl": "1d1b3940894d98a67e441dd15306026055263a798f11e271a4bd65d0d00924ee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\build.stderr.log": "ba85b8ab430f557725ca23568927a41d5e66d1b16b66115889c252eac85b2a5e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\candidate.patch": "03ee2b153fbe508e1bd27ef24fa94a393d04df2b96eaae9ff7233c8bf93d93a4",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\README.md": "1e1511e23918a92ff0630c1d2c1b3110509ae6d8ac01abc90bda06d42df9712d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design\\source-manifest.json": "e4fde2a0c1042f389c5168e3a1d214332351e804bc2d3b2e03907fdd47099abe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source-before.json": "a3fa874811e4c45fe2103aed23eec18b0f5f427a08fdc49c8a4e756bc55e0d28",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\Cargo.toml": "7c4852f25afca57450c13de5ab336c28ba70d9405c16cfc1bbccee361d10c0ca",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\best_response.rs": "aba52276862b0bd93f4d096be091848181d32321c7dc6024cd755fd694e34c43",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\bin\\solve_cli.rs": "8973db5c2c6e175a74a6e9c6b290136d0b4bb3768ce0049732293d84f5f9bb9a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cards.rs": "9a6ac552e18ffa7e383c797c9996fd666c85c83420e288f9b10221f1163aa70c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\contextual_postflop.rs": "ad993587e85bb7416eeb4416d9178372cb391954e6d287f0084c54922c17e371",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\evaluator.rs": "bd04433fe179872ec8a04baa9070a0827ff115828296bb6b1b9307a2bcde8fc7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_disk_state_tests.rs": "82a1293b9205cc37743574ee58e3efadb314a89fcfa21dc2f802a9057d5cb1e0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_host_paging_tests.rs": "a13f1366727d55a8904cd6fed44f3bf93ea0bd5b5f511d410123a860875651f9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_projection.cu": "ecddd1a1ed5934b1bd0ea2b319ae57b769cf208a31f73d9f9059bedcf99f5dff",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_replay_tests.rs": "6333065a4a2b4eccfdcf342b325e67b50a12c3dd2b4085b23f49739e59b2b54c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_ssd_paging_tests.rs": "300007551831586153c831e949a50dd1b776da5575869fb15efdb30750e4b6a6",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage_copy.cu": "c5a92b3e8367ae46c6ee0f00fe951b20abcdde5bb5687592a3f70a357e8b8aa5",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_stored_device_tests.rs": "13562eab10ae01c5743f7d424a52389b16595fd534782ae30b9b0699cf0a2fc2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\lib.rs": "28cb0e238056e6f22790b797b918114a66ba772fd67bc651834501266561ed95",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\checkpoint_tests.rs": "b21af68e8f4e96e6d0a3ba7a7e35551267b575a7608abd5cb9b5ab45b530b67c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\contextual.rs": "9a33fe8e32eeaa97a3538a92452bc7ef714b872e499aca47efe1f3864abe86b2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\continuation.rs": "45e172268160514c0d0f7e0e1ece7f699b57b0da9654e4513182c840ef6c7b8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_behavioral_transition.rs": "2fcd2231f2314286f34a7d693198f625c81fbfcf77a993086056eb7644f7c3bc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_fixed_units.rs": "3d86a9960015a67e681c81e395f3b19de0715cd2e92d36414ce1141b5994d87c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_policy_repair.rs": "76611a0b900ed9aeee71ba3ded2aacc55653cba41dbcc6fcc7dc6a27bce0237a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_quality.rs": "a1f0f74c28c0de0ca749f889134f52da47199a89d7e4029dfd192eedff06759b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_refine.rs": "475311e065688c0f18c711a924e776b278540161c2ad9a5c75a620741760db19",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_refine_gpu.rs": "6b163a186876d9b87eceba378b41aa5dd582fa9356596161faaa2dd657eb0ec5",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\convergence_research.rs": "582636c6eac42142fe60ec8f607dcbefc2a509b61397937278f04efa0af0afef",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\dataset.rs": "b3663e09a46a7150eb83ce866f84155447833a22aee57cc2e6440e3f8af9845e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\equity.rs": "45caf75d3d7dbf0a123ed602b5697381ac2ac3420223c25136191571da2acc3a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\evidence.rs": "90e65fd59c2e402f6fb29043b49c655febe396677d6cf8ed729200d0cfdf1210",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\adaptive_throughput\\allocation_recovery.rs": "ce427677f7e35781531f40cc9121fa62725f9bbe3e2b5c62687aef4770b689d0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\adaptive_throughput.rs": "004b4725fedfcc23cac22c9db65c9a8a07c67e3a71e5f347ef9f654092cdac0f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\average_opponents.cu": "54b3f9f81eaa3b0d9e74633d0b902e0408f681b5235e63b642e869052ed86d0d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\average_opponents.rs": "c43779236ffcd4d064cfb2ec8d41c78f378e969c68fc4995282da206a65d6da3",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral.cu": "4ffacfdb6f9bf25cdb5587a0b5f2480d665a160f7897698022ddcb2255607ddd",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral.rs": "a864b82b26ff7a61483fa81c2c3b50993c934778338138ac6e31c1d2debc6d04",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\behavioral_tests.rs": "f03b4167c5188ad1f122ad88c3db3589774f117ec7ad65086594f489247bf3f5",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_interleave.rs": "91f1222e001bf1bea33e0be66142cf4e7e08f0814f181d1dbec09c034b1a076b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_zero.rs": "47a59fa48bbf81aeab55360a10d9563474add8e26519e244414394edf9e9b3bf",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cdf_zero_predicate.rs": "1f43882d5feee69b1f63a53ea299a474eff6f2928444a2e981cd7db40aa1ae09",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cohort_reuse\\tests.rs": "3f8c334857701dbbe3409aaf3ca5a8c4bd8f1d0e93d8c7ea8e0363cb9f4f703a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cohort_reuse.rs": "ec67d00856b2f4de0618a31235768db613f23f845337d6f8760d8cfe76b2b860",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\conditional_sampling.rs": "8e8ad206c7281df11d33b28622ea69dca2e19ee85618bf170df0522272f847a2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cross_player_inventory\\cohorts.rs": "feb604536684032be60272990ba8b60e226f461e8963b2fa3f3b4b8a5e795b44",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cross_player_inventory.rs": "f9ecc5f1e5fee8c589d15f201f4cf21fffdb6de3e23671cfd3b6bdb0e4915eaa",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_research.cu": "4f7e0ab28e42138160084cf91b4820eb257b8936493e19a3901f43e6571f7171",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_research.rs": "597879fef7aff8bcca793b7e6b8672c72b0a292d24ec74c48e72368a523d3c37",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared.cu": "f7b837f87b232ecd4a16cba85af954498f9e267704858593cb24cb7ae70a0d91",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared.rs": "bbf1ac28d47bc75cb635c22534f192c8c2eb96c97739a1dc85f85b08794412bf",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\cv_shared_tests.rs": "1ac9764222b64c30fb96e24c061227b1f7bbb3966ee84fe0764cd1a641f1e05d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse\\tests.rs": "6262870f2eae7f8e70ddced38fdd4b6d0274430ff83a3d3f57eb9c6b81e6d5d9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse.cu": "ff7475ba8f59953d8bc19d54bb30fac7a93ab49e5cb1e6e80eb201223918ed95",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse.rs": "f388c72101b76c655a0ec889b0e4d51983f2493b7197c4b4f7c0dd5141e67b9a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exact_reuse_inventory.rs": "923de6d7990befbd3e7e65ac20869618c216579b0bfcad1be817c8a0c2cafd95",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exploration.cu": "bfe91a6d77042c629744468c4e88ae8c13dc980269edba5721e3729865ed2efe",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\exploration.rs": "2d9201332cd2428e3824162063411e3d02c7712704dec2b8eeffd628b25297ab",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\fixed_history_units.cu": "aed3d003457d923058c9398ceba325249a31e3ea019e54e71a4107d8e6a87173",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\fixed_history_units.rs": "2c18f55114191a817650bd7b7a27343ece7fbd51f238f34a534d9ca34a06eb53",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\frontier_research.rs": "0ba1609ae0dd71e56c8d32dbe8bb44df85939467dc031113d601c00174ddb568",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\history_units.rs": "72e1ba4af3604a491da0faf426599608c0844c283cfa181000e66303f3cd6339",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\learned.rs": "a4a0c521ef77eebe57f5e354373c9e59133e64ae0d2d12d06ced0bfdc2f6e793",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\learned_interface.rs": "f84cb5fbc1b0f562e50369025cd9f8eea967df3b983fc75b32e4dc840502376a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_cdf.rs": "f4d54e8ef15defab67d4368c759e49d0f4684702a20ad4ebfb896c4347b56f29",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_offsets\\tests.rs": "e7136705d69149d92f0add1709ff5fb00e6e10ffc9a4412b269b2f676096010d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\narrow_offsets.rs": "3b34cf8bdaf97770cbfd117c8945becf6ce3f8f63f8729476bd2d188c8342188",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\normalized_regret.cu": "702206b486857a5efbc9347d17fd281a2e8c14cc687b348ebba9d0bd377cda56",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\normalized_regret.rs": "6f9513a1735fec3ac3edf9a9d1c655b5b1d023e7ad93b86b7fce855407822476",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\pair_control.cu": "33ff564e9be1d5988616968ccf43220ead4e54d17d1e0f9239eb384f320c97c8",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\pair_control.rs": "346225da2dadb8a49d8f6ba69e42b4a414677070a0c62af0fcec92e4a66d2607",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive.cu": "99312cc884f17a3ecf45404182d88dc4b223fe7483645428434bf23ee57b8716",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive.rs": "65b2afbbd4ee40921195605c4392bd810d1df0795871cd146b013de003b73778",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\predictive_tests.rs": "45eaf555e6899b0a873a82e89bb6c3cc7ea0e621ee0a34dd0500dd459881b359",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rank_pipeline.cu": "22229c08a3b09a856deaf80e6e2d8e955a2049d4882adc35139716925eac7f57",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rank_pipeline.rs": "6465532a77468adf757f5c36acd4e02904afe27cc4b56cbd1475f7ba357a575d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rm_plus.cu": "f7ad161c09c102fcf1ef6f10631efc347259a90c62b59d28a00ac1e66c9937ab",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\rm_plus.rs": "5f6ee6cbd9319a0f1277c85fabc56f92d81e00bdc3a6d8965c67b5d656980742",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf\\ordinary\\tests.rs": "b5d97b97ef3df24d7d4110e3d1cc4065c3ab3e765f31634d58d947d29728c721",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf\\ordinary.rs": "935ae4ff8f439aa7d4effb3b451f44103e96b17968c1ff554cd3671f868f9c5c",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\static_cdf.rs": "e43c6f92bd4a51b69159703ab7447e12874a25920f87f436372e92855e574fdf",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_locality.rs": "48423b13335e113bb71575c8d377492b1386213190774f8b2c9e1ff2292b0528",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_tiles.rs": "9371ae27394813156afaca326e32b7807d260332696bdd66c8403de76a59b249",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_unroll\\tests.rs": "4ad9239ceed43acb68ec9358369b6a5ac4ddc0e6ba9e60fb6901a016cef4bc04",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu\\terminal_unroll.rs": "8308e010ea9001277b3a7bf955d959a9eb20f0d2ecee64f84d541a50ac708d78",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\gpu.rs": "d9437765ff49d6120fcda7e0978e72891862708282e5930fe15791cc0daa6129",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\kernels.cu": "3f612dc174d3442d343256dd1695f0b910603d8e61b18ff375697106d69d2e59",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\mod.rs": "1eec9f30c2e52db59c5debcbf8fefe1743949b30d1f17e453cf8e2c9734712e1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\multiway.rs": "f7c49073aa46e467171a8798f1d53dca3e6703da6d11ce236bda8bfe271326a4",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\particle_batches_research.rs": "02e2be73caa77fe43fdc36eee5a5681cd54bc4a27e1cd0abf03be684b3a54c0f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\reference.rs": "0e64245491dc46a6f7d0d5e23e13fbe4da933c5576e5317015ed2c2e1fe83b48",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\preflop\\save.rs": "e26e7de4f558266672816590bec2977c6b41701b36ac85af29846142f0897b5b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\query.rs": "7657757f84ed6f40e9b3b6bed767c186ffa00e45b2e1dd42fef65f8f21811c1a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\range.rs": "56c4f1eb2b9e0dc325c1da07a73ec2b94c5ee4812b4f91384d6ac3fbc2844cab",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\report.rs": "9204542730769dc1945aefe12d81b5a9d60d3aadc5f5bcdf69a80045c08adb47",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\scratch.rs": "218858b35faa00183032a25ee5f3b5130b1b6d3b00b576fdc040da4d9c778fda",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\sysmem.rs": "c83d0cf765cf40711f1f62e52af997c6ba45f6c67cf22afea819a83070f79978",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\tree.rs": "91980344b4926c499b4bcbad6022c423b1ff38a6e1059b5d2fe9f6f0680cf761",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\action_sizing.rs": "00322ede405dde694d9cfcde1c553ae843d2090bbe03d9e77105aa7b89a4459d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\build_validation.rs": "85887549db58869042e5058f50bc6fed184390006872fca1521c2c3a3a306888",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\capacity_perf.rs": "25bec789df7bc8281c1fe29e48a6c1450060a504a59800fc73167cd01cec8bba",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\contextual_preflop.rs": "4b0eb1fc3c8e8ddb0988de12c6364303dba635e2de2a33029bd3336b9ef7816e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_bridge.rs": "a68369194e524ab58f1283501b5b3b4f844e65f9d5f265efe0c9efa1452a8277",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_bridge_accumulation.rs": "612de6f9232677977d4decac8a407e21fa27427920e27aa96c11279a389c7d73",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_coherent_symmetry.rs": "97d014790e889cad0e58f623ff939a8639482407a54c5a270c41097e137948cd",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_diagnostics.rs": "238e31bff717df55bb933c1f4a110aef41d95168e5572c048fced80194549c36",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_large.rs": "8cdccc39a89249066ce26d852f3de250f7bc3aa82dd6424d27e1a014fd8c069f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_storage.rs": "897e803c6850c26823341a976fcf19d0ad872ed06bf142c1c245d6e2573bdc83",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_host_orbit_storage_v2.rs": "69bfa8229719732f3e943b937e3f6fed6a66954249599454e47ab7bc305075f2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_paging.rs": "9c93c8bd9b84c40a40d4a8ad2b4b6844bfc2b68bb93b64fe450e4a21c670de2f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_policy_json.rs": "56c529df36419e7703e63d5051801eed301b103683de2edf6bf6bbce1e3cd3cf",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_settled_ranges.rs": "dba670791f5219951ce35228fd404a838123276517e734980219be8bf5a0c9e5",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_symmetry.rs": "6135cf31b478d789e4ba454cfc47de3d0b768e04b8ea330b109d3ba9f2c02ec8",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\continuation_zero_reach_contract.rs": "f5b7dab352e5b152b4dd1131a4bfd72891808ae8889ee453ec81b388aab6d7cf",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\convergence.rs": "c2d560a1f1e4c18709a7872fb7e319863c9f8e5ede400dbbde77febfe3f49a4b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\cuda_resources.rs": "73561979ee66234a55967f237838bf1d73171414cfaa0ffff6c088a7c0c07c22",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\fixtures\\postflop_quantization_prototype.cu": "bb8f5400d3354b7138fdc8e1154e3cf77dc312a9b94b0951c4cf6413d367fde4",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu.rs": "ad04b4fa49edc0e75556761236fb9f3274aeab513131976e9615f31885a58c06",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu_bench.rs": "dd3337a7b1b8f038186d5885e2b1a9aa61097d3adbb503f4897cebb339039876",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\gpu_check_perf.rs": "54d4b85406e1b2038b14fde7b8ccf1d0c7503e1a02089a58d8bd89c54c34b611",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\load_perf.rs": "01720fe5879416ce7c175e55321a0c9111fc7e9bf167c71dc725e836dc44f318",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\model_evidence.rs": "6628fcbd461348b4a2dadfef9e3c01f151f5af8b052362f4a871a30ef8e14bb8",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_action_menus.rs": "4a518cbc449668a3221737815507e8ffc1f0434f1c387809736ce31b3cad5cc3",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_capacity_perf.rs": "ff2cb73dcd88c3fb01ff2afe966b14cccd8922df939d71ad3b621ceede129b62",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_full_memory_perf.rs": "e7d35da59d72d5a3d448aa7e5c12dd7a7aef6dbb6eb99e3ceff1ee6cb8326636",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_memory_perf.rs": "f9a5c8f2b68c8cfe6d528ec65a4c3fb67b01f1289953ad78a194d803faf6a230",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_perf.rs": "8c038250c584fa59b40d0a20ef443e55105e7617060a2eb297bea51db637db95",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_profile.rs": "62c08617fd6b30a236e609bc6874fa7a093d4db5378564f1e834fde5577d1185",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_quantization_proof.rs": "5e3f1bf10a9a70a48343f46ca3e0ad08f3417cc8d69089c4bd39d3f523eeb343",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_resume_state.rs": "eb15af135a357f9ceb8e21d3fe8f2a616a0d562ee9468cc6ada6113ca27617a4",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_state_perf.rs": "7d6f51618d0fe5b0fa431351c31cc0775f4a3bd7e816a2e93ecda9bbafa49d47",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop.rs": "845c6c69c11a3e601ca6cbba0fab8ec1621c69edb64da4898d92c96ac8f4af23",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_action_evs.rs": "8807b6a6589a7e643b98b1898f54b6d12d144c06a5fb83e09357b5af17215855",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_bench.rs": "a0a0da7d1fa49895c2a9b81177f0a656263c425b50ca41de5ebeff9827a5259f",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_budget.rs": "9c5376769a3d41ec7d341cd011cab36aeccb8b7d386e24863a1ae1b681b2f2ea",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_generic_perf.rs": "21289b639c9b024066906b8914e866025da6e28c41d5df72aeebb82d10af5477",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_gpu.rs": "455246d76f5513390b8aefaea914113f1ccbe33021a1fc7536183d9eef81abd7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_perf.rs": "91abe17895d567fdb2f91c19f5efd12208ce34f04abe4bd99e0c8486eb5aa371",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_rake_sizing.rs": "f8f9b49b2563e571a2054c4f7e514b31a38d6444d8badb65601f7ce332a6c0f3",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_straddle.rs": "270fd38f908872d03e135100108d4521b75a2a9c6db7edd7a2bb81610b8da0e1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_target_perf.rs": "61d95bf9aa159b43e1fb0b5b949848a7bf92b1a80861480a24fa3f0d6fe09d74",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_throughput.rs": "d1ea2206afed21bbb7fee47d05273468ce51ccc479a9ed80c594ee859d847b95",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\preflop_variants.rs": "30762547a7e219385ebc913de7fa8599267e2f0557805f921e02ce1bab31d861",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\realization.rs": "fce7da4e1478843d8f2eafc05145cdbab27571e18b77af5b35bd819241c1ab24",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\report_lines.rs": "09aca8e7044676057ff36a580c59f92d4a8d0cda48ed4ee5af918bbdc4d6ee21",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\research_perf.rs": "05f880dd10004db0886b083dae35b21f58ea055a5aba3bbd35d903083d8e191b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_atomic.rs": "77e6c50539987cd54ec9ff915d4e7cba7e8c8cd1e71efc50419e3843addb4c6b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_compat.rs": "dec5d4256f93ffb331c7dd7f24056947c8a15a41d2e584e71c025918b376e1e0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\save_locks.rs": "49688e186425f9789e613324ecd5d1c6ad0b78f9cd9d564b9a965e60c4912079",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\program.md": "b9a715b9e4acda28dffb72b72b39b60655e6f7f924acdfec76c0b198de319e06",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source\\mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source\\graph_device_events.rs": "10a0bc1f5836a63bb507e888af55e309245bfb4efe618700e8a9917827fa0c75"
+  },
+  "source_entries_verified": 163,
+  "r1_failure_retained": {
+    "returncode": 101,
+    "at": "2026-10-16T09:28:23Z",
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--no-run",
+      "--message-format=json"
+    ]
+  },
+  "r2_build_exit": {
+    "returncode": 0,
+    "at": "2026-10-16T09:36:30Z",
+    "command": [
+      "cargo",
+      "test",
+      "--release",
+      "-p",
+      "solver",
+      "--features",
+      "gpu",
+      "--lib",
+      "--no-run",
+      "--message-format=json"
+    ]
+  },
+  "chronology": {
+    "r2_built_at": "2026-10-16T09:36:31Z",
+    "run_started_at": "2026-10-16T09:36:46Z",
+    "run_finished_at": "2026-10-16T09:37:24Z",
+    "native_test_seconds": 37.09,
+    "process_wall_ms": 37437.00000000172,
+    "stale_progress_elapsed_process_seconds_not_used": 30.609
+  },
+  "marker_count": 22,
+  "exactness": {
+    "raw_before_eval_iterations": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "raw_arrays_per_checkpoint": 8,
+    "raw_f32_words_directly_compared_total": 4426132436,
+    "compressed_direct_equality_iterations": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "checkpoint140_marker_boundary": "Mandatory frozen compare_cpu after warm_check140 before graph construction; no separate checkpoint_exact140 marker",
+    "historical_convergence_anchors_checked": 10,
+    "all_non_timing_original_vs_E015_rainbow_records_equal": true,
+    "final_full_state_object_equal": true,
+    "final_fingerprint": "65fb2853a11f3acc",
+    "final_exploit_bits": 4595130701932466176,
+    "final_root_strategy_vector_length": 514,
+    "cfv_scratch_compared": false
+  },
+  "admission": {
+    "cpu_arena_bytes_per_arm": 1386321040,
+    "device_free_bytes": 32496418816,
+    "device_per_arm_payload_bytes": 5900635904,
+    "device_reserve_bytes": 2147483648,
+    "device_total_bytes": 34190458880,
+    "diagnostic_only": true,
+    "dual_device_required_with_reserve": 13948755456,
+    "host_additional_required": 12852342584,
+    "host_free_after_spot_and_plan": 103306436608,
+    "host_free_before_spot": 103586316288,
+    "host_reserve_bytes": 8589934592,
+    "pinned_bytes_per_arm": 740688652,
+    "raw_compare_max_bytes": 8388608,
+    "shared_tree_bytes": 110623272,
+    "stage": "admission",
+    "device_headroom_bytes": 18547663360,
+    "host_headroom_bytes": 90454094024
+  },
+  "graphs": [
+    {
+      "graph": 0,
+      "kernels": 63,
+      "events": 64,
+      "original_edges": 62,
+      "added_edges": 126
+    },
+    {
+      "graph": 1,
+      "kernels": 63,
+      "events": 64,
+      "original_edges": 62,
+      "added_edges": 126
+    }
+  ],
+  "outer_batches": [
+    {
+      "iteration": 160,
+      "order": [
+        "native",
+        "instrumented"
+      ],
+      "native_device_batch_ms": 459.6063537597656,
+      "instrumented_device_batch_ms": 776.3331909179688,
+      "native_host_batch_ms": 459.6749,
+      "instrumented_host_batch_ms": 776.3964,
+      "device_ratio": 1.6891263242277867,
+      "device_increase_pct": 68.91263242277867,
+      "host_ratio": 1.689011951707609,
+      "final_replay_inter_graph_gap_ms": 0.0005760000203736126
+    },
+    {
+      "iteration": 180,
+      "order": [
+        "instrumented",
+        "native"
+      ],
+      "native_device_batch_ms": 460.85748291015625,
+      "instrumented_device_batch_ms": 793.2276611328125,
+      "native_host_batch_ms": 460.9029,
+      "instrumented_host_batch_ms": 793.2889,
+      "device_ratio": 1.7211994825902643,
+      "device_increase_pct": 72.11994825902643,
+      "host_ratio": 1.7211627438230483,
+      "final_replay_inter_graph_gap_ms": 0.0005760000203736126
+    },
+    {
+      "iteration": 200,
+      "order": [
+        "native",
+        "instrumented"
+      ],
+      "native_device_batch_ms": 462.5217590332031,
+      "instrumented_device_batch_ms": 791.0625,
+      "native_host_batch_ms": 462.5977,
+      "instrumented_host_batch_ms": 791.1042,
+      "device_ratio": 1.7103249405034193,
+      "device_increase_pct": 71.03249405034194,
+      "host_ratio": 1.7101343132488553,
+      "final_replay_inter_graph_gap_ms": 0.0005760000203736126
+    }
+  ],
+  "instrumented_native_device_ratio": {
+    "samples": [
+      1.6891263242277867,
+      1.7211994825902643,
+      1.7103249405034193
+    ],
+    "median": 1.7103249405034193,
+    "min": 1.6891263242277867,
+    "max": 1.7211994825902643
+  },
+  "final_replay_envelopes": [
+    {
+      "iteration": 160,
+      "graphs": [
+        {
+          "graph": 0,
+          "envelope_ms": 16.100799560546875,
+          "node_sum_ms": 16.100799966603518,
+          "node_sum_minus_envelope_ms": 4.0605664253234863e-07
+        },
+        {
+          "graph": 1,
+          "envelope_ms": 15.530559539794922,
+          "node_sum_ms": 15.530560061335564,
+          "node_sum_minus_envelope_ms": 5.21540641784668e-07
+        }
+      ],
+      "combined_graph_envelope_ms": 31.631359100341797,
+      "combined_node_sum_ms": 31.63136002793908,
+      "inter_graph_gap_ms": 0.0005760000203736126
+    },
+    {
+      "iteration": 180,
+      "graphs": [
+        {
+          "graph": 0,
+          "envelope_ms": 16.264095306396484,
+          "node_sum_ms": 16.264096088707447,
+          "node_sum_minus_envelope_ms": 7.82310962677002e-07
+        },
+        {
+          "graph": 1,
+          "envelope_ms": 15.556351661682129,
+          "node_sum_ms": 15.556351963430643,
+          "node_sum_minus_envelope_ms": 3.0174851417541504e-07
+        }
+      ],
+      "combined_graph_envelope_ms": 31.820446968078613,
+      "combined_node_sum_ms": 31.82044805213809,
+      "inter_graph_gap_ms": 0.0005760000203736126
+    },
+    {
+      "iteration": 200,
+      "graphs": [
+        {
+          "graph": 0,
+          "envelope_ms": 16.549535751342773,
+          "node_sum_ms": 16.549535933881998,
+          "node_sum_minus_envelope_ms": 1.825392246246338e-07
+        },
+        {
+          "graph": 1,
+          "envelope_ms": 15.580320358276367,
+          "node_sum_ms": 15.580320000648499,
+          "node_sum_minus_envelope_ms": -3.5762786865234375e-07
+        }
+      ],
+      "combined_graph_envelope_ms": 32.12985610961914,
+      "combined_node_sum_ms": 32.1298559345305,
+      "inter_graph_gap_ms": 0.0005760000203736126
+    }
+  ],
+  "paired_final_replay_family_ms": {
+    "copy_root": {
+      "samples": [
+        0.09417600184679031,
+        0.08060799911618233,
+        0.07657600194215775
+      ],
+      "median": 0.08060799911618233,
+      "min": 0.07657600194215775,
+      "max": 0.09417600184679031
+    },
+    "down_action": {
+      "samples": [
+        5.540991999208927,
+        5.526240028440952,
+        5.638975992798805
+      ],
+      "median": 5.540991999208927,
+      "min": 5.526240028440952,
+      "max": 5.638975992798805
+    },
+    "down_chance": {
+      "samples": [
+        1.855903998017311,
+        2.1268159970641136,
+        1.8469119742512703
+      ],
+      "median": 1.855903998017311,
+      "min": 1.8469119742512703,
+      "max": 2.1268159970641136
+    },
+    "up_fold": {
+      "samples": [
+        3.421439968049526,
+        3.457407996058464,
+        3.6345599740743637
+      ],
+      "median": 3.457407996058464,
+      "min": 3.421439968049526,
+      "max": 3.6345599740743637
+    },
+    "up_show": {
+      "samples": [
+        7.639232084155083,
+        7.666304096579552,
+        8.088896036148071
+      ],
+      "median": 7.666304096579552,
+      "min": 7.639232084155083,
+      "max": 8.088896036148071
+    },
+    "up_action": {
+      "samples": [
+        10.683359984308481,
+        10.459839962422848,
+        10.36390395089984
+      ],
+      "median": 10.459839962422848,
+      "min": 10.36390395089984,
+      "max": 10.683359984308481
+    },
+    "up_chance": {
+      "samples": [
+        2.3962559923529625,
+        2.5032319724559784,
+        2.480032004415989
+      ],
+      "median": 2.480032004415989,
+      "min": 2.3962559923529625,
+      "max": 2.5032319724559784
+    }
+  },
+  "family_order_by_median": [
+    "up_action",
+    "up_show",
+    "down_action",
+    "up_fold",
+    "up_chance",
+    "down_chance",
+    "copy_root"
+  ],
+  "node_samples": [
+    {
+      "graph": 1,
+      "ordinal": 38,
+      "kernel": "up_action",
+      "samples": [
+        1.332800030708313,
+        1.3376959562301636,
+        1.358944058418274
+      ],
+      "median": 1.3376959562301636,
+      "min": 1.332800030708313,
+      "max": 1.358944058418274,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          127302,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 34,
+      "kernel": "up_action",
+      "samples": [
+        1.307968020439148,
+        1.3127039670944214,
+        1.323423981666565
+      ],
+      "median": 1.3127039670944214,
+      "min": 1.307968020439148,
+      "max": 1.323423981666565,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 34,
+      "kernel": "up_action",
+      "samples": [
+        1.1963839530944824,
+        1.1826560497283936,
+        1.1788159608840942
+      ],
+      "median": 1.1826560497283936,
+      "min": 1.1788159608840942,
+      "max": 1.1963839530944824,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "samples": [
+        1.106816053390503,
+        1.1024960279464722,
+        1.132256031036377
+      ],
+      "median": 1.106816053390503,
+      "min": 1.1024960279464722,
+      "max": 1.132256031036377,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "samples": [
+        1.0473920106887817,
+        1.061792016029358,
+        1.0918079614639282
+      ],
+      "median": 1.061792016029358,
+      "min": 1.0473920106887817,
+      "max": 1.0918079614639282,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 30,
+      "kernel": "up_action",
+      "samples": [
+        1.250432014465332,
+        0.9943360090255737,
+        0.9832000136375427
+      ],
+      "median": 0.9943360090255737,
+      "min": 0.9832000136375427,
+      "max": 1.250432014465332,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 32,
+      "kernel": "up_show",
+      "samples": [
+        0.9725120067596436,
+        0.9651200175285339,
+        0.9720320105552673
+      ],
+      "median": 0.9720320105552673,
+      "min": 0.9651200175285339,
+      "max": 0.9725120067596436,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          122304,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 38,
+      "kernel": "up_action",
+      "samples": [
+        0.9359999895095825,
+        0.9292799830436707,
+        0.9198079705238342
+      ],
+      "median": 0.9292799830436707,
+      "min": 0.9198079705238342,
+      "max": 0.9359999895095825,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          127302,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 32,
+      "kernel": "up_show",
+      "samples": [
+        0.9240000247955322,
+        0.9227200150489807,
+        1.2565120458602905
+      ],
+      "median": 0.9240000247955322,
+      "min": 0.9227200150489807,
+      "max": 1.2565120458602905,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          122304,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 30,
+      "kernel": "up_action",
+      "samples": [
+        0.8193600177764893,
+        0.8356159925460815,
+        0.8286399841308594
+      ],
+      "median": 0.8286399841308594,
+      "min": 0.8193600177764893,
+      "max": 0.8356159925460815,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 26,
+      "kernel": "up_show",
+      "samples": [
+        0.8444799780845642,
+        0.8253120183944702,
+        0.8257279992103577
+      ],
+      "median": 0.8257279992103577,
+      "min": 0.8253120183944702,
+      "max": 0.8444799780845642,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 26,
+      "kernel": "up_show",
+      "samples": [
+        0.7858240008354187,
+        0.7987200021743774,
+        0.7883840203285217
+      ],
+      "median": 0.7883840203285217,
+      "min": 0.7858240008354187,
+      "max": 0.7987200021743774,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 42,
+      "kernel": "up_action",
+      "samples": [
+        0.7403519749641418,
+        0.746720016002655,
+        0.7392640113830566
+      ],
+      "median": 0.7403519749641418,
+      "min": 0.7392640113830566,
+      "max": 0.746720016002655,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          73745,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 19,
+      "kernel": "down_action",
+      "samples": [
+        0.7459520101547241,
+        0.7362880110740662,
+        0.7322880029678345
+      ],
+      "median": 0.7362880110740662,
+      "min": 0.7322880029678345,
+      "max": 0.7459520101547241,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 17,
+      "kernel": "down_action",
+      "samples": [
+        0.6801919937133789,
+        0.6850240230560303,
+        0.687936007976532
+      ],
+      "median": 0.6850240230560303,
+      "min": 0.6801919937133789,
+      "max": 0.687936007976532,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          127302,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 42,
+      "kernel": "up_action",
+      "samples": [
+        0.5792639851570129,
+        0.5886399745941162,
+        0.5817919969558716
+      ],
+      "median": 0.5817919969558716,
+      "min": 0.5792639851570129,
+      "max": 0.5886399745941162,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          73745,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 21,
+      "kernel": "down_action",
+      "samples": [
+        0.5300800204277039,
+        0.5454400181770325,
+        0.5381760001182556
+      ],
+      "median": 0.5381760001182556,
+      "min": 0.5300800204277039,
+      "max": 0.5454400181770325,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 36,
+      "kernel": "up_show",
+      "samples": [
+        0.4674240052700043,
+        0.47436800599098206,
+        0.4756479859352112
+      ],
+      "median": 0.47436800599098206,
+      "min": 0.4674240052700043,
+      "max": 0.4756479859352112,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          54096,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 36,
+      "kernel": "up_show",
+      "samples": [
+        0.4501439929008484,
+        0.4546239972114563,
+        0.468095988035202
+      ],
+      "median": 0.4546239972114563,
+      "min": 0.4501439929008484,
+      "max": 0.468095988035202,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          54096,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 15,
+      "kernel": "down_action",
+      "samples": [
+        0.4338879883289337,
+        0.4344959855079651,
+        0.4347519874572754
+      ],
+      "median": 0.4344959855079651,
+      "min": 0.4338879883289337,
+      "max": 0.4347519874572754,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          73745,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 45,
+      "kernel": "up_action",
+      "samples": [
+        0.43327999114990234,
+        0.4248960018157959,
+        0.4264639914035797
+      ],
+      "median": 0.4264639914035797,
+      "min": 0.4248960018157959,
+      "max": 0.43327999114990234,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          36162,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 19,
+      "kernel": "down_action",
+      "samples": [
+        0.4023999869823456,
+        0.40726399421691895,
+        0.4073599874973297
+      ],
+      "median": 0.40726399421691895,
+      "min": 0.4023999869823456,
+      "max": 0.4073599874973297,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 28,
+      "kernel": "up_fold",
+      "samples": [
+        0.3604480028152466,
+        0.34483200311660767,
+        0.3755199909210205
+      ],
+      "median": 0.3604480028152466,
+      "min": 0.34483200311660767,
+      "max": 0.3755199909210205,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          96432,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 27,
+      "kernel": "up_action",
+      "samples": [
+        0.34911999106407166,
+        0.33481600880622864,
+        0.33263999223709106
+      ],
+      "median": 0.33481600880622864,
+      "min": 0.33263999223709106,
+      "max": 0.34911999106407166,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 28,
+      "kernel": "up_fold",
+      "samples": [
+        0.33475199341773987,
+        0.3110719919204712,
+        0.40748798847198486
+      ],
+      "median": 0.33475199341773987,
+      "min": 0.3110719919204712,
+      "max": 0.40748798847198486,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          96432,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 17,
+      "kernel": "down_action",
+      "samples": [
+        0.3442879915237427,
+        0.32393598556518555,
+        0.3229439854621887
+      ],
+      "median": 0.32393598556518555,
+      "min": 0.3229439854621887,
+      "max": 0.3442879915237427,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          127302,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 25,
+      "kernel": "up_fold",
+      "samples": [
+        0.3096959888935089,
+        0.3107840120792389,
+        0.3099519908428192
+      ],
+      "median": 0.3099519908428192,
+      "min": 0.3096959888935089,
+      "max": 0.3107840120792389,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          89376,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 15,
+      "kernel": "down_action",
+      "samples": [
+        0.2991040050983429,
+        0.29340800642967224,
+        0.30953601002693176
+      ],
+      "median": 0.2991040050983429,
+      "min": 0.29340800642967224,
+      "max": 0.30953601002693176,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          73745,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 24,
+      "kernel": "up_show",
+      "samples": [
+        0.296640008687973,
+        0.31014400720596313,
+        0.2987839877605438
+      ],
+      "median": 0.2987839877605438,
+      "min": 0.296640008687973,
+      "max": 0.31014400720596313,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 25,
+      "kernel": "up_fold",
+      "samples": [
+        0.2885119915008545,
+        0.2932479977607727,
+        0.29203200340270996
+      ],
+      "median": 0.29203200340270996,
+      "min": 0.2885119915008545,
+      "max": 0.2932479977607727,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          89376,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 21,
+      "kernel": "down_action",
+      "samples": [
+        0.29120001196861267,
+        0.2898240089416504,
+        0.29420799016952515
+      ],
+      "median": 0.29120001196861267,
+      "min": 0.2898240089416504,
+      "max": 0.29420799016952515,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          103488,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 24,
+      "kernel": "up_show",
+      "samples": [
+        0.28806400299072266,
+        0.28863999247550964,
+        0.28697600960731506
+      ],
+      "median": 0.28806400299072266,
+      "min": 0.28697600960731506,
+      "max": 0.28863999247550964,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 45,
+      "kernel": "up_action",
+      "samples": [
+        0.28512001037597656,
+        0.28598400950431824,
+        0.2885439991950989
+      ],
+      "median": 0.28598400950431824,
+      "min": 0.28512001037597656,
+      "max": 0.2885439991950989,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          36162,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 31,
+      "kernel": "up_fold",
+      "samples": [
+        0.26607999205589294,
+        0.2627519965171814,
+        0.2760320007801056
+      ],
+      "median": 0.26607999205589294,
+      "min": 0.2627519965171814,
+      "max": 0.2760320007801056,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          66150,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 27,
+      "kernel": "up_action",
+      "samples": [
+        0.2602880001068115,
+        0.2592639923095703,
+        0.26128000020980835
+      ],
+      "median": 0.2602880001068115,
+      "min": 0.2592639923095703,
+      "max": 0.26128000020980835,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 31,
+      "kernel": "up_fold",
+      "samples": [
+        0.2372480034828186,
+        0.2519359886646271,
+        0.255295991897583
+      ],
+      "median": 0.2519359886646271,
+      "min": 0.2372480034828186,
+      "max": 0.255295991897583,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          66150,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 13,
+      "kernel": "down_action",
+      "samples": [
+        0.24665600061416626,
+        0.2574079930782318,
+        0.24748800694942474
+      ],
+      "median": 0.24748800694942474,
+      "min": 0.24665600061416626,
+      "max": 0.2574079930782318,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          36162,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 40,
+      "kernel": "up_show",
+      "samples": [
+        0.2287680059671402,
+        0.23532800376415253,
+        0.260672003030777
+      ],
+      "median": 0.23532800376415253,
+      "min": 0.2287680059671402,
+      "max": 0.260672003030777,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          21168,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 40,
+      "kernel": "up_show",
+      "samples": [
+        0.2271679937839508,
+        0.22703999280929565,
+        0.23199999332427979
+      ],
+      "median": 0.2271679937839508,
+      "min": 0.22703999280929565,
+      "max": 0.23199999332427979,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          21168,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 22,
+      "kernel": "down_action",
+      "samples": [
+        0.20819200575351715,
+        0.19232000410556793,
+        0.20576000213623047
+      ],
+      "median": 0.20576000213623047,
+      "min": 0.19232000410556793,
+      "max": 0.20819200575351715,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 41,
+      "kernel": "up_chance",
+      "samples": [
+        0.16812799870967865,
+        0.18751999735832214,
+        0.18544000387191772
+      ],
+      "median": 0.18544000387191772,
+      "min": 0.16812799870967865,
+      "max": 0.18751999735832214,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          882,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 48,
+      "kernel": "up_action",
+      "samples": [
+        0.19443200528621674,
+        0.179967999458313,
+        0.18374399840831757
+      ],
+      "median": 0.18374399840831757,
+      "min": 0.179967999458313,
+      "max": 0.19443200528621674,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10194,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 16,
+      "kernel": "down_chance",
+      "samples": [
+        0.17027199268341064,
+        0.16911999881267548,
+        0.17097599804401398
+      ],
+      "median": 0.17027199268341064,
+      "min": 0.16911999881267548,
+      "max": 0.17097599804401398,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          42336,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 37,
+      "kernel": "up_chance",
+      "samples": [
+        0.1661120057106018,
+        0.1671680063009262,
+        0.17535999417304993
+      ],
+      "median": 0.1671680063009262,
+      "min": 0.1661120057106018,
+      "max": 0.17535999417304993,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          833,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 18,
+      "kernel": "down_chance",
+      "samples": [
+        0.17504000663757324,
+        0.16089600324630737,
+        0.16390399634838104
+      ],
+      "median": 0.16390399634838104,
+      "min": 0.16089600324630737,
+      "max": 0.17504000663757324,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          39984,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 44,
+      "kernel": "up_chance",
+      "samples": [
+        0.15875199437141418,
+        0.16515199840068817,
+        0.16208000481128693
+      ],
+      "median": 0.16208000481128693,
+      "min": 0.15875199437141418,
+      "max": 0.16515199840068817,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          688,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 41,
+      "kernel": "up_chance",
+      "samples": [
+        0.1584320068359375,
+        0.16463999450206757,
+        0.16035200655460358
+      ],
+      "median": 0.16035200655460358,
+      "min": 0.1584320068359375,
+      "max": 0.16463999450206757,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          882,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 37,
+      "kernel": "up_chance",
+      "samples": [
+        0.15382400155067444,
+        0.15571199357509613,
+        0.162432000041008
+      ],
+      "median": 0.15571199357509613,
+      "min": 0.15382400155067444,
+      "max": 0.162432000041008,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          833,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 23,
+      "kernel": "up_fold",
+      "samples": [
+        0.15478399395942688,
+        0.15516799688339233,
+        0.16908800601959229
+      ],
+      "median": 0.15516799688339233,
+      "min": 0.15478399395942688,
+      "max": 0.16908800601959229,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 14,
+      "kernel": "down_chance",
+      "samples": [
+        0.16339200735092163,
+        0.15481600165367126,
+        0.1536639928817749
+      ],
+      "median": 0.15481600165367126,
+      "min": 0.1536639928817749,
+      "max": 0.16339200735092163,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          33026,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 44,
+      "kernel": "up_chance",
+      "samples": [
+        0.1534080058336258,
+        0.15007999539375305,
+        0.1746239960193634
+      ],
+      "median": 0.1534080058336258,
+      "min": 0.15007999539375305,
+      "max": 0.1746239960193634,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          688,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 35,
+      "kernel": "up_fold",
+      "samples": [
+        0.14953599870204926,
+        0.14099200069904327,
+        0.14979200065135956
+      ],
+      "median": 0.14953599870204926,
+      "min": 0.14099200069904327,
+      "max": 0.14979200065135956,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          26607,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 22,
+      "kernel": "down_action",
+      "samples": [
+        0.14934399724006653,
+        0.14950400590896606,
+        0.15033599734306335
+      ],
+      "median": 0.14950400590896606,
+      "min": 0.14934399724006653,
+      "max": 0.15033599734306335,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 23,
+      "kernel": "up_fold",
+      "samples": [
+        0.13926400244235992,
+        0.14851200580596924,
+        0.15647999942302704
+      ],
+      "median": 0.14851200580596924,
+      "min": 0.13926400244235992,
+      "max": 0.15647999942302704,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          30576,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 47,
+      "kernel": "up_chance",
+      "samples": [
+        0.14496000111103058,
+        0.14735999703407288,
+        0.14710399508476257
+      ],
+      "median": 0.14710399508476257,
+      "min": 0.14496000111103058,
+      "max": 0.14735999703407288,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 35,
+      "kernel": "up_fold",
+      "samples": [
+        0.1457280069589615,
+        0.14662399888038635,
+        0.14713600277900696
+      ],
+      "median": 0.14662399888038635,
+      "min": 0.1457280069589615,
+      "max": 0.14713600277900696,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          26607,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 33,
+      "kernel": "up_chance",
+      "samples": [
+        0.14294399321079254,
+        0.14899200201034546,
+        0.14156800508499146
+      ],
+      "median": 0.14294399321079254,
+      "min": 0.14156800508499146,
+      "max": 0.14899200201034546,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          294,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 47,
+      "kernel": "up_chance",
+      "samples": [
+        0.14684799313545227,
+        0.14102399349212646,
+        0.13884800672531128
+      ],
+      "median": 0.14102399349212646,
+      "min": 0.13884800672531128,
+      "max": 0.14684799313545227,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 13,
+      "kernel": "down_action",
+      "samples": [
+        0.132192000746727,
+        0.12355200201272964,
+        0.12950399518013
+      ],
+      "median": 0.12950399518013,
+      "min": 0.12355200201272964,
+      "max": 0.132192000746727,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          36162,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 33,
+      "kernel": "up_chance",
+      "samples": [
+        0.13705599308013916,
+        0.12851199507713318,
+        0.12822400033473969
+      ],
+      "median": 0.12851199507713318,
+      "min": 0.12822400033473969,
+      "max": 0.13705599308013916,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          294,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 48,
+      "kernel": "up_action",
+      "samples": [
+        0.1189119964838028,
+        0.11404799669981003,
+        0.12396799772977829
+      ],
+      "median": 0.1189119964838028,
+      "min": 0.11404799669981003,
+      "max": 0.12396799772977829,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10194,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 50,
+      "kernel": "up_chance",
+      "samples": [
+        0.1141119971871376,
+        0.11606399714946747,
+        0.13075199723243713
+      ],
+      "median": 0.11606399714946747,
+      "min": 0.1141119971871376,
+      "max": 0.13075199723243713,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          199,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 18,
+      "kernel": "down_chance",
+      "samples": [
+        0.1159679964184761,
+        0.12201599776744843,
+        0.11292800307273865
+      ],
+      "median": 0.1159679964184761,
+      "min": 0.11292800307273865,
+      "max": 0.12201599776744843,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          39984,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 16,
+      "kernel": "down_chance",
+      "samples": [
+        0.11535999923944473,
+        0.1292160004377365,
+        0.11488000303506851
+      ],
+      "median": 0.11535999923944473,
+      "min": 0.11488000303506851,
+      "max": 0.1292160004377365,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          42336,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 12,
+      "kernel": "down_chance",
+      "samples": [
+        0.11264000087976456,
+        0.11343999952077866,
+        0.11334399878978729
+      ],
+      "median": 0.11334399878978729,
+      "min": 0.11264000087976456,
+      "max": 0.11343999952077866,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          16611,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 56,
+      "kernel": "up_chance",
+      "samples": [
+        0.11033599823713303,
+        0.1120000034570694,
+        0.11692799627780914
+      ],
+      "median": 0.1120000034570694,
+      "min": 0.11033599823713303,
+      "max": 0.11692799627780914,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 11,
+      "kernel": "down_action",
+      "samples": [
+        0.11161600053310394,
+        0.10716799646615982,
+        0.11430399864912033
+      ],
+      "median": 0.11161600053310394,
+      "min": 0.10716799646615982,
+      "max": 0.11430399864912033,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10194,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 50,
+      "kernel": "up_chance",
+      "samples": [
+        0.10953599959611893,
+        0.11043199896812439,
+        0.11238399893045425
+      ],
+      "median": 0.11043199896812439,
+      "min": 0.10953599959611893,
+      "max": 0.11238399893045425,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          199,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 53,
+      "kernel": "up_chance",
+      "samples": [
+        0.1090880036354065,
+        0.1080000028014183,
+        0.1090560033917427
+      ],
+      "median": 0.1090560033917427,
+      "min": 0.1080000028014183,
+      "max": 0.1090880036354065,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 20,
+      "kernel": "down_chance",
+      "samples": [
+        0.10652799904346466,
+        0.10838399827480316,
+        0.11907199770212173
+      ],
+      "median": 0.10838399827480316,
+      "min": 0.10652799904346466,
+      "max": 0.11907199770212173,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          14112,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 53,
+      "kernel": "up_chance",
+      "samples": [
+        0.10601600259542465,
+        0.10835199803113937,
+        0.11807999759912491
+      ],
+      "median": 0.10835199803113937,
+      "min": 0.10601600259542465,
+      "max": 0.11807999759912491,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 56,
+      "kernel": "up_chance",
+      "samples": [
+        0.1053759977221489,
+        0.13580800592899323,
+        0.1064319983124733
+      ],
+      "median": 0.1064319983124733,
+      "min": 0.1053759977221489,
+      "max": 0.13580800592899323,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 59,
+      "kernel": "up_chance",
+      "samples": [
+        0.10620799660682678,
+        0.1441279947757721,
+        0.10512000322341919
+      ],
+      "median": 0.10620799660682678,
+      "min": 0.10512000322341919,
+      "max": 0.1441279947757721,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 59,
+      "kernel": "up_chance",
+      "samples": [
+        0.10512000322341919,
+        0.11228799819946289,
+        0.10524799674749374
+      ],
+      "median": 0.10524799674749374,
+      "min": 0.10512000322341919,
+      "max": 0.11228799819946289,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "up_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 39,
+      "kernel": "up_fold",
+      "samples": [
+        0.09446399658918381,
+        0.10134399682283401,
+        0.11222399771213531
+      ],
+      "median": 0.10134399682283401,
+      "min": 0.09446399658918381,
+      "max": 0.11222399771213531,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10045,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 39,
+      "kernel": "up_fold",
+      "samples": [
+        0.115167997777462,
+        0.09775999933481216,
+        0.10102400183677673
+      ],
+      "median": 0.10102400183677673,
+      "min": 0.09775999933481216,
+      "max": 0.115167997777462,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10045,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 14,
+      "kernel": "down_chance",
+      "samples": [
+        0.09910400211811066,
+        0.3957439959049225,
+        0.10073599964380264
+      ],
+      "median": 0.10073599964380264,
+      "min": 0.09910400211811066,
+      "max": 0.3957439959049225,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          33026,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 11,
+      "kernel": "down_action",
+      "samples": [
+        0.0963520035147667,
+        0.09443199634552002,
+        0.11055999994277954
+      ],
+      "median": 0.0963520035147667,
+      "min": 0.09443199634552002,
+      "max": 0.11055999994277954,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          10194,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 12,
+      "kernel": "down_chance",
+      "samples": [
+        0.09884800016880035,
+        0.08457600325345993,
+        0.08591999858617783
+      ],
+      "median": 0.08591999858617783,
+      "min": 0.08457600325345993,
+      "max": 0.09884800016880035,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          16611,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 10,
+      "kernel": "down_chance",
+      "samples": [
+        0.08448000252246857,
+        0.08511999994516373,
+        0.08179199695587158
+      ],
+      "median": 0.08448000252246857,
+      "min": 0.08179199695587158,
+      "max": 0.08511999994516373,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          9555,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 20,
+      "kernel": "down_chance",
+      "samples": [
+        0.08185599744319916,
+        0.08383999764919281,
+        0.08367999643087387
+      ],
+      "median": 0.08367999643087387,
+      "min": 0.08185599744319916,
+      "max": 0.08383999764919281,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          14112,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 51,
+      "kernel": "up_action",
+      "samples": [
+        0.07123199850320816,
+        0.08006399869918823,
+        0.08396799862384796
+      ],
+      "median": 0.08006399869918823,
+      "min": 0.07123199850320816,
+      "max": 0.08396799862384796,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          493,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 1,
+      "kernel": "down_action",
+      "samples": [
+        0.07919999957084656,
+        0.06643199920654297,
+        0.10169599950313568
+      ],
+      "median": 0.07919999957084656,
+      "min": 0.06643199920654297,
+      "max": 0.10169599950313568,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 51,
+      "kernel": "up_action",
+      "samples": [
+        0.07731200009584427,
+        0.0793600007891655,
+        0.07891199737787247
+      ],
+      "median": 0.07891199737787247,
+      "min": 0.07731200009584427,
+      "max": 0.0793600007891655,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          493,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 57,
+      "kernel": "up_action",
+      "samples": [
+        0.07081600278615952,
+        0.08313599973917007,
+        0.07798399776220322
+      ],
+      "median": 0.07798399776220322,
+      "min": 0.07081600278615952,
+      "max": 0.08313599973917007,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 4,
+      "kernel": "down_chance",
+      "samples": [
+        0.08963199704885483,
+        0.07772800326347351,
+        0.07475200295448303
+      ],
+      "median": 0.07772800326347351,
+      "min": 0.07475200295448303,
+      "max": 0.08963199704885483,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          98,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 55,
+      "kernel": "up_fold",
+      "samples": [
+        0.07657600194215775,
+        0.07795199751853943,
+        0.0682239979505539
+      ],
+      "median": 0.07657600194215775,
+      "min": 0.0682239979505539,
+      "max": 0.07795199751853943,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 9,
+      "kernel": "down_action",
+      "samples": [
+        0.0793600007891655,
+        0.06831999868154526,
+        0.0764480009675026
+      ],
+      "median": 0.0764480009675026,
+      "min": 0.06831999868154526,
+      "max": 0.0793600007891655,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          493,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 10,
+      "kernel": "down_chance",
+      "samples": [
+        0.07503999769687653,
+        0.07711999863386154,
+        0.07596799731254578
+      ],
+      "median": 0.07596799731254578,
+      "min": 0.07503999769687653,
+      "max": 0.07711999863386154,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          9555,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 54,
+      "kernel": "up_action",
+      "samples": [
+        0.07494399696588516,
+        0.07596799731254578,
+        0.081216000020504
+      ],
+      "median": 0.07596799731254578,
+      "min": 0.07494399696588516,
+      "max": 0.081216000020504,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 5,
+      "kernel": "down_action",
+      "samples": [
+        0.07529599964618683,
+        0.08780799806118011,
+        0.07276800274848938
+      ],
+      "median": 0.07529599964618683,
+      "min": 0.07276800274848938,
+      "max": 0.08780799806118011,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 54,
+      "kernel": "up_action",
+      "samples": [
+        0.07046400010585785,
+        0.11859200149774551,
+        0.07503999769687653
+      ],
+      "median": 0.07503999769687653,
+      "min": 0.07046400010585785,
+      "max": 0.11859200149774551,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 43,
+      "kernel": "up_fold",
+      "samples": [
+        0.07398399710655212,
+        0.07872000336647034,
+        0.07478400319814682
+      ],
+      "median": 0.07478400319814682,
+      "min": 0.07398399710655212,
+      "max": 0.07872000336647034,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          492,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 7,
+      "kernel": "down_action",
+      "samples": [
+        0.06956800073385239,
+        0.07475200295448303,
+        0.07478400319814682
+      ],
+      "median": 0.07475200295448303,
+      "min": 0.06956800073385239,
+      "max": 0.07478400319814682,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 46,
+      "kernel": "up_fold",
+      "samples": [
+        0.0695360004901886,
+        0.08575999736785889,
+        0.0745600014925003
+      ],
+      "median": 0.0745600014925003,
+      "min": 0.0695360004901886,
+      "max": 0.08575999736785889,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          199,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 57,
+      "kernel": "up_action",
+      "samples": [
+        0.07360000163316727,
+        0.10608000308275223,
+        0.07420799881219864
+      ],
+      "median": 0.07420799881219864,
+      "min": 0.07360000163316727,
+      "max": 0.10608000308275223,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 2,
+      "kernel": "down_action",
+      "samples": [
+        0.0740479975938797,
+        0.07440000027418137,
+        0.07184000313282013
+      ],
+      "median": 0.0740479975938797,
+      "min": 0.07184000313282013,
+      "max": 0.07440000027418137,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 3,
+      "kernel": "down_action",
+      "samples": [
+        0.07398399710655212,
+        0.07369600236415863,
+        0.08451200276613235
+      ],
+      "median": 0.07398399710655212,
+      "min": 0.07369600236415863,
+      "max": 0.08451200276613235,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 1,
+      "kernel": "down_action",
+      "samples": [
+        0.07391999661922455,
+        0.07353600114583969,
+        0.07369600236415863
+      ],
+      "median": 0.07369600236415863,
+      "min": 0.07353600114583969,
+      "max": 0.07391999661922455,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 61,
+      "kernel": "up_action",
+      "samples": [
+        0.07366400212049484,
+        0.0756480023264885,
+        0.07369600236415863
+      ],
+      "median": 0.07369600236415863,
+      "min": 0.07366400212049484,
+      "max": 0.0756480023264885,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 4,
+      "kernel": "down_chance",
+      "samples": [
+        0.07043199986219406,
+        0.07340800017118454,
+        0.10646399855613708
+      ],
+      "median": 0.07340800017118454,
+      "min": 0.07043199986219406,
+      "max": 0.10646399855613708,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          98,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 6,
+      "kernel": "down_chance",
+      "samples": [
+        0.08457600325345993,
+        0.07132799923419952,
+        0.07327999919652939
+      ],
+      "median": 0.07327999919652939,
+      "min": 0.07132799923419952,
+      "max": 0.08457600325345993,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          147,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 9,
+      "kernel": "down_action",
+      "samples": [
+        0.07001599669456482,
+        0.0769599974155426,
+        0.07241600006818771
+      ],
+      "median": 0.07241600006818771,
+      "min": 0.07001599669456482,
+      "max": 0.0769599974155426,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          493,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 5,
+      "kernel": "down_action",
+      "samples": [
+        0.07222399860620499,
+        0.07209599763154984,
+        0.07286400347948074
+      ],
+      "median": 0.07222399860620499,
+      "min": 0.07209599763154984,
+      "max": 0.07286400347948074,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 2,
+      "kernel": "down_action",
+      "samples": [
+        0.06470400094985962,
+        0.07199999690055847,
+        0.09619200229644775
+      ],
+      "median": 0.07199999690055847,
+      "min": 0.06470400094985962,
+      "max": 0.09619200229644775,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 3,
+      "kernel": "down_action",
+      "samples": [
+        0.07014399766921997,
+        0.07187200337648392,
+        0.09027200192213058
+      ],
+      "median": 0.07187200337648392,
+      "min": 0.07014399766921997,
+      "max": 0.09027200192213058,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 8,
+      "kernel": "down_chance",
+      "samples": [
+        0.07097599655389786,
+        0.07919999957084656,
+        0.06745599955320358
+      ],
+      "median": 0.07097599655389786,
+      "min": 0.06745599955320358,
+      "max": 0.07919999957084656,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          147,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 8,
+      "kernel": "down_chance",
+      "samples": [
+        0.07094399631023407,
+        0.07056000083684921,
+        0.07212799787521362
+      ],
+      "median": 0.07094399631023407,
+      "min": 0.07056000083684921,
+      "max": 0.07212799787521362,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          147,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 49,
+      "kernel": "up_fold",
+      "samples": [
+        0.07088000327348709,
+        0.07020799815654755,
+        0.07225599884986877
+      ],
+      "median": 0.07088000327348709,
+      "min": 0.07020799815654755,
+      "max": 0.07225599884986877,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 6,
+      "kernel": "down_chance",
+      "samples": [
+        0.07081600278615952,
+        0.07030399888753891,
+        0.07596799731254578
+      ],
+      "median": 0.07081600278615952,
+      "min": 0.07030399888753891,
+      "max": 0.07596799731254578,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          147,
+          1,
+          1
+        ],
+        "kernel": "down_chance",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 60,
+      "kernel": "up_action",
+      "samples": [
+        0.06684800237417221,
+        0.1056319996714592,
+        0.07075200229883194
+      ],
+      "median": 0.07075200229883194,
+      "min": 0.06684800237417221,
+      "max": 0.1056319996714592,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 43,
+      "kernel": "up_fold",
+      "samples": [
+        0.07100799679756165,
+        0.06943999975919724,
+        0.06995200365781784
+      ],
+      "median": 0.06995200365781784,
+      "min": 0.06943999975919724,
+      "max": 0.07100799679756165,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          492,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 58,
+      "kernel": "up_fold",
+      "samples": [
+        0.06454399973154068,
+        0.06995200365781784,
+        0.07017599791288376
+      ],
+      "median": 0.06995200365781784,
+      "min": 0.06454399973154068,
+      "max": 0.07017599791288376,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 52,
+      "kernel": "up_fold",
+      "samples": [
+        0.06815999746322632,
+        0.06976000219583511,
+        0.10838399827480316
+      ],
+      "median": 0.06976000219583511,
+      "min": 0.06815999746322632,
+      "max": 0.10838399827480316,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 46,
+      "kernel": "up_fold",
+      "samples": [
+        0.06790400296449661,
+        0.07011199742555618,
+        0.06960000097751617
+      ],
+      "median": 0.06960000097751617,
+      "min": 0.06790400296449661,
+      "max": 0.07011199742555618,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          199,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 58,
+      "kernel": "up_fold",
+      "samples": [
+        0.06668800115585327,
+        0.0960640013217926,
+        0.06950400024652481
+      ],
+      "median": 0.06950400024652481,
+      "min": 0.06668800115585327,
+      "max": 0.0960640013217926,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1276
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 49,
+      "kernel": "up_fold",
+      "samples": [
+        0.06911999732255936,
+        0.07142399996519089,
+        0.06550399959087372
+      ],
+      "median": 0.06911999732255936,
+      "min": 0.06550399959087372,
+      "max": 0.07142399996519089,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          101,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 52,
+      "kernel": "up_fold",
+      "samples": [
+        0.06252799928188324,
+        0.06796800345182419,
+        0.06937599927186966
+      ],
+      "median": 0.06796800345182419,
+      "min": 0.06252799928188324,
+      "max": 0.06937599927186966,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 7,
+      "kernel": "down_action",
+      "samples": [
+        0.06707199662923813,
+        0.07430399954319,
+        0.0663359984755516
+      ],
+      "median": 0.06707199662923813,
+      "min": 0.0663359984755516,
+      "max": 0.07430399954319,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          346,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 61,
+      "kernel": "up_action",
+      "samples": [
+        0.06700800359249115,
+        0.06585600227117538,
+        0.078015998005867
+      ],
+      "median": 0.06700800359249115,
+      "min": 0.06585600227117538,
+      "max": 0.078015998005867,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          2,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 60,
+      "kernel": "up_action",
+      "samples": [
+        0.16012799739837646,
+        0.06639999896287918,
+        0.0613120011985302
+      ],
+      "median": 0.06639999896287918,
+      "min": 0.0613120011985302,
+      "max": 0.16012799739837646,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 55,
+      "kernel": "up_fold",
+      "samples": [
+        0.06483200192451477,
+        0.0650240033864975,
+        0.07017599791288376
+      ],
+      "median": 0.0650240033864975,
+      "min": 0.06483200192451477,
+      "max": 0.07017599791288376,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          3,
+          1,
+          1
+        ],
+        "kernel": "up_fold",
+        "shared_bytes": 1028
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 0,
+      "kernel": "copy_root",
+      "samples": [
+        0.032896000891923904,
+        0.042527999728918076,
+        0.04473600164055824
+      ],
+      "median": 0.042527999728918076,
+      "min": 0.032896000891923904,
+      "max": 0.04473600164055824,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          4,
+          1,
+          1
+        ],
+        "kernel": "copy_root",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 62,
+      "kernel": "up_action",
+      "samples": [
+        0.040063999593257904,
+        0.039103999733924866,
+        0.040352001786231995
+      ],
+      "median": 0.040063999593257904,
+      "min": 0.039103999733924866,
+      "max": 0.040352001786231995,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 0,
+      "ordinal": 0,
+      "kernel": "copy_root",
+      "samples": [
+        0.06128000095486641,
+        0.03807999938726425,
+        0.0318400003015995
+      ],
+      "median": 0.03807999938726425,
+      "min": 0.0318400003015995,
+      "max": 0.06128000095486641,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          4,
+          1,
+          1
+        ],
+        "kernel": "copy_root",
+        "shared_bytes": 0
+      }
+    },
+    {
+      "graph": 1,
+      "ordinal": 62,
+      "kernel": "up_action",
+      "samples": [
+        0.03356799855828285,
+        0.037376001477241516,
+        0.03791999816894531
+      ],
+      "median": 0.037376001477241516,
+      "min": 0.03356799855828285,
+      "max": 0.03791999816894531,
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          1,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    }
+  ],
+  "near_resolution_sample_count": 0,
+  "all_node_sample_count": 378,
+  "limitations": [
+    "One fixed rainbow compressed diagnostic with two resident solvers; not a production full-cycle benchmark or generalization proof.",
+    "Instrumented20-iteration device envelopes are68.9-72.1percent longer; event-perturbed family/node intervals cannot establish native kernel time shares or predict optimization gains.",
+    "Inner intervals are only final replays160/180/200; dividing outer20 envelopes gives a batch average with a different scope, not a correction to last-replay node intervals.",
+    "Source-enforced direct raw equality is recorded via pass/hashes/lengths; multi-GB raw images are intentionally not archived.",
+    "Recorded pre/post telemetry has no continuous clocks/temperature/utilization series and includes desktop processes; do not attribute timing differences to a specific hardware cause.",
+    "Numeric source and run controls pass; high perturbation makes native hotspot attribution limited rather than invalidating the preserved numeric observations."
+  ],
+  "next_step": "No performance candidate is qualified. If further profiling is chosen, prespecify a separate sparse-event protocol around the dominant captured up_action ordinal34/38 (and optionally up_show29 as a comparator), retain native outer controls and exact checkpoints, verify descriptors, and assess reduced perturbation before interpreting normal captured timing. This is a prospective confirmation, not a replacement/rescue of D033 or rejected optimizations."
+}

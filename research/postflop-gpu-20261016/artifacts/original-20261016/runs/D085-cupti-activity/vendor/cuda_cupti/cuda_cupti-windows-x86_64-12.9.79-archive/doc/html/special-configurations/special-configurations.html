@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>4. Special Configurations &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5. Modules" href="../api/modules.html" />
+    <link rel="prev" title="3. Library support" href="../library-support/library-support.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">4. Special Configurations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#multi-instance-gpu-mig">4.1. Multi-Instance GPU (MIG)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#nvidia-virtual-gpu-vgpu">4.2. NVIDIA Virtual GPU (vGPU)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#windows-subsystem-for-linux-wsl">4.3. Windows Subsystem for Linux (WSL)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../api/modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../api/namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+<li><span class="section-number">4. </span>Special Configurations</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="special-configurations">
+<h1><span class="section-number">4. </span>Special Configurations<a class="headerlink" href="#special-configurations" title="Permalink to this headline"></a></h1>
+<section id="multi-instance-gpu-mig">
+<span id="mig"></span><h2><span class="section-number">4.1. </span>Multi-Instance GPU (MIG)<a class="headerlink" href="#multi-instance-gpu-mig" title="Permalink to this headline"></a></h2>
+<p>Multi-Instance GPU (MIG) is a feature that allows a GPU to be partitioned into multiple CUDA devices. The partitioning is carried out on two levels: First, a GPU can be split into one or multiple GPU Instances. Each GPU Instance claims ownership of one or more streaming multiprocessors (SM), a subset of the overall GPU memory, and possibly other GPU resources, such as the video encoders/decoders. Second, each GPU Instance can be further partitioned into one or more Compute Instances. Each Compute Instance has exclusive ownership of its assigned SMs of the GPU Instance. However, all Compute Instances within a GPU Instance share the GPU Instance’s memory and memory bandwidth. Every Compute Instance acts and operates as a CUDA device with a unique device ID. See the driver release notes as well as the documentation for the <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> CLI tool for more information on how to configure MIG instances.</p>
+<p>From the profiling perspective, a Compute Instance can be of one of two types: <em>isolated</em> or <em>shared</em>.</p>
+<p>An <em>isolated</em> Compute Instance owns all of it’s assigned resources and does not share any GPU unit with another Compute Instance. In other words, the Compute Instance is of the same size as its parent GPU Instance and consequently does not have any other sibling Compute Instances. Tracing and Profiling works for isolated Compute Instances.</p>
+<p>A <em>shared</em> Compute Instance uses GPU resources that can potentially also be accessed by other Compute Instances in the same GPU Instance. Due to this resource sharing, collecting profiling data from shared units is not permitted. Attempts to collect metrics from a shared unit will result in NaN values. Better error reporting will be done in a future release. Collecting metrics from GPU units that are exclusively owned by a shared Compute Instance is still possible. Tracing works for shared Compute Instances.</p>
+<p>To allow users to determine which metrics are available on a target device, new APIs have been added which can be used to query counter availability before starting the profiling session. See APIs <code class="docutils literal notranslate"><span class="pre">NVPW_RawMetricsConfig_SetCounterAvailability</span></code> and <code class="docutils literal notranslate"><span class="pre">cuptiProfilerGetCounterAvailability</span></code>.</p>
+<p>All Compute Instances on a GPU share the same clock frequencies. To get consistent metric values with multi-pass collection, it is recommended to lock the GPU clocks during the profiling session. CLI tool <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span></code> can be used to configure a fixed frequency for the whole GPU by calling <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span> <span class="pre">--lock-gpu-clocks=tdp,tdp</span></code>. This sets the GPU clocks to the base TDP frequency until you reset the clocks by calling <code class="docutils literal notranslate"><span class="pre">nvidia-smi</span> <span class="pre">--reset-gpu-clocks</span></code>.</p>
+</section>
+<section id="nvidia-virtual-gpu-vgpu">
+<span id="vgpu"></span><h2><span class="section-number">4.2. </span>NVIDIA Virtual GPU (vGPU)<a class="headerlink" href="#nvidia-virtual-gpu-vgpu" title="Permalink to this headline"></a></h2>
+<p>CUPTI supports tracing and profiling features on NVIDIA virtual GPUs (vGPUs). Activity, Callback and Profiling APIs are supported but Event and Metric APIs are not supported on NVIDIA vGPUs. If you want to use profiling features that NVIDIA vGPU supports, you must enable them for each vGPU VM that requires them. These can be enabled by setting a vGPU plugin parameter <code class="docutils literal notranslate"><span class="pre">enable_profiling</span></code>. How to set the parameter for a vGPU VM depends on the hypervisor that you are using. Tracing is enabled by default, it doesn’t require any specific setting. However tracing results might not be accurate after virtual machine (VM) migration. Therefore it is recommended to set the vGPU plugin parameter <code class="docutils literal notranslate"><span class="pre">enable_profiling</span></code> for accurate results. Refer to the NVIDIA Virtual GPU Software documentation for the list of <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#cuda-open-cl-support-vgpu">supported GPUs</a>, how to <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#enabling-cuda-toolkit-profilers-vgpu">enable profiling features</a> using the vGPU plugin parameter and for <a class="reference external" href="https://docs.nvidia.com/grid/latest/grid-vgpu-user-guide/index.html#limitations-with-cuda-toolkit-profilers-enabled">limitations</a> on use of CUPTI with NVIDIA vGPU.</p>
+</section>
+<section id="windows-subsystem-for-linux-wsl">
+<span id="wsl"></span><h2><span class="section-number">4.3. </span>Windows Subsystem for Linux (WSL)<a class="headerlink" href="#windows-subsystem-for-linux-wsl" title="Permalink to this headline"></a></h2>
+<p>WSL or Windows Subsystem for Linux is a Windows feature that enables users to run native Linux applications, containers and command-line tools directly on Windows 10 and later OS builds. CUPTI supports tracing APIs <em>Activity</em> and <em>Callback</em> on the second generation of WSL (WSL 2) on Volta and later GPU architectures. Profiler APIs <em>Event</em> and <em>Metric</em> are not supported on WSL while <em>Profiling</em> and <em>PC Sampling</em> APIs are only supported on WSL 2 and Windows 11 systems.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

@@ -1,0 +1,43 @@
+{
+  "id": "D167",
+  "at": "2026-10-28T14:20:39.757591+00:00",
+  "status": "pass_scoped_runtime_compiler_exact_PTX_and_fallbacks",
+  "protocol_sha256": "ff12a9a80e3d366d3ff6aa9ab71ae475076f9687722cf809e2807ac8ac6c9806",
+  "new_runtime_module_sha256": "ee9fbc0c50986c28e461383ed6e52ec947652113322695fe1f38b213c49bc618",
+  "actual_generated_PTX_sha256": "fa485cd14fd6b0171569d3d1ef1b50b141f10f22c3b9da36b697cbb31300e1b1",
+  "native_controls": {
+    "NVRTC_expected_invalid_program_compilations": 1,
+    "NVRTC_successful_source_compilations": 1,
+    "actual_runtime_PTX_exact": true,
+    "after_error_modules": {
+      "nvrtc-builtins64_130.dll": false,
+      "nvrtc64_130_0.alt.dll": false,
+      "nvrtc64_130_0.dll": false
+    },
+    "after_success_modules": {
+      "nvrtc-builtins64_130.dll": false,
+      "nvrtc64_130_0.alt.dll": false,
+      "nvrtc64_130_0.dll": false
+    },
+    "application_kernel_launches": 0,
+    "before_modules": {
+      "nvrtc-builtins64_130.dll": false,
+      "nvrtc64_130_0.alt.dll": false,
+      "nvrtc64_130_0.dll": false
+    },
+    "embedded_NUL_declines": true,
+    "expected_syntax_error_declines": true,
+    "missing_private_runtime_declines": true,
+    "performance_samples": 0,
+    "solver_executions": 0,
+    "unsupported_target_declines": true
+  },
+  "all_owned_children_terminal": true,
+  "source_main_live_protected_PTX_custody_pass": true,
+  "production_integration_proven": false,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Actual privateabsolute DLL binding/version/program/lifetime/close andexactnewPTX plusdeclarednegative fallbackcontrols only. Modulepresence observations retained,notuniversalzeroresourcecost. Unsupporteddriver/nonWindows branches needintegration/source/broaderverification;no replacementofactualresource/fullcyclequalification. No main/global/preflop installoractivation."
+}

@@ -1,0 +1,124 @@
+--- a/crates/solver/src/tree.rs
++++ b/crates/solver/src/tree.rs
+@@ -231,6 +231,20 @@
+     pub data_size: [u64; 2],
+ }
+ 
++// A completed, board-independent betting subtree. These are indices/counts
++// into the existing output vectors, not a second retained copy or a cache.
++#[derive(Clone, Copy)]
++struct SubtreeTemplate {
++    nodes_start: usize,
++    nodes_len: usize,
++    children_start: usize,
++    children_len: usize,
++    actions_start: usize,
++    actions_len: usize,
++    data_start: [u64; 2],
++    data_len: [u64; 2],
++}
++
+ struct BuildState {
+     street: u8,
+     to_act: u8,
+@@ -423,6 +437,57 @@
+         })
+     }
+ 
++    // Replay a completed subtree at the current append positions. Decline
++    // before mutation if a budget/integer boundary needs the original path.
++    fn try_clone_subtree(&mut self, t: &SubtreeTemplate) -> Option<u32> {
++        let node_start = self.nodes.len();
++        let child_start = self.children.len();
++        let action_start = self.actions.len();
++        let node_end = node_start.checked_add(t.nodes_len)?;
++        let child_end = child_start.checked_add(t.children_len)?;
++        let action_end = action_start.checked_add(t.actions_len)?;
++        if node_end > u32::MAX as usize || child_end > u32::MAX as usize
++            || action_end > u32::MAX as usize
++            || self.max_nodes.is_some_and(|cap| node_end > cap)
++        {
++            return None;
++        }
++        let node_delta = u32::try_from(node_start.checked_sub(t.nodes_start)?).ok()?;
++        let child_delta = u32::try_from(child_start.checked_sub(t.children_start)?).ok()?;
++        let action_delta = u32::try_from(action_start.checked_sub(t.actions_start)?).ok()?;
++        let data_delta = [
++            self.data_size[0].checked_sub(t.data_start[0])?,
++            self.data_size[1].checked_sub(t.data_start[1])?,
++        ];
++        let data_end = [
++            self.data_size[0].checked_add(t.data_len[0])?,
++            self.data_size[1].checked_add(t.data_len[1])?,
++        ];
++
++        // Each complete template range is already in these same vectors.
++        // Repeated children have identical BuildState and static board_mask;
++        // the chance card is deliberately absent from the betting state.
++        self.nodes.extend_from_within(t.nodes_start..t.nodes_start + t.nodes_len);
++        self.children.extend_from_within(t.children_start..t.children_start + t.children_len);
++        self.actions.extend_from_within(t.actions_start..t.actions_start + t.actions_len);
++        for node in &mut self.nodes[node_start..node_end] {
++            if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
++                node.children_start += child_delta;
++            }
++            if node.kind == KIND_ACTION {
++                node.actions_start += action_delta;
++                node.data_offset += data_delta[node.player as usize];
++            }
++        }
++        for child in &mut self.children[child_start..child_end] {
++            if *child != SENTINEL {
++                *child += node_delta;
++            }
++        }
++        self.data_size = data_end;
++        Some(node_start as u32)
++    }
++
+     fn push_node(&mut self, node: Node) -> u32 {
+         let idx = self.nodes.len() as u32;
+         self.nodes.push(node);
+@@ -728,6 +793,7 @@
+         // visits it (~2% of nodes/arena on flop solves). Excluding ancestor
+         // cards would renumber every node and break existing .gto saves.
+         let mut child_indices = vec![SENTINEL; 52];
++        let mut template: Option<SubtreeTemplate> = None;
+         for card in 0..52u8 {
+             if self.board_mask & (1 << card) != 0 {
+                 continue;
+@@ -743,7 +809,33 @@
+                 checked: false,
+             };
+             let _ = card;
+-            let child = self.action_node(child_state)?;
++            let child = if let Some(t) = &template {
++                if let Some(root) = self.try_clone_subtree(t) {
++                    root
++                } else {
++                    // Preserve original node-budget errors and partial-build
++                    // behavior when the whole template would not fit.
++                    self.action_node(child_state)?
++                }
++            } else {
++                let nodes_start = self.nodes.len();
++                let children_start = self.children.len();
++                let actions_start = self.actions.len();
++                let data_start = self.data_size;
++                let root = self.action_node(child_state)?;
++                debug_assert_eq!(root as usize, nodes_start);
++                template = Some(SubtreeTemplate {
++                    nodes_start,
++                    nodes_len: self.nodes.len() - nodes_start,
++                    children_start,
++                    children_len: self.children.len() - children_start,
++                    actions_start,
++                    actions_len: self.actions.len() - actions_start,
++                    data_start,
++                    data_len: [self.data_size[0] - data_start[0], self.data_size[1] - data_start[1]],
++                });
++                root
++            };
+             child_indices[card as usize] = child;
+         }
+         let children_start = self.children.len() as u32;

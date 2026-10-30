@@ -1,0 +1,75 @@
+--- E037-policy-1pct/policy_guard.py
++++ E037-assessment-time-repair/policy_guard.py
+@@ -1,7 +1,8 @@
+ """Pin the additive pre-timing policy; original provenance remains authoritative."""
+ import datetime, hashlib, json
+ from pathlib import Path
+-HERE=Path(__file__).resolve().parent
++REPAIR=Path(__file__).resolve().parent
++HERE=REPAIR.parent/'E037-policy-1pct'
+ ROOT=Path(r'S:\GTOpen-research\postflop-gpu-20261016')
+ OLD=ROOT/'runs/E037-primary-plan'
+ EXECUTION=ROOT/'runs/E037-policy-execution'
+@@ -34,7 +35,13 @@
+     assert decision['pre_timing_evidence']['native_or_timing_run_started'] is False
+     return policy,auth
+ 
+-def receipt(expected_authorization):
++def receipt(expected_authorization, expected_repair_manifest):
++    repair_manifest=REPAIR/'scripts-manifest.json'
++    assert sha(repair_manifest)==expected_repair_manifest
++    repair_seal=read(repair_manifest)
++    assert repair_seal['status']=='FROZEN_ASSESSMENT_ONLY_NOT_EXECUTED'
++    for name,h in repair_seal['script_sha256'].items():assert sha(REPAIR/name)==h,name
++    for name,h in repair_seal['reference_sha256'].items():assert sha(name)==h,name
+     policy,auth=verify(expected_authorization)
+     p=EXECUTION/'pre-primary.json';r=read(p)
+     assert r['policy_sha256']==sha(HERE/'policy.json') and r['policy_manifest_sha256']==sha(HERE/'scripts-manifest.json')
+@@ -44,6 +51,8 @@
+     assert moment(auth['at'])<=moment(r['at'])
+     for identity in policy['order']:
+         run=read(ROOT/'runs'/identity/'report.json')
+-        assert moment(r['at'])<=moment(run['started_at']),identity
++        run_start=moment(run['started_at'])
++        assert run_start.microsecond==0,('Expected preserved whole-second run timestamp',identity)
++        assert moment(r['at']).replace(microsecond=0)<=run_start,identity
+     end=read(EXECUTION/'exit.json');assert end['returncode']==0
+-    return {'path':str(HERE/'policy.json'),'sha256':sha(HERE/'policy.json'),'policy_manifest_sha256':sha(HERE/'scripts-manifest.json'),'policy_authorization_sha256':expected_authorization,'original_protocol_sha256':policy['original_protocol']['sha256'],'original_authorization_sha256':sha(OLD/'authorization.json'),'root_user_decision':policy['root_decision'],'pre_primary_receipt':{'path':str(p),'sha256':sha(p)},'changed_before_any_native_timing':True,'supersedes':policy['supersedes'],'primary_pass_is_preliminary':True,'adoption_requirements':policy['adoption_requirements'],'no_material_cost_validation':{'status':'pending_resource_and_broader_qualification','source_evidence':policy['source_cost_evidence']},'candidate_accepted':False}
++    return {'path':str(HERE/'policy.json'),'sha256':sha(HERE/'policy.json'),'policy_manifest_sha256':sha(HERE/'scripts-manifest.json'),'policy_authorization_sha256':expected_authorization,'original_protocol_sha256':policy['original_protocol']['sha256'],'original_authorization_sha256':sha(OLD/'authorization.json'),'root_user_decision':policy['root_decision'],'pre_primary_receipt':{'path':str(p),'sha256':sha(p)},'changed_before_any_native_timing':True,'supersedes':policy['supersedes'],'primary_pass_is_preliminary':True,'adoption_requirements':policy['adoption_requirements'],'no_material_cost_validation':{'status':'pending_resource_and_broader_qualification','source_evidence':policy['source_cost_evidence']},'candidate_accepted':False,'assessment_timestamp_repair':{'manifest_path':str(repair_manifest),'manifest_sha256':expected_repair_manifest,'policy_path':str(REPAIR/'repair-policy.json'),'policy_sha256':sha(REPAIR/'repair-policy.json'),'preserved_failure':read(REPAIR/'repair-policy.json')['preserved_failure'],'run_timestamp_semantics':'[reported second, reported second+1s)','intra_second_order_evidence':'Unchanged wrapper writes receipt and checks all seven run directories absent before invoking original primary; rounded timestamps alone do not prove subsecond order','gates_or_measurements_changed':False}}
+--- E037-policy-1pct/assess.py
++++ E037-assessment-time-repair/assess.py
+@@ -5,9 +5,10 @@
+ policy_here=Path(__file__).resolve().parent
+ sys.path.insert(0,str(policy_here))
+ import policy_guard as policy_gate
+-assert len(sys.argv)==2,'Provide separate policy authorization SHA256'
++assert len(sys.argv)==3,'Provide original policy authorization SHA256 and reviewed repair-manifest SHA256'
+ policy_authorization_sha256=sys.argv[1]
+-effective_policy=policy_gate.receipt(policy_authorization_sha256)
++repair_manifest_sha256=sys.argv[2]
++effective_policy=policy_gate.receipt(policy_authorization_sha256,repair_manifest_sha256)
+ here=policy_gate.OLD
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+@@ -71,7 +72,7 @@
+     'patch_alias':str(target), 'source_patch':str(source), 'patch_sha256':ar.sha256(source),
+     'reason':'Existing comparison helper consumes a physical run ID; logical display row mirrors its outcome only.'})
+ command = [sys.executable,'-B',str(policy_here/'compare_policy.py'),'--id','E037-three-pair-comparison',
+-           '--candidate-id','E037R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort','--policy-authorization-sha256',policy_authorization_sha256]
++           '--candidate-id','E037R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort','--policy-authorization-sha256',policy_authorization_sha256,'--repair-manifest-sha256',repair_manifest_sha256]
+ if failures: command.append('--reject')
+ ar.atomic_json(out / 'invocation.json', {'at':ar.now(),'command':command,'decision_gate_failures':failures,
+     'script_sha256':ar.sha256(Path(__file__)),'protocol_sha256':ar.sha256(protocol),'effective_policy':effective_policy})
+--- E037-policy-1pct/compare_policy.py
++++ E037-assessment-time-repair/compare_policy.py
+@@ -245,8 +245,9 @@
+     parser.add_argument("--reject", action="store_true", help="Reject aggregate or repeated fixture-regression gate failure; no acceptance mode")
+     parser.add_argument("--dry-run", action="store_true", help="Validate and summarize without writing files/status")
+     parser.add_argument("--policy-authorization-sha256", required=True)
++    parser.add_argument("--repair-manifest-sha256", required=True)
+     args = parser.parse_args()
+-    effective_policy = policy_gate.receipt(args.policy_authorization_sha256)
++    effective_policy = policy_gate.receipt(args.policy_authorization_sha256,args.repair_manifest_sha256)
+     require(args.id == "E037-three-pair-comparison" and args.candidate_id == "E037R1", "Only the frozen E037 cohort is permitted")
+     require(args.baseline_runs == ["B116","B117","B118"] and args.candidate_runs == ["E037R1","E037R2","E037R3"] and not args.excluded_runs and args.warm_cache_cohort, "Fixed cohort and boundaries required")
+     run_ids = args.baseline_runs + args.candidate_runs + args.excluded_runs

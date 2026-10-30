@@ -1,0 +1,12 @@
+{
+  "at": "2026-10-28T11:11:37.993345+00:00",
+  "prototype_not_linked_or_active": true,
+  "main_solver_CUDA_and_source_unchanged": true,
+  "reference_encoder_source_sha256": "bb8f5400d3354b7138fdc8e1154e3cf77dc312a9b94b0951c4cf6413d367fde4",
+  "packet_source_sha256": "f0d9672a359ebe589de887095ad9dadcf7086d98d19010d79091bac6837dc905",
+  "arithmetic": "Retain original fmax/abs max reduction, explicit fdiv_rn/fmul_rn, ties-even conversion and Rust saturation/NaN logic. Change transport only: four-word descriptors and padded packed uint32 q output. Whole-word writers prevent odd node boundary halfword races. Exact numerical equivalence still requires actual CPU-oracle controls.",
+  "addressing": "All source offsets and induction are u64. Four descriptor words per node; scale/output regions follow 4N/5N. D148 finite address model passed. Host planner must prove every region in bounds and mutually disjoint before upload. GPU entry contract exactly128 threads/grid=count, with no grid-stride packet variant. Native physical high-offset allocation remains unproven.",
+  "lifetime": "D150 finite actual full-scratch replacement controls passed752 phases, including explicit save/load fixture setting restoration. D149 remains invalid, not pooled. This supports only subsequent scratch regeneration in the finite matrix. Actual packet runtime/pinned borrow/current swapped buffer validity remain integration obligations.",
+  "prebuilt_contract": "Compile two PTX architectures in one source-only helper, persist artifact and bind SHA. Load compute120 only from file in a separate fresh process with no NVRTC call, no solver and no application kernel launch. Driver JIT/module costs remain unmeasured and cannot be claimed removed.",
+  "resource_gate": "Exactly2 entries/3-parameter ABI/64-bit PTX, successful120/75 compile and120 load/drop, exact512 static shared bytes, zero local/dynamic shared, positive128-thread theoretical occupancy and default stack/heap limits unchanged. These are bounded prerequisites, not a no-memory-cost or speed claim."
+}

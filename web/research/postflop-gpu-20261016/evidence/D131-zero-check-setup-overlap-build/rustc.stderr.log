@@ -1,0 +1,16 @@
+warning: unused import: `CudaStream`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\D131-zero-check-setup-overlap\probe.rs:4:35
+  |
+4 | use cudarc::{driver::{CudaContext,CudaStream,CudaModule},nvrtc::{compile_ptx_with_opts,CompileOptions,Ptx}};
+  |                                   ^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: unused import: `File`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\D131-zero-check-setup-overlap\probe.rs:5:28
+  |
+5 | use std::{ffi::c_void,fs::{File,OpenOptions},io::{self,BufWriter,Write},path::Path,sync::{Arc,atomic::{AtomicUsize,Ordering}},time::I...
+  |                            ^^^^
+
+warning: 2 warnings emitted
+

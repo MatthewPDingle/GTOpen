@@ -1,0 +1,93 @@
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+index b5f7166c..e8ea2fc9 100644
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -390,6 +390,16 @@ impl GpuSolver {
+         }
+     }
+ 
++    // These kernels assign each hand to one thread; changing the block shape
++    // does not reorder floating-point operations. Keep fold/showdown reductions
++    // on cfg() so their original summation and scan order remain unchanged.
++    fn independent_cfg(blocks: u32) -> LaunchConfig {
++        LaunchConfig {
++            grid_dim: (blocks, 1, 1),
++            block_dim: (64, 1, 1),
++            shared_mem_bytes: 0,
++        }
++    }
+     pub fn iterate(&mut self) -> Result<(), String> {
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+@@ -586,7 +596,7 @@ impl GpuSolver {
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&nh1)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+             }
+@@ -610,7 +620,7 @@ impl GpuSolver {
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&nh1)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+             }
+@@ -718,7 +728,7 @@ impl GpuSolver {
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+             }
+@@ -746,7 +756,7 @@ impl GpuSolver {
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+             }
+@@ -804,7 +814,7 @@ impl GpuSolver {
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&nh1)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 1, t0)?;
+@@ -830,7 +840,7 @@ impl GpuSolver {
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&nh1)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 2, t0)?;
+@@ -937,7 +947,7 @@ impl GpuSolver {
+                         .arg(&mut self.d_cfv)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 5, t0)?;
+@@ -970,7 +980,7 @@ impl GpuSolver {
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::independent_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 6, t0)?;

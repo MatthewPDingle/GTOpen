@@ -1,0 +1,548 @@
+{
+  "pointer_fields": [
+    {
+      "name": "action_nodes",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "chance_parents",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "chance_children",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "chance_cards",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "chance_nodes",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "fold_nodes",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "show_nodes",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "node_player",
+      "c_type": "const int*"
+    },
+    {
+      "name": "node_na",
+      "c_type": "const int*"
+    },
+    {
+      "name": "node_data_off",
+      "c_type": "const u64*"
+    },
+    {
+      "name": "node_children_start",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "children",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "node_twin",
+      "c_type": "const float*"
+    },
+    {
+      "name": "node_tlose",
+      "c_type": "const float*"
+    },
+    {
+      "name": "node_ttie",
+      "c_type": "const float*"
+    },
+    {
+      "name": "node_cdiv",
+      "c_type": "const float*"
+    },
+    {
+      "name": "node_river_slot",
+      "c_type": "const int*"
+    },
+    {
+      "name": "reach0",
+      "c_type": "float*"
+    },
+    {
+      "name": "reach1",
+      "c_type": "float*"
+    },
+    {
+      "name": "rsrc0",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "rsrc1",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "regrets0",
+      "c_type": "float*"
+    },
+    {
+      "name": "regrets1",
+      "c_type": "float*"
+    },
+    {
+      "name": "strat_p",
+      "c_type": "float*"
+    },
+    {
+      "name": "lock_off",
+      "c_type": "const long long*"
+    },
+    {
+      "name": "lock_sigma",
+      "c_type": "const float*"
+    },
+    {
+      "name": "cfv_slot",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cfv",
+      "c_type": "float*"
+    },
+    {
+      "name": "disc",
+      "c_type": "const float*"
+    },
+    {
+      "name": "mask0",
+      "c_type": "const u64*"
+    },
+    {
+      "name": "mask1",
+      "c_type": "const u64*"
+    },
+    {
+      "name": "hand_perm",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "pc1",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "pc2",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "same",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "fold_card_off",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "fold_card_idx",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "p_off",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "p_cnt",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "p_idx",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "p_lower",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "p_upper",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "o_off",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "o_cnt",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "o_idx",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "o_card_off",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "o_card_pos",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cc_start",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cc_count",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cc_card",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cc_child",
+      "c_type": "const u32*"
+    },
+    {
+      "name": "cc_perm",
+      "c_type": "const u32*"
+    }
+  ],
+  "scalar_fields": [
+    "num_levels",
+    "p",
+    "nh0",
+    "down_nh1",
+    "nh_p",
+    "nh_o",
+    "nh_max"
+  ],
+  "span_names": [
+    "action",
+    "chance_edge",
+    "fold",
+    "show",
+    "chance_node"
+  ],
+  "span_levels": 64,
+  "frame_bytes": 3008,
+  "frame_alignment": 8,
+  "formal_names": {
+    "down_action": [
+      "nodes",
+      "start",
+      "count",
+      "node_player",
+      "node_na",
+      "node_data_off",
+      "node_children_start",
+      "children",
+      "rsrc0",
+      "rsrc1",
+      "regrets0",
+      "regrets1",
+      "lock_off",
+      "lock_sigma",
+      "reach0",
+      "reach1",
+      "nh0",
+      "nh1"
+    ],
+    "down_chance": [
+      "parents",
+      "childs",
+      "cards",
+      "start",
+      "count",
+      "rsrc0",
+      "rsrc1",
+      "mask0",
+      "mask1",
+      "reach0",
+      "reach1",
+      "nh0",
+      "nh1"
+    ],
+    "up_fold": [
+      "nodes",
+      "start",
+      "count",
+      "p",
+      "node_player",
+      "node_twin",
+      "node_tlose",
+      "rsrc0",
+      "rsrc1",
+      "reach0",
+      "reach1",
+      "pc1",
+      "pc2",
+      "card_off",
+      "card_idx",
+      "same_p",
+      "cfv_slot",
+      "cfv",
+      "nh_p",
+      "nh_o",
+      "nh_max"
+    ],
+    "up_show": [
+      "nodes",
+      "start",
+      "count",
+      "node_twin",
+      "node_tlose",
+      "node_ttie",
+      "node_river_slot",
+      "rsrc_o",
+      "reach_o_buf",
+      "p_off",
+      "p_cnt",
+      "p_idx",
+      "p_lower",
+      "p_upper",
+      "o_off",
+      "o_cnt",
+      "o_idx",
+      "o_card_off",
+      "o_card_pos",
+      "same_p",
+      "pc1",
+      "pc2",
+      "cfv_slot",
+      "cfv",
+      "nh_p",
+      "nh_o",
+      "nh_max"
+    ],
+    "up_chance": [
+      "nodes",
+      "start",
+      "count",
+      "cc_start",
+      "cc_count",
+      "cc_card",
+      "cc_child",
+      "cc_perm",
+      "node_cdiv",
+      "mask_p",
+      "hand_perm_p",
+      "cfv_slot",
+      "cfv",
+      "nh_p",
+      "nh_max"
+    ],
+    "up_action": [
+      "nodes",
+      "start",
+      "count",
+      "p",
+      "node_player",
+      "node_na",
+      "node_data_off",
+      "node_children_start",
+      "children",
+      "regrets_p",
+      "strat_p",
+      "rsrc_p",
+      "reach_p_buf",
+      "lock_off",
+      "lock_sigma",
+      "cfv_slot",
+      "cfv",
+      "disc",
+      "nh_p",
+      "nh_max"
+    ]
+  },
+  "helper_calls": {
+    "down_action": [
+      "a.action_nodes",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.node_player",
+      "a.node_na",
+      "a.node_data_off",
+      "a.node_children_start",
+      "a.children",
+      "a.rsrc0",
+      "a.rsrc1",
+      "a.regrets0",
+      "a.regrets1",
+      "a.lock_off",
+      "a.lock_sigma",
+      "a.reach0",
+      "a.reach1",
+      "a.nh0",
+      "a.down_nh1"
+    ],
+    "down_chance": [
+      "a.chance_parents",
+      "a.chance_children",
+      "a.chance_cards",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.rsrc0",
+      "a.rsrc1",
+      "a.mask0",
+      "a.mask1",
+      "a.reach0",
+      "a.reach1",
+      "a.nh0",
+      "a.down_nh1"
+    ],
+    "up_fold": [
+      "a.fold_nodes",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.p",
+      "a.node_player",
+      "a.node_twin",
+      "a.node_tlose",
+      "a.rsrc0",
+      "a.rsrc1",
+      "a.reach0",
+      "a.reach1",
+      "a.pc1",
+      "a.pc2",
+      "a.fold_card_off",
+      "a.fold_card_idx",
+      "a.same",
+      "a.cfv_slot",
+      "a.cfv",
+      "a.nh_p",
+      "a.nh_o",
+      "a.nh_max"
+    ],
+    "up_show": [
+      "a.show_nodes",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.node_twin",
+      "a.node_tlose",
+      "a.node_ttie",
+      "a.node_river_slot",
+      "a.p == 0 ? a.rsrc1 : a.rsrc0",
+      "a.p == 0 ? a.reach1 : a.reach0",
+      "a.p_off",
+      "a.p_cnt",
+      "a.p_idx",
+      "a.p_lower",
+      "a.p_upper",
+      "a.o_off",
+      "a.o_cnt",
+      "a.o_idx",
+      "a.o_card_off",
+      "a.o_card_pos",
+      "a.same",
+      "a.pc1",
+      "a.pc2",
+      "a.cfv_slot",
+      "a.cfv",
+      "a.nh_p",
+      "a.nh_o",
+      "a.nh_max"
+    ],
+    "up_chance": [
+      "a.chance_nodes",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.cc_start",
+      "a.cc_count",
+      "a.cc_card",
+      "a.cc_child",
+      "a.cc_perm",
+      "a.node_cdiv",
+      "a.p == 0 ? a.mask0 : a.mask1",
+      "a.hand_perm",
+      "a.cfv_slot",
+      "a.cfv",
+      "a.nh_p",
+      "a.nh_max"
+    ],
+    "up_action": [
+      "a.action_nodes",
+      "(int)sp.start",
+      "(int)sp.count",
+      "a.p",
+      "a.node_player",
+      "a.node_na",
+      "a.node_data_off",
+      "a.node_children_start",
+      "a.children",
+      "a.p == 0 ? a.regrets0 : a.regrets1",
+      "a.strat_p",
+      "a.p == 0 ? a.rsrc0 : a.rsrc1",
+      "a.p == 0 ? a.reach0 : a.reach1",
+      "a.lock_off",
+      "a.lock_sigma",
+      "a.cfv_slot",
+      "a.cfv",
+      "a.disc",
+      "a.nh_p",
+      "a.nh_max"
+    ]
+  },
+  "original_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_CUDA_sha256": "b2d85e584258e2791ded758284541e42defb34e1318e2b1f7d25bbb2c19a8f13",
+  "original9sourceprefix_exact": true,
+  "helper_copy_projections": [
+    {
+      "function": "down_action_impl",
+      "original_sha256": "bd679702ccdbe56f15c22951146c9ee2cd854575fad4b18a6b71e1a7b21c381d",
+      "device_copy_sha256": "717c186744cbe26fa9117ae076f79347624fb11a50e369678d46f039261a8fb8",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "down_action",
+      "original_sha256": "aadd8b68b2a412b84e49552c4d8f6ba46024bbce5bbb925e40d6f92f9948f4ea",
+      "device_copy_sha256": "0fa98d9aa2347668f1b340718d8335bba8524501eec8eb9d824c179a2018c525",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "down_chance",
+      "original_sha256": "66ac5c1e2ade5ea1315379acdc8ecb7b992b5a5791e98f026ee643cbc865fc4d",
+      "device_copy_sha256": "3b1a42b7fca9b52468202f3167dd4d1469ec7c93c3d186fcffa6babbccf2afda",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "up_fold",
+      "original_sha256": "f475e2914696be17d1d9686eabdf205b31b797b337339ea23752ade2fd90ea6a",
+      "device_copy_sha256": "b67fe7f9204c0c13eb9c81d0ea5d121df4c94a067f5c1a217ccd807054d63f57",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "up_show",
+      "original_sha256": "5d3d2efeaf00675c059d49175e386a31d2bf5d9d6414ec10442bbd258ff35d21",
+      "device_copy_sha256": "db68e6123cf76bf0bbc9ae70ce914bc432dbcf94a7eec108fa4a9d271eb9ebc8",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "up_chance",
+      "original_sha256": "ff45c9d9c58273ea146dbc4839ffa90f6f5160cf3c651c43731736256e28766d",
+      "device_copy_sha256": "4215da9cd105d93f90a758897eaba6407d2c908642bc1015edcf9b7eb9d6b6ad",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "up_action_impl",
+      "original_sha256": "313a659159f166e70248b2d48cb7e679a954417b354ebe3dc3741c0f917aac5e",
+      "device_copy_sha256": "613a463fe314f290e7035e2ece8ba9e8c209f6aa84ce3bc387956238b330a9ce",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    },
+    {
+      "function": "up_action",
+      "original_sha256": "2285feb51b90d1ec704cbaca2db37c4c93e7665e8e19e19867afe94254a12630",
+      "device_copy_sha256": "d8f1ac2a0666d43b53963752dbe3f2cdc179ae8e304f16b625dbf8e795b93893",
+      "exact_reverse_projection": true,
+      "changes": "Onlyglobal-to-deviceinline linkage,explicituniformworkindexinstead ofblockIdx,matchingtemplateindexforwarding. Originalhelperbodyexpressions/order/arity/branches/shared/barriersunchanged."
+    }
+  ]
+}

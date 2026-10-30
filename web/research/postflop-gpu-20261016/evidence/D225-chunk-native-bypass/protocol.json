@@ -1,0 +1,43 @@
+{
+  "id": "D225",
+  "at": "2026-10-29T01:11:43.472424+00:00",
+  "status": "FROZEN_PRE_MODULE_LOAD",
+  "PTX": {
+    "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\baseline-compute_120.ptx",
+    "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_120.ptx"
+  },
+  "capture_binary": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture.exe",
+  "nvdisasm": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\nvdisasm.exe",
+  "private_dll_dir": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-native-chunk.py": "b621d649f0e1813fe02af49abc1f8abe290df85b56ca4c222f4f07db058bce2e",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\protocol.json": "1e973e83808c3a2e41badaa4ed100d26f8081fe3c6afbcde0be78b594b76f0c7",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\capture-report.json": "8dd746641d00f52865a9ef05689ba4622530c7aab30e098975ba929e1dafa290",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG-r3\\protocol.json": "12e29253dfaead2b62b9c313dab26fc3fdf4425590b5ffc0900f6f18f7c5b639",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D224-chunk-PTX-CFG-r3\\report.json": "484107fb37881d1ee3622322f66aa77088e0b7312680bdc375b662ad8d17e6ef",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\capture.exe": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\nvdisasm.exe": "3a6d6f72d67f6a78f9b5b53b9bca4aa697ff80850ea3bd20f5196a1d5c5ad0d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture.exe": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\nvdisasm.exe": "3a6d6f72d67f6a78f9b5b53b9bca4aa697ff80850ea3bd20f5196a1d5c5ad0d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\report.json": "deca015d5168ba08fc7d5f392df0f3b21f22c16253ea2019ad86b5dfcea1f7f3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E108-resource\\execution\\candidate-compute_120.ptx": "a805e2daf35031cfd84c82fe11c4cc59c2e55bfb66fcc8a0cdeb9241f1d905f2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\checkpoint.dll": "f0252a31427a0d3000d6f2373781b7ef9b359daffe03a38c2dc32cd343aa6b46",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\cupti64_2025.2.1.dll": "be1ecb387e14c1c0515b3b162b44c89b480c9a12f16c60f7b82eb8b1ebc35e74",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_host.dll": "df3538d2311784dd6b426a9b107876d97f45126ddc44cee5239917313c54686d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_target.dll": "923e550ac7404187c26808ff331ec04db182d1c8d075603e9d67f507ad303125",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\pcsamplingutil.dll": "3bdb884dd971b09cb32833a66a6384b38b12b841e543d50a23ce65ae32e5e2b2"
+  },
+  "GPU_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "required_free_bytes": 8589934592,
+  "sequence": [
+    "baseline-capture",
+    "baseline-disassemble",
+    "candidate-capture",
+    "candidate-disassemble"
+  ],
+  "emission_gate": "Native scan chunk discriminator must derive from actual blockDim.x power-of-two test and cause every supported power width to bypass the original integer-divide lowering/MUFU.RCP region. Nonpower widths must retain that quotient path and join the original scan chunk register/operands. Same five barriers, actual original launch shapes, ABI and host. Static witness not dynamic speed. Missing bypass closes exact E108 without source/helper/branch/flags rescue.",
+  "scope": "Reuse checksum-bound original D098 generic module-capture executable and code unchanged; same cuModuleLoadData/default JIT as cudarc. Copy nvdisasm12.9.88 to X. Two owned primary-context module loads and two disassembly readers, no new compiler, application kernels, hardware counters, activity profiling, injection, live attach, solve or speed samples. Query helper occupancy uses zero dynamic shared and is not scored; actual worst-shape resources are E108-resource."
+}

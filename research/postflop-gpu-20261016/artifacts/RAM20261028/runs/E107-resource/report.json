@@ -1,0 +1,801 @@
+{
+  "id": "E107-resource",
+  "at": "2026-10-29T00:34:59.440476+00:00",
+  "status": "pass_compiled_prerequisites_numerical_pending",
+  "protocol_sha256": "b6a044ad5d00c7a3a2799c130ae954ea569090b884d66f90f4e537873837a867",
+  "gates": {
+    "compute_120:original8entries_exact": true,
+    "compute_120:target_ABI_exact": true,
+    "compute_120:baseline:five_barriers": true,
+    "compute_120:baseline:all_payout_loads_identified_once": true,
+    "compute_120:baseline:intended_payout_placement": true,
+    "compute_120:candidate:five_barriers": true,
+    "compute_120:candidate:all_payout_loads_identified_once": true,
+    "compute_120:candidate:intended_payout_placement": true,
+    "compute_75:original8entries_exact": true,
+    "compute_75:target_ABI_exact": true,
+    "compute_75:baseline:five_barriers": true,
+    "compute_75:baseline:all_payout_loads_identified_once": true,
+    "compute_75:baseline:intended_payout_placement": true,
+    "compute_75:candidate:five_barriers": true,
+    "compute_75:candidate:all_payout_loads_identified_once": true,
+    "compute_75:candidate:intended_payout_placement": true,
+    "copy_root:actual_original_resources_exact": true,
+    "down_action:actual_original_resources_exact": true,
+    "down_chance:actual_original_resources_exact": true,
+    "up_fold:actual_original_resources_exact": true,
+    "target:no_new_local_spill": true,
+    "target:no_dynamic_shared_growth": true,
+    "target:no_maxthread_loss": true,
+    "target:positive_fixed_occupancies": true,
+    "target:default_limits_fit": true,
+    "target:no_stack_growth": true,
+    "up_chance:actual_original_resources_exact": true,
+    "up_action:actual_original_resources_exact": true,
+    "copy_span:actual_original_resources_exact": true,
+    "up_action_eval:actual_original_resources_exact": true
+  },
+  "entry_tables": {
+    "compute_120": {
+      "unchanged_entries": {
+        "copy_root": true,
+        "down_action": true,
+        "down_chance": true,
+        "up_fold": true,
+        "up_chance": true,
+        "up_action": true,
+        "copy_span": true,
+        "up_action_eval": true
+      },
+      "target_alpha_exact": false
+    },
+    "compute_75": {
+      "unchanged_entries": {
+        "copy_root": true,
+        "down_action": true,
+        "down_chance": true,
+        "up_fold": true,
+        "up_chance": true,
+        "up_action": true,
+        "copy_span": true,
+        "up_action_eval": true
+      },
+      "target_alpha_exact": false
+    }
+  },
+  "payout_load_mechanism": {
+    "compute_120": {
+      "baseline": {
+        "barriers": 5,
+        "loads": [
+          {
+            "parameter": 3,
+            "line": 354,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f11, [%rd116];"
+          },
+          {
+            "parameter": 4,
+            "line": 357,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f12, [%rd118];"
+          },
+          {
+            "parameter": 5,
+            "line": 360,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f13, [%rd120];"
+          }
+        ],
+        "limits": "Conservative static alias/placement witness only. Driver scheduling and all numerical/complete-cycle qualification remain unproved."
+      },
+      "candidate": {
+        "barriers": 5,
+        "loads": [
+          {
+            "parameter": 3,
+            "line": 83,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f1, [%rd58];"
+          },
+          {
+            "parameter": 4,
+            "line": 85,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f2, [%rd59];"
+          },
+          {
+            "parameter": 5,
+            "line": 87,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f3, [%rd60];"
+          }
+        ],
+        "limits": "Conservative static alias/placement witness only. Driver scheduling and all numerical/complete-cycle qualification remain unproved."
+      }
+    },
+    "compute_75": {
+      "baseline": {
+        "barriers": 5,
+        "loads": [
+          {
+            "parameter": 3,
+            "line": 369,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f13, [%rd136];"
+          },
+          {
+            "parameter": 4,
+            "line": 372,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f14, [%rd138];"
+          },
+          {
+            "parameter": 5,
+            "line": 375,
+            "preceding_barriers": 5,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f15, [%rd140];"
+          }
+        ],
+        "limits": "Conservative static alias/placement witness only. Driver scheduling and all numerical/complete-cycle qualification remain unproved."
+      },
+      "candidate": {
+        "barriers": 5,
+        "loads": [
+          {
+            "parameter": 3,
+            "line": 76,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f1, [%rd65];"
+          },
+          {
+            "parameter": 4,
+            "line": 79,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f2, [%rd67];"
+          },
+          {
+            "parameter": 5,
+            "line": 82,
+            "preceding_barriers": 0,
+            "opcode": "ld.global.nc.f32",
+            "code": "ld.global.nc.f32 \t%f3, [%rd69];"
+          }
+        ],
+        "limits": "Conservative static alias/placement witness only. Driver scheduling and all numerical/complete-cycle qualification remain unproved."
+      }
+    }
+  },
+  "parser_fixture": {
+    "barriers": 1,
+    "loads": [
+      {
+        "parameter": 3,
+        "line": 4,
+        "preceding_barriers": 0,
+        "opcode": "ld.global.nc.f32",
+        "code": "ld.global.nc.f32 %f1, [%rd3];"
+      },
+      {
+        "parameter": 4,
+        "line": 8,
+        "preceding_barriers": 1,
+        "opcode": "ld.global.f32",
+        "code": "ld.global.f32 %f2, [%rd5];"
+      }
+    ],
+    "limits": "Conservative static alias/placement witness only. Driver scheduling and all numerical/complete-cycle qualification remain unproved."
+  },
+  "resource_rows": [
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 38,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_root",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_action",
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "down_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 5304,
+      "kernel": "up_fold",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 26520,
+      "kernel": "up_show",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          3
+        ],
+        [
+          128,
+          3
+        ],
+        [
+          256,
+          3
+        ]
+      ],
+      "registers": 39,
+      "stage": "resource",
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_chance",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 30,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action",
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "registers": 62,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "copy_span",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 26,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "application_kernels": 0,
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "device_shared_limit": 49152,
+      "device_thread_limit": 1024,
+      "dynamic_shared_bytes": 0,
+      "kernel": "up_action_eval",
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "registers": 40,
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    }
+  ],
+  "resource_warnings": [
+    {
+      "entry": "up_show",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 26520,
+        "kernel": "up_show",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            3
+          ],
+          [
+            128,
+            3
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "registers": 38,
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 26520,
+        "kernel": "up_show",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            3
+          ],
+          [
+            128,
+            3
+          ],
+          [
+            256,
+            3
+          ]
+        ],
+        "registers": 39,
+        "stage": "resource",
+        "static_shared_bytes": 1040,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "PTX_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "469245a4686d06e08d818c3937cc506ddd55bf783d277532f83560e972014987",
+    "candidate-compute_75": "e157f28fc911229327e24ef761caa3e7609eebec2ed5775c6cfec985b5a227d6"
+  },
+  "all_owned_children_terminal": true,
+  "application_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "failure_policy": "A genuine failure closes frozen declaration relocation. No placement, volatile, asm, helper, flags, cache hint, entry subset or sample rescue.",
+  "limits": "Static placement and driver resource gate only; not device instruction scheduling, numerical equivalence or speed. All downstream exactness, complete-cycle, broad, material, holdout, cumulative and app qualification remain if passed."
+}

@@ -1,0 +1,168 @@
+{
+  "id": "E090-primary",
+  "at": "2026-10-28T08:44:59.313493+00:00",
+  "measurement_epoch": "RAM20261028",
+  "protocol_sha256": "547313d6acbc2959ce218138c87e2ec1858420594796637aeaaba86b781fdcbf",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 10524.784200000002,
+    "candidate_full_cycle_ms": 10443.051099999999,
+    "observed_gain_pct": 0.7765774427945334,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.5721462052060392,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -1.3146815661881353,
+        "slower_pairs": 0,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": 7.8425659586234095,
+        "slower_pairs": 3,
+        "failed": true
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_ms": [
+        6111.7354,
+        6220.3539,
+        6133.0128
+      ],
+      "candidate_ms": [
+        6097.923,
+        6083.0983,
+        6181.8512
+      ],
+      "baseline_median_ms": 6133.0128,
+      "candidate_median_ms": 6097.923,
+      "gain_pct": 0.5721462052060392,
+      "paired_gain_pct": [
+        0.2259980037748329,
+        2.206556125367729,
+        -0.7963198772387958
+      ],
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_ms": [
+        4270.6159,
+        4314.9722,
+        4262.950400000001
+      ],
+      "candidate_ms": [
+        4211.6443,
+        4214.4709,
+        4240.5021
+      ],
+      "baseline_median_ms": 4270.6159,
+      "candidate_median_ms": 4214.4709,
+      "gain_pct": 1.3146815661881353,
+      "paired_gain_pct": [
+        1.380868740735964,
+        2.329129721855448,
+        0.5265906917425294
+      ],
+      "guard_failed": false
+    },
+    {
+      "fixture_id": "river",
+      "baseline_ms": [
+        125.526,
+        117.92519999999999,
+        121.1555
+      ],
+      "candidate_ms": [
+        131.7482,
+        124.37280000000001,
+        130.6572
+      ],
+      "baseline_median_ms": 121.1555,
+      "candidate_median_ms": 130.6572,
+      "gain_pct": -7.8425659586234095,
+      "paired_gain_pct": [
+        -4.956901359080987,
+        -5.4675336569283095,
+        -7.8425659586234095
+      ],
+      "guard_failed": true
+    }
+  ],
+  "pairs": [
+    {
+      "baseline": "B293",
+      "candidate": "E090R1",
+      "fixture_gain_pct": {
+        "rainbow": 0.2259980037748329,
+        "two-tone": 1.380868740735964,
+        "river": -4.956901359080987
+      },
+      "baseline_suite_ms": 10507.8773,
+      "candidate_suite_ms": 10441.3155,
+      "gain_pct": 0.6334466809961655
+    },
+    {
+      "baseline": "B294",
+      "candidate": "E090R2",
+      "fixture_gain_pct": {
+        "rainbow": 2.206556125367729,
+        "two-tone": 2.329129721855448,
+        "river": -5.4675336569283095
+      },
+      "baseline_suite_ms": 10653.2513,
+      "candidate_suite_ms": 10421.942,
+      "gain_pct": 2.1712554551304053
+    },
+    {
+      "baseline": "B295",
+      "candidate": "E090R3",
+      "fixture_gain_pct": {
+        "rainbow": -0.7963198772387958,
+        "two-tone": 0.5265906917425294,
+        "river": -7.8425659586234095
+      },
+      "baseline_suite_ms": 10517.1187,
+      "candidate_suite_ms": 10553.0105,
+      "gain_pct": -0.3412702758598647
+    }
+  ],
+  "exactness": {
+    "fixture_results": 18,
+    "convergence_records": 138,
+    "all_exact": true
+  },
+  "ordinary_units_passed": 86,
+  "ordinary_units_ignored": 4,
+  "preserved_reports_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\V090-unit\\report.json": "8c3e6ddaa1527ad82bb711ced0d984fe92c7f2457eaf0139307b6b930b37420c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B293\\report.json": "21963c1ea4df363c7c1425320810a88e65e6120e9063fb7f9ab776e09ada731b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090R1\\report.json": "7152d2ad87872520711a6bfc7feaa9cc3684dcf9b8c6cba883a1e567cf77ed84",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090R2\\report.json": "13dc8215d70e339e8f94450d8966068b3ecf96a635427ee38188cd30b5a2b7e1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B294\\report.json": "bf93982f317037fbff9571a8cfe6c3a74eb46dbbd82917f99471e56e1527889a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\B295\\report.json": "d137b02c975b6a7878813a33caff34e819ab66efcb1646edde843d929f4c1a6d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090R3\\report.json": "fe1791d9ab6a9932c188326c20f1ed52bd5028bcab5b4881941e926bbe7d3fcc"
+  },
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "historical_timing_samples_used": 0,
+  "RAM_baseline_samples_scored": 0,
+  "candidate_accepted": false,
+  "adoption_requirements": [
+    "Separately frozen fresh16 pairs: unrounded aggregate >=1%, >=13 improving pairs, positive paired/block/order medians, no repeatable fixture slowdown.",
+    "Broader exact state/F32/menu/save/resume/continuation, actual graph/launch/memory/capacity and material CPU setup-cost checks.",
+    "Fixed holdout and fresh-original cumulative qualification. Initial screen alone does not establish significance, universal behavior or adoption."
+  ]
+}

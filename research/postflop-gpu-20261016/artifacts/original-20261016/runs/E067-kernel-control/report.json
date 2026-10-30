@@ -1,0 +1,42 @@
+{
+  "id": "E067-kernel-control",
+  "at": "2026-10-17T11:27:32.334605+00:00",
+  "status": "pass_scoped_down_action_full_raw_equivalence",
+  "execution_plan_sha256": "a7b36306209734fd83cd6d76c1cbbe8026db468946ccd821fdac4382ace9a6a2",
+  "cases": 1196,
+  "kernel_launches": 2392,
+  "output_words_both_arms": 30261968,
+  "actual_immutable_words_both_arms": 13853760,
+  "guard_words_both_arms": 25889108,
+  "all_full_outputs_inputs_guards_exact": true,
+  "raw_files": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\baseline-inputs.bin": {
+      "sha256": "ac066dea96cb51b5cb9f27e46b5f2a4f3af34b67850cdf6b4d002ba8fa16ecf2",
+      "bytes": 27827136
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\baseline.bin": {
+      "sha256": "43957b12fe401b787db928c81bd64306c316535fc6cc82609fcae82e517b45f3",
+      "bytes": 60547872
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\candidate-inputs.bin": {
+      "sha256": "ac066dea96cb51b5cb9f27e46b5f2a4f3af34b67850cdf6b4d002ba8fa16ecf2",
+      "bytes": 27827136
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\candidate.bin": {
+      "sha256": "43957b12fe401b787db928c81bd64306c316535fc6cc82609fcae82e517b45f3",
+      "bytes": 60547872
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E067-kernel-control\\evidence\\inputs.bin": {
+      "sha256": "a50726af0e127b6d612047bff4e256e97fb6be59f667276f40e3aa0ae9263486",
+      "bytes": 88437184
+    }
+  },
+  "corpus_sha256": "ce3bdb5fda5a8194a0054864734675bb23f4d9d0ef6fbe8ced6165cb5062b1ab",
+  "binary_sha256": "58fee09b6616f31083f09f5c2bc357a818c9bce2ccec81415fdb4e23eee73ece",
+  "stdout_sha256": "21d7a7ae1d94045ae7510d377bd2efbcd5bb6b8e85e4e19a33f86d78c7f222ca",
+  "source_activated": false,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Native full raw twooutput/twelveactualimmutablebuffers and unownedranges compared; finite declared cases, no complete solver/graph/material/speed/otherGPU proof. Root independent replay still required."
+}

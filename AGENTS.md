@@ -7,6 +7,24 @@ quickstart. Recent study outputs and a findings summary live in
 `C:\Storage\dev\coinpoker\gtopen-studies\` (Windows) — read `FINDINGS.md` there
 before redoing analysis that already exists.
 
+## Current workspace (user cleanup, 2026-10-30)
+
+- Keep one working checkout at `X:\Dev\GTOpen` and one local research data folder
+  at `X:\Dev\GTOpen-research`. The running app uses the main checkout.
+- Useful source, benchmark tools, the dashboard and bounded reports belong in Git.
+  Raw dumps, saved research fixtures, build outputs and preserved checkout files
+  stay in the research data folder. Do not upload raw dumps or commit runtime caches.
+- The previous `GTOpen-fix` and `GTOpen-gpu-research-20261016` checkouts were
+  preserved on GitHub before retirement. The unfinished adaptive-HERO changes
+  remain on `fix/hero-adaptive-defaults`; they are not an accepted application fix.
+- Read `research/postflop-gpu-20261016/workspace-layout.json` before continuing
+  GPU research. Historical inputs, hashes and absolute paths remain immutable.
+  Do not rewrite frozen custody records to make an old run appear current.
+- New bulk output goes to X:. Keep the old S: archive read-only and do not
+  access the retired T: drive. These current rules supersede the historical
+  storage and old desktop-path notes below. Research is stopped after E127;
+  workspace cleanup does not resume experiments or change the accepted E080 solver.
+
 ## Build / run / test
 
 ```bash

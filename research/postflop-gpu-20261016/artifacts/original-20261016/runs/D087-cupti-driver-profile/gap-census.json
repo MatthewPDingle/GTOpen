@@ -1,0 +1,232 @@
+{
+  "id": "D087-retained-gap-census",
+  "at": "2026-10-17T05:44:36.048145+00:00",
+  "root_replay_only": true,
+  "native_executions": 0,
+  "optimization_accepted": false,
+  "traces": {
+    "D085T1": {
+      "activity_span_ms": 5010.608138,
+      "device_activity_union_ms": 4603.214652,
+      "uncovered_inside_activity_span_ms": 407.393486,
+      "kernel_span_ms": 4498.135873,
+      "kernel_union_ms": 4485.399719,
+      "uncovered_by_any_device_activity_within_kernel_span_ms": 12.571379,
+      "activity_before_first_kernel_span_ms": 234.654814,
+      "activity_after_last_kernel_span_ms": 277.817451,
+      "largest_uncovered_gaps": [
+        {
+          "start_ns": 96720856186257,
+          "end_ns": 96720920335834,
+          "ms": 64.149577
+        },
+        {
+          "start_ns": 96715936746131,
+          "end_ns": 96715997557830,
+          "ms": 60.811699
+        },
+        {
+          "start_ns": 96716050321737,
+          "end_ns": 96716110945948,
+          "ms": 60.624211
+        },
+        {
+          "start_ns": 96720692415949,
+          "end_ns": 96720747787402,
+          "ms": 55.371453
+        },
+        {
+          "start_ns": 96720772548857,
+          "end_ns": 96720827829206,
+          "ms": 55.280349
+        },
+        {
+          "start_ns": 96715997989091,
+          "end_ns": 96716049969035,
+          "ms": 51.979944
+        },
+        {
+          "start_ns": 96716151372681,
+          "end_ns": 96716170140184,
+          "ms": 18.767503
+        },
+        {
+          "start_ns": 96716128949456,
+          "end_ns": 96716139963373,
+          "ms": 11.013917
+        },
+        {
+          "start_ns": 96716140464138,
+          "end_ns": 96716150286767,
+          "ms": 9.822629
+        },
+        {
+          "start_ns": 96716111374681,
+          "end_ns": 96716112633586,
+          "ms": 1.258905
+        },
+        {
+          "start_ns": 96716114754821,
+          "end_ns": 96716115742495,
+          "ms": 0.987674
+        },
+        {
+          "start_ns": 96716124525130,
+          "end_ns": 96716125398021,
+          "ms": 0.872891
+        }
+      ]
+    },
+    "D085T2": {
+      "activity_span_ms": 5018.851385,
+      "device_activity_union_ms": 4603.617156,
+      "uncovered_inside_activity_span_ms": 415.234229,
+      "kernel_span_ms": 4489.635452,
+      "kernel_union_ms": 4476.572052,
+      "uncovered_by_any_device_activity_within_kernel_span_ms": 12.898318,
+      "activity_before_first_kernel_span_ms": 238.533508,
+      "activity_after_last_kernel_span_ms": 290.682425,
+      "largest_uncovered_gaps": [
+        {
+          "start_ns": 96725194778428,
+          "end_ns": 96725259438112,
+          "ms": 64.659684
+        },
+        {
+          "start_ns": 96730119482012,
+          "end_ns": 96730184050242,
+          "ms": 64.56823
+        },
+        {
+          "start_ns": 96725312050538,
+          "end_ns": 96725372865316,
+          "ms": 60.814778
+        },
+        {
+          "start_ns": 96729950136285,
+          "end_ns": 96730009244034,
+          "ms": 59.107749
+        },
+        {
+          "start_ns": 96730034617710,
+          "end_ns": 96730091067523,
+          "ms": 56.449813
+        },
+        {
+          "start_ns": 96725259869853,
+          "end_ns": 96725311695468,
+          "ms": 51.825615
+        },
+        {
+          "start_ns": 96725415846727,
+          "end_ns": 96725431923624,
+          "ms": 16.076897
+        },
+        {
+          "start_ns": 96725394655012,
+          "end_ns": 96725405387397,
+          "ms": 10.732385
+        },
+        {
+          "start_ns": 96725405881954,
+          "end_ns": 96725414680110,
+          "ms": 8.798156
+        },
+        {
+          "start_ns": 96725373295585,
+          "end_ns": 96725375082999,
+          "ms": 1.787414
+        },
+        {
+          "start_ns": 96725388848902,
+          "end_ns": 96725389861568,
+          "ms": 1.012666
+        },
+        {
+          "start_ns": 96725377653096,
+          "end_ns": 96725378615746,
+          "ms": 0.96265
+        }
+      ]
+    },
+    "D085T3": {
+      "activity_span_ms": 5026.59983,
+      "device_activity_union_ms": 4618.698551,
+      "uncovered_inside_activity_span_ms": 407.901279,
+      "kernel_span_ms": 4510.336192,
+      "kernel_union_ms": 4497.618216,
+      "uncovered_by_any_device_activity_within_kernel_span_ms": 12.555041,
+      "activity_before_first_kernel_span_ms": 232.065792,
+      "activity_after_last_kernel_span_ms": 284.197846,
+      "largest_uncovered_gaps": [
+        {
+          "start_ns": 96757835331581,
+          "end_ns": 96757902503223,
+          "ms": 67.171642
+        },
+        {
+          "start_ns": 96752903764205,
+          "end_ns": 96752965257370,
+          "ms": 61.493165
+        },
+        {
+          "start_ns": 96753015875363,
+          "end_ns": 96753076229142,
+          "ms": 60.353779
+        },
+        {
+          "start_ns": 96757671060809,
+          "end_ns": 96757728291000,
+          "ms": 57.230191
+        },
+        {
+          "start_ns": 96757751372477,
+          "end_ns": 96757806124121,
+          "ms": 54.751644
+        },
+        {
+          "start_ns": 96752965689271,
+          "end_ns": 96753015521573,
+          "ms": 49.832302
+        },
+        {
+          "start_ns": 96753118714796,
+          "end_ns": 96753134467925,
+          "ms": 15.753129
+        },
+        {
+          "start_ns": 96753097335809,
+          "end_ns": 96753107956295,
+          "ms": 10.620486
+        },
+        {
+          "start_ns": 96753108441700,
+          "end_ns": 96753117529682,
+          "ms": 9.087982
+        },
+        {
+          "start_ns": 96753076657427,
+          "end_ns": 96753078415754,
+          "ms": 1.758327
+        },
+        {
+          "start_ns": 96753091589057,
+          "end_ns": 96753092535804,
+          "ms": 0.946747
+        },
+        {
+          "start_ns": 96753080911324,
+          "end_ns": 96753081822071,
+          "ms": 0.910747
+        }
+      ]
+    }
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\cohort-execution\\traces\\D085T1\\trace.bin": "20d3f3f5698a8c3fddcca59ee438127a3b39ee1c6c46a0f2aa754d0148722523",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\cohort-execution\\traces\\D085T2\\trace.bin": "72ebe8664cb343dc044f774b4c099c300538c0bf16ef34dfc4a86b0ab4965e35",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\cohort-execution\\traces\\D085T3\\trace.bin": "4f64139a5c48cb7a41e5cb8a2aaef11e36689aa239ef6c9a3162703b966e873d"
+  },
+  "motivation": "Separate uncovered observed device spans from busy-kernel time. Add direct Driver API activity and phase markers to determine where host/API work lies, instead of treating all gaps as removable GPU headroom.",
+  "limits": "Only retained D085 rainbow device timeline. Does not cover CPU time before first device event or after last. Uncovered intervals may be dependencies or observer effects, not removable delay or complete-cycle gains."
+}

@@ -1,0 +1,38 @@
+{
+  "id": "E017-design",
+  "created_at": "2026-10-16T08:24:28.087415+00:00",
+  "base": "accepted E015; E016 rejected and absent",
+  "base_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+    "crates/solver/src/gpu/plan.rs": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e97a8e025e4ec4b2900685720756fcbaeb61f38b2cd8274149118eec8bb8bf9f"
+  },
+  "patch_sha256": "32e0e331919261cb24b79372f02610a7cd6baa55558ac5e1768a1b40ae04a861",
+  "protected_source_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  },
+  "mechanical_checks": {
+    "sweep": true,
+    "iterate": true,
+    "iterate_profiled": true,
+    "eval_down": true,
+    "update_locks": true,
+    "research_continuation_sweep_impl": true,
+    "legacy_down": true,
+    "paired_upward_body_unchanged": true
+  },
+  "syntax_check": "rustfmt --edition 2021 --emit stdout --config skip_children=true [three files] > $null: exit 0; no writes",
+  "whitespace_check": "git diff --check: exit 0",
+  "tests_executed": false,
+  "builds_executed": false,
+  "gpu_executed": false,
+  "independent_review": "pending"
+}

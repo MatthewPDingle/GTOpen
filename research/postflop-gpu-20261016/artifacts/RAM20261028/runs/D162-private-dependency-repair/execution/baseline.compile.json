@@ -1,0 +1,84 @@
+{
+  "DLL_path": "X:\\Dev\\GTOpen\\.cuda-nvrtc\\nvidia\\cuda_nvrtc\\bin\\nvrtc64_120_0.dll",
+  "DLL_sha256": "0cc63349fedffeec1660b30955e8028b6e4e4c26cf1e41c56dc4569fd5eca82c",
+  "version": [
+    12,
+    9
+  ],
+  "supported_architectures": [
+    50,
+    52,
+    53,
+    60,
+    61,
+    62,
+    70,
+    72,
+    75,
+    80,
+    86,
+    87,
+    89,
+    90,
+    100,
+    101,
+    103,
+    120,
+    121
+  ],
+  "source_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "program_name": null,
+  "headers": 0,
+  "options": [
+    "--gpu-architecture=compute_120"
+  ],
+  "API_calls": [
+    {
+      "api": "nvrtcVersion",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetNumSupportedArchs",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetSupportedArchs",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcCreateProgram",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcCompileProgram",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetProgramLogSize",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetProgramLog",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetPTXSize",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcGetPTX",
+      "returncode": 0
+    },
+    {
+      "api": "nvrtcDestroyProgram",
+      "returncode": 0
+    }
+  ],
+  "program_destroyed_and_pointer_null": true,
+  "API_itself_cleared_handle": true,
+  "PTX_bytes_without_NUL": 232925,
+  "PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "standalone_acquisition_ns_diagnostic_only": 61366500,
+  "GPU_context_or_kernel_calls": 0,
+  "scope": "One original compile in fresh CPU-only child through exact header-bound C API. Diagnostic cold acquisition includes query adapter work;not comparable solver timing or speed score."
+}

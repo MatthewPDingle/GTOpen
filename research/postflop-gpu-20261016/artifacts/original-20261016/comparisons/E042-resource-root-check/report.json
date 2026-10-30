@@ -1,0 +1,29 @@
+{
+  "id": "E042-resource-root-check",
+  "at": "2026-10-17T01:30:10.301776+00:00",
+  "status": "pass_compiler_resource_only",
+  "root_cross_check_only": true,
+  "checks": 104,
+  "resource_report_sha256": "165c946cfa6c41ad11440502fdc8ce57ecb37132a0dbef8c42d3c530e5ac1fa9",
+  "protocol_sha256": "ca2cd2bd450012136d18aa5dc1657dfe6aa095e4bf26e3855ff36b78a4b4a265",
+  "all_frozen_inputs_rechecked": true,
+  "source_delta_exactly_one_pragma": true,
+  "embedded_cuda_verified": true,
+  "observed_registers": [
+    66,
+    62
+  ],
+  "local_bytes_per_thread": [
+    64,
+    64
+  ],
+  "blocks_per_sm_128": [
+    7,
+    8
+  ],
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "accepted162_main_live_ptx_unchanged": true,
+  "limits": "Root raw-marker/receipt/input verification, not an external independent audit. Theoretical resource changes are not measured speed, capacity or numerical qualification."
+}

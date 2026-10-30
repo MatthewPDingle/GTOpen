@@ -1,0 +1,52 @@
+{
+  "id": "D036-r3-numerical-provenance-supplement",
+  "created_at": "2026-10-16T10:08:32.223146+00:00",
+  "verdict": "PASS_SOURCE_PROTOCOL_ONLY; root may perform serialized compiler/numerical probe",
+  "r3_prepared_manifest_sha256": "b0fd45d3bceffb9fb5ba6de294dc3af3ede144a1707cd3ceacbd616e0e4d8279",
+  "r3_probe_sha256": "18c89f33d42802b1e9e367bbd0d3252a73bb2b2f34070746bbc48afe63555022",
+  "r2_to_r3_patch_sha256": "98f0689f7f28c2d8faf4123bf9a92d1eeb7d5e2bbc945a049764768d35cff384",
+  "r3_all_prepared_artifact_hashes_verified": true,
+  "r2_body_from_first_constant_byte_identical": true,
+  "shared_nonprobe_inputs_byte_identical_count": 19,
+  "sole_executable_source_delta": "Replaces Box<dyn Error> result with ProbeError(String), Display/Error and explicit From conversions; driver/compiler use unconditional Debug formatting, I/O/JSON/string conversions preserve the existing returned-error flow",
+  "error_conversions_reviewed": [
+    "cudarc::driver::DriverError",
+    "cudarc::nvrtc::CompileError",
+    "std::io::Error",
+    "serde_json::Error",
+    "String",
+    "&str"
+  ],
+  "no_blanket_conversion_or_error_suppression": true,
+  "numerical_and_resource_query_logic_unchanged": true,
+  "cuda_corpus_protocol_runner_rlibs_unchanged": true,
+  "all_five_protected_checkout_hashes_verified": true,
+  "r2_failed_inventory_files_hash_verified": 28,
+  "preserved_r2_compiler_failure": {
+    "exit_code": 1,
+    "native_cases": 0,
+    "no_sample_replacement": true
+  },
+  "runtime_expected_matrix_sha256": "68421e9a94be1e4184c554e1836b8b4243586631f7750aa56f5d2ab352b549b7",
+  "unchanged_mandatory_obligations": [
+    "All 1120 raw output pairs exact, including finite-overflow outputs",
+    "1040 finite-domain CPU raw-total comparisons",
+    "All 180 full up_fold scenario pairs exact, including overflow outputs",
+    "All inputs and guards unchanged, active-write anti-vacuity",
+    "Eight full-kernel resource rows include max_threads_per_block and support all shapes",
+    "No NaN-input payload generalization, no performance acceptance"
+  ],
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r2\\prepared-manifest.json": "c23945d7afbf1364931047f58b41dc2b5460d854d39225fb3cbd86d4e298be18",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\prepared-manifest.json": "b0fd45d3bceffb9fb5ba6de294dc3af3ede144a1707cd3ceacbd616e0e4d8279",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\probe.rs": "18c89f33d42802b1e9e367bbd0d3252a73bb2b2f34070746bbc48afe63555022",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\r2-to-r3.patch": "98f0689f7f28c2d8faf4123bf9a92d1eeb7d5e2bbc945a049764768d35cff384",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\failed-r2-evidence.json": "9c794871c0a16e66609350e6d94e34cea6bf6435a122571118e159861564d80d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-probe-r3\\REVISION-R3.md": "652342386f6822977451f727d29295c318773ed2c0571b89a44040597cdb3a59",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D036-numeric-protocol-review\\r2-provenance-supplement.json": "c06a0bc55c502da371d301327503240b7e3eb9dded4625967446d2805581842e"
+  },
+  "limits": [
+    "Source review does not establish successful compilation or native numerical equivalence",
+    "No build/GPU/checkout/dashboard changes by reviewer"
+  ]
+}

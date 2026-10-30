@@ -1,0 +1,14 @@
+{
+  "at": "2026-10-28T13:38:39.763021+00:00",
+  "status": "mechanical_dependency_binding_before_first_candidate_PTX_or_module",
+  "original_failed_report_sha256": "9062657f5c18fab7bca3417de1ac08da04447e496b29e044a9ee6b5fcd6b0b55",
+  "error": "NVRTC internal builtins lookup did not resolve the private directory registered by os.add_dll_directory. Exact internal load flags are not traced;search-rule explanation is an inference from observed error and primary Windows documentation.",
+  "primary_sources": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-adddlldirectory",
+    "https://learn.microsoft.com/en-us/windows/win32/dlls/dynamic-link-library-search-order"
+  ],
+  "documentation": "AddDllDirectory applies only to LoadLibraryEx USER_DIRS unless process default flags request it. Loaded-module lookup can find an already loaded matching base name. Absolute primary DLL alone does not guarantee dependency resolution.",
+  "repair": "Load exact pinned builtins DLL by absolute path before exact primary13DLL;verify actual module path with GetModuleFileNameW. This child-only explicit binding avoids global/PATH/search-policy changes. No renamed DLL,compiler/source/options/target/ABI/resource/mechanism gate changes.",
+  "preservation": "Original D161 remains invalid with native exit1 and no PTX. Original12.9control exact PTX/compile record reused,not rerun. One repaired candidate compile then original never-executed Rust/resource steps. Extra native failed setup/process disclosed. No numerical/performance failure rescored or input corpus repaired.",
+  "failure": "If explicit dependency still fails,or later actual source/ABI/resources/codegen fails,close exact form without further load/flag/version/shape rescue. No application kernel before all original prerequisites pass."
+}

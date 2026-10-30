@@ -1,0 +1,36 @@
+{
+  "at": "2026-10-16T09:36:46Z",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "tools/postflop_autoresearch.py",
+    "--id",
+    "D033R1",
+    "--title",
+    "D033 captured-graph device-event diagnostic",
+    "--kind",
+    "diagnostic",
+    "--binary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.exe",
+    "--build-manifest",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\D033-solver.manifest.json",
+    "--test",
+    "gpu::graph_device_events::captured_graph_device_event_diagnostic",
+    "--fixture",
+    "rainbow"
+  ],
+  "binary_sha256": "713eef623cf21b9d702f9dafadab27f7162c8587023c4f8c51e3527a09d10d34",
+  "build_manifest_sha256": "8b5d43676c3c65f7f860fb5708d1d1d9e30e23bb5e18c3ec065a6d58a8e037d1",
+  "diagnostic_inputs_sha256": {
+    "runs/D033-graph-event-design/protocol.json": "3c0187465cbcf7faa347a11fe2f769dfafd5e29ec027eb5754e60f10c20745e2",
+    "runs/D033-graph-event-design/anchor-rainbow.json": "94e7d8299c7ea549e59d5b33cf12a37cd1a74cbc9d652850f06e23adb5e11e52",
+    "runs/D033-graph-event-design/README.md": "1e1511e23918a92ff0630c1d2c1b3110509ae6d8ac01abc90bda06d42df9712d",
+    "runs/D033-graph-event-design/source-manifest.json": "e4fde2a0c1042f389c5168e3a1d214332351e804bc2d3b2e03907fdd47099abe",
+    "runs/D033-oracle-anchors/anchors.json": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+    "binaries/E015-postflop_autoresearch.manifest.json": "934c29e800d180397ee330340d425f1084078c24831ba87c4de5e74729821fd2"
+  },
+  "fixed_protocol_sha256": "3c0187465cbcf7faa347a11fe2f769dfafd5e29ec027eb5754e60f10c20745e2",
+  "actual_run": "D033R1",
+  "logical_dashboard_row": "D033",
+  "performance_acceptance": false,
+  "build_complete_before_launch": true
+}

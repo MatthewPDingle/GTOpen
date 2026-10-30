@@ -1,0 +1,382 @@
+{
+  "id": "E106-primary-checkpoint",
+  "at": "2026-10-29T00:22:11.657028+00:00",
+  "status": "rejected_closed_frozen_nullable_lock_form",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians; three observations per arm",
+    "baseline_full_cycle_ms": 9908.1369,
+    "candidate_full_cycle_ms": 9884.1371,
+    "observed_gain_pct": 0.24222313682403396,
+    "required_gain_pct": 1.0,
+    "primary_timing_pass": false,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.174082686314661,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": -0.13877896432645295,
+        "slower_pairs": 1,
+        "failed": false
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -7.016357960318392,
+        "slower_pairs": 0,
+        "failed": false
+      }
+    ],
+    "statistical_significance_established": false
+  },
+  "primary_report_sha256": "2ccfbcde9ab913b833ff75fb77f5976551cfb3bb70816252ba86cb164e3f9494",
+  "full_log_replay_sha256": "aac89099a1ef05598e7223549bad60eb003575d70917c2b95d1ef22743df0f4a",
+  "resource_report_sha256": "7fae834bb49521df089d402e4bf38c7e3847329229c99afcad6c5afecb72caa3",
+  "resource_warnings_preserved": [
+    {
+      "entry": "down_action",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "down_action",
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "registers": 48,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    },
+    {
+      "entry": "up_action",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 62,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action",
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "registers": 64,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    },
+    {
+      "entry": "up_action_eval",
+      "baseline": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action_eval",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "registers": 40,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "application_kernels": 0,
+        "context_stack_after": 1024,
+        "context_stack_before": 1024,
+        "device_shared_limit": 49152,
+        "device_thread_limit": 1024,
+        "dynamic_shared_bytes": 0,
+        "kernel": "up_action_eval",
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "registers": 42,
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      }
+    }
+  ],
+  "actual_host_layout": {
+    "GPU_solver_constructor_calls": 0,
+    "baseline_wrapper_bytes": 4448,
+    "candidate": {
+      "argument_helper_bytes": 16,
+      "flag_offset": 4443,
+      "static_zero_word_bytes": 8,
+      "wrapper_bytes": 4448
+    },
+    "stage": "host_layout",
+    "wrapper_delta_bytes": 0
+  },
+  "mechanism_report_sha256": "6741fd3fc62b44a67d7a259680179f50b42059b554c53e40e0d4da63da022366",
+  "engine_report_sha256": "5ee726853991dc98915721a95155fd320f38fc1437eac0f5ad9d2260e01eb595",
+  "direct_report_sha256": "129f9beaee647436ceaf79623ea693e27b9a7ae1fdd1d7ccd95e00fdae018c4b",
+  "predicate_boundary_report_sha256": "87428945bff93e99e0c17730115eb6bc1d8e6f0c9900af245584bdbff1ee6b7b",
+  "canonical_raw_report_sha256": "13139b1307a68ee11233f426ee4a5b8b54387fd3068448ed1ce87ee214124147",
+  "all66_retained_raw_extents_verified": true,
+  "raw_files_not_rehashed_after_original_full_comparison": true,
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\V106-unit.exit.json",
+      "sha256": "376656685c1e144387604091b9fbf468c172b78237deff178f3f08bb2fd40845",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\B320.exit.json",
+      "sha256": "200aac0d2e1f72469907937c23b56bd85473c5aaa70292751c4e6a5b5ebbcc1c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\E106R1.exit.json",
+      "sha256": "c05dfc7d0a2d4768a2a038a9f1055bd4788764c5678f555bb59bf10f00add4af",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\E106R2.exit.json",
+      "sha256": "36453ed6b58e9a7415e7aa8e93621ed85e06d50871c4e7baece85c5b50e8b564",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\B321.exit.json",
+      "sha256": "d7a0572d5ce2f02b8d36127bf1fabcb52ace225eab79615b4116a7ecdb2b904b",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\B322.exit.json",
+      "sha256": "b283802417f65a5eeac2d9aa18b0d78568d8b30a7ff84782454270fb0f1cea05",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-primary-execution\\E106R3.exit.json",
+      "sha256": "1b5f5203fcaa971fb962a8babe308eb3c9accfd083f3e3714c027d9b5f2d5bda",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\probe.exit.json",
+      "sha256": "cfb6bffcc733f121a5d1fd0c224d4cc49a73b3fa43a02184f86100e4d9856cb4",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\rustc.exit.json",
+      "sha256": "c3a534ba1f5d9fff36fb74f14e3c1bb4a9cb80d9f99683524b3abb1f42316660",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\audit.exit.json",
+      "sha256": "80039239c2c3aee3c854a5fc31dcdd12b374c8f11e3e5d8f8127c32ab461d12a",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\probe.exit.json",
+      "sha256": "85fdcaca7ad3c50b8ec159ef72fd98e8cb2e659eefcd241e9c22eac9e68d8fa3",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\execution\\rustc.exit.json",
+      "sha256": "c3ea71938e3d7d5448edc9fdefcd58be81d41024ab702feea6cbbcfdbe808b48",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\audit-down.exit.json",
+      "sha256": "d96722297a01762616ecce3fd06f4dac4bda39ee1783dcf072a7d55f052ecad7",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\audit-up.exit.json",
+      "sha256": "63cc325b4425f8cebe1d95a3c5487b32cd1ab243b4a03e2c12de2a50eeea4ace",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\down.exit.json",
+      "sha256": "9d5c845d0c2dc06b259cf5311b3575d8ab56507026a5f1944e6f0a04eb7724e6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\rustc-down.exit.json",
+      "sha256": "640f3a5cfb434e06b233229d02c6fbf2960c9d739c6321f6cd785427acdadfba",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\rustc-up.exit.json",
+      "sha256": "eb68872adc4c3fac8e57831c0d7fb262f68bf21559c07ce7e88f65fbee1d2760",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D217-nullable-lock-direct\\execution\\up.exit.json",
+      "sha256": "a36ad9e92fbdecc8c41d8257e0cf909d4811ac198865fba667e40a572a829031",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\execution\\probe.exit.json",
+      "sha256": "2d2faaab06310521c86b5876e93f43c8239cb07a38b2ace381d977659199c8e6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\execution\\rustc.exit.json",
+      "sha256": "8923cf397edb3e30dec5585b7acad4a35bbb9572939b075e6236ee09addf640f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\execution\\audit.exit.json",
+      "sha256": "f20834df7022949cb275f9db72a50ea2ab7b90c15c4f7127766ba8a5e37527e9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\execution\\baseline.exit.json",
+      "sha256": "1ab909c912eb959f6cbfa642ab84347afed15ab124ce80eb63b348bc6845f3be",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\execution\\candidate.exit.json",
+      "sha256": "0ef6b9d248b71edd1319e3a1049258212a9373f0b449c20f440b3375aecd63ee",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\execution\\rustc-baseline.exit.json",
+      "sha256": "3ab06216e014a28645d6ce96bc107e512e76af10a10736b1432c054c2a790fdd",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\execution\\rustc-candidate.exit.json",
+      "sha256": "6ad853d1cd8722767924c1cf915d5a636cd599bdbd25ea73e37ff827bb170d37",
+      "returncode": 0
+    }
+  ],
+  "preparation_line_ending_failure_preserved": true,
+  "all_owned_compilers_native_readers_terminal": true,
+  "accepted_source_main_live_protected_PTX_unchanged": true,
+  "GPU_and_sequence_locks_absent": true,
+  "new_gain_adopted_or_deployed": false,
+  "extra_or_rescue_samples": 0,
+  "source_helper_predicate_field_arity_entrysubset_threshold_flags_quality_or_sample_rescue_allowed": false,
+  "qualification_limits": "Finite direct/engine/actual-predicate/fullcanonical/ordinary science passed. A primary timing pass still requires fresh16, broad nonempty-lock/F32/menu/save/resume/paging/continuation performance/compatibility, actual CPU/memory/capacity/resources/graph, holdout, fresh-original cumulative and application qualification. A failed primary screen closes exact form without rescue. No universal or significance claim.",
+  "original_current_RAM_baseline_ms": 10456.4109,
+  "samecohort_reference_ms": 9908.1369,
+  "historical_or_RAM_reference_samples_scored": 0,
+  "last_primary_baseline_id": "B322",
+  "best_qualified_config": "E080 / GPU / compressed / 16 workers / default affinity",
+  "goal_active": true
+}

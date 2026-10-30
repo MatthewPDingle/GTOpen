@@ -1,0 +1,180 @@
+{
+  "id": "D294",
+  "at": "2026-10-29T18:23:24.175560+00:00",
+  "status": "captured_sparse_card_native_control_review_pending",
+  "protocol_sha256": "74365fdf957f70ca08ca331c9585ac7e824a03fab0641727dd0b35e95d801c43",
+  "candidate_CUBIN_sha256": "8e182ef3cb07fcf004e7cc3aaf568d0c0d3ca2dd79cfa261a9cada0c634f1114",
+  "candidate_SASS_sha256": "2e35548522f26bb8e8fbe1a9032fb5b0f52dfe758dcafcf51737d3e079b7059c",
+  "baseline_CUBIN_sha256": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47",
+  "baseline_SASS_sha256": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061",
+  "entry_sections": {
+    "baseline": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D294-sparse-card-native\\execution\\baseline\\up_show.sass.txt",
+      "sha256": "5eb84080af5a339f8ac1da16b4a5aa8093c54f52e0e087a1643ba25f3ebb65ca"
+    },
+    "candidate": {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D294-sparse-card-native\\execution\\candidate\\up_show.sass.txt",
+      "sha256": "d3923284b609b790b83d822164dad959363fd9556e4401fbcbd129110fdf4fe0"
+    }
+  },
+  "candidate_markers": {
+    "D098_DEVICE": [
+      {
+        "name": "NVIDIA GeForce RTX 5090",
+        "major": 12,
+        "minor": 0,
+        "driver_api_version": 13030
+      }
+    ],
+    "D098_KERNEL": [
+      {
+        "name": "copy_root",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_action",
+        "registers": 40,
+        "local": 32,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "down_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_fold",
+        "registers": 39,
+        "local": 0,
+        "shared": 1232,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_show",
+        "registers": 40,
+        "local": 0,
+        "shared": 1248,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_chance",
+        "registers": 30,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action",
+        "registers": 62,
+        "local": 64,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          16,
+          8,
+          4
+        ]
+      },
+      {
+        "name": "copy_span",
+        "registers": 26,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      },
+      {
+        "name": "up_action_eval",
+        "registers": 40,
+        "local": 0,
+        "shared": 0,
+        "maxthreads": 1024,
+        "binary_version": 120,
+        "ptx_version": 120,
+        "occupancy64_128_256": [
+          24,
+          12,
+          6
+        ]
+      }
+    ],
+    "D098_MODULE": [
+      {
+        "index": 0,
+        "module_id": 21,
+        "bytes": 197352,
+        "same_owned_context": true,
+        "elf_magic": true
+      }
+    ],
+    "D098_COMPLETE": [
+      {
+        "callback_errors": 0,
+        "modules": 1,
+        "kernel_launches": 0,
+        "solver_executions": 0,
+        "performance_measured": false
+      }
+    ]
+  },
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_compilers_NVRTC_applicationkernels_solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Existing checksum-bound genericCUPTI_RESOURCE_MODULE_LOADEDcallbackhelper,oneownedprimarycontext/moduleloadfromsealedcandidatePTX,oneprivateNVIDIAnvdisasmdisassembly. ReuseexactacceptedPTX/currentdriverbaselinecaptureD225,verifydevice/driveridentity. No newcompiler/NVRTC/applicationkernel/hardwarecounters/injection/solver/speed/sourceactivation."
+}

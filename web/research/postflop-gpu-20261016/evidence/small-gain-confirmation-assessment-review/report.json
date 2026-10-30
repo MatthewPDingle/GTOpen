@@ -1,0 +1,135 @@
+{
+  "id": "small-gain-confirmation-assessment-review",
+  "created_at": "2026-10-16T22:56:26.594562+00:00",
+  "verdict": "PASS_PROSPECTIVE_ASSESSMENT_REVIEW",
+  "independent_assessment_review_pass": true,
+  "scope": "Source and file-only review of assessment arithmetic, exact raw anchoring, fixed schedule membership, unit screens and reporting. Separate reviewer owns full build/run/custody review. No package script imported or executed; no build, solver, compiler, native or GPU work.",
+  "scripts_manifest_sha256": "34e9a0372539975170a01d3d137f483fb9656839d0faeb6dd3f6a3a67044131f",
+  "assess_sha256": "863a50e8817a2a302a4a6a72a7e4efe8a4eda0f246219b83361a8880b3739610",
+  "common_sha256": "4df14f9808f9889d02b57ab41c7e6b1c63efb50ac5ac2c8d7dbfa6e34f345f93",
+  "protocol_sha256": "6a81d6a768f234e46cd148960ecdefa1c396985508616833ac081644a634517b",
+  "schedule_sha256": "16b1e0b18e162f3bcf8c75b9b1379ba9f42a85d198523666035392a6b736cc0a",
+  "findings": [],
+  "arithmetic": {
+    "aggregate": "100*(sum of three baseline fixture medians - sum of three candidate fixture medians)/sum of baseline fixture medians; unrounded comparison >=1.0.",
+    "pairs": "Each pair uses the sum of its three complete-cycle observations. At least13/16 strictly positive millisecond differences; positive baseline denominator makes sign equivalent to paired percentage gain. Exact zero is a tie and never a win.",
+    "robustness": "Median paired percentage gain >0, every four-pair block percentage-gain median >0 and both eight-pair BC/CB percentage-gain medians >0. No additional1% paired or0.5% block cutoff.",
+    "fixture_guard": "Reject a fixture only when candidate fixture median exceeds baseline fixture median AND at least9/16 corresponding paired fixture times are strictly slower. Equality at either strict-positive boundary does not trigger.",
+    "combination": "All six gate booleans must pass. Original comparator2%/3% fields exist only under its performance object, which assess.py:88 replaces completely before any output.",
+    "descriptions": "Every raw paired gain/difference, block and order group is retained; count/median/min/max/range/unscaled median absolute deviation plus explicit win/tie/loss counts. No p-value, confidence or calibrated familywise-error claim."
+  },
+  "exactness": {
+    "raw_result": "common.py:129 pins stdout, parses all3 AUTORESEARCH_RESULT objects, requires exact report equality and frozen fixture order/stops/target. Only six named timing fields are excluded; every remaining config/state/fingerprint/stop/result field equals frozen E020C1.",
+    "checkpoints": "All23 convergence records per process match the frozen E020C1 ordered trajectory. The fixed evaluator emits exactly five non-timing fields beyond constant stage: fixture_id, iteration, exploit_bits, exploit_pct_pot, exploit_chips; all are compared. Only solve_checks_elapsed_ms is omitted.",
+    "full_counts": {
+      "fresh_evaluator_processes": 128,
+      "fixture_results": 384,
+      "convergence_records": 2944
+    },
+    "unit_screens": "Fresh five binaries are screened before measurements; summary84/0/4/0/0 for E020/E007/E008 and85/0/4/0/0 for E032/E036. Exact binary/manifests/source/environment are checked. E032 focused geometry test is present; E036 focused test and exactly one34-pair/68-launch/128-thread exact marker are required.",
+    "anchor": "E020C1 contributes correctness payload only; none of its timings enter summary cohorts.",
+    "retention": "All128 fixed measurements must exist and validate. No outcome-based sample exclusion, replacement, extension, old-pooling or automatic acceptance path."
+  },
+  "schedule_check": {
+    "per_candidate": {
+      "E007": {
+        "pairs": 16,
+        "blocks": 4,
+        "pairs_per_block": 4,
+        "BC": 8,
+        "CB": 8,
+        "fixture_results": 96,
+        "convergence_records": 736
+      },
+      "E008": {
+        "pairs": 16,
+        "blocks": 4,
+        "pairs_per_block": 4,
+        "BC": 8,
+        "CB": 8,
+        "fixture_results": 96,
+        "convergence_records": 736
+      },
+      "E032": {
+        "pairs": 16,
+        "blocks": 4,
+        "pairs_per_block": 4,
+        "BC": 8,
+        "CB": 8,
+        "fixture_results": 96,
+        "convergence_records": 736
+      },
+      "E036": {
+        "pairs": 16,
+        "blocks": 4,
+        "pairs_per_block": 4,
+        "BC": 8,
+        "CB": 8,
+        "fixture_results": 96,
+        "convergence_records": 736
+      }
+    },
+    "pairs_total": 64,
+    "unique_measurements": 128,
+    "joined_pair_order_matches": true,
+    "units": 5,
+    "orientation_randomization_note": "This review verifies frozen balance/membership and adjacent ordering. Seed-generation provenance is covered by the separate run/custody reviewer."
+  },
+  "cost_and_qualification": "A timing pass is explicitly qualifying_pending_cost_and_broader_gates. It is not proof of cost-free behavior. Independent raw audit, material memory/capacity/compatibility evidence, broader F32/state/menu/continuation controls, prospective wide-turn holdout and fresh cumulative qualification remain required.",
+  "review_method": "Complete source read of assess.py and common.py exact_raw/unit_check plus reused comparator validate_run/summarize and fixed evaluator checkpoint schema; independent file-only schedule cardinality checks and AST parsing. No synthetic outcome is represented as a measured sample.",
+  "resolved_preseal_requests": [
+    "Root-requested MAD and explicit wins/ties/losses added as reporting only.",
+    "Separate reviewer requested unit binary/provenance tightening; present in final common.py."
+  ],
+  "verification": {
+    "frozen_pin_count": 39,
+    "syntax_only_files": [
+      "assess.py",
+      "common.py",
+      "run.py"
+    ],
+    "package_runtime_executed": false,
+    "candidate_accepted": false
+  },
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\scripts-manifest.json": "34e9a0372539975170a01d3d137f483fb9656839d0faeb6dd3f6a3a67044131f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\assess.py": "863a50e8817a2a302a4a6a72a7e4efe8a4eda0f246219b83361a8880b3739610",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\authorization.example.json": "1cb0a7dba7ec2b47e42fec6b3cdc934e28a4d36697eaff8d8c1a5f8a65de0864",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\build.py": "42cec74fd4b3457a2f2e657d595bf2d4d137a8c82edac00f40bd5441e38c0bc5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\common.py": "4df14f9808f9889d02b57ab41c7e6b1c63efb50ac5ac2c8d7dbfa6e34f345f93",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\preparation-error.json": "75f3b054979bdd45ea86cf6ac7d4323b4b917f3ec3931ec17d8a4977cdb521b0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\preparation.json": "7a5b196ff15888f5d0d9594890b4a09d4c1b422ce6072d2ee87a61641a83ad15",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\protected-main.json": "4357e1c07b34766ff8601c64d4c2584868e60575edafde865189a9e15adc1220",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\protocol.json": "6a81d6a768f234e46cd148960ecdefa1c396985508616833ac081644a634517b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\README.md": "4fdaee30bfba0d287a9fa353406668c4b733d8907af53d84d0777613ff72fa52",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\run.py": "5b6fec4e21a3721c8a917214fb2819b8e285bb8f272c18f958c9c3208f47f039",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\schedule.json": "16b1e0b18e162f3bcf8c75b9b1379ba9f42a85d198523666035392a6b736cc0a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\assess.py": "abca9d3d4ceb878d291fa6cf4d0b6e270686d63318528cf96dcad0cffd361d90",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\build.py": "e359b0d283c27ee8a5bcda340b9161b2423454053d6e7b0c246b1dc3fb2a0385",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\common.py": "5912ed6f7104dc1898e6996824bcb0e8287ab110ab7748be9d6a430d8d27bdfa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\protected-main.json": "95db87520ede2b21c189473b16ef5b53872e196f638e70b7a9b513bca5fffc9a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\protocol.json": "6a81d6a768f234e46cd148960ecdefa1c396985508616833ac081644a634517b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-plan\\draft-r1\\run.py": "5b6fec4e21a3721c8a917214fb2819b8e285bb8f272c18f958c9c3208f47f039",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\manifest.json": "d7191141093875416b666335b4e678b89035e60ff3170af17e7f55bcaedb1e52",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\small-gain-confirmation-source-review\\report.json": "cb88d8855ea8d41ed7c02454acef1703ff0713adb1ce5b2d7e99e3f2bcfeaa89",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\preparation.json": "8f447dfb8ad7f0598ae6ee886453d3b73dbc89182f20b5dcdfcf988961cb23c6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\protocol.json": "e3df1e4193bdc497cd361a05ab9b1e1df75e4f1fcabd937c26e074ccf7bad0ed",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-design\\amendment-user-1pct\\proposal.json": "f840717dcf6949f8c1146f8f1b1e90936b43c546ddac3e00c2365d96e818dcba",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-root-decisions\\user-policy-1pct.json": "1127d11e472842cfd9d6ebafbb3408a06fca14de1c1b718ae3757517ba9c3a5c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\build.py": "ed2dac54220ad159b9ed291c8317b65c97ad741e5e2a370b3dde287018c749b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\primary.py": "114f00146b074fb8be4bd8c9f4fb70d61876031102db04db7a6c18e759c47552",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-primary-plan\\compile_check.py": "31564a828968fde447783b01edba90cf55a96bee95edc7a22817c482fe5cef66",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\report.json": "551bb9eb039bbbefad0163f2175b64712c7976405e169fff92e1d50429332efd",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020C1\\stdout.log": "5bc7fe384c71c90c9b1953e59d0e28c2d33b6a9e1a9f90b0555a3aa4ea9daa6a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_compare.py": "7579825938525e0b3ec5b397f5e0960ab4631e81e0d393a40d1335c1ea35a080",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-qualification\\report.json": "32ccca351c6bee424b183db7afc39fd922b3b0d751f6b0b7ff3c3b5768c6e304",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E020-server-qualification\\report.json": "9b7f11225fc9a0b3c55ddaf0ce74a9383cd1eb38832219c3a2042e28ba2c6f78",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E007\\manifest.json": "380815a41de04bfec3c1b69739da6449f1eb86137cdb7d1de3d7d1ed139f8430",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E008\\manifest.json": "58b04f2baa7dcf680a5f0601602926e6c9775085b56387c204915c9e59ec3e7b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E032\\manifest.json": "9abfc556d42c4137a1262cd9c74d81b254022629fd101afc25984797b29c9ec6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E036\\manifest.json": "643b5fda6dbaacef95d1a474afb9e64d587dd115b9c6ef0ffe1f3e7f2c71ed24",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "id": "E027-terminal-audit-preparation",
+  "at": "2026-10-16T16:23:16.679997+00:00",
+  "status": "PREPARED_NOT_EXECUTED_WAIT_ROOT_PRIMARY_AND_ASSESSMENT_TERMINAL",
+  "parent_audit": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E026-independent-review\\audit-primary-r2.py",
+    "sha256": "37189a8a8e693506a70df3d2ec266e5eebb3c48f6389e9d83aabe756084dcf93"
+  },
+  "artifact_sha256": {
+    "audit-primary.py": "ad3c1eae86de8faa106ceb67ae11841a6e4fb500cf56fba35d8842bde744b67a",
+    "audit-adaptation.patch": "85802236d8db8b744bf48d39cbb1e3a0033f45f0d4e130d2f827215afdd2df58",
+    "source-custody.json": "ca706b5a6162f40ee7afe6cdd6329d5edb561ace89b1e0a1ddcbaff5a95222de"
+  },
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-source\\activation-r2.json": "f4b8b4b7abaf0a8f4f2f868e1d6f87bc8dbdd12e2485d09bfbe6ebc3acb205d5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\authorization.json": "7348b2a2894ef0048378be6c661e08667c5c89de4a49d4bde655652ad62ba97c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\manifest.json": "0401006b33a45ff9bdc2d2e9ef255285146a7538b4197f5bc130b6ac8f54e0b5",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\scripts-manifest.json": "28d8d84dd6b10126ad756096310ce6078d6e4e52aa25b36e956d9ff0abd3066b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan-r2\\protocol.json": "48f810ee1f29d6b5c47d257d24b4d9b602ff44e3ea3cc51c0a6727a4b0c43783",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-r2-source-script-review\\report.json": "90516f568e3fef906e65de020384ebb164370dab137a63792b0b8e38014e5116"
+  },
+  "fixed_order": [
+    "V027-unit",
+    "B089",
+    "E027R1",
+    "E027R2",
+    "B090",
+    "B091",
+    "E027R3"
+  ],
+  "after_terminal_command": [
+    "python",
+    "-B",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-independent-review\\audit-primary.py",
+    "7348b2a2894ef0048378be6c661e08667c5c89de4a49d4bde655652ad62ba97c",
+    "ROOT_TERMINAL_COMPARISON_SHA256",
+    "ROOT_TERMINAL_PRIMARY_BINARY_SHA256",
+    "ROOT_TERMINAL_UNIT_BINARY_SHA256"
+  ],
+  "executed": false,
+  "python_ast_only": true,
+  "candidate_or_native_execution": false,
+  "production_status_mutation": false
+}

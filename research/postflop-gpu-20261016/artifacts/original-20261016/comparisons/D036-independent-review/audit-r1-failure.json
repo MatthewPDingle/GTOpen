@@ -1,0 +1,11 @@
+{
+  "at": "2026-10-16T10:13:17.114757+00:00",
+  "origin": "Observed exec_command tool completion, no separate raw stderr redirect",
+  "script_sha256": "57bb3b33126e7918ccb29c35d89c4d03683252286515d1c369d278dbc3a8e7a8",
+  "exit_code": 1,
+  "error": "AssertionError: saved_ptx_entry_exact, audit.py line159",
+  "scope": "Review-only formatting assertion after numerical/guards/corpus checks; no experiment rerun or numerical failure",
+  "reason": "run.py line126 deliberately saves code plus one newline; entry hash deliberately excludes that newline",
+  "correction": "audit-r2.py tests exact extracted entry plus single newline against saved file",
+  "experiment_inputs_changed": false
+}

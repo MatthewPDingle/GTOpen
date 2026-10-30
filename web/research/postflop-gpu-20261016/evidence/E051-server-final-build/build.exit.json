@@ -1,0 +1,21 @@
+{
+  "started_at": "2026-10-18T01:36:54.370055+00:00",
+  "finished_at": "2026-10-18T01:39:09.200054+00:00",
+  "command": [
+    "cargo",
+    "build",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "server",
+    "--features",
+    "gpu",
+    "--bin",
+    "gto-server",
+    "--message-format=json"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

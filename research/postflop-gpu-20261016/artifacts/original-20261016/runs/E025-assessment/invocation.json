@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-16T14:50:44Z",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "tools/postflop_compare.py",
+    "--id",
+    "E025-three-pair-comparison",
+    "--candidate-id",
+    "E025R1",
+    "--baseline-runs",
+    "B083",
+    "B084",
+    "B085",
+    "--candidate-runs",
+    "E025R1",
+    "E025R2",
+    "E025R3",
+    "--warm-cache-cohort",
+    "--reject"
+  ],
+  "decision_gate_failures": [
+    "Below the registered 2% aggregate gate; no reproducible aggregate benefit established."
+  ],
+  "script_sha256": "cfb1792a96691ca1f66d362b58662b93831fd44cc9d1af6015e550f6a9d332fb",
+  "protocol_sha256": "9cadcf6dd20f1ccb16a061bcc5707a506bdc7a058435b4d3b7de58ff8d02e937"
+}

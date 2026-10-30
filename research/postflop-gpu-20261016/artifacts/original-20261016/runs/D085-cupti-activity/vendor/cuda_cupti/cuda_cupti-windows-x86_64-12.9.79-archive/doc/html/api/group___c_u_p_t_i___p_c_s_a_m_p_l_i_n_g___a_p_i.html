@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>5.6. CUPTI PC Sampling API &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="5.7. CUPTI PC Sampling Utility API" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html" />
+    <link rel="prev" title="5.5. CUPTI Metric API" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">5. Modules</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___a_c_t_i_v_i_t_y___a_p_i.html">5.1. CUPTI Activity API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_a_l_l_b_a_c_k___a_p_i.html">5.2. CUPTI Callback API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___c_h_e_c_k_p_o_i_n_t___a_p_i.html">5.3. CUPTI Checkpoint API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___e_v_e_n_t___a_p_i.html">5.4. CUPTI Event API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___m_e_t_r_i_c___a_p_i.html">5.5. CUPTI Metric API</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">5.6. CUPTI PC Sampling API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#macros">5.6.1. Macros</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#enumerations">5.6.2. Enumerations</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#functions">5.6.3. Functions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#typedefs">5.6.4. Typedefs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___u_t_i_l_i_t_y.html">5.7. CUPTI PC Sampling Utility API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_m___s_a_m_p_l_i_n_g___a_p_i.html">5.8. CUPTI PM Sampling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___h_o_s_t___a_p_i.html">5.9. CUPTI Profiler Host API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___p_r_o_f_i_l_e_r___a_p_i.html">5.10. CUPTI Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_a_n_g_e___p_r_o_f_i_l_e_r___a_p_i.html">5.11. CUPTI Range Profiling API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html">5.12. CUPTI Result Codes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___s_a_s_s___m_e_t_r_i_c_s___a_p_i.html">5.13. CUPTI SASS Metrics API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="group___c_u_p_t_i___v_e_r_s_i_o_n___a_p_i.html">5.14. CUPTI Version</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="namespaces.html">7. Namespaces</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="modules.html"><span class="section-number">5. </span>Modules</a> &raquo;</li>
+<li><span class="section-number">5.6. </span>CUPTI PC Sampling API</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-pc-sampling-api">
+<h1><span class="section-number">5.6. </span>CUPTI PC Sampling API<a class="headerlink" href="#cupti-pc-sampling-api" title="Permalink to this headline"></a></h1>
+<p id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i">Functions, types, and enums that implement the CUPTI PC Sampling API. </p>
+<p class="rubric-h2 rubric">Data Structures</p>
+<div class="docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="struct_c_upti___get_cubin_crc_params.html#struct_c_upti___get_cubin_crc_params"><span class="std std-ref">CUpti_GetCubinCrcParams</span></a></dt><dd><p>Params for cuptiGetCubinCrc.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___get_sass_to_source_correlation_params.html#struct_c_upti___get_sass_to_source_correlation_params"><span class="std std-ref">CUpti_GetSassToSourceCorrelationParams</span></a></dt><dd><p>Params for cuptiGetSassToSourceCorrelation.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info.html#struct_c_upti___p_c_sampling_configuration_info"><span class="std std-ref">CUpti_PCSamplingConfigurationInfo</span></a></dt><dd><p>PC sampling configuration information structure.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html#struct_c_upti___p_c_sampling_configuration_info_params"><span class="std std-ref">CUpti_PCSamplingConfigurationInfoParams</span></a></dt><dd><p>PC sampling configuration structure.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_data.html#struct_c_upti___p_c_sampling_data"><span class="std std-ref">CUpti_PCSamplingData</span></a></dt><dd><p>Collected PC Sampling data.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_disable_params.html#struct_c_upti___p_c_sampling_disable_params"><span class="std std-ref">CUpti_PCSamplingDisableParams</span></a></dt><dd><p>Params for cuptiPCSamplingDisable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_enable_params.html#struct_c_upti___p_c_sampling_enable_params"><span class="std std-ref">CUpti_PCSamplingEnableParams</span></a></dt><dd><p>Params for cuptiPCSamplingEnable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_get_data_params.html#struct_c_upti___p_c_sampling_get_data_params"><span class="std std-ref">CUpti_PCSamplingGetDataParams</span></a></dt><dd><p>Params for cuptiPCSamplingEnable.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_get_num_stall_reasons_params.html#struct_c_upti___p_c_sampling_get_num_stall_reasons_params"><span class="std std-ref">CUpti_PCSamplingGetNumStallReasonsParams</span></a></dt><dd><p>Params for cuptiPCSamplingGetNumStallReasons.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_get_stall_reasons_params.html#struct_c_upti___p_c_sampling_get_stall_reasons_params"><span class="std std-ref">CUpti_PCSamplingGetStallReasonsParams</span></a></dt><dd><p>Params for cuptiPCSamplingGetStallReasons.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_p_c_data.html#struct_c_upti___p_c_sampling_p_c_data"><span class="std std-ref">CUpti_PCSamplingPCData</span></a></dt><dd><p>PC Sampling data.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_stall_reason.html#struct_c_upti___p_c_sampling_stall_reason"><span class="std std-ref">CUpti_PCSamplingStallReason</span></a></dt><dd><p>PC Sampling stall reasons.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_start_params.html#struct_c_upti___p_c_sampling_start_params"><span class="std std-ref">CUpti_PCSamplingStartParams</span></a></dt><dd><p>Params for cuptiPCSamplingStart.</p>
+</dd>
+<dt><a class="reference internal" href="struct_c_upti___p_c_sampling_stop_params.html#struct_c_upti___p_c_sampling_stop_params"><span class="std std-ref">CUpti_PCSamplingStopParams</span></a></dt><dd><p>Params for cuptiPCSamplingStop.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Macros</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga01e2b11edb4043cd7badb6e9bc633436"><span class="std std-ref">CUPTI_STALL_REASON_STRING_SIZE</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaed673536dae9e836d2e0cafcab2fcecf"><span class="std std-ref">CUpti_GetCubinCrcParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gab4d7fd0794cc91e552fa152ec27942c8"><span class="std std-ref">CUpti_GetSassToSourceCorrelationParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga771d0d65f3758f7cdde0d48413d74edc"><span class="std std-ref">CUpti_PCSamplingConfigurationInfoParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga8c71d642ad8e73e8391010df933602f4"><span class="std std-ref">CUpti_PCSamplingDisableParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf07117be5ce240847c071b8c06714205"><span class="std std-ref">CUpti_PCSamplingEnableParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga7e60fb1b540fbf8fed873659b1a73504"><span class="std std-ref">CUpti_PCSamplingGetDataParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga0af867c3f1df9c88d5fd5865569ac4bb"><span class="std std-ref">CUpti_PCSamplingGetNumStallReasonsParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaac3a039136534c0ad483d44cc1182530"><span class="std std-ref">CUpti_PCSamplingGetStallReasonsParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gade38addc00d93826b867b2788de817d7"><span class="std std-ref">CUpti_PCSamplingStartParamsSize</span></a></dt><dd><p></p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga0c9ca6508bb651375c4f51d65bf5a684"><span class="std std-ref">CUpti_PCSamplingStopParamsSize</span></a></dt><dd><p></p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Enumerations</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga7fcaa834e5520b282b2a3b1de3f304b4"><span class="std std-ref">CUpti_PCSamplingCollectionMode</span></a></dt><dd><p>PC Sampling collection mode.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga4fe866bd47d8825f4d46cc52c8e29bb5"><span class="std std-ref">CUpti_PCSamplingConfigurationAttributeType</span></a></dt><dd><p>PC Sampling configuration attributes.</p>
+</dd>
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6959d5af9fa0ce5b41af09276fc190f7"><span class="std std-ref">CUpti_PCSamplingOutputDataFormat</span></a></dt><dd><p>PC Sampling output data format.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Functions</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga58d9101ff62121eb735b19167153a4b3"><span class="std std-ref">cuptiGetCubinCrc</span></a>(CUpti_GetCubinCrcParams *pParams)</dt><dd><p>Get the CRC of cubin.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga35c9023ef22a59235de77b15496814eb"><span class="std std-ref">cuptiGetSassToSourceCorrelation</span></a>(CUpti_GetSassToSourceCorrelationParams *pParams)</dt><dd><p>SASS to Source correlation.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gacbe97deb69ca2795102902544df571e3"><span class="std std-ref">cuptiPCSamplingDisable</span></a>(CUpti_PCSamplingDisableParams *pParams)</dt><dd><p>Disable PC sampling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf76a8824108dc7517ba80c2e56d46058"><span class="std std-ref">cuptiPCSamplingEnable</span></a>(CUpti_PCSamplingEnableParams *pParams)</dt><dd><p>Enable PC sampling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gada8f3c53c8673e56a689a67cae7e8df2"><span class="std std-ref">cuptiPCSamplingGetConfigurationAttribute</span></a>(CUpti_PCSamplingConfigurationInfoParams *pParams)</dt><dd><p>Read PC Sampling configuration attribute.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6a34245ee39a52a31e231845af598e6b"><span class="std std-ref">cuptiPCSamplingGetData</span></a>(CUpti_PCSamplingGetDataParams *pParams)</dt><dd><p>Flush GPU PC sampling data periodically.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga5f5393a42625671275d30efaf8e25c3b"><span class="std std-ref">cuptiPCSamplingGetNumStallReasons</span></a>(CUpti_PCSamplingGetNumStallReasonsParams *pParams)</dt><dd><p>Get PC sampling stall reason count.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga74ff0bc692635200205045f6da595b8d"><span class="std std-ref">cuptiPCSamplingGetStallReasons</span></a>(CUpti_PCSamplingGetStallReasonsParams *pParams)</dt><dd><p>Get PC sampling stall reasons.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf3e8842fda99b4c1659c2d2f1c18674e"><span class="std std-ref">cuptiPCSamplingSetConfigurationAttribute</span></a>(CUpti_PCSamplingConfigurationInfoParams *pParams)</dt><dd><p>Write PC Sampling configuration attribute.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga569d99977964b8f7b0f771a153666a6f"><span class="std std-ref">cuptiPCSamplingStart</span></a>(CUpti_PCSamplingStartParams *pParams)</dt><dd><p>Start PC sampling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga942cf8284013fe62b61d5988e6c1052f"><span class="std std-ref">cuptiPCSamplingStop</span></a>(CUpti_PCSamplingStopParams *pParams)</dt><dd><p>Stop PC sampling.</p>
+</dd>
+<dt><span class="tag-as-table-cell">CUptiResult</span> <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga675da588e3db103435a3aa360b13c005"><span class="std std-ref">cuptiRegisterComputeCrcCallback</span></a>(CUpti_ComputeCrcCallbackFunc funcComputeCubinCrc)</dt><dd><p>Register callback function with CUPTI to use your own algorithm to compute cubin crc.</p>
+</dd>
+</dl>
+</div>
+<p class="rubric-h2 rubric">Typedefs</p>
+<div class="dl-as-table docutils container">
+<dl class="simple">
+<dt><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga227bc03374c7c672e634c7ca6d6374e5"><span class="std std-ref">CUpti_ComputeCrcCallbackFunc</span></a></dt><dd><p>Function type for callback used by CUPTI to request crc of loaded module.</p>
+</dd>
+</dl>
+</div>
+<section id="macros">
+<h2><span class="section-number">5.6.1. </span>Macros<a class="headerlink" href="#macros" title="Permalink to this headline"></a></h2>
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUPTI_STALL_REASON_STRING_SIZE">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga01e2b11edb4043cd7badb6e9bc633436"></span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_STALL_REASON_STRING_SIZE</span></span></span><a class="headerlink" href="#c.CUPTI_STALL_REASON_STRING_SIZE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_GetCubinCrcParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaed673536dae9e836d2e0cafcab2fcecf"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_GetCubinCrcParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_GetCubinCrcParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_GetSassToSourceCorrelationParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gab4d7fd0794cc91e552fa152ec27942c8"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_GetSassToSourceCorrelationParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_GetSassToSourceCorrelationParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingConfigurationInfoParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga771d0d65f3758f7cdde0d48413d74edc"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingConfigurationInfoParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingConfigurationInfoParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingDisableParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga8c71d642ad8e73e8391010df933602f4"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingDisableParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingDisableParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingEnableParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf07117be5ce240847c071b8c06714205"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingEnableParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingEnableParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingGetDataParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga7e60fb1b540fbf8fed873659b1a73504"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingGetDataParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingGetDataParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingGetNumStallReasonsParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga0af867c3f1df9c88d5fd5865569ac4bb"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingGetNumStallReasonsParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingGetNumStallReasonsParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingGetStallReasonsParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaac3a039136534c0ad483d44cc1182530"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingGetStallReasonsParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingGetStallReasonsParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingStartParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gade38addc00d93826b867b2788de817d7"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingStartParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingStartParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp macro">
+<dt class="sig sig-object cpp" id="c.CUpti_PCSamplingStopParamsSize">
+<span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga0c9ca6508bb651375c4f51d65bf5a684"></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingStopParamsSize</span></span></span><a class="headerlink" href="#c.CUpti_PCSamplingStopParamsSize" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</section>
+<section id="enumerations">
+<h2><span class="section-number">5.6.2. </span>Enumerations<a class="headerlink" href="#enumerations" title="Permalink to this headline"></a></h2>
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv430CUpti_PCSamplingCollectionMode">
+<span id="_CPPv330CUpti_PCSamplingCollectionMode"></span><span id="_CPPv230CUpti_PCSamplingCollectionMode"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga7fcaa834e5520b282b2a3b1de3f304b4"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingCollectionMode</span></span></span><a class="headerlink" href="#_CPPv430CUpti_PCSamplingCollectionMode" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PC Sampling collection mode. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N30CUpti_PCSamplingCollectionMode41CUPTI_PC_SAMPLING_COLLECTION_MODE_INVALIDE">
+<span id="_CPPv3N30CUpti_PCSamplingCollectionMode41CUPTI_PC_SAMPLING_COLLECTION_MODE_INVALIDE"></span><span id="_CPPv2N30CUpti_PCSamplingCollectionMode41CUPTI_PC_SAMPLING_COLLECTION_MODE_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga7fcaa834e5520b282b2a3b1de3f304b4ae39aa8671291e4089b4881797ea2018b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_COLLECTION_MODE_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N30CUpti_PCSamplingCollectionMode41CUPTI_PC_SAMPLING_COLLECTION_MODE_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>INVALID Value. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N30CUpti_PCSamplingCollectionMode44CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUSE">
+<span id="_CPPv3N30CUpti_PCSamplingCollectionMode44CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUSE"></span><span id="_CPPv2N30CUpti_PCSamplingCollectionMode44CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUSE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga7fcaa834e5520b282b2a3b1de3f304b4ad11fdae148d59d91408f90b149cc1181"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUS</span></span></span><a class="headerlink" href="#_CPPv4N30CUpti_PCSamplingCollectionMode44CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUSE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Continuous mode. </p>
+<p>Kernels are not serialized in this mode. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N30CUpti_PCSamplingCollectionMode51CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZEDE">
+<span id="_CPPv3N30CUpti_PCSamplingCollectionMode51CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZEDE"></span><span id="_CPPv2N30CUpti_PCSamplingCollectionMode51CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZEDE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga7fcaa834e5520b282b2a3b1de3f304b4ac3df7d2baba155e561d3cbd3ac1ed2c0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZED</span></span></span><a class="headerlink" href="#_CPPv4N30CUpti_PCSamplingCollectionMode51CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Serialized mode. </p>
+<p>Kernels are serialized in this mode. </p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv442CUpti_PCSamplingConfigurationAttributeType">
+<span id="_CPPv342CUpti_PCSamplingConfigurationAttributeType"></span><span id="_CPPv242CUpti_PCSamplingConfigurationAttributeType"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga4fe866bd47d8825f4d46cc52c8e29bb5"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingConfigurationAttributeType</span></span></span><a class="headerlink" href="#_CPPv442CUpti_PCSamplingConfigurationAttributeType" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PC Sampling configuration attributes. </p>
+<p>PC Sampling configuration attribute types. These attributes can be read using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gada8f3c53c8673e56a689a67cae7e8df2"><span class="std std-ref">cuptiPCSamplingGetConfigurationAttribute</span></a> and can be written using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf3e8842fda99b4c1659c2d2f1c18674e"><span class="std std-ref">cuptiPCSamplingSetConfigurationAttribute</span></a>. Attributes marked [r] can only be read using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gada8f3c53c8673e56a689a67cae7e8df2"><span class="std std-ref">cuptiPCSamplingGetConfigurationAttribute</span></a> [w] can only be written using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf3e8842fda99b4c1659c2d2f1c18674e"><span class="std std-ref">cuptiPCSamplingSetConfigurationAttribute</span></a> [rw] can be read using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gada8f3c53c8673e56a689a67cae7e8df2"><span class="std std-ref">cuptiPCSamplingGetConfigurationAttribute</span></a> and written using <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf3e8842fda99b4c1659c2d2f1c18674e"><span class="std std-ref">cuptiPCSamplingSetConfigurationAttribute</span></a> </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType49CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_INVALIDE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType49CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_INVALIDE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType49CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5ac76813208a82d5111f8a281bf07646e3"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType49CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_PERIODE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_PERIODE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_PERIODE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a5a3304f055fc43b3f1885f2b5fe3d35c"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_PERIOD</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_PERIODE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] Sampling period for PC Sampling. </p>
+<p>DEFAULT - CUPTI defined value based on number of SMs Valid values for the sampling periods are between 5 to 31 both inclusive. This will set the sampling period to (2^samplingPeriod) cycles. For e.g. for sampling period = 5 to 31, cycles = 32, 64, 128,…, 2^31 Value is a uint32_t </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType54CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_STALL_REASONE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType54CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_STALL_REASONE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType54CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_STALL_REASONE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a6b99e85c0ca755ba6f1e1b68af6de405"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_STALL_REASON</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType54CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_STALL_REASONE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[w] Number of stall reasons to collect. </p>
+<p>DEFAULT - All stall reasons will be collected Value is a size_t [w] Stall reasons to collect DEFAULT - All stall reasons will be collected Input value should be a pointer pointing to array of stall reason indexes containing all the stall reason indexes to collect. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType61CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SCRATCH_BUFFER_SIZEE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType61CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SCRATCH_BUFFER_SIZEE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType61CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SCRATCH_BUFFER_SIZEE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a8f4358cee727885dde3311a81bb996cc"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SCRATCH_BUFFER_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType61CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SCRATCH_BUFFER_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] Size of SW buffer for raw PC counter data downloaded from HW buffer DEFAULT - 1 MB, which can accommodate approximately 5500 PCs with all stall reasons Approximately it takes 16 Bytes (and some fixed size memory) to accommodate one PC with one stall reason For e.g. </p>
+<p>1 PC with 1 stall reason = 32 Bytes 1 PC with 2 stall reason = 48 Bytes 1 PC with 4 stall reason = 96 Bytes Value is a size_t </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_HARDWARE_BUFFER_SIZEE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_HARDWARE_BUFFER_SIZEE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_HARDWARE_BUFFER_SIZEE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a979e3dbbec977c8141ba3e01b8dbf014"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_HARDWARE_BUFFER_SIZE</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_HARDWARE_BUFFER_SIZEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] Size of HW buffer in bytes DEFAULT - 512 MB If sampling period is too less, HW buffer can overflow and drop PC data Value is a size_t </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_COLLECTION_MODEE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_COLLECTION_MODEE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_COLLECTION_MODEE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5aa561bd34aebe51eb26e4695ea0d865bb"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_COLLECTION_MODE</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType57CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_COLLECTION_MODEE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] PC Sampling collection mode DEFAULT - CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUS Input value should be of type <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga7fcaa834e5520b282b2a3b1de3f304b4"><span class="std std-ref">CUpti_PCSamplingCollectionMode</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType67CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROLE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType67CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROLE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType67CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROLE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5ac75dea72b5908405f9096dd1ae27366b"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROL</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType67CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROLE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] Control over PC Sampling data collection range Default - 0 1 - Allows user to start and stop PC Sampling using APIs - <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga569d99977964b8f7b0f771a153666a6f"><span class="std std-ref">cuptiPCSamplingStart()</span></a> - Start PC Sampling <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga942cf8284013fe62b61d5988e6c1052f"><span class="std std-ref">cuptiPCSamplingStop()</span></a> - Stop PC Sampling Value is a uint32_t </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType60CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_OUTPUT_DATA_FORMATE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType60CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_OUTPUT_DATA_FORMATE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType60CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_OUTPUT_DATA_FORMATE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5aa19b4a5c74150e029c95a6a320018f6a"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_OUTPUT_DATA_FORMAT</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType60CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_OUTPUT_DATA_FORMATE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[w] Value for output data format Default - CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSED Input value should be of type <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6959d5af9fa0ce5b41af09276fc190f7"><span class="std std-ref">CUpti_PCSamplingOutputDataFormat</span></a>. </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_DATA_BUFFERE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_DATA_BUFFERE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_DATA_BUFFERE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5acefa869098e32174b5ed1e8dfd96af06"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_DATA_BUFFER</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType62CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_SAMPLING_DATA_BUFFERE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[w] Data buffer to hold collected PC Sampling data PARSED_DATA Default - none. </p>
+<p>Buffer type is void * which can point to PARSED_DATA Refer <a class="reference internal" href="struct_c_upti___p_c_sampling_data.html#struct_c_upti___p_c_sampling_data"><span class="std std-ref">CUpti_PCSamplingData</span></a> for buffer format for PARSED_DATA </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType75CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPANE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType75CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPANE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType75CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPANE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a67b78d0e6180a9cb3220e49e6b842748"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPAN</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType75CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_WORKER_THREAD_PERIODIC_SLEEP_SPANE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>[rw] Control sleep time of the worker threads created by CUPTI for various PC sampling operations. </p>
+<p>CUPTI creates multiple worker threads to offload certain operations to these threads. This includes decoding of HW data to the CUPTI PC sampling data and correlating PC data to SASS instructions. CUPTI wakes up these threads periodically. Default - 100 milliseconds. Value is a uint32_t </p>
+</dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N42CUpti_PCSamplingConfigurationAttributeType51CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_FORCE_INTE">
+<span id="_CPPv3N42CUpti_PCSamplingConfigurationAttributeType51CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_FORCE_INTE"></span><span id="_CPPv2N42CUpti_PCSamplingConfigurationAttributeType51CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_FORCE_INTE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga4fe866bd47d8825f4d46cc52c8e29bb5a4b73913289bb939f5afb1d48840b02b0"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_FORCE_INT</span></span></span><a class="headerlink" href="#_CPPv4N42CUpti_PCSamplingConfigurationAttributeType51CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_FORCE_INTE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="cpp enum">
+<dt class="sig sig-object cpp" id="_CPPv432CUpti_PCSamplingOutputDataFormat">
+<span id="_CPPv332CUpti_PCSamplingOutputDataFormat"></span><span id="_CPPv232CUpti_PCSamplingOutputDataFormat"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6959d5af9fa0ce5b41af09276fc190f7"></span><span class="k"><span class="pre">enum</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_PCSamplingOutputDataFormat</span></span></span><a class="headerlink" href="#_CPPv432CUpti_PCSamplingOutputDataFormat" title="Permalink to this definition"></a><br /></dt>
+<dd><p>PC Sampling output data format. </p>
+<p><em>Values:</em></p>
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N32CUpti_PCSamplingOutputDataFormat44CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_INVALIDE">
+<span id="_CPPv3N32CUpti_PCSamplingOutputDataFormat44CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_INVALIDE"></span><span id="_CPPv2N32CUpti_PCSamplingOutputDataFormat44CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_INVALIDE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga6959d5af9fa0ce5b41af09276fc190f7a2dc936d049a6a9a53f13830aa7c8e915"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_INVALID</span></span></span><a class="headerlink" href="#_CPPv4N32CUpti_PCSamplingOutputDataFormat44CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_INVALIDE" title="Permalink to this definition"></a><br /></dt>
+<dd></dd></dl>
+
+<dl class="cpp enumerator">
+<dt class="sig sig-object cpp" id="_CPPv4N32CUpti_PCSamplingOutputDataFormat43CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSEDE">
+<span id="_CPPv3N32CUpti_PCSamplingOutputDataFormat43CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSEDE"></span><span id="_CPPv2N32CUpti_PCSamplingOutputDataFormat43CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSEDE"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gga6959d5af9fa0ce5b41af09276fc190f7a1dfda31478f7233dc0bf091a7e84fdf9"></span><span class="k"><span class="pre">enumerator</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSED</span></span></span><a class="headerlink" href="#_CPPv4N32CUpti_PCSamplingOutputDataFormat43CUPTI_PC_SAMPLING_OUTPUT_DATA_FORMAT_PARSEDE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>HW buffer data will be parsed during collection of data. </p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="functions">
+<h2><span class="section-number">5.6.3. </span>Functions<a class="headerlink" href="#functions" title="Permalink to this headline"></a></h2>
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv416cuptiGetCubinCrcP23CUpti_GetCubinCrcParams">
+<span id="_CPPv316cuptiGetCubinCrcP23CUpti_GetCubinCrcParams"></span><span id="_CPPv216cuptiGetCubinCrcP23CUpti_GetCubinCrcParams"></span><span id="cuptiGetCubinCrc__CUpti_GetCubinCrcParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga58d9101ff62121eb735b19167153a4b3"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetCubinCrc</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___get_cubin_crc_params.html#_CPPv423CUpti_GetCubinCrcParams" title="CUpti_GetCubinCrcParams"><span class="n"><span class="pre">CUpti_GetCubinCrcParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv416cuptiGetCubinCrcP23CUpti_GetCubinCrcParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get the CRC of cubin. </p>
+<p>This function returns the CRC of provided cubin binary.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___get_cubin_crc_params.html#struct_c_upti___get_cubin_crc_params"><span class="std std-ref">CUpti_GetCubinCrcParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if parameter cubin is NULL or provided cubinSize is zero or size field is not set. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiGetSassToSourceCorrelationP38CUpti_GetSassToSourceCorrelationParams">
+<span id="_CPPv331cuptiGetSassToSourceCorrelationP38CUpti_GetSassToSourceCorrelationParams"></span><span id="_CPPv231cuptiGetSassToSourceCorrelationP38CUpti_GetSassToSourceCorrelationParams"></span><span id="cuptiGetSassToSourceCorrelation__CUpti_GetSassToSourceCorrelationParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga35c9023ef22a59235de77b15496814eb"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiGetSassToSourceCorrelation</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___get_sass_to_source_correlation_params.html#_CPPv438CUpti_GetSassToSourceCorrelationParams" title="CUpti_GetSassToSourceCorrelationParams"><span class="n"><span class="pre">CUpti_GetSassToSourceCorrelationParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiGetSassToSourceCorrelationP38CUpti_GetSassToSourceCorrelationParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>SASS to Source correlation. </p>
+<p>
+It is expected from user to free allocated memory for fileName and dirName after use.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___get_sass_to_source_correlation_params.html#struct_c_upti___get_sass_to_source_correlation_params"><span class="std std-ref">CUpti_GetSassToSourceCorrelationParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if either of the parameters cubin or functionName is NULL or cubinSize is zero or size field is not set correctly. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_MODULE</strong> – provided cubin is invalid. </p></li>
+<li><p><strong>CUPTI_ERROR_UNKNOWN</strong> – an internal error occurred. This error code is also used for cases when the function is not present in the module. A better error code will be returned in the future release. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiPCSamplingDisableP29CUpti_PCSamplingDisableParams">
+<span id="_CPPv322cuptiPCSamplingDisableP29CUpti_PCSamplingDisableParams"></span><span id="_CPPv222cuptiPCSamplingDisableP29CUpti_PCSamplingDisableParams"></span><span id="cuptiPCSamplingDisable__CUpti_PCSamplingDisableParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gacbe97deb69ca2795102902544df571e3"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingDisable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_disable_params.html#_CPPv429CUpti_PCSamplingDisableParams" title="CUpti_PCSamplingDisableParams"><span class="n"><span class="pre">CUpti_PCSamplingDisableParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiPCSamplingDisableP29CUpti_PCSamplingDisableParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Disable PC sampling. </p>
+<p>For application which doesn’t destroy the CUDA context explicitly, this API does the PC Sampling tear-down, joins threads and copies PC records in the buffer provided during the PC sampling configuration. PC records which can’t be accommodated in the buffer are discarded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_disable_params.html#struct_c_upti___p_c_sampling_disable_params"><span class="std std-ref">CUpti_PCSamplingDisableParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv421cuptiPCSamplingEnableP28CUpti_PCSamplingEnableParams">
+<span id="_CPPv321cuptiPCSamplingEnableP28CUpti_PCSamplingEnableParams"></span><span id="_CPPv221cuptiPCSamplingEnableP28CUpti_PCSamplingEnableParams"></span><span id="cuptiPCSamplingEnable__CUpti_PCSamplingEnableParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf76a8824108dc7517ba80c2e56d46058"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingEnable</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_enable_params.html#_CPPv428CUpti_PCSamplingEnableParams" title="CUpti_PCSamplingEnableParams"><span class="n"><span class="pre">CUpti_PCSamplingEnableParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421cuptiPCSamplingEnableP28CUpti_PCSamplingEnableParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Enable PC sampling. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_enable_params.html#struct_c_upti___p_c_sampling_enable_params"><span class="std std-ref">CUpti_PCSamplingEnableParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv440cuptiPCSamplingGetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams">
+<span id="_CPPv340cuptiPCSamplingGetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams"></span><span id="_CPPv240cuptiPCSamplingGetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams"></span><span id="cuptiPCSamplingGetConfigurationAttribute__CUpti_PCSamplingConfigurationInfoParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gada8f3c53c8673e56a689a67cae7e8df2"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingGetConfigurationAttribute</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html#_CPPv439CUpti_PCSamplingConfigurationInfoParams" title="CUpti_PCSamplingConfigurationInfoParams"><span class="n"><span class="pre">CUpti_PCSamplingConfigurationInfoParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv440cuptiPCSamplingGetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Read PC Sampling configuration attribute. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html#struct_c_upti___p_c_sampling_configuration_info_params"><span class="std std-ref">CUpti_PCSamplingConfigurationInfoParams</span></a> containing PC sampling configuration.</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called with some invalid attribute. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">attrib</span></code> is not valid or any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_PARAMETER_SIZE_NOT_SUFFICIENT</strong> – indicates that the <code class="docutils literal notranslate"><span class="pre">value</span></code> buffer is too small to hold the attribute value </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv422cuptiPCSamplingGetDataP29CUpti_PCSamplingGetDataParams">
+<span id="_CPPv322cuptiPCSamplingGetDataP29CUpti_PCSamplingGetDataParams"></span><span id="_CPPv222cuptiPCSamplingGetDataP29CUpti_PCSamplingGetDataParams"></span><span id="cuptiPCSamplingGetData__CUpti_PCSamplingGetDataParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6a34245ee39a52a31e231845af598e6b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingGetData</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_get_data_params.html#_CPPv429CUpti_PCSamplingGetDataParams" title="CUpti_PCSamplingGetDataParams"><span class="n"><span class="pre">CUpti_PCSamplingGetDataParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422cuptiPCSamplingGetDataP29CUpti_PCSamplingGetDataParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Flush GPU PC sampling data periodically. </p>
+<p>Flushing of GPU PC Sampling data is required at following point to maintain uniqueness of PCs: For CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUS, after every module load-unload-load For CUPTI_PC_SAMPLING_COLLECTION_MODE_KERNEL_SERIALIZED, after every kernel ends If configuration option CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROL is enabled, then after every range end i.e. <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga942cf8284013fe62b61d5988e6c1052f"><span class="std std-ref">cuptiPCSamplingStop()</span></a></p>
+<p>If application is profiled in CUPTI_PC_SAMPLING_COLLECTION_MODE_CONTINUOUS, with disabled</p>
+<p>CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROL, and there is no module unload, user can collect data in two ways: Use <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6a34245ee39a52a31e231845af598e6b"><span class="std std-ref">cuptiPCSamplingGetData()</span></a> API periodically Use <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gacbe97deb69ca2795102902544df571e3"><span class="std std-ref">cuptiPCSamplingDisable()</span></a> on application exit and read GPU PC sampling data from sampling data buffer passed during configuration. Note: In case, <a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6a34245ee39a52a31e231845af598e6b"><span class="std std-ref">cuptiPCSamplingGetData()</span></a> API is not called periodically, then sampling data buffer passed during configuration should be large enough to hold all PCs data.</p>
+<p><a class="reference internal" href="#group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga6a34245ee39a52a31e231845af598e6b"><span class="std std-ref">cuptiPCSamplingGetData()</span></a> API never does device synchronization. It is possible that when the API is called there is some unconsumed data from the HW buffer. In this case CUPTI provides only the data available with it at that moment.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_get_data_params.html#struct_c_upti___p_c_sampling_get_data_params"><span class="std std-ref">CUpti_PCSamplingGetDataParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called without enabling PC sampling. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device </p></li>
+<li><p><strong>CUPTI_ERROR_OUT_OF_MEMORY</strong> – indicates that the HW buffer is full does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv433cuptiPCSamplingGetNumStallReasonsP40CUpti_PCSamplingGetNumStallReasonsParams">
+<span id="_CPPv333cuptiPCSamplingGetNumStallReasonsP40CUpti_PCSamplingGetNumStallReasonsParams"></span><span id="_CPPv233cuptiPCSamplingGetNumStallReasonsP40CUpti_PCSamplingGetNumStallReasonsParams"></span><span id="cuptiPCSamplingGetNumStallReasons__CUpti_PCSamplingGetNumStallReasonsParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga5f5393a42625671275d30efaf8e25c3b"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingGetNumStallReasons</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_get_num_stall_reasons_params.html#_CPPv440CUpti_PCSamplingGetNumStallReasonsParams" title="CUpti_PCSamplingGetNumStallReasonsParams"><span class="n"><span class="pre">CUpti_PCSamplingGetNumStallReasonsParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv433cuptiPCSamplingGetNumStallReasonsP40CUpti_PCSamplingGetNumStallReasonsParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get PC sampling stall reason count. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_get_num_stall_reasons_params.html#struct_c_upti___p_c_sampling_get_num_stall_reasons_params"><span class="std std-ref">CUpti_PCSamplingGetNumStallReasonsParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv430cuptiPCSamplingGetStallReasonsP37CUpti_PCSamplingGetStallReasonsParams">
+<span id="_CPPv330cuptiPCSamplingGetStallReasonsP37CUpti_PCSamplingGetStallReasonsParams"></span><span id="_CPPv230cuptiPCSamplingGetStallReasonsP37CUpti_PCSamplingGetStallReasonsParams"></span><span id="cuptiPCSamplingGetStallReasons__CUpti_PCSamplingGetStallReasonsParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga74ff0bc692635200205045f6da595b8d"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingGetStallReasons</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_get_stall_reasons_params.html#_CPPv437CUpti_PCSamplingGetStallReasonsParams" title="CUpti_PCSamplingGetStallReasonsParams"><span class="n"><span class="pre">CUpti_PCSamplingGetStallReasonsParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv430cuptiPCSamplingGetStallReasonsP37CUpti_PCSamplingGetStallReasonsParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Get PC sampling stall reasons. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_get_stall_reasons_params.html#struct_c_upti___p_c_sampling_get_stall_reasons_params"><span class="std std-ref">CUpti_PCSamplingGetStallReasonsParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv440cuptiPCSamplingSetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams">
+<span id="_CPPv340cuptiPCSamplingSetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams"></span><span id="_CPPv240cuptiPCSamplingSetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams"></span><span id="cuptiPCSamplingSetConfigurationAttribute__CUpti_PCSamplingConfigurationInfoParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1gaf3e8842fda99b4c1659c2d2f1c18674e"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingSetConfigurationAttribute</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html#_CPPv439CUpti_PCSamplingConfigurationInfoParams" title="CUpti_PCSamplingConfigurationInfoParams"><span class="n"><span class="pre">CUpti_PCSamplingConfigurationInfoParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv440cuptiPCSamplingSetConfigurationAttributeP39CUpti_PCSamplingConfigurationInfoParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Write PC Sampling configuration attribute. </p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_configuration_info_params.html#struct_c_upti___p_c_sampling_configuration_info_params"><span class="std std-ref">CUpti_PCSamplingConfigurationInfoParams</span></a> containing PC sampling configuration.</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called with some invalid <code class="docutils literal notranslate"><span class="pre">attrib</span></code>. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if attribute <code class="docutils literal notranslate"><span class="pre">value</span></code> is not valid or any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv420cuptiPCSamplingStartP27CUpti_PCSamplingStartParams">
+<span id="_CPPv320cuptiPCSamplingStartP27CUpti_PCSamplingStartParams"></span><span id="_CPPv220cuptiPCSamplingStartP27CUpti_PCSamplingStartParams"></span><span id="cuptiPCSamplingStart__CUpti_PCSamplingStartParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga569d99977964b8f7b0f771a153666a6f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingStart</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_start_params.html#_CPPv427CUpti_PCSamplingStartParams" title="CUpti_PCSamplingStartParams"><span class="n"><span class="pre">CUpti_PCSamplingStartParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420cuptiPCSamplingStartP27CUpti_PCSamplingStartParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Start PC sampling. </p>
+<p>User can collect PC Sampling data for user-defined range specified by Start/Stop APIs. This API can be used to mark starting of range. Set configuration option</p>
+<p>CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROL to use this API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_start_params.html#struct_c_upti___p_c_sampling_start_params"><span class="std std-ref">CUpti_PCSamplingStartParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called with incorrect PC Sampling configuration. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv419cuptiPCSamplingStopP26CUpti_PCSamplingStopParams">
+<span id="_CPPv319cuptiPCSamplingStopP26CUpti_PCSamplingStopParams"></span><span id="_CPPv219cuptiPCSamplingStopP26CUpti_PCSamplingStopParams"></span><span id="cuptiPCSamplingStop__CUpti_PCSamplingStopParamsP"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga942cf8284013fe62b61d5988e6c1052f"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiPCSamplingStop</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="struct_c_upti___p_c_sampling_stop_params.html#_CPPv426CUpti_PCSamplingStopParams" title="CUpti_PCSamplingStopParams"><span class="n"><span class="pre">CUpti_PCSamplingStopParams</span></span></a><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n sig-param"><span class="pre">pParams</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv419cuptiPCSamplingStopP26CUpti_PCSamplingStopParams" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Stop PC sampling. </p>
+<p>User can collect PC Sampling data for user-defined range specified by Start/Stop APIs. This API can be used to mark end of range. Set configuration option</p>
+<p>CUPTI_PC_SAMPLING_CONFIGURATION_ATTR_TYPE_ENABLE_START_STOP_CONTROL to use this API.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>pParams</strong> – A pointer to <a class="reference internal" href="struct_c_upti___p_c_sampling_stop_params.html#struct_c_upti___p_c_sampling_stop_params"><span class="std std-ref">CUpti_PCSamplingStopParams</span></a></p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_OPERATION</strong> – if this API is called with incorrect PC Sampling configuration. </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if any <code class="docutils literal notranslate"><span class="pre">pParams</span></code> is not valid </p></li>
+<li><p><strong>CUPTI_ERROR_NOT_SUPPORTED</strong> – indicates that the system/device does not support the API </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="cpp function">
+<dt class="sig sig-object cpp" id="_CPPv431cuptiRegisterComputeCrcCallback28CUpti_ComputeCrcCallbackFunc">
+<span id="_CPPv331cuptiRegisterComputeCrcCallback28CUpti_ComputeCrcCallbackFunc"></span><span id="_CPPv231cuptiRegisterComputeCrcCallback28CUpti_ComputeCrcCallbackFunc"></span><span id="cuptiRegisterComputeCrcCallback__CUpti_ComputeCrcCallbackFunc"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga675da588e3db103435a3aa360b13c005"></span><a class="reference internal" href="group___c_u_p_t_i___r_e_s_u_l_t___a_p_i.html#_CPPv411CUptiResult" title="CUptiResult"><span class="n"><span class="pre">CUptiResult</span></span></a><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">cuptiRegisterComputeCrcCallback</span></span></span><span class="sig-paren">(</span><a class="reference internal" href="#_CPPv428CUpti_ComputeCrcCallbackFunc" title="CUpti_ComputeCrcCallbackFunc"><span class="n"><span class="pre">CUpti_ComputeCrcCallbackFunc</span></span></a><span class="w"> </span><span class="n sig-param"><span class="pre">funcComputeCubinCrc</span></span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv431cuptiRegisterComputeCrcCallback28CUpti_ComputeCrcCallbackFunc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Register callback function with CUPTI to use your own algorithm to compute cubin crc. </p>
+<p>This function registers a callback function and it gets called from CUPTI when a CUDA module is loaded.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>funcComputeCubinCrc</strong> – callback is invoked when a CUDA module is loaded.</p>
+</dd>
+<dt class="field-even">Return values</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>CUPTI_SUCCESS</strong> – </p></li>
+<li><p><strong>CUPTI_ERROR_INVALID_PARAMETER</strong> – if <code class="docutils literal notranslate"><span class="pre">funcComputeCubinCrc</span></code> is NULL. </p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="typedefs">
+<h2><span class="section-number">5.6.4. </span>Typedefs<a class="headerlink" href="#typedefs" title="Permalink to this headline"></a></h2>
+<dl class="cpp type">
+<dt class="sig sig-object cpp" id="_CPPv428CUpti_ComputeCrcCallbackFunc">
+<span id="_CPPv328CUpti_ComputeCrcCallbackFunc"></span><span id="_CPPv228CUpti_ComputeCrcCallbackFunc"></span><span id="CUpti_ComputeCrcCallbackFunc"></span><span class="target" id="group___c_u_p_t_i___p_c_s_a_m_p_l_i_n_g___a_p_i_1ga227bc03374c7c672e634c7ca6d6374e5"></span><span class="k"><span class="pre">typedef</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">(</span></span><span class="p"><span class="pre">*</span></span><span class="sig-name descname"><span class="n"><span class="pre">CUpti_ComputeCrcCallbackFunc</span></span></span><span class="p"><span class="pre">)</span></span><span class="p"><span class="pre">(</span></span><span class="k"><span class="pre">const</span></span><span class="w"> </span><span class="kt"><span class="pre">void</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cubin</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="n"><span class="pre">cubinSize</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="p"><span class="pre">*</span></span><span class="n"><span class="pre">cubinCrc</span></span><span class="p"><span class="pre">)</span></span><a class="headerlink" href="#_CPPv428CUpti_ComputeCrcCallbackFunc" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Function type for callback used by CUPTI to request crc of loaded module. </p>
+<p>This callback function ask for crc of provided module in function. The provided crc will be stored in PC sampling records i.e. in the field ‘cubinCrc’ of the PC sampling struct <a class="reference internal" href="struct_c_upti___p_c_sampling_p_c_data.html#struct_c_upti___p_c_sampling_p_c_data"><span class="std std-ref">CUpti_PCSamplingPCData</span></a>. The CRC is uses during the offline source correlation to uniquely identify the module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param cubin</dt>
+<dd class="field-odd"><p>The pointer to cubin binary </p>
+</dd>
+<dt class="field-even">Param cubinSize</dt>
+<dd class="field-even"><p>The size of cubin binary. </p>
+</dd>
+<dt class="field-odd">Param cubinCrc</dt>
+<dd class="field-odd"><p>Returns the computed crc of cubin. </p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

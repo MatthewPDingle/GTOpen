@@ -1,0 +1,42 @@
+{
+  "id": "E038",
+  "status": "DRAFT_STATIC_CHECKS_ONLY_PENDING_FINAL_BASE",
+  "at": "2026-10-16T23:42:39.4485663Z",
+  "production_reversal_exact": true,
+  "only_production_changes": [
+    "U16 q-word OR condition omitted; +0 scale check retained",
+    "narrow comment distinguishes signed and unsigned inputs"
+  ],
+  "upload_decode_transfer_sync_readback_production_bytes_unchanged": true,
+  "base_tests": 4,
+  "candidate_tests": 5,
+  "new_test": "gpu::arena::tests::zero_upload_accepts_all_u16_quants_with_positive_zero_scale",
+  "new_test_declared_u16_values": 65536,
+  "test_inventory_delta": {
+    "unignored": 1,
+    "ignored": 0
+  },
+  "gpu_only_inventory_if_final_base_is_E020": {
+    "passed": 85,
+    "ignored": 4,
+    "executed": false
+  },
+  "actual_compile_or_test_execution": false,
+  "existing_bad_scales_and_f32_rejection_retained": true,
+  "existing_signed_quant_values_retained": [
+    1,
+    -1,
+    -32768,
+    32767
+  ],
+  "existing_reused_snapshot_assertions_retained_and_extended_to_u16": true,
+  "live_arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "preseal_correction": {
+    "preserved": [
+      "draft-r1/arena.rs",
+      "draft-r1/candidate.patch"
+    ],
+    "description": "Read-only signature check found Store::u16 accepts u64, not usize; corrected test length with lossless cast of65536. No compilation attempted."
+  },
+  "final_baseline_check_required": true
+}

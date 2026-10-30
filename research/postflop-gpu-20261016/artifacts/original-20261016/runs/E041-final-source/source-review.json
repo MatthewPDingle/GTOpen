@@ -1,0 +1,37 @@
+{
+  "id": "E041-final-source-review",
+  "at": "2026-10-17T01:17:48.148355+00:00",
+  "status": "pass_source_for_frozen_build_and_controls_only",
+  "root_review_only": true,
+  "production_matches_initial_draft_after_removing_cfg_test_hooks": true,
+  "accepted_writer_embedded_exact_except_name": true,
+  "reference_sync_calls_accepted_writer": true,
+  "original_mod_unchanged": true,
+  "cuda_plan_store_constructor_unchanged": true,
+  "expected_cpu_cases": {
+    "sentinel": 52,
+    "snapshots": 156
+  },
+  "gpu_cases": [
+    "compressed-full",
+    "compressed-compact",
+    "f32-full",
+    "f32-tight-budget-compact"
+  ],
+  "gpu_assertions": [
+    "Real four-iteration trained GPU state into identical poisoned CPU targets; old writer versus new writer.",
+    "Both sentinel and explicit inactive snapshots in compressed compact case; cfg(test) counter verifies exact sentinel visits per sync.",
+    "Full raw q/scales/F32, query/save; materialize/resync; strategy-only preserves complete raw regrets.",
+    "Two more real GPU iterations and exact later readback/query/save; raw GPU state unchanged by CPU readbacks.",
+    "Same staging pointer/len and device arena lengths; context cleanup."
+  ],
+  "prospective_inventory": {
+    "gpu_raw_files": 160,
+    "gpu_raw_pairs": 68,
+    "selected_gpu_passed": 1,
+    "selected_filtered": 90,
+    "ordinary_passed": 86,
+    "ordinary_ignored": 5
+  },
+  "limits": "No compiler/native control/speed result yet; source review only. Original code and initial draft retained."
+}

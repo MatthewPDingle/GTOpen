@@ -1,0 +1,148 @@
+{
+  "id": "E023-primary-plan",
+  "at": "2026-10-16T12:58:31.943147+00:00",
+  "status": "prospective; activation only after accepted E020 server qualification and independent source/script review",
+  "candidate": "E023",
+  "reference": "accepted E020",
+  "production_scope": "Five existing source files: append the exact D043 opponent-only up_action kernel; build immutable actor-partitioned training-up worklists while preserving original down/eval lists; dispatch traverser and opponent partitions with existing 128-thread launches; include extra metadata in host/device admission estimates and invariant/lifecycle tests. No solver arithmetic, precision, evaluator, convergence schedule or graph lifecycle change.",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "order": [
+    "V023-unit",
+    "B074",
+    "E023R1",
+    "E023R2",
+    "B075",
+    "B076",
+    "E023R3"
+  ],
+  "pairs": [
+    {
+      "baseline": "B074",
+      "candidate": "E023R1"
+    },
+    {
+      "baseline": "B075",
+      "candidate": "E023R2"
+    },
+    {
+      "baseline": "B076",
+      "candidate": "E023R3"
+    }
+  ],
+  "unit_screen": "GPU-only solver library ordinary tests: exactly 86 passed and 4 ignored, including two new plan tests. No primary timing if this screen fails.",
+  "aggregate_gate": "At least2 percent reduction in the sum of complete-cycle fixture medians across all3 alternating pairs.",
+  "fixture_guard": "Reject if a fixture median is more than3 percent slower and a strict majority (minimum2) of paired repetitions are more than3 percent slower.",
+  "exactness": "All complete non-timing result and configuration fields, full fingerprints, stopping iterations and exploitability bits match. Every raw run remains preserved.",
+  "broader_qualification_if_pass": "Independent primary audit, then immutable original-baseline 24 state/24 action-menu/112 resume records; 3 full-F32 fixture comparisons; existing 6 GPU integration and 3 continuation/paging/stored controls; explicitly run the new feature-enabled capacity test named in conditional_additional_control, which existing continuation filters do not guarantee. Run the unchanged prospective wide-turn holdout below, then fresh original-baseline 3 alternating cumulative pairs under unchanged aggregate/fixture/exactness gates. Freeze all needed builds before each timed cohort and review binary/source provenance. No adoption from primary alone.",
+  "measurement_boundaries": "Frozen compressed3-fixture native complete cycles include construction/allocation, GPU initialization including runtime NVRTC/JIT, fixed-quality solving/checks and full readback. Cargo, final fingerprinting/destruction, browser/API latency and disk saving excluded. Warm driver cache disclosed.",
+  "exclusions": [],
+  "builds_before_timing": true,
+  "concurrent_gpu_or_build_work": false,
+  "first_physical_run": "E023R1",
+  "logical_dashboard_row": "E023",
+  "outcome_triggered_extensions": false,
+  "acceptance_from_probe": false,
+  "script_freeze": "Execution scripts and candidate/source identities will be sealed and independently checked before build/native launch; this prospective measurement order and gates must remain unchanged.",
+  "probe_scope": "D043 is a no-launch compiler/resource probe only. Its 40-register/zero-local opponent entry met the prespecified resource prerequisite; original nine PTX entries are unchanged. It provides no new-kernel numerical or complete-cycle performance proof.",
+  "candidate_source_authorization": "Root creates immutable authorization.json after accepted E020/server qualification, D043 resource-prerequisite pass and independent E023 source/script reviews. Pin this plan, exactly five candidate source paths/hashes and the accepted E020 source/binary map. This preparation contains no activation script.",
+  "owned_sources": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/game.rs"
+  ],
+  "source_entry_count": 162,
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "design_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\README.md",
+  "design_sha256": "ace4536460981a69cd4c8457b98c0117740fb54c4d9c7cedce49cd4383014c55",
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+    "crates/solver/src/gpu/mod.rs": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+    "crates/solver/src/gpu/kernels.cu": "2148b39d69e7267c03feec8a622e6f587f1b29da8f9aec49d58b3611bcf2abd4",
+    "crates/solver/src/gpu/continuation_capacity.rs": "7d7667119a76727cb9ae0da025319a10d94e1f1afce692d7729083d6fd04128f",
+    "crates/solver/src/game.rs": "4c9fd95709c048b9460886f412ebe81b580f45592e4e816a47b7be2483eb7b24"
+  },
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\manifest.json",
+  "source_archive_sha256": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-primary-e023",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "wide_turn_holdout_if_pass": {
+    "fixture_id": "wide-turn-full169",
+    "fixture_sha256": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+    "prior_protocol_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\protocol.json",
+    "prior_protocol_sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510",
+    "reference": "accepted E020",
+    "candidate": "E023",
+    "fixed_order": [
+      "B1",
+      "C1",
+      "C2",
+      "B2",
+      "B3",
+      "C3"
+    ],
+    "algorithm": "dcfr",
+    "storage": "compressed",
+    "use_isomorphism": true,
+    "target_pct": 0.3,
+    "check_every": 20,
+    "max_iterations": 400,
+    "guard": "Median slowdown greater than3 percent AND at least2 of3 paired slowdowns greater than3 percent rejects adoption. No2 percent gain requirement on holdout. Failure to reach target by400 is inconclusive/failed qualification, not permission to retune.",
+    "exactness": "All6 complete CPU store files byte-identical; every non-timing field, root vector, stopping iteration and convergence trajectory exact.",
+    "admission": "Unchanged2GiB constructor budget,4GiB device free/30GiB total,16GiB host available,50GiB S reserve plus outputs; hands1128/1128,river max1081/1081,48river cards,node bound11691. No duplicate planning pass.",
+    "harness": "Reuse exact R2 evaluator/resource/raw-codec provenance and numerical body; separately freeze E020/E023 bindings and per-arm unused Cargo targets before build. Require full expected CUDA bytes in both arms, unique opponent entry present only in E023 and fresh artifacts. E020 is a prefix of E023, so opposite-source absence is not valid for the candidate arm. No R1 shared-target reuse.",
+    "resource": "Before holdout timing query actual 128-thread up_show resources at 1128/1081 for both arms, both dynamic shared allocations 21808 bytes; additionally query appended up_action_opponent with zero dynamic shared and unchanged up_action. Resource feasibility only, no kernel launch or automatic variant/rescue.",
+    "separate_from_primary_score": true
+  },
+  "prerequisites": [
+    "formal immutable E020 acceptance record",
+    "terminal successful E020 server qualification evidence",
+    "D043 compiler-resource prerequisite pass and independent audit",
+    "independent E023 source review",
+    "independent E023 primary script review"
+  ],
+  "no_live_server_changes": true,
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "linked_cuda_proof": "Exact entire candidate CUDA source and unique extern C up_action_opponent entry must be embedded in both newly compiled executables. Candidate starts with exact accepted E020 CUDA, so accepted-prefix presence is required rather than absence. Fresh solver/test artifacts, correct source/manifest paths, isolated target containment and all 162 source pins remain mandatory.",
+  "conditional_additional_control": {
+    "features": [
+      "gpu",
+      "preflop-research"
+    ],
+    "test": "gpu::continuation_capacity::tests::training_actor_list_matches_observed_metadata_for_mixed_and_uniform_plans",
+    "ordinary": true,
+    "exact_test_name": true,
+    "expected_pass_count": 1,
+    "required_if_primary_passes": true,
+    "included_by_existing_continuation_filters": false
+  },
+  "expected_unit_summary": {
+    "passed": 86,
+    "failed": 0,
+    "ignored": 4,
+    "measured": 0,
+    "filtered_out": 0
+  }
+}

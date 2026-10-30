@@ -1,0 +1,51 @@
+{
+  "at": "2026-10-17T02:34:04.870636+00:00",
+  "status": "native_pass_with_stale_summary_header",
+  "protocol_sha256": "6c4a8153675704a80f05e91f4221dd6a430498c1d36347f7a0e13f8ea386aa58",
+  "source_review_sha256": "5394a32f172ed109086459f67cfd8322efd1084a23e93bc8945d0a90c0345ae0",
+  "binary_sha256": "2d570bb186511a04b0c1ff8e3ba345c22d570e068c73efa5efb606ddccc4f537",
+  "native_raw_marker_summary": {
+    "all_inputs_and_guards_exact": true,
+    "all_raw_exact": true,
+    "candidate_accepted": false,
+    "cases": 717,
+    "guard_words_both_arms": 10240828,
+    "immutable_words_both_arms": 5199114,
+    "kernel_launches": 1434,
+    "output_words_both_arms": 12375858,
+    "performance_measurement": false,
+    "raw_device_inputs_retained_both_arms": true,
+    "solver_executions": 0,
+    "stage": "complete"
+  },
+  "validated_summary": {
+    "all_inputs_and_guards_exact": true,
+    "all_raw_exact": true,
+    "candidate_accepted": false,
+    "cases": 819,
+    "guard_words_both_arms": 10240828,
+    "immutable_words_both_arms": 5199114,
+    "kernel_launches": 1638,
+    "output_words_both_arms": 12375858,
+    "performance_measurement": false,
+    "raw_device_inputs_retained_both_arms": true,
+    "solver_executions": 0,
+    "stage": "complete"
+  },
+  "actual_case_marker_count": 819,
+  "raw_file_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\baseline-inputs.bin": "aaee2f89c5d2511f1bab5f7a642e24c6e6f46adc7bb76624a3d57c21797836e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\baseline.bin": "4f141fa43f30a09a60f1657550684d5c44aa097ae2850cd4496a55069d3af29e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\candidate-inputs.bin": "aaee2f89c5d2511f1bab5f7a642e24c6e6f46adc7bb76624a3d57c21797836e8",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\candidate.bin": "4f141fa43f30a09a60f1657550684d5c44aa097ae2850cd4496a55069d3af29e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E047-kernel-control\\evidence\\inputs.bin": "9386a74587e07fec0561409858688a1e9b184a3b1c92d11a47b08091d68469e0"
+  },
+  "stdout_sha256": "f64d7cac509427f5d3b0d34caec4b0d790ef2128e4d84f31c3b4564130c87514",
+  "reporting_failure_sha256": "2677aae82a63d7d9365bb6ebd1633ac6fbd31b7b5de59e18922d7ddd89afe008",
+  "all_children_terminal": true,
+  "accepted162_unchanged": true,
+  "main_live_ptx_unchanged": true,
+  "new_native_runs": 0,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

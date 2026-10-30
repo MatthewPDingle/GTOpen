@@ -1,0 +1,17 @@
+.version 7.4
+.target sm_80
+.address_size 64
+
+.visible .entry d064_copy(
+    .param .u64 source,
+    .param .u64 destination
+)
+{
+    .reg .b64 %src, %dst;
+    .reg .b32 %value;
+    ld.param.u64 %src, [source];
+    ld.param.u64 %dst, [destination];
+    ld.global.u32 %value, [%src];
+    st.global.u32 [%dst], %value;
+    ret;
+}

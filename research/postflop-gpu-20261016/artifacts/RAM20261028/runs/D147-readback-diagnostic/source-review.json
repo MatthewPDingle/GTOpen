@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-28T09:54:20.758348+00:00",
+  "instrumented_production_sha256": "b522b82e585cb66d5b952b3424453dcafa2921b854488fa5001e62b3e403e06b",
+  "instrumented_arena_sha256": "fad91701117d76d88aabe97e5bd1578d55df58f9fba9dca8727912732c7cc55f",
+  "private_plan_adapter_reversal_exact": true,
+  "benchmark_adapter_reversal_exact_after_doc_and_cfg_normalization": true,
+  "kernels_and_numerical_work_unchanged": true,
+  "nested_arena_observer_sha256": "fad91701117d76d88aabe97e5bd1578d55df58f9fba9dca8727912732c7cc55f",
+  "scope": "The staged fourteen-span D065 helper plus D147 optional CPU active/inactive timers. All original writes and joins remain. No added GPU work/events/waits or omitted operations. Standalone private-plan visibility shim and benchmark imports/include/docs/cfg adapted, with exact reversal. All timing is diagnostic; ordinary and instrumented native processes are compared only for observer usefulness."
+}

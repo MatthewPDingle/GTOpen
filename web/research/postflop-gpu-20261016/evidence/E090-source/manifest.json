@@ -1,0 +1,17 @@
+{
+  "id": "E090",
+  "at": "2026-10-18T23:26:55.677393+00:00",
+  "owned": {
+    "crates/solver/src/gpu/mod.rs": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E090-source\\baseline.rs",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E090-source\\candidate.rs"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "92893002e72295c10ac8a899199a8046620daca37017aa4a75a80e988dd9339a"
+  },
+  "scope": "Only the existing local CFV stride in paired_sweep and eval_up becomes nh_p. All original kernel bytes, ordered float math, logical hand counts, CFV slot IDs and lifetimes, level/worklists, reach/learning state, allocated bytes/budget, root staging, graphs and save behavior remain. Physical scratch row addresses differ per traverser.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

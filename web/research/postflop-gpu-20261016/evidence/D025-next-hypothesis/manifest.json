@@ -1,0 +1,80 @@
+{
+  "id": "D025-next-hypothesis",
+  "created_at": "2026-10-16T07:35:26.110245+00:00",
+  "state": "source-only design; no implementation or measurement",
+  "source_basis": "Parent-selected accepted E015 source; exact current mod.rs matches preserved E015 candidate",
+  "observed_head": "e868cfbb125002216f25046af2d88b22a697b2fd",
+  "observed_status": [
+    "?? crates/solver/target/"
+  ],
+  "source_inputs": {
+    "crates/solver/src/gpu/mod.rs": {
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "bytes": 66223,
+      "copy": "source\\mod.rs"
+    },
+    "crates/solver/src/gpu/kernels.cu": {
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "bytes": 22624,
+      "copy": "source\\kernels.cu"
+    },
+    "crates/solver/src/gpu/plan.rs": {
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "bytes": 25472,
+      "copy": "source\\plan.rs"
+    },
+    "crates/solver/src/gpu/continuation.rs": {
+      "sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+      "bytes": 14687,
+      "copy": "source\\continuation.rs"
+    },
+    "crates/solver/src/gpu/continuation_paging.rs": {
+      "sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+      "bytes": 6240,
+      "copy": "source\\continuation_paging.rs"
+    },
+    "crates/solver/src/gpu/continuation_storage.rs": {
+      "sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+      "bytes": 19541,
+      "copy": "source\\continuation_storage.rs"
+    },
+    "crates/solver/tests/postflop_autoresearch.rs": {
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858,
+      "copy": "source\\postflop_autoresearch.rs"
+    }
+  },
+  "preserved_evidence_inputs": {
+    "runs/D023-reach-reuse-design/audit.md": {
+      "sha256": "e7d7d7fe55b29dfb90d2f2aa866eb6385beff637261e3251752fad14f73d51db",
+      "bytes": 11497
+    },
+    "runs/D023-reach-reuse-design/work-counts.json": {
+      "sha256": "5d44b530175dede3ccca04d18800bd15dc8c97908b9a07eea8f0b1e9c138f363",
+      "bytes": 2025
+    },
+    "runs/D023-reach-reuse-design/prior-search.json": {
+      "sha256": "b4c38d8e591a975f658d03b729440823f83b8bb0fb5c17c8afeadb8269619943",
+      "bytes": 2655
+    },
+    "comparisons/D020-profile-summary/report.json": {
+      "sha256": "ebf8365637c72ca7d230f28836a7c62e2c3e5cae703bcc844f028ca388a87ad6",
+      "bytes": 18592
+    },
+    "comparisons/E015-three-pair-comparison/report.json": {
+      "sha256": "03857d4717ff68d90c41d444e7f06c3d080bf3c594965fb803a4e7cd307d7111",
+      "bytes": 119302
+    },
+    "comparisons/E015-independent-review/validation.json": {
+      "sha256": "8d3f8710e213aa045354d26bb1f674df54274438c2e53473889478b13f13b390",
+      "bytes": 34691
+    },
+    "comparisons/E015-independent-review/cumulative-validation.json": {
+      "sha256": "c47e0e4c919a8a9aa475eccaf452ce4520becd6514098cd570dcf6a5853fc10a",
+      "bytes": 14578
+    }
+  },
+  "scope": "No checkout edits, builds, CUDA compilation, GPU execution, server writes or changes to existing sealed artifacts.",
+  "source_acceptance_commit": "e868cfbb125002216f25046af2d88b22a697b2fd",
+  "head_after_parent_committed_accepted_source": "a8440fb619f61c14ee61ab578eb0c6153b44e921"
+}

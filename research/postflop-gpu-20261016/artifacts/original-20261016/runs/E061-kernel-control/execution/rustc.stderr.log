@@ -1,0 +1,16 @@
+warning: function `category` is never used
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\E061-kernel-control\accepted-evaluator.rs:178:8
+    |
+178 | pub fn category(value: u32) -> u32 {
+    |        ^^^^^^^^
+    |
+    = note: `#[warn(dead_code)]` (part of `#[warn(unused)]`) on by default
+
+warning: function `category_name` is never used
+   --> S:\GTOpen-research\postflop-gpu-20261016\runs\E061-kernel-control\accepted-evaluator.rs:182:8
+    |
+182 | pub fn category_name(value: u32) -> &'static str {
+    |        ^^^^^^^^^^^^^
+
+warning: 2 warnings emitted
+

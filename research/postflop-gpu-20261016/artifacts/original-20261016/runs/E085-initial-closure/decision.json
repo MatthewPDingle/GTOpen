@@ -1,0 +1,69 @@
+{
+  "id": "E085",
+  "at": "2026-10-18T10:12:06.109434+00:00",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9679.646499999999,
+    "candidate_full_cycle_ms": 9629.1111,
+    "observed_gain_pct": 0.5220789829463178,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -0.8415262762766654,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          0.11660860411638709,
+          -1.1013885650892254,
+          -1.2123679640804734
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 0.015317023408308303,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          -3.2189352469226185,
+          0.10463146303037232,
+          0.062144739558339185
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -3.0493295595799124,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -2.252805301795705,
+          -13.251835260895806,
+          7.214649464728928
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 86,
+  "ignored_units": 4,
+  "exact_fixture_results": 18,
+  "exact_checkpoints": 138,
+  "direct_pairs": 819,
+  "direct_launches": 1638,
+  "direct_reader_checks": 63899,
+  "direct_control_report_sha256": "5ca09bccc4686730247b7b6f093529ede046950153d90ad346a205a4aa20c88b",
+  "resource_report_sha256": "7904eafbedcccca5019518979ddc830907bda0ee80b24e6cfb5bf873625c55bc",
+  "assessment_sha256": "a41c06a5b6776fb46aeb45d4445769dfad9b269cd48fb568b19392b047e491aa",
+  "root_replay_sha256": "91666ac85f71accdd5e3f82a315b8c3351537b7be1958d16cf7217b7661bd9d8",
+  "precompiler_emission_observer_correction_sha256": "52297a117c4fa652ca7a9ede7da7f58bcf0d5296290e64d2e75772af235aa67c",
+  "precompiler_correction_original_compiler_native_observations": 0,
+  "primary_whole_arena_fingerprints_exact": true,
+  "primary_raw_arena_bytes_independently_compared": false,
+  "source_adopted": false,
+  "accepted_and_live_source": "E080",
+  "no_exclusions_extensions_pooling": true,
+  "fresh16_broad_material_holdout_cumulative_run": false,
+  "reason": "Initial complete-solve gain 0.522079%. All18 full non-timing results,138 checkpoints,86 ordinary tests and819direct GPU pairs passed. Rejected: below the unrounded1%cutoff; repeatable fixture slowdown: two-tone. Close this exact strategy streaming-store form; no cache-operator, other-array, threshold, helper/clobber/source-scope/placement variant or additional sample rescue."
+}

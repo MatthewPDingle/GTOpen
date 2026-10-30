@@ -1,0 +1,15 @@
+error[E0463]: can't find crate for `solver`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\E051-remaining-build-plan\capacity.rs:1:5
+  |
+1 | use solver::{Spot,SpotConfig,Solver,Algorithm,TreeConfig,StreetSizing,parse_sizes};
+  |     ^^^^^^ can't find crate
+
+error[E0463]: can't find crate for `cudarc`
+ --> S:\GTOpen-research\postflop-gpu-20261016\runs\E051-remaining-build-plan\capacity.rs:4:5
+  |
+4 | use cudarc::driver::CudaContext;
+  |     ^^^^^^ can't find crate
+
+error: aborting due to 2 previous errors
+
+For more information about this error, try `rustc --explain E0463`.

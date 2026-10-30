@@ -1,0 +1,528 @@
+{
+  "at": "2026-10-17T05:57:17.382506+00:00",
+  "status": "pass_scoped_constructor_diagnostic",
+  "protocol_sha256": "0e4e811589e6f30e8cace8404f30fe7a4e56390006dbe7a17c29651120b005e3",
+  "pairs": [
+    {
+      "baseline": "D088B1",
+      "diagnostic": "D088T1",
+      "cycle_change_pct": 0.38389668581926273,
+      "init_change_pct": 2.6321120081314042,
+      "native_change_pct": 0.22456140355451293,
+      "runner_change_pct": 0.5829487490313978,
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D088B2",
+      "diagnostic": "D088T2",
+      "cycle_change_pct": 0.4733244082622434,
+      "init_change_pct": 1.698788419052355,
+      "native_change_pct": 0.6611337741730061,
+      "runner_change_pct": 0.19467088457556514,
+      "usefulness_pass": true
+    },
+    {
+      "baseline": "D088B3",
+      "diagnostic": "D088T3",
+      "cycle_change_pct": 0.5963760423744136,
+      "init_change_pct": 0.911315614189756,
+      "native_change_pct": 1.3109670142869456,
+      "runner_change_pct": 0.3764420158187676,
+      "usefulness_pass": true
+    }
+  ],
+  "profiles": {
+    "D088T1": {
+      "outer_stages_ms": {
+        "plan_budget": 120.2479,
+        "context_stream": 117.0171,
+        "nvrtc_module": 55.3598,
+        "pinned_staging": 52.5124,
+        "arena_layouts": 9.8956,
+        "regret0_upload": 62.3408,
+        "regret1_upload": 62.370000000000005,
+        "strategy0_upload": 52.0695,
+        "strategy1_upload": 59.5095,
+        "lock_table": 0.6565,
+        "fold_table": 0.029,
+        "metadata_upload_and_object": 46.216
+      },
+      "nested_zero_scans": [
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 44.5755
+        },
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 51.651
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 42.4384
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 49.143
+        }
+      ],
+      "accounted_outer_ms": 638.2241,
+      "enclosing_gpu_init_ms": 654.1076,
+      "unattributed_init_ms": 15.883500000000026,
+      "full_event_order": [
+        [
+          "init",
+          {
+            "stage": "plan_budget",
+            "elapsed_ms": 120.2479
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "context_stream",
+            "elapsed_ms": 117.0171
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "nvrtc_module",
+            "elapsed_ms": 55.3598
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "pinned_staging",
+            "elapsed_ms": 52.5124
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "arena_layouts",
+            "elapsed_ms": 9.8956
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 44.5755
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret0_upload",
+            "elapsed_ms": 62.3408
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 51.651
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret1_upload",
+            "elapsed_ms": 62.370000000000005
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 42.4384
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy0_upload",
+            "elapsed_ms": 52.0695
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 49.143
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy1_upload",
+            "elapsed_ms": 59.5095
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "lock_table",
+            "elapsed_ms": 0.6565
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "fold_table",
+            "elapsed_ms": 0.029
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "metadata_upload_and_object",
+            "elapsed_ms": 46.216
+          }
+        ]
+      ],
+      "marker_log_sha256": "0bd55d1babd1c1ea47a8779522e95af25076390851c753f1579d089269c4c082",
+      "limits": "Nested scan spans are part of enclosing upload stages; never add them. Unattributed time includes timer/logging boundaries, local drops and final sync outside constructor markers."
+    },
+    "D088T2": {
+      "outer_stages_ms": {
+        "plan_budget": 127.4208,
+        "context_stream": 121.5975,
+        "nvrtc_module": 53.1991,
+        "pinned_staging": 65.8756,
+        "arena_layouts": 13.4291,
+        "regret0_upload": 66.6752,
+        "regret1_upload": 58.8554,
+        "strategy0_upload": 49.7997,
+        "strategy1_upload": 59.1802,
+        "lock_table": 0.6495,
+        "fold_table": 0.0327,
+        "metadata_upload_and_object": 39.508799999999994
+      },
+      "nested_zero_scans": [
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 48.745200000000004
+        },
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 48.200100000000006
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 40.535000000000004
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 47.9469
+        }
+      ],
+      "accounted_outer_ms": 656.2236,
+      "enclosing_gpu_init_ms": 671.3854,
+      "unattributed_init_ms": 15.161799999999971,
+      "full_event_order": [
+        [
+          "init",
+          {
+            "stage": "plan_budget",
+            "elapsed_ms": 127.4208
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "context_stream",
+            "elapsed_ms": 121.5975
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "nvrtc_module",
+            "elapsed_ms": 53.1991
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "pinned_staging",
+            "elapsed_ms": 65.8756
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "arena_layouts",
+            "elapsed_ms": 13.4291
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 48.745200000000004
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret0_upload",
+            "elapsed_ms": 66.6752
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 48.200100000000006
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret1_upload",
+            "elapsed_ms": 58.8554
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 40.535000000000004
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy0_upload",
+            "elapsed_ms": 49.7997
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 47.9469
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy1_upload",
+            "elapsed_ms": 59.1802
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "lock_table",
+            "elapsed_ms": 0.6495
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "fold_table",
+            "elapsed_ms": 0.0327
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "metadata_upload_and_object",
+            "elapsed_ms": 39.508799999999994
+          }
+        ]
+      ],
+      "marker_log_sha256": "e89fe4dd5022bfd013598b0036d441965e8825b227079c713cbba816529c8a4a",
+      "limits": "Nested scan spans are part of enclosing upload stages; never add them. Unattributed time includes timer/logging boundaries, local drops and final sync outside constructor markers."
+    },
+    "D088T3": {
+      "outer_stages_ms": {
+        "plan_budget": 121.7085,
+        "context_stream": 122.3522,
+        "nvrtc_module": 53.2587,
+        "pinned_staging": 53.2063,
+        "arena_layouts": 13.818999999999999,
+        "regret0_upload": 63.48180000000001,
+        "regret1_upload": 61.3763,
+        "strategy0_upload": 52.5484,
+        "strategy1_upload": 60.8078,
+        "lock_table": 0.6489999999999999,
+        "fold_table": 0.0307,
+        "metadata_upload_and_object": 41.2319
+      },
+      "nested_zero_scans": [
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 47.0611
+        },
+        {
+          "which": 0,
+          "positive_zero": true,
+          "elapsed_ms": 50.3836
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 42.2086
+        },
+        {
+          "which": 1,
+          "positive_zero": true,
+          "elapsed_ms": 48.647299999999994
+        }
+      ],
+      "accounted_outer_ms": 644.4706,
+      "enclosing_gpu_init_ms": 660.8454,
+      "unattributed_init_ms": 16.37480000000005,
+      "full_event_order": [
+        [
+          "init",
+          {
+            "stage": "plan_budget",
+            "elapsed_ms": 121.7085
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "context_stream",
+            "elapsed_ms": 122.3522
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "nvrtc_module",
+            "elapsed_ms": 53.2587
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "pinned_staging",
+            "elapsed_ms": 53.2063
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "arena_layouts",
+            "elapsed_ms": 13.818999999999999
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 47.0611
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret0_upload",
+            "elapsed_ms": 63.48180000000001
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 0,
+            "positive_zero": true,
+            "elapsed_ms": 50.3836
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "regret1_upload",
+            "elapsed_ms": 61.3763
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 42.2086
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy0_upload",
+            "elapsed_ms": 52.5484
+          }
+        ],
+        [
+          "zero",
+          {
+            "which": 1,
+            "positive_zero": true,
+            "elapsed_ms": 48.647299999999994
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "strategy1_upload",
+            "elapsed_ms": 60.8078
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "lock_table",
+            "elapsed_ms": 0.6489999999999999
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "fold_table",
+            "elapsed_ms": 0.0307
+          }
+        ],
+        [
+          "init",
+          {
+            "stage": "metadata_upload_and_object",
+            "elapsed_ms": 41.2319
+          }
+        ]
+      ],
+      "marker_log_sha256": "24484c3cd4eda077570ec4e0d1073b24612db8ceec66bc6e79b455254ed0c755",
+      "limits": "Nested scan spans are part of enclosing upload stages; never add them. Unattributed time includes timer/logging boundaries, local drops and final sync outside constructor markers."
+    }
+  },
+  "all6full_states_60checkpoints_exact": true,
+  "observer_usefulness_pass": true,
+  "all_samples_retained": true,
+  "historical_timing_samples_used": 0,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "optimization_accepted": false,
+  "accepted_source": "E051",
+  "limits": "Only fresh compressed rainbow and fixed measured process lifecycle. Observer gate is not universal/per-stage-bias proof. CPU markers perturb codegen/scheduling and log outside their own spans. No optimizer accepted; nested times are not additive to enclosing spans."
+}

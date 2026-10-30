@@ -1,0 +1,44 @@
+{
+  "at": "2026-10-18T05:23:11.081072+00:00",
+  "status": "pass_full_owned_images_ABI_predicate_eligibility_counters",
+  "actual": {
+    "GPU_executions": 0,
+    "after": {
+      "commit_bytes": 9355264,
+      "page_faults": 1835,
+      "peak_commit_bytes": 9355264,
+      "peak_working_set_bytes": 7081984,
+      "working_set_bytes": 7081984
+    },
+    "all_full_owned_words_and_guards_exact": true,
+    "before": {
+      "commit_bytes": 3792896,
+      "page_faults": 1518,
+      "peak_commit_bytes": 3792896,
+      "peak_working_set_bytes": 5857280,
+      "working_set_bytes": 5857280
+    },
+    "cpu_after_ticks100ns": 0,
+    "cpu_before_ticks100ns": 0,
+    "filetime_bytes": 8,
+    "memory_counter_bytes": 72,
+    "native_cases": 88,
+    "page_size": 4096,
+    "predicate_eligibility_controls": 15,
+    "raw_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D127-sparse-page-read\\execution\\ability-images.bin",
+    "rayon_threads": 16,
+    "stage": "ability",
+    "system_info_bytes": 48,
+    "touched_pages": 213
+  },
+  "independent_full_raw_replay": {
+    "cases": 88,
+    "full_before_after_words_checked": 650884,
+    "touched_pages": 213,
+    "bytes": 1306008,
+    "sha256": "f9a0059194439bd2d09eb46333e6dac6ed070657bbad9aec6557cf9fbae973ac"
+  },
+  "binary_sha256": "e6c2d80546c5856831831b764df7810f70fd5b404986160cd6f6fedca056fb99",
+  "GPU_executions": 0,
+  "full_solve_performance_measured": false
+}

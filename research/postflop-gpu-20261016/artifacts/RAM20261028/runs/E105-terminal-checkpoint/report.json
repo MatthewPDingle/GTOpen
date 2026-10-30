@@ -1,0 +1,82 @@
+{
+  "id": "E105-close",
+  "at": "2026-10-28T23:27:17.368270+00:00",
+  "status": "declined_closed_current_target_cost_admission",
+  "current_RAM_activity_report_sha256": "68cddb10c126493558b5d32b1fb693fb35c8a9083655e24d0e352a5746a6fc31",
+  "resource_report_sha256": "a10095cadd71d92cbd3470353578a2208b9406f4acbefde981d4b65e364a60ee",
+  "target_budget": {
+    "passed": false,
+    "current_control_sum_fixture_median_ms": 10065.075200000001,
+    "planning_one_percent_ms": 100.65075200000001,
+    "target_sum_fixture_median_activity_ms": 77.949961,
+    "target_fraction_of_control_pct": 0.7744597973793578,
+    "historical_timings_scored": 0,
+    "scope": "Current observer durations versus fresh control medians are a budgeting proxy. They are not a proven removable saving, complete wall-time attribution, unbiased per-family bound or universal upper limit."
+  },
+  "all18ordinary_scientific_records_and138checkpoints_exact_for_accepted_profiler": true,
+  "E105_application_kernel_launches": 0,
+  "E105_numerical_solver_or_speed_trials": 0,
+  "resource_status_preserved": "pass_compiled_resource_prerequisites_semantics_pending",
+  "emitted_code_inspection": "Both target PTX files contain fixed2/3/4 dispatch with constant-count bodies, but no full floating-dataflow/direct-kernel equivalence is claimed; numerical admission was declined at the predeclared cost budget.",
+  "decision": "Target activity77.949961ms is below100.650752ms planning budget. This is insufficient demonstrated material headroom for the fixed form. It is not a measured candidate speed result or a universal upper bound. No arity/mode/helper/source/flags/quality/threshold/sample rescue.",
+  "successful_child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\execution\\rustc.exit.json",
+      "sha256": "acb3222cbfd538b595bb1b7b029525fc77149633e3fc892c04977f15cf346cf6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\execution\\audit.exit.json",
+      "sha256": "0b8bbfa7ced43256450a9882b19906bf733c0711096f1435913721675d9839ce",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E105-resource\\execution\\rustc.exit.json",
+      "sha256": "9fce4ef4400968ad531e83650a048f81b970e42c38c33812b3aa54e218bee5d6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E105-resource\\execution\\probe.exit.json",
+      "sha256": "de7ecf20a94881b5804bd2116150dcdd52d39b84dd7663e96573601f88fdb1c9",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212B1\\exit.json",
+      "sha256": "83e85cc8ff199f0edf67556bd3ab43b88df1f09861805abb9900c3eceeed2b9f",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P1\\exit.json",
+      "sha256": "8c21253b8165328fe4980aeafa1a59eb8a60f1f9d99c30913178ff493f5f5d41",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P2\\exit.json",
+      "sha256": "5a537ad8226ab9bf280f36ea70faa98ef8258318b21abdfc0400be62731d343c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212B2\\exit.json",
+      "sha256": "b2e605cbce57f75c1e1c751d9454801a8bbcc0a003c1d4fa51a21ae1a2bbe054",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212B3\\exit.json",
+      "sha256": "067913c528e0b2eaf3f4aeadea63a4fec66e3340a34b430a51747e63eff202b6",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212P3\\exit.json",
+      "sha256": "220e6dfb205d2a450030d804bca7a514a9612c0656fbee89543425e9892bfe33",
+      "returncode": 0
+    }
+  ],
+  "all_owned_compilers_native_readers_terminal": true,
+  "source_main_live_protected_PTX_unchanged": true,
+  "accepted_gain_or_deployment": false,
+  "last_primary_baseline": "B319",
+  "diagnostic_runs_do_not_advance_primary_baseline": true,
+  "best_qualified_config": "E080 / GPU / compressed / 16 workers / default affinity",
+  "original_current_RAM_baseline_ms": 10456.4109,
+  "goal_active": true
+}

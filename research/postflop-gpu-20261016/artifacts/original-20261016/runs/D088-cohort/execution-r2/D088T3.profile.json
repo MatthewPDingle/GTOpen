@@ -1,0 +1,161 @@
+{
+  "outer_stages_ms": {
+    "plan_budget": 121.7085,
+    "context_stream": 122.3522,
+    "nvrtc_module": 53.2587,
+    "pinned_staging": 53.2063,
+    "arena_layouts": 13.818999999999999,
+    "regret0_upload": 63.48180000000001,
+    "regret1_upload": 61.3763,
+    "strategy0_upload": 52.5484,
+    "strategy1_upload": 60.8078,
+    "lock_table": 0.6489999999999999,
+    "fold_table": 0.0307,
+    "metadata_upload_and_object": 41.2319
+  },
+  "nested_zero_scans": [
+    {
+      "which": 0,
+      "positive_zero": true,
+      "elapsed_ms": 47.0611
+    },
+    {
+      "which": 0,
+      "positive_zero": true,
+      "elapsed_ms": 50.3836
+    },
+    {
+      "which": 1,
+      "positive_zero": true,
+      "elapsed_ms": 42.2086
+    },
+    {
+      "which": 1,
+      "positive_zero": true,
+      "elapsed_ms": 48.647299999999994
+    }
+  ],
+  "accounted_outer_ms": 644.4706,
+  "enclosing_gpu_init_ms": 660.8454,
+  "unattributed_init_ms": 16.37480000000005,
+  "full_event_order": [
+    [
+      "init",
+      {
+        "stage": "plan_budget",
+        "elapsed_ms": 121.7085
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "context_stream",
+        "elapsed_ms": 122.3522
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "nvrtc_module",
+        "elapsed_ms": 53.2587
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "pinned_staging",
+        "elapsed_ms": 53.2063
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "arena_layouts",
+        "elapsed_ms": 13.818999999999999
+      }
+    ],
+    [
+      "zero",
+      {
+        "which": 0,
+        "positive_zero": true,
+        "elapsed_ms": 47.0611
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "regret0_upload",
+        "elapsed_ms": 63.48180000000001
+      }
+    ],
+    [
+      "zero",
+      {
+        "which": 0,
+        "positive_zero": true,
+        "elapsed_ms": 50.3836
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "regret1_upload",
+        "elapsed_ms": 61.3763
+      }
+    ],
+    [
+      "zero",
+      {
+        "which": 1,
+        "positive_zero": true,
+        "elapsed_ms": 42.2086
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "strategy0_upload",
+        "elapsed_ms": 52.5484
+      }
+    ],
+    [
+      "zero",
+      {
+        "which": 1,
+        "positive_zero": true,
+        "elapsed_ms": 48.647299999999994
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "strategy1_upload",
+        "elapsed_ms": 60.8078
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "lock_table",
+        "elapsed_ms": 0.6489999999999999
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "fold_table",
+        "elapsed_ms": 0.0307
+      }
+    ],
+    [
+      "init",
+      {
+        "stage": "metadata_upload_and_object",
+        "elapsed_ms": 41.2319
+      }
+    ]
+  ],
+  "marker_log_sha256": "24484c3cd4eda077570ec4e0d1073b24612db8ceec66bc6e79b455254ed0c755",
+  "limits": "Nested scan spans are part of enclosing upload stages; never add them. Unattributed time includes timer/logging boundaries, local drops and final sync outside constructor markers."
+}

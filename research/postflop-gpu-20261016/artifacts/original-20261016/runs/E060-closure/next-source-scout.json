@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-17T08:38:03.243243+00:00",
+  "status": "read_only_source_lead_unmeasured",
+  "source": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs",
+  "source_sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+  "source_excerpt": "        for p in 0..2 {\n            for &key in &slots {\n                let eval = spot.river.entries[key].as_deref().expect(\"river eval\");\n                let sorted = &eval.sorted[p];\n                let opponent = &eval.sorted[1 - p];\n                let (mut lower, mut upper) = (0, 0);\n                riv_off[p].push(riv_sorted_idx[p].len() as u32);\n                riv_cnt[p].push(sorted.len() as u32);\n                riv_max_cnt[p] = riv_max_cnt[p].max(sorted.len());\n                let mut by_card: Vec<Vec<u32>> = vec![Vec::new(); 52];\n                for (pos, &(stren, idx)) in sorted.iter().enumerate() {\n                    while lower < opponent.len() && opponent[lower].0 < stren {\n                        lower += 1;\n                    }\n                    upper = upper.max(lower);\n                    while upper < opponent.len() && opponent[upper].0 <= stren {\n                        upper += 1;\n                    }\n                    riv_lower[p].push(lower as u32);\n                    riv_upper[p].push(upper as u32);\n                    riv_sorted_str[p].push(stren);\n                    riv_sorted_idx[p].push(idx as u32);\n                    let h = &spot.hands[p][idx as usize];\n                    by_card[h.c1 as usize].push(pos as u32);\n                    by_card[h.c2 as usize].push(pos as u32);\n                }\n                for c in 0..52 {\n                    riv_card_off[p].push(riv_card_pos[p].len() as u32);\n                    riv_card_pos[p].extend(&by_card[c]);\n                }\n                riv_card_off[p].push(riv_card_pos[p].len() as u32); // 53rd: end\n            }\n        }\n\n",
+  "findings": [
+    "Posting construction already appends two card memberships per sorted hand in one pass; there is no52full-hand scan to eliminate.",
+    "The52temporary Vec collections are created inside each river-slot loop, filled, flattened in card/position order, then dropped. Consider retaining/clearing the same temporary collections between slots to reduce allocator work without changing emitted vectors.",
+    "This mechanism is distinct from rejected E056worklist ordering and D080slot-key lookup. Scoped retained patch search found7E029hits with by_cardonly unchanged context; no matching scratch-reuse patch in that search. Not exhaustive semantic uniqueness.",
+    "D088historical constructor diagnostic measured plan/budget121.7085msfor rainbow; no source-phase attribution or new full-cycle headroom estimate follows. Fresh profile/component measurement and exact entire plan fields/capacities are required before any integrated candidate."
+  ],
+  "matching_retained_context_patches": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029R1.patch",
+      "sha256": "f2314334403c3ed2edb7201418b015877a977bed6ee299413ef97b50cb2483c5",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-build\\candidate.patch",
+      "sha256": "f2314334403c3ed2edb7201418b015877a977bed6ee299413ef97b50cb2483c5",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check\\candidate.patch",
+      "sha256": "f2314334403c3ed2edb7201418b015877a977bed6ee299413ef97b50cb2483c5",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate.patch",
+      "sha256": "6d90ac8428c7139d07a504542eeb5028d83e9577e317ac794c5294b1bb8e1ce7",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\activated.patch",
+      "sha256": "f2314334403c3ed2edb7201418b015877a977bed6ee299413ef97b50cb2483c5",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\rejected.patch",
+      "sha256": "f2314334403c3ed2edb7201418b015877a977bed6ee299413ef97b50cb2483c5",
+      "changed_by_card_lines": []
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\draft-r1\\candidate.patch",
+      "sha256": "ac341f00671f1d72766c616a130011417e289374d3f63e9a079668323f74c758",
+      "changed_by_card_lines": []
+    }
+  ],
+  "native_runs": 0,
+  "new_candidate_source": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "next_unassigned_diagnostic": "D099",
+  "constraints": "Only investigate allocation reuse after exact stable table/field/capacity checks and temporary peak-memory accounting. No floating reorder, additional persistent cache, hidden warm start, changed worklist order, closed slot mapping, E060denominator guard/math/kernel subset rescue or historical timing pooling. Any final implementation still requires unchanged1%complete-cycle/fixture/fresh16/broad/material/holdout/cumulative gates."
+}

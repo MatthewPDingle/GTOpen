@@ -1,0 +1,28 @@
+{
+  "id": "E077",
+  "at": "2026-10-18T04:22:44.235030+00:00",
+  "status": "source_and_retained_demand_review_only",
+  "CUDA_edits": [
+    [
+      "reach_sh[k] = ro[o_idx[ob + k]];",
+      "reach_sh[k] = ro[o_idx[ob + k] & 0x7fffffffu];"
+    ],
+    [
+      "            prefix[k] = acc;",
+      "            if (o_idx[ob + k] & 0x80000000u) prefix[k] = acc;"
+    ],
+    [
+      "        for (int k = lo_k; k < hi_k; k++) prefix[k] += base;",
+      "        for (int k = lo_k; k < hi_k; k++) {\n            if (o_idx[ob + k] & 0x80000000u) prefix[k] += base;\n        }"
+    ],
+    [
+      "u32 i = p_idx[pb + k];",
+      "u32 i = p_idx[pb + k] & 0x7fffffffu;"
+    ]
+  ],
+  "four_edits_reverse_exactly_to_accepted_CUDA": true,
+  "all8_other_source_entries_exact": true,
+  "host_scope": "One internal pure-integer in-place tagging helper and one call after unchanged budget check/before context creation. Original sorted-index vector allocations/lifetimes/uploads and all buffer counts/bytes retained. No new arrays/fields; helper uses immutable offsets/counts/boundaries and mutates only high bits of its constructor-owned sorted indices. All training/evaluation up_show uses pass those same arrays.",
+  "float_scope": "Original per-thread acc += reach, all chunk_sum operations, all barriers, each consumed prefix offset addition, total/boundary/card-order corrections and payout expressions retained. Only unobserved shared writes and their unobserved per-element offset additions are omitted. Source reasoning is not compiled FP/NaN equivalence proof.",
+  "limits": "New mask/predicate arithmetic and CPU tagging can cost time or resources. Full compiled host integer and GPU raw controls, primary timing and all broader/material qualification required. No E022/E062/E059/E073/E076 form composed."
+}

@@ -1,0 +1,26 @@
+"""Freeze the complete width/IEEE input/output control matrix before first GPU math."""
+from pathlib import Path
+import ast,json,shutil,sys,urllib.request
+R=Path(r'S:\GTOpen-research\postflop-gpu-20261016');C=R/'runs/accepted-E051-live-20261018';sys.path.insert(0,str(C));import common_e051_live as old
+old.custody();assert not(R/'gpu-run.lock').exists();old.ar.refuse_active(old.ar.live_status());assert shutil.disk_usage(R).free>=66*1024**3
+H=R/'runs/E077-kernel-control';S=R/'runs/E077-source';CPU=R/'runs/E077-plan-control';RES=R/'runs/E077-resource';effective=R/'runs/D125-index-address-audit/report.json'
+q=old.read(CPU/'report.json');assert q['status']=='pass_compiled_prefix_tags_against_retained_model'and len(q['cases'])==12 and q['plan_tests']==3
+receipt=old.read(R/'runs/E077-host-manager-r2/host.exit.json');assert receipt['returncode']==0 and receipt['error']is receipt['cleanup']is None
+assert all(old.read(effective)['effective_gates'].values())
+for n in ['execute.py','audit.py']:ast.parse((H/n).read_text(encoding='utf-8'))
+probe=(H/'probe.rs').read_text(encoding='utf-8');assert 'for width in [1u32,32,64,128,256]'in probe and 'assert_eq!(launches,3640)'in probe and 'Bounds'not in probe
+corpus=old.read(H/'corpus.json');assert len(corpus['geometries'])==36 and len(corpus['cases'])==364
+prior=old.read(R/'runs/E073-kernel-control-r3/execution-plan.json');deps={p:h for p,h in prior['input_sha256'].items()if Path(p).suffix in['.rlib','.rmeta','.lib','.dll']}
+for p,h in deps.items():old.pin(p,h)
+paths=[Path(__file__),R/'runs/E077-generate-direct.py',*[p for p in H.iterdir()if p.is_file()],*[p for p in S.iterdir()if p.is_file()],RES/'protocol.json',RES/'report.json',R/'runs/D124-prefix-liveness/report.json',R/'runs/D125-index-address-audit/protocol.json',effective,R/'runs/D125-index-address-audit/finalization-repair.json',CPU/'protocol.json',CPU/'protocol-r2.json',CPU/'reader-amendment.json',CPU/'report.json',R/'runs/E077-host-manager/host.exit.json',R/'runs/E077-host-manager-r2/host.exit.json',C/'common_e051_live.py',C/'protected-main.json',old.REPO/'research/postflop-gpu-20261016/qualification-policy-20261017.md']
+P={'id':'E077-kernel-control','at':old.now(),'status':'FROZEN_PRE_FIRST_NUMERICAL_LAUNCH','rustc_command':[x.replace(str(R/'runs/E073-kernel-control-r3'),str(H))for x in prior['rustc_command']],'input_sha256':deps|{str(p):old.sha(p)for p in paths},'host_report':str(CPU/'report.json'),'effective_resource_report':str(effective),'widths':[1,32,64,128,256],'base_cases':364,'geometries':36,'expected_pairs':1820,'expected_application_launches':3640,'sealed_PTX_sha256':{arm:old.sha(H/(arm+'.ptx'))for arm in['baseline','candidate']},'scope':'One Rust compiler and one fixed1820pair/3640launch process, then one separate raw decoder. Exact sealed compute120PTX, no NVRTC/resource rerun. Same364 existing case descriptors x5 widths in declared order, with candidate bit31 tags computed from actual two-sided strength-boundary read demand; decoded physical hand indices unchanged. Whole physical CFV outputs, all21 actual device input images and all output guards retained. Other19 input buffers identical. Full finite/signedzero/subnormal/quietNaN/infinity/overflow/default+tail/empty/countzero/rounding corpus, not a universal proof. No GPU/control/source/flag/map/helper/width/placement variants or repeated cases after actual failure.','candidate_accepted':False,'performance_measurement':False};old.save(H/'protocol.json',P)
+pub=[]
+for p in H.iterdir():
+ if not p.is_file():continue
+ key=H.name+'/'+p.name;dst=old.ar.DASHBOARD/'evidence'/key;dst.parent.mkdir(parents=True,exist_ok=True);assert not dst.exists();shutil.copyfile(p,dst)
+ with urllib.request.urlopen(old.ar.LIVE+'/research/postflop-gpu-20261016/evidence/'+key,timeout=15)as response:assert response.read()==p.read_bytes()
+ pub.append({'url':'evidence/'+key,'sha256':old.sha(p)})
+old.save(H/'pre-execution-publication.json',{'at':old.now(),'protocol_sha256':old.sha(H/'protocol.json'),'HTTP_byte_verified_artifacts':pub,'numerical_launches':0})
+with old.ar.exclusive_lock(old.ar.STATUS.with_suffix('.lock'),timeout=3):
+ s=old.read(old.ar.STATUS);e=next(x for x in s['experiments']if x['id']=='E077');e.update(stage='1820 full raw GPU pairs across5 widths',correctness='12 compiled tag maps and3 plan tests pass',reason='Actual compiled tags match D124 for every sorted-index word; all52 other fields/capacities/structs exact. Original reader failure preserved, both compilers/tests/case00 reused with no native repetition. Freeze1820 raw GPU pairs before first numerical launch; no speed claim.');e['evidence'].extend([{'label':'Compiled host controls and retained reader repair','url':'evidence/E077-plan-control/protocol-r2.json'},{'label':'Frozen full raw GPU control matrix','url':'evidence/E077-kernel-control/protocol.json'}]);s.update(updated_at=old.now(),state='running',goal_status='active',active_experiment='E077',stage='E077 full raw GPU accuracy controls',activity='Run fixed364 source cases x widths1/32/64/128/256:1820 pairs/3640 launches using sealed PTX. Whole outputs, all actual inputs and guards retained; no speed measurement. Accepted/live E051 gain12.44% unchanged.');old.ar.atomic_json(old.ar.STATUS,s)
+print('E077 direct protocol',old.sha(H/'protocol.json'),flush=True)

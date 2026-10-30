@@ -1,0 +1,63 @@
+{
+  "at": "2026-10-18T01:44:57.509034+00:00",
+  "status": "six_observed_display_fields_repaired",
+  "changes": [
+    {
+      "path": [
+        "hardware",
+        "gpu"
+      ],
+      "before": "NVIDIA GeForce RTX 5090 Â· 32 GB",
+      "after": "NVIDIA GeForce RTX 5090 · 32 GB"
+    },
+    {
+      "path": [
+        "hardware",
+        "backend"
+      ],
+      "before": "CUDA Â· Windows Â· driver 610.88",
+      "after": "CUDA · Windows · driver 610.88"
+    },
+    {
+      "path": [
+        "fixtures",
+        0,
+        "description"
+      ],
+      "before": "Ks7h2d Â· zero rake",
+      "after": "Ks7h2d · zero rake"
+    },
+    {
+      "path": [
+        "fixtures",
+        1,
+        "description"
+      ],
+      "before": "Ks7s2d Â· 5% rake, cap 3",
+      "after": "Ks7s2d · 5% rake, cap 3"
+    },
+    {
+      "path": [
+        "fixtures",
+        2,
+        "description"
+      ],
+      "before": "Ks7h2dQhTc Â· 5% rake, cap 3",
+      "after": "Ks7h2dQhTc · 5% rake, cap 3"
+    },
+    {
+      "path": [
+        "validation",
+        "summary"
+      ],
+      "before": "All registered E051 exactness/performance/resource/capacity/holdout gates passed.84ordinary unit tests; full96result/736checkpoint fresh confirmation;160state/menu/resume snapshots each; F32/paging/stored checks exact. Root replay is not external independent review. Last isolated server validation remains E020.",
+      "after": "All registered E051 exactness/performance/resource/capacity/holdout gates passed.84ordinary unit tests; full96result/736checkpoint fresh confirmation;160state/menu/resume snapshots each; F32/paging/stored checks exact. Root replay is not external independent review. Fresh E051 server qualification passed20ordinary server tests and100GPU API iterations; the qualified binary is now deployed."
+    }
+  ],
+  "all_other_existing_data_exact": true,
+  "performance_values_and_experiment_records_unchanged": true,
+  "browser_evidence": "Observed live rendered hardware/fixture punctuation contained U+00C2 before separators; current validated-result summary still named E020 despite E051 deployment.",
+  "source_or_live_binary_changes": false,
+  "before_sha256": "a1257cbbc16334a8e7e8b7687c5815cb67e8d6635503e0df2a92823aa77e223a",
+  "status_after_sha256": "cb7e04524ffeec27e0ac35373152e9238dc86a45941e20186ed22699d4cb42d3"
+}

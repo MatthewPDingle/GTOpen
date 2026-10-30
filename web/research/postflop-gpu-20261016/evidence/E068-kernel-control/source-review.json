@@ -1,0 +1,28 @@
+{
+  "at": "2026-10-17T11:44:57.416594+00:00",
+  "id": "E068-raw-source-review",
+  "root_review_only": true,
+  "production_abi_arguments": [
+    "nodes",
+    "start",
+    "count",
+    "cs",
+    "cc",
+    "card",
+    "child",
+    "perm",
+    "inv",
+    "mask",
+    "hp",
+    "slot",
+    "mut cfv",
+    "nh",
+    "stride"
+  ],
+  "current_resource_ptx_loaded_exact": true,
+  "actual_read_contract": "AllhostCFVseeds initialized; every actual child/permutation index includingblocked precheckedbeforelaunch,childrowsdisjointparentwrites. Actualimmutablebuffers readback andexactcomparison separately perarm; fullrawCFV includingallguards retained.",
+  "floating_contract": "Alloriginalorderedusedadds/oldaccbits mustmatch includingNaNpayload/signedzero/overflow/subnormal; noepsilon/normonlytest. Extraignoredarithmetic not scored; no per-kernel timing.",
+  "case_count": 1688,
+  "kernel_launches": 3376,
+  "scope": "ActualGPUonly; unchangedfallbackABIcompile is not fallbacknumerical/performancequalification."
+}

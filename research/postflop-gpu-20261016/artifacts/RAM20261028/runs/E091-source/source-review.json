@@ -1,0 +1,29 @@
+{
+  "id": "E091",
+  "at": "2026-10-28T08:52:34.304509+00:00",
+  "status": "staged_source_only",
+  "source_case_analysis": {
+    "mechanism": "Unlocked down_action only: after the unchanged ordered positive-regret sum and parent reach load, signed-zero reach plus finite sum writes that same signed zero in unchanged action order, then continues. All other inputs retain the original implementation.",
+    "finite_sum_positive_case": "When sum>1e-12 and finite, every selected positive regret is finite and no greater than the accumulated nonnegative sum. The existing division returns a finite nonnegative value including positive zero. Multiplication by either signed zero returns that same signed zero. NaN/negative regrets select positive zero. This is source case analysis, not a device numerical result.",
+    "finite_sum_fallback_case": "When the original sum comparison is false and sum finite, the existing uniform path divides signed zero by the positive action count, preserving its sign. The staged path stores the original pr bits. Ordered sum and all address calculations are retained.",
+    "nonfinite_sum_case": "The isfinite guard is false for a nonfinite sum; all original operations execute. Infinity-producing sums are not silently short-circuited.",
+    "locked_case": "Locked branch, sigma multiplication and return precede the edited region and are byte unchanged. Arbitrary signed/nonfinite lock inputs are not short-circuited.",
+    "scope_unchanged": [
+      "up/evaluation kernels",
+      "all regret sums and their ordering",
+      "learning arrays and strategy updates",
+      "node IDs, pitches, allocation and budget",
+      "host/ABI/launch shape/graph schedule",
+      "precision and quality thresholds",
+      "save/load/continuation behavior"
+    ],
+    "distinction_from_closed_forms": "E035 and E036 inspect whole terminal opponent-reach CTAs with reductions/guards; this is per-hand own reach in down_action after the existing sum. No terminal early-return, quotient/reciprocal rewrite, scratch-stride hunk or E090 rescue is composed.",
+    "required_next": "Finite CUDA raw comparisons must include signed-zero, small/subnormal/large and nonfinite regrets, overflow sums, both actor orientations, locked inputs, generic and common action counts, tails and full input/output guards. Fresh production incidence and compiled resource checks should precede a complete-cycle speed screen. No numerical, resource or speed pass is inferred from source analysis."
+  },
+  "old_E090_remains_closed": true,
+  "production_source_activated": false,
+  "GPU_or_compiler_children": 0,
+  "numerical_equivalence_established": false,
+  "speed_gain_established": false,
+  "history_sha256": "58b9968a9a6baca3b6ec380c95f568c091a34f39ccfa5abecaf2c555e9cac66a"
+}

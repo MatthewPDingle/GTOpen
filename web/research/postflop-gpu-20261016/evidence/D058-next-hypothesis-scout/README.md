@@ -1,0 +1,13 @@
+# D058: evaluation-mode specialization scout
+
+**Not justified for immediate implementation.** Park the mode-split idea; this scout recommends no production candidate or primary cohort.
+
+Accepted E020 `up_action_eval` already selects BR versus average once before its hand loops (`kernels.cu:488-512`; accepted PTX:6783-6784). Opponent and locked paths return earlier (`kernels.cu:466-486`). BR already skips average-strategy sums/divisions. Thus the direct source mechanism is removal of a uniform branch, not elimination of average arithmetic from BR. There is no explicit local array in this entry's existing PTX; virtual register counts do not establish physical registers, spills or occupancy.
+
+D057 retained all three two-tone event-perturbed evaluation envelopes (12.975296, 12.971200, 12.977344 ms) and the corresponding whole twenty-iteration/evaluation batches. Its exact numerical/custody reviews are now pinned. The captured graph has 52 action-evaluation kernels among 147 kernels plus four copies, but these are structural counts, not time shares. It does not identify the unlocked traverser action subset as dominant. D045 sampled selected rainbow training launches and supplies no evaluation-family attribution. No ratio, removable-work bound or >=2% complete-cycle prediction follows.
+
+The smallest missing mechanism evidence is whether two constant-mode entries would actually reduce physical register pressure or spills. If root later chooses to ask that question, the existing no-launch compiler workflow is sufficient; no new harness is warranted or prepared here. A resource improvement alone would not establish a worthwhile complete-cycle candidate. On current evidence, stop at this source/PTX scout.
+
+Any later reconsideration must preserve the first-child BR initialization and ordered strict `>` comparisons (not `fmax`), positive-zero accumulators, child and floating-operation order, average normalization, locks, generic arities and eager/captured paths. Added entrypoints also carry unmeasured JIT/load/code-size costs. Source sharing is not an immutable old/new numerical oracle.
+
+No equivalent implementation was found in the scoped E001-E030 history. D056 had already raised mode specialization as a possible question; D058 narrows it using existing PTX. Rejected training dispatch/resource variants are counterevidence to proxy-based performance claims, not proof this can never help. The inspected mutable ledger is preserved verbatim in `references/experiments.md`; the exact accepted PTX entry is in `references/accepted-up_action_eval.ptx`. `report.json` records source line references and input hashes. No compiler, native test, GPU work, source activation, status or deployment change was performed.

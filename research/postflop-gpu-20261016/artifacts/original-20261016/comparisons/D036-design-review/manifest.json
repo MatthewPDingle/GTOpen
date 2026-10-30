@@ -1,0 +1,41 @@
+{
+  "id": "D036-design-review",
+  "created_at": "2026-10-16T09:48:52.037301+00:00",
+  "reviewer": "menu_change_review",
+  "verdict": "PASS_DESIGN_ONLY",
+  "actionable_findings": [],
+  "review_sha256": "f2be661238c9c9bb7740e798ac75b76118b3b227151c61f4e97a9910bac7f606",
+  "checked_input_count": 17,
+  "checked_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\accepted-up_fold.ptx.txt": "5a1d13ca664c53ba9a2fc8766abf2b3c975f537b5e5ba64a45c528e6fcfec148",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\D033-context.json": "2ac808ad5044f7ebc84040c77679c448df03a6f7cf7e1f308a63c934249418e9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\manifest.json": "9385c78f6856cb28ebc10bf44f3f749f8a27ce4bd7e72ea495e130fca90d5097",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\README.md": "6f0fffa9a2fb052f6dbb839087417a272d84a22bd1589c4f9b9f5fd743076014",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\source\\kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\source\\mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\source\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\checksums.json": "2275042afe2c8d6b2ff78d414bd794aea41f89da3ee7482bfa702890f1991a81",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D021\\baseline.ptx": "f58b2d66262313241bd0ea7ccb6d68f1bf480562da6aa513814c5a635df51fee",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\results.tsv": "4713d4f0fdad875c85764e01cb7809d04630e0b0153e03aafe2a57f448bba6f9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\postflop-gpu-20261016\\program.md": "b9a715b9e4acda28dffb72b72b39b60655e6f7f924acdfec76c0b198de319e06",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\cuda_resources.rs": "73561979ee66234a55967f237838bf1d73171414cfaa0ffff6c088a7c0c07c22",
+    "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\nvrtc\\safe.rs": "299a9510debad8cc9ac832d2449df72c2e989a228baab178b7b6f2ed761dea29"
+  },
+  "scope": "one128x1x1 fold reduction tail; authoritative full-kernel standalone proof required",
+  "pending": [
+    "prepared source review",
+    "compiler/resource proof",
+    "full-kernel numerical proof",
+    "complete-cycle qualification"
+  ],
+  "performed": {
+    "source_and_evidence_reads": true,
+    "source_edits": false,
+    "builds": false,
+    "gpu_calls": false
+  }
+}

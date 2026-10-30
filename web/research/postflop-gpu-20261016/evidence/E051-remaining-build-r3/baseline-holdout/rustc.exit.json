@@ -1,0 +1,33 @@
+{
+  "started_at": "2026-10-17T04:30:21.535717+00:00",
+  "finished_at": "2026-10-17T04:30:33.161145+00:00",
+  "command": [
+    "rustc",
+    "--edition=2021",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\evaluator.rs",
+    "--crate-name",
+    "e051_holdout_baseline",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "lto=thin",
+    "-C",
+    "codegen-units=1",
+    "--test",
+    "--cfg",
+    "feature=\"gpu\"",
+    "--extern",
+    "solver=S:\\GTOpen-research\\postflop-gpu-20261016\\build-small-gain-e020-primary\\release\\deps\\libsolver-e2d3113d740308c1.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build-small-gain-e020-primary\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build-small-gain-e020-primary\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build-small-gain-e020-primary\\release\\deps",
+    "-o",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E051-holdout-baseline.exe"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

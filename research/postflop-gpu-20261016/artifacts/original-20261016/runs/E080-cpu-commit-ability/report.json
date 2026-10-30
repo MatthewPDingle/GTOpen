@@ -1,0 +1,207 @@
+{
+  "id": "E080-CPU-explicit-commit-ability",
+  "at": "2026-10-18T07:54:25.638756+00:00",
+  "status": "CPU_commit_and_RSS_API_calibration_pass",
+  "protocol_sha256": "c3f27916ab2baf90fab361efbe34881d794c0087ff123a02b9abbdc89ef86fc9",
+  "all_checks_pass": true,
+  "checks": [
+    {
+      "label": "baseline PrivateUsage",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "baseline WorkingSetSize",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "baseline stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128 PrivateUsage",
+      "observed_delta_bytes": 134483968.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128 WorkingSetSize",
+      "observed_delta_bytes": 134234112.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128 stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_free PrivateUsage",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_free WorkingSetSize",
+      "observed_delta_bytes": 20480.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_free stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256 PrivateUsage",
+      "observed_delta_bytes": 268963840.0,
+      "expected_delta_bytes": 268435456,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256 WorkingSetSize",
+      "observed_delta_bytes": 268455936.0,
+      "expected_delta_bytes": 268435456,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256 stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256_free PrivateUsage",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256_free WorkingSetSize",
+      "observed_delta_bytes": 20480.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc256_free stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat PrivateUsage",
+      "observed_delta_bytes": 134483968.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat WorkingSetSize",
+      "observed_delta_bytes": 134238208.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat_free PrivateUsage",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat_free WorkingSetSize",
+      "observed_delta_bytes": 20480.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "alloc128_repeat_free stable total commitment",
+      "span_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    }
+  ],
+  "plateaus": {
+    "baseline": {
+      "PrivateUsage": 8196096.0,
+      "WorkingSetSize": 14872576.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc128": {
+      "PrivateUsage": 142680064.0,
+      "WorkingSetSize": 149106688.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc128_free": {
+      "PrivateUsage": 8196096.0,
+      "WorkingSetSize": 14893056.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc256": {
+      "PrivateUsage": 277159936.0,
+      "WorkingSetSize": 283328512.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc256_free": {
+      "PrivateUsage": 8196096.0,
+      "WorkingSetSize": 14893056.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc128_repeat": {
+      "PrivateUsage": 142680064.0,
+      "WorkingSetSize": 149110784.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    },
+    "alloc128_repeat_free": {
+      "PrivateUsage": 8196096.0,
+      "WorkingSetSize": 14893056.0,
+      "Private_span_bytes": 0,
+      "creation_filetime": 134367836508498822
+    }
+  },
+  "native_processes": 1,
+  "solver_executions": 0,
+  "CUDA_contexts": 0,
+  "VirtualAlloc_calls": 3,
+  "VirtualFree_calls": 3,
+  "original_combined_calibration_pass": false,
+  "original_combined_report_sha256": "8936418a90dbd8a7fcfd6b039ef4bb31ce0773a3cdd4d2728010469d6b0ee3fd",
+  "excluded_states": [],
+  "extra_samples": 0,
+  "candidate_accepted": false,
+  "actual_solver_costs_qualified": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "scope": "Independent Windows commitment/RSS API validation with explicit own-process committed/touched pages. CUDA absence checked in child. Original mixed-process failed calibration remains failed. This does not replace any solver workload, exclude driver commitment from actual profiling, or qualify whole solver cost."
+}

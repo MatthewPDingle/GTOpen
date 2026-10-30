@@ -1,0 +1,144 @@
+{
+  "id": "D054",
+  "created_at": "2026-10-16T16:50:57.742397+00:00",
+  "verdict": "SOURCE_FEASIBLE_DISTINCT_OPPORTUNITY_ONLY",
+  "recommendation": "One possible follow-up: zero only the exact complement of own sorted showdown hand indices, keeping all final output arithmetic and barriers. Root authorization and native qualification remain separate; no predicted speedup.",
+  "accepted_base": "E020 bytes archived by immutable E028-design/base; no E028 cache tuning or outcome dependency.",
+  "source_sites": {
+    "kernels.cu:235-239": "Full nh_p zero loop; the following barrier also publishes sorted reach staging and remains.",
+    "kernels.cu:265-292": "Every unique valid p_idx entry unconditionally receives final CFV in the existing final loop; no CFV read within this kernel.",
+    "plan.rs:221-244": "Reached terminal CFV slots are unique and resident, separate from scratch.",
+    "plan.rs:299-354": "Slots plus existing riv_off/riv_cnt define concatenated valid hand lists; each sorted hand index emitted once.",
+    "game.rs:435-460": "River table selects valid root hands and sorts by strength/index, no duplication."
+  },
+  "exact_scope": {
+    "zero_write_change": "Replace only full nh_p zero distribution with a per-player per-slot exact missing-index list; write the same+0.0 to each absent logical hand. Do not change output order/arithmetic, scans, launch shape, shared reservation or any barrier.",
+    "coverage_proof": "For each slot/p, present and missing sets must be unique, disjoint, in0..nh_p, and union exactly0..nh_p. Present final writes stay unchanged; missing+0 writes cover every other logical word. Each show CTA owns a unique CFV row, and no kernel observer consumes transient pre-final writes.",
+    "offset_contract": "Separate flattened complement list per player in the same slot order. Existing pb=riv_off[p][slot] is the number of valid indices before this slot, so missing_start=slot*nh_p-pb and missing_count=nh_p-riv_cnt[p][slot]. Validate this equality and arithmetic bounds on host; a dedicated offset array is not inherently needed. Global slot base must never be assumed0.",
+    "edge_cases": "m_p=0 requires zeroing all nh_p words; m_p=nh_p has an empty complement; m_o=0 still executes the original expressions for present own hands. Zero count/excess CTA and CFV guards unchanged. Slots/payout/rake/locks/own zero reach do not justify omitting present outputs.",
+    "barriers": "Retain every existing barrier, especially the post-fill barrier immediately following zeroing; it publishes reach_sh and participates in scan correctness regardless of how many zero stores remain.",
+    "integration": "Two immutable complement buffers owned by GpuSolver and allocated/uploaded before graph capture. Both training and eval up_show calls must receive the appropriate player list. Include actual payload and vector ownership in plan/admission/public conservative estimate and planned/observed continuation immutable metadata, never mutable workspace. Finalized visited river slots/iso plan determine actual payload. No save format or learning/reach/CFV row layout change."
+  },
+  "structural_census": [
+    {
+      "p": 0,
+      "nh_p": 257,
+      "unordered_runout_rows": 1176,
+      "valid_min": 219,
+      "valid_max": 252,
+      "valid_median": 236.0,
+      "missing_min": 5,
+      "missing_max": 38,
+      "missing_median": 21.0,
+      "sum_original_zero_stores": 302232,
+      "sum_overwritten_zero_stores": 277817,
+      "sum_required_missing_zero_stores": 24415,
+      "overwritten_store_fraction": 0.91921768707483,
+      "rows_with_m_p_equal_nh_p": 0,
+      "hypothetical_missing_index_payload_bytes_for_these_unweighted_rows": 97660
+    },
+    {
+      "p": 1,
+      "nh_p": 319,
+      "unordered_runout_rows": 1176,
+      "valid_min": 256,
+      "valid_max": 314,
+      "valid_median": 294.0,
+      "missing_min": 5,
+      "missing_max": 63,
+      "missing_median": 25.0,
+      "sum_original_zero_stores": 375144,
+      "sum_overwritten_zero_stores": 344839,
+      "sum_required_missing_zero_stores": 30305,
+      "overwritten_store_fraction": 0.91921768707483,
+      "rows_with_m_p_equal_nh_p": 0,
+      "hypothetical_missing_index_payload_bytes_for_these_unweighted_rows": 121220
+    }
+  ],
+  "census_limits": "Unweighted all unordered rainbow runouts; not canonical GpuPlan visitation or dynamic timing; these are logical writes and hypothetical integer payload, not canonical plan counts, dynamic execution frequencies, transactions, DRAM traffic or speed.",
+  "selected_training_launch_evidence": [
+    {
+      "graph": 0,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 6300
+      },
+      "samples": [
+        1.003424048423767,
+        0.997376024723053,
+        1.5431360006332397
+      ],
+      "median": 1.003424048423767,
+      "min": 0.997376024723053,
+      "max": 1.5431360006332397
+    },
+    {
+      "graph": 1,
+      "ordinal": 29,
+      "kernel": "up_show",
+      "descriptor": {
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 5060
+      },
+      "samples": [
+        1.0593600273132324,
+        1.02128005027771,
+        1.0255039930343628
+      ],
+      "median": 1.0255039930343628,
+      "min": 1.02128005027771,
+      "max": 1.0593600273132324
+    }
+  ],
+  "timing_limits": "D045 samples one fixed selected up_show launch per graph at checkpoints160/180/200, with disclosed sparse event perturbation. They do not isolate zeroing, establish a native family/solve share or bound removable time. D033 dense events are not used for native shares.",
+  "counterevidence": [
+    "The simple uniform branch m_p==nh_p skips zeroing on none of the2352 recorded rainbow orientation/runout rows. It is not recommended as a primary candidate.",
+    "Extra complement construction, allocation/upload, integer loads and scatter stores may outweigh eliminated writes. Existing stores may combine in cache, so logical counts are not transaction savings.",
+    "River has no absent root hands but may still pay metadata/setup costs; a near-zero table does not imply a free extra device allocation. Full-range turn/final-river behavior and constructor-inclusive river guard matter.",
+    "E021 removed staging/barrier but gained only0.0674%; E022 shortened unused scan work but only0.7850%; E026 changed physical width with exact128 logical scan and was5.5832%slower. Source simplification and resource improvements alone did not pass fullcycle.",
+    "This is distinct from E020 integer card-position caching, E008/E022 prefix changes, E021 reach staging removal, E025/E027 physical pitches and E026 width. Scoped reviewed history has no identified complement-only CFV zeroing experiment; this is not an exhaustive global history claim."
+  ],
+  "minimum_next_evidence": "If separately authorized, first prove complement coverage and compiled unchanged FP dependencies; reuse bounded direct full-up_show comparisons with poisoned outputs for empty/full/mixed own sets and nonzero slot offsets, then unchanged fixed primary. No new large harness or sweep is proposed by this scout. Existing D051 patterns can supply narrow guards but its prior equality result is not transferable to a new source.",
+  "implementation_prepared": false,
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false,
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\manifest.json": "627f8db47dd751bc489814dbebef2447adeaadfdfbab5e299b282317faa23cd2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\rainbow-unweighted-census.json": "a521725f714731c9087520eb30225864606191ade4a8e1528896c84c4a240edc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\census-summary.json": "b15a483c7b130b14cb4634882bf68adb60809b5640d77e4d1f355a7c937ad576",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D045-sparse-event-diagnostic\\report.json": "2d68da44be8de1324454bbc45f834e9b2f85baef01fa92a5f8e0c8a9e828e1c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D044-constructor-diagnostic\\report.json": "945f2c64c8bcec1f336e455bb7495435d7a9da8f42635abaf3e21c83a454493c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E021-three-pair-comparison\\report.json": "243da882e6fbb6b1a4be0cf68dcc21f4361e769d29cb0945c2f8b914c51128fa",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E022-three-pair-comparison\\report.json": "e26f70ddf2cf0881989eba152553c3b242dd2bf9e42e51afb1ea0cf208974c2e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E025-three-pair-comparison\\report.json": "e04db8aeaf82c9976187bd0fd22d22f2105a0f99787b641fa515079b6c4dcca1",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E026-three-pair-comparison\\report.json": "c5445948564631ffecddc47d0a6f9053a3a69fcb093cb1390d693b780b7c8766",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E027-three-pair-comparison\\report.json": "eed60e5fb993cb4448a58e86de4562ab5f97aadfba8ffcb1de53981c4ba60009"
+  }
+}

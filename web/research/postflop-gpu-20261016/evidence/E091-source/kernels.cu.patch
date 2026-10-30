@@ -1,0 +1,18 @@
+--- accepted-E080/kernels.cu
++++ E091/kernels.cu
+@@ -78,6 +78,15 @@
+             sum += r > 0.f ? r : 0.f;
+         }
+         float pr = parent_reach[i];
++        // Keep the signed zero while avoiding per-action normalization.
++        // Nonfinite positive-regret sums retain the original path.
++        if (pr == 0.f && isfinite(sum)) {
++            for (int a = 0; a < na; a++) {
++                u32 child = children[cs + a];
++                reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = pr;
++            }
++            continue;
++        }
+         float uni = pr / (float)na;
+         for (int a = 0; a < na; a++) {
+             u32 child = children[cs + a];

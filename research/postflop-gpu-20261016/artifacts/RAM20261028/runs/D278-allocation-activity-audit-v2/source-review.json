@@ -1,0 +1,37 @@
+{
+  "at": "2026-10-29T14:55:41.633078+00:00",
+  "current_cudarc_source_sha256": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+  "locked_mimalloc_package_checksum_verified": true,
+  "locked_mimalloc_source_checksums": [
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\libmimalloc-sys-0.1.49\\build.rs",
+      "sha256": "4917ec3e9a59e216b1b568ce37ea5cb97ba0ba1b9c50789a29d1cd429de9119f",
+      "full_archived_member_byte_exact": true
+    },
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\libmimalloc-sys-0.1.49\\c_src\\mimalloc\\v3\\src\\options.c",
+      "sha256": "96ef01e41f4b3043118e8c801e660b1d3f185d6fb824e5298a038aee89b6a392",
+      "full_archived_member_byte_exact": true
+    },
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\libmimalloc-sys-0.1.49\\c_src\\mimalloc\\v3\\src\\arena.c",
+      "sha256": "a1d6900d2b9a17461aa2a72a7791dfb22f6167b86f7ac6f15f981d9735aa2adb",
+      "full_archived_member_byte_exact": true
+    },
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\libmimalloc-sys-0.1.49\\c_src\\mimalloc\\v3\\include\\mimalloc.h",
+      "sha256": "869161433ab2d807a75752d0762accf5b68b6b24ce67e417af46bf181b9b6c72",
+      "full_archived_member_byte_exact": true
+    }
+  ],
+  "v3_eager_commit_references": [
+    {
+      "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\libmimalloc-sys-0.1.49\\c_src\\mimalloc\\v3\\src\\options.c",
+      "line": 124,
+      "text": "{ 1, MI_OPTION_UNINIT, MI_OPTION(deprecated_eager_commit) },"
+    }
+  ],
+  "async_allocation_source": "CudaContext::new queries MEMORY_POOLS_SUPPORTED; CudaStream::alloc selects result::malloc_async when true, synchronous fallback otherwise. Actual successful API incidence must be derived from frozen current-RAM trace, not inferred from source/hardware name.",
+  "mimalloc_lead_declined": "Old eager_commit option is deprecated and only appears in option descriptors in locked default-v3 C source. Actual used arena_eager_commit is separate. Do not admit an ignored eager_commit environment setting as an optimization. No runtime allocator version or effective-option query made, and no native new setting tested. V3 is the build.rs default when V2 feature absent; future actual configuration would need native version/feature/effective-option proof.",
+  "closed_families": "No D160 allocator replacement/VirtualAlloc, D126 prefetch, sparse-firsttouch, arenazero omission, E083fencebatching or E079context/planner overlap retry. No large/huge pages, privilege, power, OS, globalallocator or live-server setting change."
+}

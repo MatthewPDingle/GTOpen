@@ -1,0 +1,106 @@
+{
+  "at": "2026-10-29T19:29:09.830934+00:00",
+  "inventories": [
+    {
+      "root": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+      "CUDA_files": 557
+    },
+    {
+      "root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+      "CUDA_files": 233
+    }
+  ],
+  "unique_CUDA_hashes": 141,
+  "retained_matches": [],
+  "all_local_ref_revisions": 28,
+  "local_matches": [],
+  "pattern": "@[^;\\n]{0,100}add(?:\\.rn)?\\.f32|asm[^;]{0,800}(?:lower_c|higher_c)",
+  "native_baseline_path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D297-hand-word-native\\execution\\baseline\\up_show.sass.txt",
+  "native_baseline_sha256": "5eb84080af5a339f8ac1da16b4a5aa8093c54f52e0e087a1643ba25f3ebb65ca",
+  "native_FP_select_static_inventory": {
+    "unpredicated:FADD": 106,
+    "predicated:FADD": 30,
+    "predicated:FSEL": 30,
+    "unpredicated:FMUL": 1,
+    "unpredicated:FFMA": 2
+  },
+  "rank_correction_instruction_sample": [
+    {
+      "PC": "0x1e60",
+      "op": "LEA R32, R27.reuse, UR11, 0x2"
+    },
+    {
+      "PC": "0x1e70",
+      "op": "ISETP.GE.U32.AND P0, PT, R27.reuse, R16, PT"
+    },
+    {
+      "PC": "0x1e80",
+      "op": "ISETP.GE.U32.AND P1, PT, R27, R18, PT"
+    },
+    {
+      "PC": "0x1e90",
+      "op": "IADD R27, R26, 0x3"
+    },
+    {
+      "PC": "0x1ea0",
+      "op": "LDS R32, [R32]"
+    },
+    {
+      "PC": "0x1eb0",
+      "op": "LEA R30, R31, UR11, 0x2"
+    },
+    {
+      "PC": "0x1ec0",
+      "op": "LEA R27, R27, UR15, 0x2"
+    },
+    {
+      "PC": "0x1ed0",
+      "op": "ISETP.GE.U32.AND P2, PT, R31, R16, PT"
+    },
+    {
+      "PC": "0x1ee0",
+      "op": "LDS R30, [R30]"
+    },
+    {
+      "PC": "0x1ef0",
+      "op": "LDS R27, [R27]"
+    },
+    {
+      "PC": "0x1f00",
+      "op": "FADD R35, R32.reuse, R22"
+    },
+    {
+      "PC": "0x1f10",
+      "op": "FADD R23, R32.reuse, R23"
+    },
+    {
+      "PC": "0x1f20",
+      "op": "@!P0 FADD R25, R32, R25"
+    },
+    {
+      "PC": "0x1f30",
+      "op": "@P0 FSEL R22, R22, R35, !P1"
+    },
+    {
+      "PC": "0x1f40",
+      "op": "LEA R35, R29, UR11, 0x2"
+    },
+    {
+      "PC": "0x1f50",
+      "op": "FADD R32, R23, R30.reuse"
+    },
+    {
+      "PC": "0x1f60",
+      "op": "ISETP.GE.U32.AND P0, PT, R31, R18.reuse, PT"
+    },
+    {
+      "PC": "0x1f70",
+      "op": "@!P2 FADD R25, R25, R30.reuse"
+    },
+    {
+      "PC": "0x1f80",
+      "op": "FADD R23, R22.reuse, R30"
+    }
+  ],
+  "classification": "The existing kernel already has30predicatedFADD and30predicatedFSEL sites, not wholly unpredicated arithmetic. E122 forces both original rank-conditioned corrections to explicit predicatedADD with elsepriority. E068bitselectedblocked accumulation is up_chance(15argumentABI), not this up_show rankconditional form. E089 loopunroll directive/E118zero-tiepayout/E120sparsepositions/E121handencoding remain closed and absent. Boundedliteral/localhistory, not exhaustive semantic/remotenovelty or runtimefrequency/cost proof."
+}

@@ -1,0 +1,756 @@
+{
+  "id": "D282",
+  "at": "2026-10-29T15:58:16.675067+00:00",
+  "status": "pass_scoped_zero_tie_PTX_guard_bypass_prefix_and_card_recurrence",
+  "protocol_sha256": "0a402c5bd5c973a693593a1510bee9a6b49327206015c9d6ac8d70879f21b0a3",
+  "candidate_entry_sha256": "da6c663578d6c28aeb5eb9c169c97857561a57b60fcc3dc600705a8db9b4ff34",
+  "witness": {
+    "reach_load": "%f175",
+    "reach_address": "%rd69",
+    "reach_domain_bit_register": "%r170",
+    "reach_bad_accumulator": "%r472",
+    "CTA_any_bad_register": "%r16",
+    "payout_registers": {
+      "win": "%f11",
+      "lose": "%f12",
+      "tie": "%f13"
+    },
+    "prefix_register": "%f726",
+    "prefix_ops": "mul.rn.f32 \t%f392, %f12, %f67;\n\tfma.rn.f32 \t%f726, %f11, %f66, %f392;",
+    "prefix_guard_unsigned_identity": "u32((absbits)-1) <0x7f7fffff iff absbits in1..0x7f7fffff; complete32bitdomain, not samples",
+    "nonzero_finite_branch": "\n\tmov.b32 \t%r300, %f726;\n\tand.b32  \t%r301, %r300, 2147483647;\n\tadd.s32 \t%r302, %r301, -1;\n\tsetp.lt.u32 \t%p118, %r302, 2139095039;\n\t@%p118 bra \t$L__BB4_94;",
+    "store_join": "$L__BB4_94",
+    "fallback_label": "$L__BB4_95",
+    "skip_same_combo_read": [
+      "ld.global.nc.u32 \t%r115, [%rd386];"
+    ],
+    "skipped_final_tie_FMA": "fma.rn.f32 \t%f726, %f13, %f458, %f460;",
+    "all5semantic_barriers": [
+      "bar.red.or.pred \t%p2, 0, %p1;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;"
+    ],
+    "fast_card_reach_loads": [
+      {
+        "reach_value": "%f222",
+        "position": "%r207",
+        "reach_address": "%rd146",
+        "position_load": "ld.shared.u32 \t%r207, [%rd144];",
+        "reach_load": "ld.shared.f32 \t%f222, [%rd146];",
+        "adds_using_same_word": [
+          "add.f32 \t%f223, %f707, %f222;",
+          "add.f32 \t%f224, %f708, %f222;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f228",
+        "position": "%r210",
+        "reach_address": "%rd150",
+        "position_load": "ld.shared.u32 \t%r210, [%rd148];",
+        "reach_load": "ld.shared.f32 \t%f228, [%rd150];",
+        "adds_using_same_word": [
+          "add.f32 \t%f229, %f225, %f228;",
+          "add.f32 \t%f230, %f227, %f228;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f234",
+        "position": "%r213",
+        "reach_address": "%rd154",
+        "position_load": "ld.shared.u32 \t%r213, [%rd152];",
+        "reach_load": "ld.shared.f32 \t%f234, [%rd154];",
+        "adds_using_same_word": [
+          "add.f32 \t%f235, %f231, %f234;",
+          "add.f32 \t%f236, %f233, %f234;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f240",
+        "position": "%r216",
+        "reach_address": "%rd158",
+        "position_load": "ld.shared.u32 \t%r216, [%rd156];",
+        "reach_load": "ld.shared.f32 \t%f240, [%rd158];",
+        "adds_using_same_word": [
+          "add.f32 \t%f241, %f237, %f240;",
+          "add.f32 \t%f242, %f239, %f240;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f246",
+        "position": "%r219",
+        "reach_address": "%rd162",
+        "position_load": "ld.shared.u32 \t%r219, [%rd160];",
+        "reach_load": "ld.shared.f32 \t%f246, [%rd162];",
+        "adds_using_same_word": [
+          "add.f32 \t%f247, %f243, %f246;",
+          "add.f32 \t%f248, %f245, %f246;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f252",
+        "position": "%r222",
+        "reach_address": "%rd166",
+        "position_load": "ld.shared.u32 \t%r222, [%rd164];",
+        "reach_load": "ld.shared.f32 \t%f252, [%rd166];",
+        "adds_using_same_word": [
+          "add.f32 \t%f253, %f249, %f252;",
+          "add.f32 \t%f254, %f251, %f252;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f258",
+        "position": "%r225",
+        "reach_address": "%rd170",
+        "position_load": "ld.shared.u32 \t%r225, [%rd168];",
+        "reach_load": "ld.shared.f32 \t%f258, [%rd170];",
+        "adds_using_same_word": [
+          "add.f32 \t%f259, %f255, %f258;",
+          "add.f32 \t%f260, %f257, %f258;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f264",
+        "position": "%r228",
+        "reach_address": "%rd174",
+        "position_load": "ld.shared.u32 \t%r228, [%rd172];",
+        "reach_load": "ld.shared.f32 \t%f264, [%rd174];",
+        "adds_using_same_word": [
+          "add.f32 \t%f265, %f261, %f264;",
+          "add.f32 \t%f266, %f263, %f264;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f269",
+        "position": "%r231",
+        "reach_address": "%rd178",
+        "position_load": "ld.shared.u32 \t%r231, [%rd176];",
+        "reach_load": "ld.shared.f32 \t%f269, [%rd178];",
+        "adds_using_same_word": [
+          "add.f32 \t%f270, %f707, %f269;",
+          "add.f32 \t%f271, %f708, %f269;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f275",
+        "position": "%r234",
+        "reach_address": "%rd182",
+        "position_load": "ld.shared.u32 \t%r234, [%rd180];",
+        "reach_load": "ld.shared.f32 \t%f275, [%rd182];",
+        "adds_using_same_word": [
+          "add.f32 \t%f276, %f272, %f275;",
+          "add.f32 \t%f277, %f274, %f275;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f281",
+        "position": "%r237",
+        "reach_address": "%rd186",
+        "position_load": "ld.shared.u32 \t%r237, [%rd184];",
+        "reach_load": "ld.shared.f32 \t%f281, [%rd186];",
+        "adds_using_same_word": [
+          "add.f32 \t%f282, %f278, %f281;",
+          "add.f32 \t%f283, %f280, %f281;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f287",
+        "position": "%r240",
+        "reach_address": "%rd190",
+        "position_load": "ld.shared.u32 \t%r240, [%rd188];",
+        "reach_load": "ld.shared.f32 \t%f287, [%rd190];",
+        "adds_using_same_word": [
+          "add.f32 \t%f288, %f284, %f287;",
+          "add.f32 \t%f289, %f286, %f287;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f292",
+        "position": "%r243",
+        "reach_address": "%rd194",
+        "position_load": "ld.shared.u32 \t%r243, [%rd192];",
+        "reach_load": "ld.shared.f32 \t%f292, [%rd194];",
+        "adds_using_same_word": [
+          "add.f32 \t%f293, %f707, %f292;",
+          "add.f32 \t%f294, %f708, %f292;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f298",
+        "position": "%r246",
+        "reach_address": "%rd198",
+        "position_load": "ld.shared.u32 \t%r246, [%rd196];",
+        "reach_load": "ld.shared.f32 \t%f298, [%rd198];",
+        "adds_using_same_word": [
+          "add.f32 \t%f299, %f295, %f298;",
+          "add.f32 \t%f300, %f297, %f298;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f302",
+        "position": "%r250",
+        "reach_address": "%rd202",
+        "position_load": "ld.shared.u32 \t%r250, [%rd200];",
+        "reach_load": "ld.shared.f32 \t%f302, [%rd202];",
+        "adds_using_same_word": [
+          "add.f32 \t%f303, %f707, %f302;",
+          "add.f32 \t%f304, %f708, %f302;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f307",
+        "position": "%r255",
+        "reach_address": "%rd208",
+        "position_load": "ld.shared.u32 \t%r255, [%rd206];",
+        "reach_load": "ld.shared.f32 \t%f307, [%rd208];",
+        "adds_using_same_word": [
+          "add.f32 \t%f308, %f707, %f307;",
+          "add.f32 \t%f309, %f708, %f307;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f313",
+        "position": "%r258",
+        "reach_address": "%rd212",
+        "position_load": "ld.shared.u32 \t%r258, [%rd210];",
+        "reach_load": "ld.shared.f32 \t%f313, [%rd212];",
+        "adds_using_same_word": [
+          "add.f32 \t%f314, %f310, %f313;",
+          "add.f32 \t%f315, %f312, %f313;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f319",
+        "position": "%r261",
+        "reach_address": "%rd216",
+        "position_load": "ld.shared.u32 \t%r261, [%rd214];",
+        "reach_load": "ld.shared.f32 \t%f319, [%rd216];",
+        "adds_using_same_word": [
+          "add.f32 \t%f320, %f316, %f319;",
+          "add.f32 \t%f321, %f318, %f319;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f325",
+        "position": "%r264",
+        "reach_address": "%rd220",
+        "position_load": "ld.shared.u32 \t%r264, [%rd218];",
+        "reach_load": "ld.shared.f32 \t%f325, [%rd220];",
+        "adds_using_same_word": [
+          "add.f32 \t%f326, %f322, %f325;",
+          "add.f32 \t%f327, %f324, %f325;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f331",
+        "position": "%r267",
+        "reach_address": "%rd224",
+        "position_load": "ld.shared.u32 \t%r267, [%rd222];",
+        "reach_load": "ld.shared.f32 \t%f331, [%rd224];",
+        "adds_using_same_word": [
+          "add.f32 \t%f332, %f328, %f331;",
+          "add.f32 \t%f333, %f330, %f331;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f337",
+        "position": "%r270",
+        "reach_address": "%rd228",
+        "position_load": "ld.shared.u32 \t%r270, [%rd226];",
+        "reach_load": "ld.shared.f32 \t%f337, [%rd228];",
+        "adds_using_same_word": [
+          "add.f32 \t%f338, %f334, %f337;",
+          "add.f32 \t%f339, %f336, %f337;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f343",
+        "position": "%r273",
+        "reach_address": "%rd232",
+        "position_load": "ld.shared.u32 \t%r273, [%rd230];",
+        "reach_load": "ld.shared.f32 \t%f343, [%rd232];",
+        "adds_using_same_word": [
+          "add.f32 \t%f344, %f340, %f343;",
+          "add.f32 \t%f345, %f342, %f343;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f349",
+        "position": "%r276",
+        "reach_address": "%rd236",
+        "position_load": "ld.shared.u32 \t%r276, [%rd234];",
+        "reach_load": "ld.shared.f32 \t%f349, [%rd236];",
+        "adds_using_same_word": [
+          "add.f32 \t%f350, %f346, %f349;",
+          "add.f32 \t%f351, %f348, %f349;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f354",
+        "position": "%r279",
+        "reach_address": "%rd240",
+        "position_load": "ld.shared.u32 \t%r279, [%rd238];",
+        "reach_load": "ld.shared.f32 \t%f354, [%rd240];",
+        "adds_using_same_word": [
+          "add.f32 \t%f355, %f707, %f354;",
+          "add.f32 \t%f356, %f708, %f354;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f360",
+        "position": "%r282",
+        "reach_address": "%rd244",
+        "position_load": "ld.shared.u32 \t%r282, [%rd242];",
+        "reach_load": "ld.shared.f32 \t%f360, [%rd244];",
+        "adds_using_same_word": [
+          "add.f32 \t%f361, %f357, %f360;",
+          "add.f32 \t%f362, %f359, %f360;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f366",
+        "position": "%r285",
+        "reach_address": "%rd248",
+        "position_load": "ld.shared.u32 \t%r285, [%rd246];",
+        "reach_load": "ld.shared.f32 \t%f366, [%rd248];",
+        "adds_using_same_word": [
+          "add.f32 \t%f367, %f363, %f366;",
+          "add.f32 \t%f368, %f365, %f366;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f372",
+        "position": "%r288",
+        "reach_address": "%rd252",
+        "position_load": "ld.shared.u32 \t%r288, [%rd250];",
+        "reach_load": "ld.shared.f32 \t%f372, [%rd252];",
+        "adds_using_same_word": [
+          "add.f32 \t%f373, %f369, %f372;",
+          "add.f32 \t%f374, %f371, %f372;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f377",
+        "position": "%r291",
+        "reach_address": "%rd256",
+        "position_load": "ld.shared.u32 \t%r291, [%rd254];",
+        "reach_load": "ld.shared.f32 \t%f377, [%rd256];",
+        "adds_using_same_word": [
+          "add.f32 \t%f378, %f707, %f377;",
+          "add.f32 \t%f379, %f708, %f377;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f383",
+        "position": "%r294",
+        "reach_address": "%rd260",
+        "position_load": "ld.shared.u32 \t%r294, [%rd258];",
+        "reach_load": "ld.shared.f32 \t%f383, [%rd260];",
+        "adds_using_same_word": [
+          "add.f32 \t%f384, %f380, %f383;",
+          "add.f32 \t%f385, %f382, %f383;"
+        ],
+        "add_count": 2
+      },
+      {
+        "reach_value": "%f387",
+        "position": "%r298",
+        "reach_address": "%rd264",
+        "position_load": "ld.shared.u32 \t%r298, [%rd262];",
+        "reach_load": "ld.shared.f32 \t%f387, [%rd264];",
+        "adds_using_same_word": [
+          "add.f32 \t%f388, %f707, %f387;",
+          "add.f32 \t%f389, %f708, %f387;"
+        ],
+        "add_count": 2
+      }
+    ],
+    "replay_card_reach_loads": [
+      {
+        "reach_value": "%f397",
+        "position": "%r306",
+        "reach_address": "%rd268",
+        "position_load": "ld.shared.u32 \t%r306, [%rd266];",
+        "reach_load": "ld.shared.f32 \t%f397, [%rd268];",
+        "adds_using_same_word": [
+          "add.f32 \t%f398, %f724, %f397;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f399",
+        "position": "%r308",
+        "reach_address": "%rd272",
+        "position_load": "ld.shared.u32 \t%r308, [%rd270];",
+        "reach_load": "ld.shared.f32 \t%f399, [%rd272];",
+        "adds_using_same_word": [
+          "add.f32 \t%f400, %f398, %f399;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f401",
+        "position": "%r310",
+        "reach_address": "%rd276",
+        "position_load": "ld.shared.u32 \t%r310, [%rd274];",
+        "reach_load": "ld.shared.f32 \t%f401, [%rd276];",
+        "adds_using_same_word": [
+          "add.f32 \t%f402, %f400, %f401;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f403",
+        "position": "%r312",
+        "reach_address": "%rd280",
+        "position_load": "ld.shared.u32 \t%r312, [%rd278];",
+        "reach_load": "ld.shared.f32 \t%f403, [%rd280];",
+        "adds_using_same_word": [
+          "add.f32 \t%f404, %f402, %f403;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f405",
+        "position": "%r314",
+        "reach_address": "%rd284",
+        "position_load": "ld.shared.u32 \t%r314, [%rd282];",
+        "reach_load": "ld.shared.f32 \t%f405, [%rd284];",
+        "adds_using_same_word": [
+          "add.f32 \t%f406, %f404, %f405;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f407",
+        "position": "%r316",
+        "reach_address": "%rd288",
+        "position_load": "ld.shared.u32 \t%r316, [%rd286];",
+        "reach_load": "ld.shared.f32 \t%f407, [%rd288];",
+        "adds_using_same_word": [
+          "add.f32 \t%f408, %f406, %f407;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f409",
+        "position": "%r318",
+        "reach_address": "%rd292",
+        "position_load": "ld.shared.u32 \t%r318, [%rd290];",
+        "reach_load": "ld.shared.f32 \t%f409, [%rd292];",
+        "adds_using_same_word": [
+          "add.f32 \t%f410, %f408, %f409;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f411",
+        "position": "%r320",
+        "reach_address": "%rd296",
+        "position_load": "ld.shared.u32 \t%r320, [%rd294];",
+        "reach_load": "ld.shared.f32 \t%f411, [%rd296];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f410, %f411;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f413",
+        "position": "%r322",
+        "reach_address": "%rd300",
+        "position_load": "ld.shared.u32 \t%r322, [%rd298];",
+        "reach_load": "ld.shared.f32 \t%f413, [%rd300];",
+        "adds_using_same_word": [
+          "add.f32 \t%f414, %f724, %f413;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f415",
+        "position": "%r324",
+        "reach_address": "%rd304",
+        "position_load": "ld.shared.u32 \t%r324, [%rd302];",
+        "reach_load": "ld.shared.f32 \t%f415, [%rd304];",
+        "adds_using_same_word": [
+          "add.f32 \t%f416, %f414, %f415;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f417",
+        "position": "%r326",
+        "reach_address": "%rd308",
+        "position_load": "ld.shared.u32 \t%r326, [%rd306];",
+        "reach_load": "ld.shared.f32 \t%f417, [%rd308];",
+        "adds_using_same_word": [
+          "add.f32 \t%f418, %f416, %f417;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f419",
+        "position": "%r328",
+        "reach_address": "%rd312",
+        "position_load": "ld.shared.u32 \t%r328, [%rd310];",
+        "reach_load": "ld.shared.f32 \t%f419, [%rd312];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f418, %f419;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f421",
+        "position": "%r330",
+        "reach_address": "%rd316",
+        "position_load": "ld.shared.u32 \t%r330, [%rd314];",
+        "reach_load": "ld.shared.f32 \t%f421, [%rd316];",
+        "adds_using_same_word": [
+          "add.f32 \t%f422, %f724, %f421;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f423",
+        "position": "%r332",
+        "reach_address": "%rd320",
+        "position_load": "ld.shared.u32 \t%r332, [%rd318];",
+        "reach_load": "ld.shared.f32 \t%f423, [%rd320];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f422, %f423;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f424",
+        "position": "%r335",
+        "reach_address": "%rd324",
+        "position_load": "ld.shared.u32 \t%r335, [%rd322];",
+        "reach_load": "ld.shared.f32 \t%f424, [%rd324];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f724, %f424;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f426",
+        "position": "%r339",
+        "reach_address": "%rd328",
+        "position_load": "ld.shared.u32 \t%r339, [%rd326];",
+        "reach_load": "ld.shared.f32 \t%f426, [%rd328];",
+        "adds_using_same_word": [
+          "add.f32 \t%f427, %f724, %f426;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f428",
+        "position": "%r341",
+        "reach_address": "%rd332",
+        "position_load": "ld.shared.u32 \t%r341, [%rd330];",
+        "reach_load": "ld.shared.f32 \t%f428, [%rd332];",
+        "adds_using_same_word": [
+          "add.f32 \t%f429, %f427, %f428;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f430",
+        "position": "%r343",
+        "reach_address": "%rd336",
+        "position_load": "ld.shared.u32 \t%r343, [%rd334];",
+        "reach_load": "ld.shared.f32 \t%f430, [%rd336];",
+        "adds_using_same_word": [
+          "add.f32 \t%f431, %f429, %f430;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f432",
+        "position": "%r345",
+        "reach_address": "%rd340",
+        "position_load": "ld.shared.u32 \t%r345, [%rd338];",
+        "reach_load": "ld.shared.f32 \t%f432, [%rd340];",
+        "adds_using_same_word": [
+          "add.f32 \t%f433, %f431, %f432;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f434",
+        "position": "%r347",
+        "reach_address": "%rd344",
+        "position_load": "ld.shared.u32 \t%r347, [%rd342];",
+        "reach_load": "ld.shared.f32 \t%f434, [%rd344];",
+        "adds_using_same_word": [
+          "add.f32 \t%f435, %f433, %f434;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f436",
+        "position": "%r349",
+        "reach_address": "%rd348",
+        "position_load": "ld.shared.u32 \t%r349, [%rd346];",
+        "reach_load": "ld.shared.f32 \t%f436, [%rd348];",
+        "adds_using_same_word": [
+          "add.f32 \t%f437, %f435, %f436;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f438",
+        "position": "%r351",
+        "reach_address": "%rd352",
+        "position_load": "ld.shared.u32 \t%r351, [%rd350];",
+        "reach_load": "ld.shared.f32 \t%f438, [%rd352];",
+        "adds_using_same_word": [
+          "add.f32 \t%f439, %f437, %f438;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f440",
+        "position": "%r353",
+        "reach_address": "%rd356",
+        "position_load": "ld.shared.u32 \t%r353, [%rd354];",
+        "reach_load": "ld.shared.f32 \t%f440, [%rd356];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f439, %f440;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f442",
+        "position": "%r355",
+        "reach_address": "%rd360",
+        "position_load": "ld.shared.u32 \t%r355, [%rd358];",
+        "reach_load": "ld.shared.f32 \t%f442, [%rd360];",
+        "adds_using_same_word": [
+          "add.f32 \t%f443, %f724, %f442;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f444",
+        "position": "%r357",
+        "reach_address": "%rd364",
+        "position_load": "ld.shared.u32 \t%r357, [%rd362];",
+        "reach_load": "ld.shared.f32 \t%f444, [%rd364];",
+        "adds_using_same_word": [
+          "add.f32 \t%f445, %f443, %f444;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f446",
+        "position": "%r359",
+        "reach_address": "%rd368",
+        "position_load": "ld.shared.u32 \t%r359, [%rd366];",
+        "reach_load": "ld.shared.f32 \t%f446, [%rd368];",
+        "adds_using_same_word": [
+          "add.f32 \t%f447, %f445, %f446;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f448",
+        "position": "%r361",
+        "reach_address": "%rd372",
+        "position_load": "ld.shared.u32 \t%r361, [%rd370];",
+        "reach_load": "ld.shared.f32 \t%f448, [%rd372];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f447, %f448;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f450",
+        "position": "%r363",
+        "reach_address": "%rd376",
+        "position_load": "ld.shared.u32 \t%r363, [%rd374];",
+        "reach_load": "ld.shared.f32 \t%f450, [%rd376];",
+        "adds_using_same_word": [
+          "add.f32 \t%f451, %f724, %f450;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f452",
+        "position": "%r365",
+        "reach_address": "%rd380",
+        "position_load": "ld.shared.u32 \t%r365, [%rd378];",
+        "reach_load": "ld.shared.f32 \t%f452, [%rd380];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f451, %f452;"
+        ],
+        "add_count": 1
+      },
+      {
+        "reach_value": "%f453",
+        "position": "%r368",
+        "reach_address": "%rd384",
+        "position_load": "ld.shared.u32 \t%r368, [%rd382];",
+        "reach_load": "ld.shared.f32 \t%f453, [%rd384];",
+        "adds_using_same_word": [
+          "add.f32 \t%f724, %f724, %f453;"
+        ],
+        "add_count": 1
+      }
+    ],
+    "proof_scope": "Operand/CFG witness, not fullPTX simulator/actualnativeIEEE/speedproof. Actualbarrierlegality,inputextents,unfilteredoriginalcorpus/caller/fullstate still mandatory."
+  },
+  "negative_reader_fixtures": [
+    {
+      "fixture": "bad_reach_threshold",
+      "rejected": true
+    },
+    {
+      "fixture": "inf_prefix_accepted",
+      "rejected": true
+    },
+    {
+      "fixture": "store_wrong_prefix",
+      "rejected": true
+    },
+    {
+      "fixture": "wrong_prefix_product",
+      "rejected": true
+    },
+    {
+      "fixture": "unexpected_third_card_sum",
+      "rejected": true
+    }
+  ],
+  "application_kernel_launches_solver_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "SealedPTX/sourceCPUstructuralreaderonly; no newGPU/module/kernel/solver/speed. Rootreviewnotexternalindependentaudit."
+}

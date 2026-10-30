@@ -1,0 +1,27 @@
+{
+  "args": [
+    "rustc",
+    "probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "probe.exe"
+  ],
+  "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-fold-card-order-exact",
+  "started_at": "2026-10-16T17:48:41.754013+00:00",
+  "timeout_seconds": 600,
+  "elapsed_seconds": 5.828000000001339,
+  "returncode": 0,
+  "cleanup": null
+}

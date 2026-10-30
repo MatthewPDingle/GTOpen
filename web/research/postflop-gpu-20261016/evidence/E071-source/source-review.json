@@ -1,0 +1,89 @@
+{
+  "id": "E071",
+  "at": "2026-10-18T01:52:34.761929+00:00",
+  "status": "root_source_scope_review_not_external_audit",
+  "owned_source": "crates/solver/src/gpu/plan.rs",
+  "candidate_sha256": "3146a8e863ac6edb94d27306f142ab114ec1a7bd13c9623f8cb44467ad843a3c",
+  "mechanical_reverse_equals_accepted": true,
+  "all_original_computational_statements_and_order_within_each_branch_exact": true,
+  "groups": {
+    "worklists": [
+      "num_levels",
+      "cfv_slot",
+      "cfv_blocks",
+      "action_nodes",
+      "action_spans",
+      "fold_nodes",
+      "fold_spans",
+      "show_nodes",
+      "show_spans",
+      "chance_nodes",
+      "chance_node_spans",
+      "chance_parents",
+      "chance_children",
+      "chance_cards",
+      "chance_spans",
+      "node_river_slot",
+      "num_slots",
+      "riv_off",
+      "riv_cnt",
+      "riv_sorted_idx",
+      "riv_sorted_str",
+      "riv_lower",
+      "riv_upper",
+      "riv_card_off",
+      "riv_card_pos",
+      "riv_max_cnt"
+    ],
+    "metadata": [
+      "node_player",
+      "node_na",
+      "node_data_off",
+      "arena_elements",
+      "node_children_start",
+      "node_twin",
+      "node_tlose",
+      "node_ttie",
+      "node_cdiv",
+      "hand_c1",
+      "hand_c2",
+      "hand_mask",
+      "hand_perm_flat",
+      "reach_slot",
+      "reach_blocks"
+    ]
+  },
+  "dependencies": {
+    "outer_prefix": "Unchanged DFS creates immutable level/reached/river_key/reach_src and chance tables; n/nh/max_level are copied scalars.",
+    "worklists_reads": [
+      "spot",
+      "level",
+      "reached",
+      "river_key",
+      "max_level",
+      "n"
+    ],
+    "worklists_consumes_only": [
+      "rep_edges"
+    ],
+    "metadata_reads": [
+      "spot",
+      "reached",
+      "reach_src",
+      "n",
+      "nh"
+    ],
+    "writes": "Each closure creates and mutates only its own original local vectors/counters. Join completes both before destructuring and original GpuPlan literal. No alias, unsafe, reordered within-array traversal or numeric reduction.",
+    "type_proof_pending": "Rust compiler must accept shared Spot and owned branch returns as Send/Sync."
+  },
+  "scheduling": "One fixed two-closure rayon::join only for original board length3/4; original sequential left/right calls for board length5. No node threshold, local pool, new thread count setting or parameter tuning. Spot::new flop/turn river tables already use into_par_iter; river path does not.",
+  "heap_and_cost_scope": "No explicit new Vec/HashMap/clone/allocation site, no output lengths/capacities or device plan/launch changes. Existing temporary allocations can overlap differently; Rayon task execution/queue/stack and actual process peak/CPU responsiveness must be measured before adoption. Zero resource tradeoff is not assumed.",
+  "floating_scope": "Every original per-node conversion/division and river-table integer loop stays verbatim within one branch. GPU CUDA/arithmetic/launch/quality/save schema unchanged.",
+  "novelty": "Current ledger/GPU-source search and local all-ref plan.rs -G query find no implemented matching join; D110/D111 only identified the source lead. Not exhaustive remote history.",
+  "separate_from_closed_families": "Not E045parallel zero scan, E069showdown order, E070metadata encoding, E056action ordering, E063cutoff or failed D110observer. No failed D110 timing attribution is used.",
+  "rayon_source_sha256": "0d1d6ba860c65fd991a81459110dfb9ca03e590d830b515e5afc9c7b6bae6b08",
+  "source_activated": false,
+  "compiler_or_native_runs": 0,
+  "GPU_or_performance_samples": 0,
+  "primary_acceptance": "Unchanged unrounded1%complete-solve, strict fixture guard, fixed3pairs then fresh16/broad/material/holdout/fresh-original; no rescue variants or samples."
+}

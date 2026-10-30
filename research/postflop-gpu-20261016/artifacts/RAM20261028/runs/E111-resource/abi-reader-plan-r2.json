@@ -1,0 +1,18 @@
+{
+  "id": "E111-ABI-reader-R2",
+  "at": "2026-10-29T04:25:12.461521+00:00",
+  "status": "FROZEN_PRE_CORRECTED_CPU_HEADER_READER",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource-abi-r2.py": "16cb69286c53c636c7f5999bff1946fcd06872a3d04f5ecf4d254e4293f50b3c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\protocol.json": "b3ef02571053e254a1a3ea4f1949b85e08c59f5d1a25c28db92fc50bce978247",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\report.json": "6963608e673a46a84bd4f21eb05e543f64d82aeda29cc0e9e350524fb75eb284",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\execution\\candidate-compute_120.ptx": "5f570dc443e779691d9a77f147598e00ab388a71e3652a22c3ea66eb4ea42d56",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\execution\\candidate-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\probe.rs": "158e04d3f25b200bbc843ce53a8020bae62b173369fd5b385ed8f639061c04aa",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\probe.exe": "4368c41346147e441b5c547a995315e0ea0f204ba0ffd588a6c7e61c4547edfe",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-resource\\candidate.cu": "2822d7d11a01cabf5fe16c355c438a224be50d5cf57053671efe7cd1bc4d47b9"
+  },
+  "cause": "Original regex required type immediately followed by name, omitting .ptr .align 1 qualifiers on22pointer parameters. It read the same5scalar parameters onboth sides then incorrectlyrequired27. Actualcompilerheaders retained; no candidate source/ABI mismatch observed.",
+  "correction": "Read all27 completeparameterlines includingexacttype,pointer/alignmentqualifiers,ordinal/width; normalize onlyfunctionname. Negativefixtures:wrongwidth,droppedparam,wrongpointeralignment. Preserveallotheroriginalresourcegates unchanged.",
+  "no_compiler_module_kernel_solver_or_speed_repeat": true
+}

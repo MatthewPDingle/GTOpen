@@ -1,0 +1,24 @@
+{
+  "id": "E124",
+  "at": "2026-10-29T20:26:26.847023+00:00",
+  "status": "FROZEN_OFF_TREE_PRE_COMPILER",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "85be28573f10f4304fcaa44fc3225db5e7d290cbfc1f740e7565b11d913cc201",
+  "helper": "\r\n// Bounds keep both operands and the correctly rounded quotient normal.\r\n// Every other value retains the original division, including signed zeros.\r\n__device__ __forceinline__ float normal_regret_quotient(float n, float d)\r\n{\r\n    const float min_n = 1.08420217248550443400745280086994171142578125e-19f; // 2^-63\r\n    const float max_d = 9223372036854775808.0f; // 2^63\r\n    if (n >= min_n && d <= max_d && n <= d) {\r\n        float q;\r\n        asm(\"div.rn.ftz.f32 %0, %1, %2;\" : \"=f\"(q) : \"f\"(n), \"f\"(d));\r\n        return q;\r\n    }\r\n    return n / d;\r\n}\r\n",
+  "edits": [
+    {
+      "old": "v = pr * ((r > 0.f ? r : 0.f) / sum);",
+      "new": "v = pr * normal_regret_quotient((r > 0.f ? r : 0.f), sum);"
+    },
+    {
+      "old": "float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;",
+      "new": "float sig = sum > 1e-12f ? normal_regret_quotient((r > 0.f ? r : 0.f), sum) : uni;"
+    }
+  ],
+  "whole_CRLF_source_inverse_exact": true,
+  "target": "Original down_action/up_action normalization quotients only; independent per-action RN division, no denominator sharing or zero/one shortcut",
+  "proof_sha256": "a1b51f32a3f797f4cb271e6e496bdf331878d973f61870e5de7bad92494c164d",
+  "unchanged": "All original clamp/sum/sigma consumers/uniformfallthrough/multiplications/FMA/discount/regret/strategy/locks/opponent/genericlogic,7otherentries/9ABIs/host/metadata/arrays/launch/shared/graphs/quality/checks/saves. No globalFTZ/fastmath/precision flag, reciprocal or handcrafted refinement introduced.",
+  "risks": "Actual original normal path may already avoid exceptional work. FTZ form may retain identical native RCP/FMA/FCHK/CALL work; guards/codesize/registers/branch divergence may hurt. Source proof is not compiler/GPU/fallbackNaN/accuracy/speed proof.",
+  "failure": "Close fixed2^-63/2^63 plain guarded per-quotient RN-FTZ form without guard/window/asmconstraint/architecture/kernel-subset/arity/zero-bypass/helper/flags/width/source/quality/sample rescue. All E060sharing/E101/E116 bypass forms remainclosed."
+}

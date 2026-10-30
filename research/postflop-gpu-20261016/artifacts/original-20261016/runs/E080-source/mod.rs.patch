@@ -1,0 +1,112 @@
+--- accepted/crates/solver/src/gpu/mod.rs
++++ E080/crates/solver/src/gpu/mod.rs
+@@ -19,7 +19,7 @@
+ mod continuation_paging;
+ #[cfg(feature = "preflop-research")]
+ pub use continuation_paging::{ContinuationWorkspace, PagedContinuationGpu};
+-use arena::ArenaLayout;
++use arena::{ArenaLayout, ZeroCheck};
+ 
+ use crate::cfr::{Algorithm, Discounts, Solver};
+ use crate::store::Store;
+@@ -162,6 +162,15 @@
+     pub algo: Algorithm,
+ }
+ 
++fn checks_with_setup<S,V:Send,F:FnOnce()->Result<S,String>,C:Fn()->V+Sync>(eligible:bool,setup:F,checks:C)->Result<(S,V),String>{
++ if !eligible{let s=setup()?;return Ok((s,checks()));}
++ std::thread::scope(|scope|{
++  let worker=std::thread::Builder::new().name("gtopen-zero-check".into()).spawn_scoped(scope,||checks());
++  let s=setup();let result=worker.ok().map(|h|h.join());let s=s?;
++  let values=match result{Some(Ok(v))=>v,Some(Err(payload))=>std::panic::resume_unwind(payload),None=>checks()};Ok((s,values))
++ })
++}
++
+ impl GpuSolver {
+     /// Research-only counterpart of Solver::research_continuation_sweep.
+     /// This deliberately uses eager launches until integrated correctness is
+@@ -229,6 +238,18 @@
+         // records would invalidate CUDA graph capture.
+         unsafe { ctx.disable_event_tracking() };
+ 
++        let stores = [&solver.regrets[0], &solver.regrets[1], &solver.strat[0], &solver.strat[1]];
++        let q_bytes: usize = stores.iter().map(|store| match store {
++            Store::I16 { q, .. } => q.len() * 2,
++            Store::U16 { q, .. } => q.len() * 2,
++            Store::F32(_) => 0,
++        }).sum();
++        let overlap = q_bytes >= 64 * 1024 * 1024;
++        // Only immutable store scans leave this caller. Context, compilation,
++        // allocation and every CUDA API stay here; joining precedes all uploads.
++        let ((module, mut h_staging, mut arena_layout), zero_checks) = checks_with_setup(
++            overlap,
++            || {
+         // Compile the PTX for the device we actually found: hardcoded
+         // compute_86 refuses to load on an A100 (8.0) and makes newer cards
+         // JIT from stale PTX. (&'static is what cudarc's CompileOptions
+@@ -251,12 +272,6 @@
+             })
+             .clone()?;
+         let module = ctx.load_module(ptx).map_err(e)?;
+-        let func = |name: &str| module.load_function(name).map_err(e);
+-
+-        let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
+-        let upi32 = |v: &Vec<i32>| stream.clone_htod(v).map_err(e);
+-        let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
+-        let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
+ 
+         let data_len = plan.arena_elements;
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+@@ -264,13 +279,26 @@
+             ArenaLayout::new(solver, &plan, 0),
+             ArenaLayout::new(solver, &plan, 1),
+         ];
++
++                Ok((module, h_staging, arena_layout))
++            },
++            || overlap.then(|| stores.map(ZeroCheck::new)),
++        )?;
++        let func = |name: &str| module.load_function(name).map_err(e);
++
++        let up32 = |v: &Vec<u32>| stream.clone_htod(v).map_err(e);
++        let upi32 = |v: &Vec<i32>| stream.clone_htod(v).map_err(e);
++        let up64 = |v: &Vec<u64>| stream.clone_htod(v).map_err(e);
++        let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
++
++        let data_len = plan.arena_elements;
+         let d_regrets = [
+-            arena_layout[0].upload(&stream, solver, 0, 0, h_staging.as_mut_slice())?,
+-            arena_layout[1].upload(&stream, solver, 1, 0, h_staging.as_mut_slice())?,
++            arena_layout[0].upload_prechecked(&stream, solver, 0, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[0]))?,
++            arena_layout[1].upload_prechecked(&stream, solver, 1, 0, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[1]))?,
+         ];
+         let d_strat = [
+-            arena_layout[0].upload(&stream, solver, 0, 1, h_staging.as_mut_slice())?,
+-            arena_layout[1].upload(&stream, solver, 1, 1, h_staging.as_mut_slice())?,
++            arena_layout[0].upload_prechecked(&stream, solver, 0, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[2]))?,
++            arena_layout[1].upload_prechecked(&stream, solver, 1, 1, h_staging.as_mut_slice(), zero_checks.as_ref().map(|checks| &checks[3]))?,
+         ];
+         let (lock_off, lock_sigma) = build_lock_table(solver);
+ 
+@@ -1516,4 +1544,21 @@
+         }
+     }
+ 
++    #[test]
++    fn zero_check_setup_preserves_caller_error_priority_and_joined_cleanup() {
++        use std::sync::atomic::{AtomicUsize, Ordering};
++        struct Mock(Arc<AtomicUsize>);
++        impl Drop for Mock { fn drop(&mut self) { self.0.fetch_add(1, Ordering::SeqCst); } }
++ let mut lifecycle=0;let caller=std::thread::current().id();
++ for eligible in[false,true]{for setupmode in[0,1,2]{for checkmode in[0,1]{
++  let calls=Arc::new(AtomicUsize::new(0));let drops=Arc::new(AtomicUsize::new(0));let c=calls.clone();let d=drops.clone();
++  let outcome=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||checks_with_setup(eligible,||{assert_eq!(std::thread::current().id(),caller);match setupmode{0=>Ok(7usize),1=>Err("setup".into()),_=>panic!("setup mock")}},||{c.fetch_add(1,Ordering::SeqCst);assert_eq!(std::thread::current().id()==caller,!eligible);if checkmode==1{panic!("check mock");}Mock(d.clone())})));
++  let expected=if eligible||setupmode==0{1}else{0};assert_eq!(calls.load(Ordering::SeqCst),expected);
++  match(setupmode,checkmode,outcome){(1,_,Ok(Err(x)))=>assert_eq!(x,"setup"),(2,_,Err(_))=>{},(0,0,Ok(Ok((s,v))))=>{assert_eq!(s,7);drop(v);},(0,1,Err(_))=>{},_=>panic!("incorrect lifecycle")}
++  assert_eq!(drops.load(Ordering::SeqCst),if checkmode==0{expected}else{0});lifecycle+=1;
++ }}}
++
++        assert_eq!(lifecycle, 12);
++    }
++
+ }

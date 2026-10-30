@@ -1,0 +1,67 @@
+{
+  "id": "E077",
+  "at": "2026-10-18T04:54:17.486380+00:00",
+  "decision": "rejected",
+  "performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 9809.8838,
+    "candidate_full_cycle_ms": 9828.7185,
+    "observed_gain_pct": -0.19199717737738392,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": 0.08669252219694785,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          0.1792844562863911,
+          1.0767906883918412,
+          -0.5507935280434331
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 0.472061507676559,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          -0.5359133046311958,
+          0.7369341372808286,
+          0.5146269155703272
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -4.268876887421124,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          -8.690972844536176,
+          22.642719634888948,
+          -1.0177511518187046
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "ordinary_units_passed": 85,
+  "ignored_units": 4,
+  "exact_fixture_results": 18,
+  "exact_checkpoints": 138,
+  "CPU_metadata_cases": 12,
+  "direct_control_report_sha256": "394c229919d60a58412ee399fffe5bb59939bc2ba6670a3896167a34eea00732",
+  "direct_GPU_cases": 1820,
+  "direct_GPU_launches": 3640,
+  "direct_raw_report_sha256": "4b745450773ddaaa6305b4cf8318bbe7a8189682625a5b73197c7dc66d8c1a22",
+  "assessment_sha256": "0880d6b50865c5d4c19c0e7608a7d2306fde4c1785d0b76d5879fdfdd9dc6b47",
+  "root_replay_sha256": "e66a391620d42fcde21bce9da4e38770bbca4852504ae26e727e5526fae8b77e",
+  "primary_whole_arena_fingerprints_exact": true,
+  "primary_raw_arena_bytes_independently_compared": false,
+  "source_adopted": false,
+  "accepted_and_live_source": "E051",
+  "fresh16_broad_material_holdout_cumulative_run": false,
+  "no_exclusions_extensions_pooling": true,
+  "reason": "Initial complete-solve gain -0.191997%. All18 full non-timing results,138 checkpoints,85 ordinary tests,12 CPU metadata cases and1820 direct GPU pairs passed. Rejected: below the unrounded1% cutoff; repeatable fixture slowdown: rainbow, two-tone. No extra samples, flag/map/mask/guard/helper/source/width/placement variants or rescue."
+}

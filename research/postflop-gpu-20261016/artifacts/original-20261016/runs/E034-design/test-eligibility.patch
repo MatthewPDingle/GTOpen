@@ -1,0 +1,20 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -1583,7 +1583,16 @@
+                         "compact plan should admit trees the conservative estimate rejected");
+                 }
+                 let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
+-                assert!(gpu.uses_persisting_l2(), "evaluation qualification requires enabled policy");
++                let owned_bytes = gpu.d_cfv_slot.len() * std::mem::size_of::<u32>();
++                let expected_window = owned_bytes / 128 * 128;
++                if expected_window == 0 {
++                    assert!(!gpu.uses_persisting_l2(), "sub-line metadata must use the unhinted fallback");
++                    assert!(gpu.cache_policy.is_none());
++                    assert_eq!(cache_policy::window(&gpu.stream).unwrap().num_bytes, 0);
++                } else {
++                    assert!(gpu.uses_persisting_l2(), "eligible evaluation fixture requires enabled policy");
++                    assert_eq!(gpu.cache_policy.as_ref().unwrap().bytes(), expected_window);
++                }
+                 for _ in 0..40 { gpu.iterate().unwrap(); }
+                 let mut repeat = GpuSolver::new(&s).unwrap();
+                 for _ in 0..40 { repeat.iterate().unwrap(); }

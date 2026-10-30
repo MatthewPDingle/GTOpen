@@ -1,0 +1,207 @@
+{
+  "id": "small-gain-confirmation",
+  "status": "PROSPECTIVE_EXECUTION_PACKAGE_NOT_EXECUTED",
+  "base": "accepted E020",
+  "family": [
+    "E007",
+    "E008",
+    "E032",
+    "E036"
+  ],
+  "build_order": [
+    "E020",
+    "E007",
+    "E008",
+    "E032",
+    "E036"
+  ],
+  "arms": {
+    "E020": {
+      "source_manifest": null,
+      "owned_sources": [],
+      "candidate_owned_sha256": {},
+      "unit_inventory": {
+        "passed": 84,
+        "ignored": 4,
+        "total": 88
+      },
+      "focused_tests": [],
+      "test_marker": null,
+      "binary_prefix": "SG-E020",
+      "unit_id": "SG-E020-unit"
+    },
+    "E007": {
+      "source_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E007\\manifest.json",
+        "sha256": "380815a41de04bfec3c1b69739da6449f1eb86137cdb7d1de3d7d1ed139f8430"
+      },
+      "owned_sources": [
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "candidate_owned_sha256": {
+        "crates/solver/src/gpu/kernels.cu": "8040f5f92714a4e701e9b77db33e20a98ae177e64b1832fd434a951dcd703cc0"
+      },
+      "unit_inventory": {
+        "passed": 84,
+        "ignored": 4,
+        "total": 88
+      },
+      "focused_tests": [],
+      "test_marker": null,
+      "binary_prefix": "SG-E007",
+      "unit_id": "SG-E007-unit"
+    },
+    "E008": {
+      "source_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E008\\manifest.json",
+        "sha256": "58b04f2baa7dcf680a5f0601602926e6c9775085b56387c204915c9e59ec3e7b"
+      },
+      "owned_sources": [
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "candidate_owned_sha256": {
+        "crates/solver/src/gpu/kernels.cu": "3324dd9ec06da76e43bb1103e0fc66d329b237980f74b615cd50dad7be7d2619"
+      },
+      "unit_inventory": {
+        "passed": 84,
+        "ignored": 4,
+        "total": 88
+      },
+      "focused_tests": [],
+      "test_marker": null,
+      "binary_prefix": "SG-E008",
+      "unit_id": "SG-E008-unit"
+    },
+    "E032": {
+      "source_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E032\\manifest.json",
+        "sha256": "9abfc556d42c4137a1262cd9c74d81b254022629fd101afc25984797b29c9ec6"
+      },
+      "owned_sources": [
+        "crates/solver/src/gpu/mod.rs"
+      ],
+      "candidate_owned_sha256": {
+        "crates/solver/src/gpu/mod.rs": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16"
+      },
+      "unit_inventory": {
+        "passed": 85,
+        "ignored": 4,
+        "total": 89
+      },
+      "focused_tests": [
+        "gpu::tests::training_terminal_consolidation_covers_lists_and_falls_back"
+      ],
+      "test_marker": null,
+      "binary_prefix": "SG-E032",
+      "unit_id": "SG-E032-unit"
+    },
+    "E036": {
+      "source_manifest": {
+        "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E036\\manifest.json",
+        "sha256": "643b5fda6dbaacef95d1a474afb9e64d587dd115b9c6ef0ffe1f3e7f2c71ed24"
+      },
+      "owned_sources": [
+        "crates/solver/src/gpu/kernels.cu",
+        "crates/solver/src/gpu/mod.rs"
+      ],
+      "candidate_owned_sha256": {
+        "crates/solver/src/gpu/kernels.cu": "3915f2c5e5ecf699a8df343b324e340edd574d0b11021e06c0b8a5e00651588b",
+        "crates/solver/src/gpu/mod.rs": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877"
+      },
+      "unit_inventory": {
+        "passed": 85,
+        "ignored": 4,
+        "total": 89
+      },
+      "focused_tests": [
+        "gpu::tests::show_positive_zero_matches_original_kernel"
+      ],
+      "test_marker": {
+        "prefix": "E036_SHOW_ZERO_TEST ",
+        "fields": {
+          "comparison_pairs": 34,
+          "kernel_launches": 68,
+          "threads": 128,
+          "exact": true,
+          "performance_measurement": false
+        }
+      },
+      "binary_prefix": "SG-E036",
+      "unit_id": "SG-E036-unit"
+    }
+  },
+  "schedule_sha256": "16b1e0b18e162f3bcf8c75b9b1379ba9f42a85d198523666035392a6b736cc0a",
+  "source_package": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\manifest.json",
+    "sha256": "d7191141093875416b666335b4e678b89035e60ff3170af17e7f55bcaedb1e52"
+  },
+  "accepted_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json",
+    "sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+  },
+  "source_review": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\small-gain-confirmation-source-review\\report.json",
+    "sha256": "cb88d8855ea8d41ed7c02454acef1703ff0713adb1ce5b2d7e99e3f2bcfeaa89"
+  },
+  "root_preparation": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-root\\preparation.json",
+    "sha256": "8f447dfb8ad7f0598ae6ee886453d3b73dbc89182f20b5dcdfcf988961cb23c6"
+  },
+  "policy": {
+    "aggregate_gain_pct_minimum": 1.0,
+    "positive_pairs_minimum": 13,
+    "paired_gain_median_strictly_positive": true,
+    "each_four_pair_block_gain_median_strictly_positive": true,
+    "each_eight_pair_orientation_gain_median_strictly_positive": true,
+    "fixture_guard": "candidate fixture median slower than baseline median AND at least9/16 paired fixture slowdowns strictly positive rejects",
+    "fixture_required_slower_pairs": 9,
+    "exactness_mandatory": true,
+    "no_old_sample_pooling": true,
+    "no_exclusions_extensions_rescue": true,
+    "nominal_significance_claim": false,
+    "precedence": "This final user-directed1% and zero-repeatable-fixture-slowdown policy supersedes earlier2%/3% rules and the positive-only design amendment for this new family. Historical records/outcomes remain unchanged."
+  },
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "checkpoints_per_process": 23,
+  "fixture_results": 384,
+  "convergence_records": 2944,
+  "measurement_boundary": "Unchanged postflop_complete_cycle complete-cycle boundaries and exact evaluator. No timing-based early stop; all128 runs retained. Numerical/infrastructure failure stops fail-closed with no extension.",
+  "fresh_baseline": "Fresh E020 and four candidate binaries from identical toolchain/options; old accepted E020C1 exact raw results are correctness anchors only, never timing samples.",
+  "anchor": "E020C1",
+  "preexisting_target_artifacts": {
+    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
+      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
+      "bytes": 239582
+    },
+    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
+      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
+      "bytes": 431937
+    }
+  },
+  "build_timeout_seconds": 1800,
+  "run_timeout_seconds": 900,
+  "build_disk_reserve_gib": 54,
+  "run_disk_reserve_gib": 50,
+  "build_output": "runs/small-gain-confirmation-build",
+  "execution_output": "runs/small-gain-confirmation-execution",
+  "comparison_output": "comparisons/small-gain-confirmation",
+  "conditional_adoption_requirements": [
+    "independent raw evidence audit",
+    "no material memory/capacity/compatibility/behavior cost supported by actual resource/lifecycle evidence",
+    "broader exactness F32 state menu continuation original controls",
+    "prospective wide-turn holdout",
+    "fresh cumulative qualification"
+  ],
+  "source_during_measurements": "Accepted E020162 checkout, separately recorded from each frozen candidate build-time source map.",
+  "candidate_accepted": false,
+  "execution_requires": "Single root authorization pinning this final manifest and independent script review; no runtime authorized by preparation."
+}

@@ -1,0 +1,235 @@
+{
+  "id": "E080-memory-observer-ability",
+  "at": "2026-10-18T07:49:45.903341+00:00",
+  "status": "decline_software_memory_observer_accounting_mismatch",
+  "protocol_sha256": "d80cd75366f68c3a0a28809d15c42491cd9b2ad3f56934fb4b52eb40f22640ae",
+  "binary_sha256": "9e657e6e0051c5f2d9f9bd3b919ae3eb9126b5305b91e42b15236a55b597407f",
+  "plateaus": {
+    "baseline": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 642547712.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "CPU128": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 709791744.0,
+      "working_set_bytes": 264196096.0,
+      "creation_filetime": 134367833669697115
+    },
+    "CPU_free": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 575303680.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU256": {
+      "GPU_dedicated_bytes": 721035264.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 844267520.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU256_free": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 777027584.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU512": {
+      "GPU_dedicated_bytes": 989470720.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 1113235456.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU512_free": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 777031680.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU256_repeat": {
+      "GPU_dedicated_bytes": 721035264.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 844267520.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    },
+    "GPU256_repeat_free": {
+      "GPU_dedicated_bytes": 452595712.0,
+      "GPU_span_bytes": 0,
+      "private_bytes": 777027584.0,
+      "working_set_bytes": 129974272.0,
+      "creation_filetime": 134367833669697115
+    }
+  },
+  "checks": [
+    {
+      "label": "CPU private allocation",
+      "observed_delta_bytes": 67244032.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": false
+    },
+    {
+      "label": "CPU working-set allocation",
+      "observed_delta_bytes": 134221824.0,
+      "expected_delta_bytes": 134217728,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "CPU private release",
+      "observed_delta_bytes": -67244032.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": false
+    },
+    {
+      "label": "baseline GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "baseline GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "CPU128 GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "CPU128 GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "CPU_free GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "CPU_free GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256 GPU allocation/release",
+      "observed_delta_bytes": 268439552.0,
+      "expected_delta_bytes": 268435456,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256 GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_free GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_free GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU512 GPU allocation/release",
+      "observed_delta_bytes": 536875008.0,
+      "expected_delta_bytes": 536870912,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU512 GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU512_free GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU512_free GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_repeat GPU allocation/release",
+      "observed_delta_bytes": 268439552.0,
+      "expected_delta_bytes": 268435456,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_repeat GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_repeat_free GPU allocation/release",
+      "observed_delta_bytes": 0.0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    },
+    {
+      "label": "GPU256_repeat_free GPU plateau stability",
+      "observed_delta_bytes": 0,
+      "expected_delta_bytes": 0,
+      "absolute_tolerance_bytes": 4194304,
+      "passed": true
+    }
+  ],
+  "all_checks_pass": false,
+  "native_processes": 1,
+  "compiler_processes": 1,
+  "states": 9,
+  "source_candidate_activated": false,
+  "solver_executions": 0,
+  "performance_claim": false,
+  "actual_CPU_cost_qualification": false,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "excluded_states": [],
+  "extra_samples": 0,
+  "limits": "One known-allocation/readback and repeated-release calibration on this Windows/driver/RTX5090. PID-filtered software memory accounting is not a shader hardware counter or universal measurement guarantee. Other GPU memory counters are diagnostic only. A failed calibration closes this observer form without threshold/sample variants. No GTOpen cost, responsiveness, final scope or adoption conclusion."
+}

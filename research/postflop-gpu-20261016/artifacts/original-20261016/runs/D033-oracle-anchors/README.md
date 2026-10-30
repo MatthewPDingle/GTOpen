@@ -1,0 +1,31 @@
+# D033 immutable numerical anchors and private helper references
+
+Active prospective scope supplied by root: **rainbow, compressed storage only**, ordinary warmup through140 with exploit checks every20, then three20-iteration batches ending160/180/200, alternating native/instrumented batch order. Earlier60/80/100 scheduling discussion is superseded. Other fixture/F32 entries in anchors.json are reference catalog only and do not expand D033 execution or coverage.
+
+Original B038 and accepted E015C1 complete compressed non-timing records are identical. Original V004-f32-baseline and E015 V015-f32-candidate full-F32 records are identical. Raw stdout markers equal report copies; binary/manifest/log hashes verify. All preserved every20 convergence exploit bits match across these four runs. Full configuration, complete four-arena fingerprints and root-strategy bit vectors are retained in anchors.json.
+
+Rainbow exploit.to_bits:140=4600062402970321824;160=4598526937924752800;180=4596673615736125952;200=4595130701932466176. Final compressed fingerprint=65fb2853a11f3acc. The F32 reference hash1790d0881487f55f is storage-specific and is not the active compressed-path oracle. Both variants use257/319 hands,1,346,813 nodes, default DCFR/isomorphism, starting pot60/effective stack970, rainbow0%rake. **Set rake_cap3.0 exactly as frozen harness does; raw bench_spot.json contains0.** Never adjust menus/ranges/check cadence/stops to fit the diagnostic.
+
+## Reusable code and exactness boundaries
+
+References to accepted source are fetchable at runs/E016-design/base-mod.rs (SHA7de2cd46...). Private helpers at1193–1217 implement device_bits, assert_device_bits and assert_reach_reuse_state: compare complete f32 regret/strategy/reach bit images for both players and iteration. A temporary child cfg(test) module can access GpuSolver private fields directly; the helpers are in the sibling tests module, so copy/adapt their small logic or use appropriate visibility without changing production semantics. Compare one device array pair at a time to bound host staging.
+
+The helper deliberately excludes CFV scratch, whose inactive/unwritten slots are not a cross-solver semantic oracle. Compare raw **training** reaches before exploitability, which overwrites reach/CFV state. Then compare exploit bits and readback fingerprints at the same checkpoint on both solvers. Compressed q/scales can hide different f32 learning states, so compressed fingerprints alone are insufficient. Full-F32 host fingerprints require the matching F32 store/layout; do not manufacture them from a lossy compressed decode. D033 needs raw native-versus-instrumented equality plus its compressed immutable anchor, not an unplanned F32 experiment.
+
+legacy_iteration at1219–1225 documents discount handling: increment the iteration and upload Discounts::for_iteration(algo,t) to d_disc before that iteration's sweeps. Graphs read this mutable device pointer. Every native/instrumented replay must receive the same iteration-specific discount; twenty launches with one unchanged discount is a different algorithm. In E015 ordinary replay, g0 is full-p0 and g1 is within-pair reuse1; the latter is valid only after that same pair's p0. Preserve p0→p1 order and stream dependencies.
+
+Fingerprint implementation is in frozen tests/postflop_autoresearch.rs:44–143; copy it verbatim into temporary diagnostic source if needed without editing the frozen evaluator. It hashes type tags, lengths, every arena byte/scale, algorithm/iteration/iso/exploit metadata in fixed little-endian order and emits root strategy separately. GPU sync_to_cpu is mod.rs:997–1017; root average_strategy is safe without ensure_symmetric. Avoid queries/saves/materialization between checkpoints that alter inactive CPU representation. Keep checks/readbacks/hashing outside timed event intervals. Native and instrumented paths must be independent solvers on the same unchanged numerical trajectory; final immutable fingerprint alone does not certify every intermediate graph replay.
+
+## State reset and ownership hazards
+
+No reset is proposed in the active monotonic warmup/batch design. Keep that scope. Do not use CPU compressed save/load as a raw device snapshot. If reset were later required, it would have to restore every learning/reach input, iteration, d_disc and changed root weights; distinguish CFV/evaluation scratch, lock data, eval_warmed/eval_graph state and training graph lifetime. That is a separate change to protocol, not a convenience substitution here.
+
+Continuation_paging.rs:36–55 demonstrates the seven mutable arrays: regrets[2], strat[2], reach[2], cfv. Those swaps are **not** a drop-in restore for captured training graphs: captured kernel arguments retain device addresses. Never swap/reallocate an owning solver's arenas or launch a cloned graph against another solver's buffers. Graph clones/events/executables must retain their owning solver's allocations, modules, stream/context and event handles throughout replay and completion. If modifying capture dependencies, numerical/raw comparisons and event-chain structure need their own review.
+
+## Two-solver memory boundary
+
+Preserved E015C1 stdout reports rainbow staging+arenas5781.6MB (decimal, rounded) for one compressed solver. Two are approximately11.56GB before immutable metadata, CUDA contexts/modules/graphs/events and allocator overhead. This is not measured peak residency or a live admission check. Each CPU compressed arena set is1,386,321,040bytes; two total2,772,642,080bytes, plus a shared Spot, pinned staging and raw comparison vectors. Full-F32 CPU arena bytes are2,729,544,064 per solver but that path is reference-only here.
+
+Use one shared Arc<Spot> and separate solver states. Preflight actual free VRAM/RAM and planned payload with reserve before constructing both. Do not add whole-device backup arrays or duplicate all raw host arrays simultaneously merely for comparison. Constructor scratch/pinned buffers and graph instrumentation must be included in the diagnostic memory plan. These existing size observations do not authorize a GPU run or prove it fits alongside other workloads.
+
+No source writes, compilation, GPU calls, tests or timings were performed to extract these anchors. Only additive oracle artifacts were written; no timing claim is made.

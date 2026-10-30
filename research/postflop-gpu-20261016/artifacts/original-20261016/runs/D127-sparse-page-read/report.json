@@ -1,0 +1,1148 @@
+{
+  "id": "D127",
+  "at": "2026-10-18T05:23:22.620252+00:00",
+  "status": "decline_CPU_sparse_read_wall_budget_or_fixture_or_CPU_cost",
+  "protocol_sha256": "b10474fc92824f79380476819b012f9d6fee73e68fa745cd3d9a8cb0faf30369",
+  "binary_sha256": "e6c2d80546c5856831831b764df7810f70fd5b404986160cd6f6fedca056fb99",
+  "ability_report_sha256": "39d55be0fdd8592a8cf10185a69051b8cba4f23c44283b16b932490e5feb0f27",
+  "complete_fixed_six_process_cohort": true,
+  "results": {
+    "D127B1": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790066688,
+          "page_faults": 418678,
+          "peak_commit_bytes": 1790066688,
+          "peak_working_set_bytes": 1711091712,
+          "working_set_bytes": 1711091712
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1790066688,
+          "page_faults": 85433,
+          "peak_commit_bytes": 1790066688,
+          "peak_working_set_bytes": 346120192,
+          "working_set_bytes": 346120192
+        },
+        "board": "Ks7h2d",
+        "component_ms": 194.125,
+        "cpu_after_ticks100ns": 4375000,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 2500000,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1790066688,
+          "page_faults": 85434,
+          "peak_commit_bytes": 1790066688,
+          "peak_working_set_bytes": 346124288,
+          "working_set_bytes": 346124288
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 333244,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 1,
+        "process_cpu_ms": 187.5,
+        "process_page_fault_delta": 333245,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256523264,
+          "page_faults": 534471,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 2184478720,
+          "working_set_bytes": 2184478720
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2256523264,
+          "page_faults": 443768,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 1812959232,
+          "working_set_bytes": 1812959232
+        },
+        "board": "Ks7s2d",
+        "component_ms": 112.3558,
+        "cpu_after_ticks100ns": 7812500,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 6718750,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2256523264,
+          "page_faults": 443768,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 1812959232,
+          "working_set_bytes": 1812959232
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 90703,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 109.375,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256523264,
+          "page_faults": 534472,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 2184482816,
+          "working_set_bytes": 2184482816
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2256523264,
+          "page_faults": 534472,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 2184482816,
+          "working_set_bytes": 2184482816
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0021,
+        "cpu_after_ticks100ns": 7812500,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 7812500,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2256523264,
+          "page_faults": 534472,
+          "peak_commit_bytes": 2256523264,
+          "peak_working_set_bytes": 2184482816,
+          "working_set_bytes": 2184482816
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ],
+    "D127T1": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790050304,
+          "page_faults": 418930,
+          "peak_commit_bytes": 1790050304,
+          "peak_working_set_bytes": 1712128000,
+          "working_set_bytes": 1712128000
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 1790050304,
+          "page_faults": 85681,
+          "peak_commit_bytes": 1790050304,
+          "peak_working_set_bytes": 347140096,
+          "working_set_bytes": 347140096
+        },
+        "board": "Ks7h2d",
+        "component_ms": 97.7222,
+        "cpu_after_ticks100ns": 10937500,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 5156250,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1790050304,
+          "page_faults": 418930,
+          "peak_commit_bytes": 1790050304,
+          "peak_working_set_bytes": 1712128000,
+          "working_set_bytes": 1712128000
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 333249,
+        "process_cpu_ms": 578.125,
+        "process_page_fault_delta": 333249,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 333200,
+        "touched_q_bytes": 1364772032
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254209024,
+          "page_faults": 534045,
+          "peak_commit_bytes": 2254229504,
+          "peak_working_set_bytes": 2182737920,
+          "working_set_bytes": 2182737920
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2254204928,
+          "page_faults": 443341,
+          "peak_commit_bytes": 2254204928,
+          "peak_working_set_bytes": 1811214336,
+          "working_set_bytes": 1811214336
+        },
+        "board": "Ks7s2d",
+        "component_ms": 77.4928,
+        "cpu_after_ticks100ns": 15937500,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 12812500,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2254209024,
+          "page_faults": 534045,
+          "peak_commit_bytes": 2254229504,
+          "peak_working_set_bytes": 2182737920,
+          "working_set_bytes": 2182737920
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 90704,
+        "process_cpu_ms": 312.5,
+        "process_page_fault_delta": 90704,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 334358,
+        "touched_q_bytes": 1369522280
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254209024,
+          "page_faults": 534046,
+          "peak_commit_bytes": 2254229504,
+          "peak_working_set_bytes": 2182742016,
+          "working_set_bytes": 2182742016
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2254209024,
+          "page_faults": 534046,
+          "peak_commit_bytes": 2254229504,
+          "peak_working_set_bytes": 2182742016,
+          "working_set_bytes": 2182742016
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0013,
+        "cpu_after_ticks100ns": 15937500,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 15937500,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2254209024,
+          "page_faults": 534046,
+          "peak_commit_bytes": 2254229504,
+          "peak_working_set_bytes": 2182742016,
+          "working_set_bytes": 2182742016
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ],
+    "D127T2": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790976000,
+          "page_faults": 418955,
+          "peak_commit_bytes": 1790996480,
+          "peak_working_set_bytes": 1712230400,
+          "working_set_bytes": 1712230400
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 1790963712,
+          "page_faults": 85703,
+          "peak_commit_bytes": 1790963712,
+          "peak_working_set_bytes": 347230208,
+          "working_set_bytes": 347230208
+        },
+        "board": "Ks7h2d",
+        "component_ms": 124.4963,
+        "cpu_after_ticks100ns": 10625000,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 4687500,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1790976000,
+          "page_faults": 418955,
+          "peak_commit_bytes": 1790996480,
+          "peak_working_set_bytes": 1712230400,
+          "working_set_bytes": 1712230400
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 333252,
+        "process_cpu_ms": 593.75,
+        "process_page_fault_delta": 333252,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 333200,
+        "touched_q_bytes": 1364772032
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256424960,
+          "page_faults": 534568,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 2184876032,
+          "working_set_bytes": 2184876032
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2256424960,
+          "page_faults": 443865,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 1813356544,
+          "working_set_bytes": 1813356544
+        },
+        "board": "Ks7s2d",
+        "component_ms": 73.58770000000001,
+        "cpu_after_ticks100ns": 15937500,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 12812500,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2256424960,
+          "page_faults": 534568,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 2184876032,
+          "working_set_bytes": 2184876032
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 90703,
+        "process_cpu_ms": 312.5,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 334358,
+        "touched_q_bytes": 1369522280
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2256424960,
+          "page_faults": 534569,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 2184880128,
+          "working_set_bytes": 2184880128
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2256424960,
+          "page_faults": 534569,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 2184880128,
+          "working_set_bytes": 2184880128
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0012,
+        "cpu_after_ticks100ns": 15937500,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 15937500,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2256424960,
+          "page_faults": 534569,
+          "peak_commit_bytes": 2256424960,
+          "peak_working_set_bytes": 2184880128,
+          "working_set_bytes": 2184880128
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ],
+    "D127B2": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1791021056,
+          "page_faults": 418928,
+          "peak_commit_bytes": 1791021056,
+          "peak_working_set_bytes": 1712115712,
+          "working_set_bytes": 1712115712
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1791021056,
+          "page_faults": 85713,
+          "peak_commit_bytes": 1791021056,
+          "peak_working_set_bytes": 347267072,
+          "working_set_bytes": 347267072
+        },
+        "board": "Ks7h2d",
+        "component_ms": 197.73489999999998,
+        "cpu_after_ticks100ns": 3906250,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 2031250,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1791021056,
+          "page_faults": 85714,
+          "peak_commit_bytes": 1791021056,
+          "peak_working_set_bytes": 347271168,
+          "working_set_bytes": 347271168
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 333214,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 1,
+        "process_cpu_ms": 187.5,
+        "process_page_fault_delta": 333215,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255949824,
+          "page_faults": 534433,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 2184318976,
+          "working_set_bytes": 2184318976
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255949824,
+          "page_faults": 443730,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 1812799488,
+          "working_set_bytes": 1812799488
+        },
+        "board": "Ks7s2d",
+        "component_ms": 93.32849999999999,
+        "cpu_after_ticks100ns": 7031250,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 6093750,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2255949824,
+          "page_faults": 443730,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 1812799488,
+          "working_set_bytes": 1812799488
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 90703,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 93.75,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255949824,
+          "page_faults": 534434,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 2184323072,
+          "working_set_bytes": 2184323072
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255949824,
+          "page_faults": 534434,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 2184323072,
+          "working_set_bytes": 2184323072
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0015999999999999999,
+        "cpu_after_ticks100ns": 7031250,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 7031250,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2255949824,
+          "page_faults": 534434,
+          "peak_commit_bytes": 2255949824,
+          "peak_working_set_bytes": 2184323072,
+          "working_set_bytes": 2184323072
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ],
+    "D127B3": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790967808,
+          "page_faults": 418937,
+          "peak_commit_bytes": 1790967808,
+          "peak_working_set_bytes": 1712156672,
+          "working_set_bytes": 1712156672
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 1790967808,
+          "page_faults": 85692,
+          "peak_commit_bytes": 1790967808,
+          "peak_working_set_bytes": 347185152,
+          "working_set_bytes": 347185152
+        },
+        "board": "Ks7h2d",
+        "component_ms": 190.66230000000002,
+        "cpu_after_ticks100ns": 3906250,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 2031250,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1790967808,
+          "page_faults": 85693,
+          "peak_commit_bytes": 1790967808,
+          "peak_working_set_bytes": 347189248,
+          "working_set_bytes": 347189248
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 333244,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 1,
+        "process_cpu_ms": 187.5,
+        "process_page_fault_delta": 333245,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255908864,
+          "page_faults": 534429,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 2184306688,
+          "working_set_bytes": 2184306688
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255908864,
+          "page_faults": 443726,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 1812787200,
+          "working_set_bytes": 1812787200
+        },
+        "board": "Ks7s2d",
+        "component_ms": 101.1746,
+        "cpu_after_ticks100ns": 10312500,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 9375000,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2255908864,
+          "page_faults": 443726,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 1812787200,
+          "working_set_bytes": 1812787200
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 90703,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 93.75,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2255908864,
+          "page_faults": 534430,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 2184310784,
+          "working_set_bytes": 2184310784
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "baseline",
+        "before": {
+          "commit_bytes": 2255908864,
+          "page_faults": 534430,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 2184310784,
+          "working_set_bytes": 2184310784
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0014,
+        "cpu_after_ticks100ns": 10312500,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 10312500,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2255908864,
+          "page_faults": 534430,
+          "peak_commit_bytes": 2255908864,
+          "peak_working_set_bytes": 2184310784,
+          "working_set_bytes": 2184310784
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ],
+    "D127T3": [
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 1790078976,
+          "page_faults": 418945,
+          "peak_commit_bytes": 1790099456,
+          "peak_working_set_bytes": 1712189440,
+          "working_set_bytes": 1712189440
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 1790070784,
+          "page_faults": 85694,
+          "peak_commit_bytes": 1790070784,
+          "peak_working_set_bytes": 347193344,
+          "working_set_bytes": 347193344
+        },
+        "board": "Ks7h2d",
+        "component_ms": 91.7683,
+        "cpu_after_ticks100ns": 5156250,
+        "cpu_arena_bytes": 1386321040,
+        "cpu_before_ticks100ns": 1875000,
+        "fixture_index": 0,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 1790078976,
+          "page_faults": 418945,
+          "peak_commit_bytes": 1790099456,
+          "peak_working_set_bytes": 1712189440,
+          "working_set_bytes": 1712189440
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 333251,
+        "process_cpu_ms": 328.125,
+        "process_page_fault_delta": 333251,
+        "q_bytes": 1364772032,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 333200,
+        "touched_q_bytes": 1364772032
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254737408,
+          "page_faults": 534180,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 2183290880,
+          "working_set_bytes": 2183290880
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2254737408,
+          "page_faults": 443477,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 1811771392,
+          "working_set_bytes": 1811771392
+        },
+        "board": "Ks7s2d",
+        "component_ms": 74.616,
+        "cpu_after_ticks100ns": 9843750,
+        "cpu_arena_bytes": 1391071288,
+        "cpu_before_ticks100ns": 7343750,
+        "fixture_index": 1,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2254737408,
+          "page_faults": 534180,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 2183290880,
+          "working_set_bytes": 2183290880
+        },
+        "nodes": 1346813,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 14,
+        "pre_scan_page_fault_delta": 90703,
+        "process_cpu_ms": 250.0,
+        "process_page_fault_delta": 90703,
+        "q_bytes": 1369522280,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 334358,
+        "touched_q_bytes": 1369522280
+      },
+      {
+        "GPU_executions": 0,
+        "after": {
+          "commit_bytes": 2254737408,
+          "page_faults": 534181,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 2183294976,
+          "working_set_bytes": 2183294976
+        },
+        "all4_original_full_checks_pass": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "arm": "touch",
+        "before": {
+          "commit_bytes": 2254737408,
+          "page_faults": 534181,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 2183294976,
+          "working_set_bytes": 2183294976
+        },
+        "board": "Ks7h2dQhTc",
+        "component_ms": 0.0013,
+        "cpu_after_ticks100ns": 9843750,
+        "cpu_arena_bytes": 33360,
+        "cpu_before_ticks100ns": 9843750,
+        "fixture_index": 2,
+        "full_solve_performance_measured": false,
+        "mid": {
+          "commit_bytes": 2254737408,
+          "page_faults": 534181,
+          "peak_commit_bytes": 2254737408,
+          "peak_working_set_bytes": 2183294976,
+          "working_set_bytes": 2183294976
+        },
+        "nodes": 33,
+        "original_scan_page_fault_delta": 0,
+        "page_size": 4096,
+        "plan_levels": 8,
+        "pre_scan_page_fault_delta": 0,
+        "process_cpu_ms": 0.0,
+        "process_page_fault_delta": 0,
+        "q_bytes": 32832,
+        "rayon_threads": 16,
+        "stage": "CPU_zero_scan",
+        "touched_pages": 0,
+        "touched_q_bytes": 0
+      }
+    ]
+  },
+  "fixtures": [
+    {
+      "fixture_index": 0,
+      "board": "Ks7h2d",
+      "q_bytes": 1364772032,
+      "touch_applicable": true,
+      "baseline_wall_ms": [
+        194.125,
+        197.73489999999998,
+        190.66230000000002
+      ],
+      "candidate_wall_ms": [
+        97.7222,
+        124.4963,
+        91.7683
+      ],
+      "baseline_wall_median_ms": 194.125,
+      "candidate_wall_median_ms": 97.7222,
+      "saving_of_medians_ms": 96.4028,
+      "paired_saving_ms": [
+        96.4028,
+        73.23859999999998,
+        98.89400000000002
+      ],
+      "improving_pairs": 3,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        187.5,
+        187.5,
+        187.5
+      ],
+      "candidate_CPU_ms": [
+        578.125,
+        593.75,
+        328.125
+      ],
+      "baseline_CPU_median_ms": 187.5,
+      "candidate_CPU_median_ms": 578.125,
+      "CPU_limit_ms": 211.25000000000003,
+      "CPU_guard_pass": false,
+      "baseline_total_faults": [
+        333245,
+        333215,
+        333245
+      ],
+      "candidate_total_faults": [
+        333249,
+        333252,
+        333251
+      ],
+      "baseline_pre_scan_faults": [
+        1,
+        1,
+        1
+      ],
+      "candidate_pre_scan_faults": [
+        333249,
+        333252,
+        333251
+      ],
+      "baseline_original_scan_faults": [
+        333244,
+        333214,
+        333244
+      ],
+      "candidate_original_scan_faults": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "fixture_index": 1,
+      "board": "Ks7s2d",
+      "q_bytes": 1369522280,
+      "touch_applicable": true,
+      "baseline_wall_ms": [
+        112.3558,
+        93.32849999999999,
+        101.1746
+      ],
+      "candidate_wall_ms": [
+        77.4928,
+        73.58770000000001,
+        74.616
+      ],
+      "baseline_wall_median_ms": 101.1746,
+      "candidate_wall_median_ms": 74.616,
+      "saving_of_medians_ms": 26.5586,
+      "paired_saving_ms": [
+        34.863,
+        19.74079999999998,
+        26.5586
+      ],
+      "improving_pairs": 3,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        109.375,
+        93.75,
+        93.75
+      ],
+      "candidate_CPU_ms": [
+        312.5,
+        312.5,
+        250.0
+      ],
+      "baseline_CPU_median_ms": 93.75,
+      "candidate_CPU_median_ms": 312.5,
+      "CPU_limit_ms": 108.12500000000001,
+      "CPU_guard_pass": false,
+      "baseline_total_faults": [
+        90703,
+        90703,
+        90703
+      ],
+      "candidate_total_faults": [
+        90704,
+        90703,
+        90703
+      ],
+      "baseline_pre_scan_faults": [
+        0,
+        0,
+        0
+      ],
+      "candidate_pre_scan_faults": [
+        90704,
+        90703,
+        90703
+      ],
+      "baseline_original_scan_faults": [
+        90703,
+        90703,
+        90703
+      ],
+      "candidate_original_scan_faults": [
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "fixture_index": 2,
+      "board": "Ks7h2dQhTc",
+      "q_bytes": 32832,
+      "touch_applicable": false,
+      "baseline_wall_ms": [
+        0.0021,
+        0.0015999999999999999,
+        0.0014
+      ],
+      "candidate_wall_ms": [
+        0.0013,
+        0.0012,
+        0.0013
+      ],
+      "baseline_wall_median_ms": 0.0015999999999999999,
+      "candidate_wall_median_ms": 0.0013,
+      "saving_of_medians_ms": 0.0002999999999999999,
+      "paired_saving_ms": [
+        0.0007999999999999999,
+        0.00039999999999999996,
+        0.00010000000000000005
+      ],
+      "improving_pairs": 3,
+      "wall_guard_pass": true,
+      "baseline_CPU_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "candidate_CPU_ms": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "baseline_CPU_median_ms": 0.0,
+      "candidate_CPU_median_ms": 0.0,
+      "CPU_limit_ms": 5.0,
+      "CPU_guard_pass": true,
+      "baseline_total_faults": [
+        0,
+        0,
+        0
+      ],
+      "candidate_total_faults": [
+        0,
+        0,
+        0
+      ],
+      "baseline_pre_scan_faults": [
+        0,
+        0,
+        0
+      ],
+      "candidate_pre_scan_faults": [
+        0,
+        0,
+        0
+      ],
+      "baseline_original_scan_faults": [
+        0,
+        0,
+        0
+      ],
+      "candidate_original_scan_faults": [
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "sum_fixture_CPU_component_saving_ms": 122.9617,
+  "required_component_saving_ms": 95.825124,
+  "admit_one_integrated_trial": false,
+  "native_component_processes": 6,
+  "new_GPU_or_solver_executions": 0,
+  "full_solve_performance_measured": false,
+  "source_activated": false,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "excluded_samples": [],
+  "extension_runs": 0,
+  "limits": "CPU-only isolated source component, not private production upload or full solve. Same accepted Spot/Solver/GpuPlan/RLIB/mimalloc. Original4serialpredicates copied exactly and retained after read-only sparse pass. No CUDA context/pinning/device/layout construction. Mid counters inside both arm windows. Whole-process faults not hard-fault/physical-memory causal attribution. CPU time sums all threads, may exceed wall; process-time granularity and all raw observations retained. Fixed component wall budget and10%+5ms CPU screen do not establish no-tradeoff adoption. Full GPU exact/broad/material/full-cycle1%/strict fixture/fresh16/holdout/cumulative gates remain if admitted. No sample/source/chunk/threshold/thread/helper/API/placement rescue after actual failure."
+}

@@ -1,0 +1,10 @@
+warning: unused import: `ffi::c_void`
+ --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D310-interleaved-copy-control\probe-v2.rs:5:11
+  |
+5 | use std::{ffi::c_void,fmt::Debug,fs::OpenOptions,io::Write,mem::{size_of,align_of,offset_of},path::{Path,PathBuf},ptr,sync::Arc,time:...
+  |           ^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+warning: 1 warning emitted
+

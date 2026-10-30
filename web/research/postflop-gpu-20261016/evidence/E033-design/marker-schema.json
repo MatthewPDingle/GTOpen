@@ -1,0 +1,44 @@
+{
+  "prefix": "E033_CACHE_POLICY ",
+  "format": "JSON after prefix; stderr, merged by frozen runner",
+  "constructor": {
+    "stage": "enabled",
+    "enabled": true,
+    "owned_bytes": "actual allocation bytes",
+    "window_bytes": "W",
+    "normalized_lines": 0,
+    "cleanup_complete": false,
+    "errors": false
+  },
+  "readback": {
+    "stage": "clean",
+    "enabled": true,
+    "owned_bytes": "same",
+    "window_bytes": "W",
+    "normalized_lines": "W/128 if this call normalized a dirty epoch, otherwise0",
+    "cleanup_complete": true,
+    "errors": false
+  },
+  "primary_expected": {
+    "enabled_records": 3,
+    "clean_records": 3,
+    "owned_bytes": [
+      5387252,
+      5387252,
+      132
+    ],
+    "window_bytes": [
+      5387136,
+      5387136,
+      128
+    ],
+    "normalized_lines": [
+      42087,
+      42087,
+      1
+    ]
+  },
+  "placement": "enabled within constructor after verified setup; clean inside sync_to_cpu after successful normalization/synchronization, before return. Existing primary timing includes both. No success marker from Drop.",
+  "failure_marker": "E033_CACHE_CLEANUP_ERROR",
+  "fallback": "constructor can emit enabled:false before setup on unsupported/ineligible hardware; qualification must reject this, never count it as enabled-policy evidence."
+}

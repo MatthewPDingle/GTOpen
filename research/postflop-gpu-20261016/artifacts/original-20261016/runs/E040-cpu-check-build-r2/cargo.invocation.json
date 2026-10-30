@@ -1,0 +1,17 @@
+{
+  "at": "2026-10-17T00:56:12.789604+00:00",
+  "command": [
+    "cargo",
+    "test",
+    "--release",
+    "--locked",
+    "--offline",
+    "-p",
+    "solver",
+    "--features",
+    "gpu",
+    "--lib",
+    "--no-run",
+    "--message-format=json"
+  ]
+}

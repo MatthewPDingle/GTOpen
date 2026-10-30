@@ -1,0 +1,23 @@
+warning: unused import: `ffi::c_void`
+ --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D310-interleaved-copy-control\probe.rs:5:11
+  |
+5 | use std::{ffi::c_void,fmt::Debug,fs::OpenOptions,io::Write,mem::{size_of,align_of,offset_of},path::{Path,PathBuf},ptr,sync::Arc,time:...
+  |           ^^^^^^^^^^^
+  |
+  = note: `#[warn(unused_imports)]` (part of `#[warn(unused)]`) on by default
+
+error[E0599]: no method named `memcpy_htod` found for reference `&CudaStream` in the current scope
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D310-interleaved-copy-control\probe.rs:46:151
+   |
+46 | ...let start=if right{len-G}else{0};must(s,s.memcpy_htod(&g,&mut device.slice_mut(start..start+G)));drain(s)}
+   |                                              ^^^^^^^^^^^ method not found in `&CudaStream`
+
+error[E0599]: no method named `memcpy_dtoh` found for reference `&CudaStream` in the current scope
+  --> X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\D310-interleaved-copy-control\probe.rs:54:73
+   |
+54 |  let mut off=0;while off<len{let count=(len-off).min(host.len);must(s,s.memcpy_dtoh(&device.slice(off..off+count),host.write(count))...
+   |                                                                         ^^^^^^^^^^^ method not found in `&CudaStream`
+
+error: aborting due to 2 previous errors; 1 warning emitted
+
+For more information about this error, try `rustc --explain E0599`.

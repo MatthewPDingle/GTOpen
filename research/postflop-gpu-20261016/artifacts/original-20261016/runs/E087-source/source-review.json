@@ -1,0 +1,21 @@
+{
+  "at": "2026-10-18T11:08:23.330474+00:00",
+  "scope": "Three host files only. One serial bounded staging window for warm uploads/full and strategy readback. Fixed64MiB limit, complete-node enlargement, nonallocating group iteration, existing compact metadata/copy spans/inactive snapshots reused. Paging releases added full-layout active metadata.",
+  "source_reverse_exact": true,
+  "validated_group_function": "Exact D138 function after type/name substitutions; source strings reverse to the original CPU-model function.",
+  "original_inactive_body_sha256": "62174c6a663fce3b6a778f05fc6244f1a896abbc06793c924f030fc1aaf26f8a",
+  "original_F32_restore_body_sha256": "ad5400b00092724e01662e516a96e02ba6d9a5b1f4002f5b68b0f3a6ba155e66",
+  "original_compressed_restore_body_sha256": "fdaac2266dda5879e72c20b4d194db50f3f78ac153ac969e4c4ce4c98ab5720d",
+  "unchanged": "CUDA/plan/Store codecs/flags/math/precision/quality/graphs/device layouts and payloads. E080 worker/check predicates and borrow proofs exact; all CUDA calls remain original caller. Existing small-layout writes and complete-row codecs preserved. No new persistent fields or production group vector.",
+  "ordering": "Large full layouts collect original owner nodes at exact host/device offsets. Coverage/row capacity checked before bounded copies. Whole row decoding/encoding uses original methods in ascending descriptor order; independent rows retain disjoint q/scales. Original coalesced compact F32 spans intersect each group. Full F32 copies avoid Rayon. Full F32 upload remains direct clone_htod.",
+  "drain": "Bounded uploads and all new download calls synchronize after copy even when submission reports an error. Copy error wins if both copy/wait fail. No pending copy crosses CPU encoding or staging reuse. Small full-F32 direct upload keeps its original branch. Error/unwind control still required; no atomic rollback or hardware-failure claim.",
+  "costs": "Full active descriptor Vec allocations and scanning are additional CPU/host costs. Fewer pinned bytes are requested, but additional calls/waits/metadata/encoder chunking may erase benefit. E080 overlaps setup with zero checks, so allocation spans are not removable complete-cycle headroom. Paging frees extra descriptors after replacing staging.",
+  "new_unit_tests": 2,
+  "expected_ordinary_units": 88,
+  "ordinary_ignored": 4,
+  "primary_sources": [
+    "https://docs.nvidia.com/cuda/cuda-driver-api/cuda_driver_api/group__CUDA__MEM.html",
+    "https://docs.nvidia.com/cuda/cuda-driver-api/cuda_driver_api/group__CUDA__STREAM.html"
+  ],
+  "pending": "Standalone type/unit checks; actual constructor/upload/readback/device/CPU raw error/unwind/symmetry controls; fresh full builds; original complete-cycle1%/strictfixture/fresh16/broad/material/capacity/holdout/cumulative gates."
+}

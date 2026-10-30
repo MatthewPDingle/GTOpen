@@ -1,0 +1,1488 @@
+{
+  "id": "D274",
+  "at": "2026-10-29T14:10:37.333693+00:00",
+  "status": "pass_observer_CPU_full_Spot_only",
+  "protocol_sha256": "be23631a0e418c58300a61fde992c5cbd61d59e7ae49c1489c50596cb57bae6f",
+  "source_review_sha256": "917ffc7aec735a6582ba6b0ba63310cfd9cbf9b4ebc6ad32276407b8f7a63d8b",
+  "compiler_exit": {
+    "started_at": "2026-10-29T14:08:52.681381+00:00",
+    "finished_at": "2026-10-29T14:09:37.656542+00:00",
+    "returncode": 0,
+    "error": null,
+    "cleanup": null
+  },
+  "native_processes": [
+    {
+      "id": "P1",
+      "order": "BO",
+      "exit_sha256": "a092de0e59187289357561a749b131551463d73319430cde1d5c8c1653564e1b",
+      "stdout_sha256": "a2d2853946da2594629ebdd3e5f83115d2fdd856861ba84aea85cd51cefa7177"
+    },
+    {
+      "id": "P2",
+      "order": "OB",
+      "exit_sha256": "fe2a4d165a4b98a62100dbc37a5f65b2c03a77980f8e3207c21d263f71a1579d",
+      "stdout_sha256": "652019d8e1d53c39b868c146601bbd1dfbfe18ac247e2e7cc49da5636b30a920"
+    },
+    {
+      "id": "P3",
+      "order": "BO",
+      "exit_sha256": "8bbe306e2e684912e070d562da04ca5f270e2ab18f4a00d6689b33f8eaae06a6",
+      "stdout_sha256": "d654b72083a773ad2c32cf8e46c82c117a11966b5d5656078ab899db100d82e4"
+    }
+  ],
+  "full_Spot_pairs": 9,
+  "error_pairs": 24,
+  "checks": 34448819,
+  "raw_retained_bytes": 1286898840,
+  "literal_paired_bytes": 643449420,
+  "cases": [
+    {
+      "process": "P1",
+      "fixture": "rainbow",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\rainbow-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\rainbow-observed.spot.bin",
+      "each_bytes": 107224371,
+      "baseline_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "observed_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 826
+          },
+          {
+            "field": "board",
+            "offset": 882,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 915,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 951,
+            "bytes": 582
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1561,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1584,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584901,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011181,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424377,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424418,
+            "bytes": 8088
+          },
+          {
+            "field": "weights",
+            "offset": 103432525,
+            "bytes": 2328
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434875,
+            "bytes": 2328
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437232,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437258,
+            "bytes": 3766872
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107204152,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107204193,
+            "bytes": 1192
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107205419,
+            "bytes": 18952
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          257,
+          319
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 1,
+        "capacity_values": 2368,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P1",
+      "fixture": "two-tone",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\two-tone-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\two-tone-observed.spot.bin",
+      "each_bytes": 107238593,
+      "baseline_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "observed_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 827
+          },
+          {
+            "field": "board",
+            "offset": 883,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 916,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 952,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1563,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1586,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584903,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011183,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424379,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424420,
+            "bytes": 8116
+          },
+          {
+            "field": "weights",
+            "offset": 103432555,
+            "bytes": 2336
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434913,
+            "bytes": 2336
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437278,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437304,
+            "bytes": 3779844
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107217170,
+            "bytes": 32
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107217223,
+            "bytes": 2368
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107219625,
+            "bytes": 18968
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          258,
+          320
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 2,
+        "capacity_values": 2370,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P1",
+      "fixture": "river",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\river-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P1\\river-observed.spot.bin",
+      "each_bytes": 20176,
+      "baseline_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "observed_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 831
+          },
+          {
+            "field": "board",
+            "offset": 887,
+            "bytes": 13
+          },
+          {
+            "field": "board_mask",
+            "offset": 922,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 958,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1569,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1592,
+            "bytes": 2252
+          },
+          {
+            "field": "tree_children",
+            "offset": 3869,
+            "bytes": 136
+          },
+          {
+            "field": "tree_actions",
+            "offset": 4029,
+            "bytes": 200
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 4255,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 4296,
+            "bytes": 7206
+          },
+          {
+            "field": "weights",
+            "offset": 11521,
+            "bytes": 2076
+          },
+          {
+            "field": "same_combo",
+            "offset": 13619,
+            "bytes": 2076
+          },
+          {
+            "field": "river_root_street",
+            "offset": 15724,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 15750,
+            "bytes": 3111
+          },
+          {
+            "field": "suit_perms",
+            "offset": 18883,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 18924,
+            "bytes": 1066
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 20024,
+            "bytes": 152
+          }
+        ],
+        "nodes": 33,
+        "hands": [
+          233,
+          280
+        ],
+        "node_kinds": [
+          12,
+          0,
+          10,
+          11
+        ],
+        "action_variants": [
+          10,
+          2,
+          10,
+          2,
+          8
+        ],
+        "river_some": 1,
+        "suit_permutations": 1,
+        "capacity_values": 18,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P2",
+      "fixture": "rainbow",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\rainbow-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\rainbow-observed.spot.bin",
+      "each_bytes": 107224371,
+      "baseline_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "observed_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 826
+          },
+          {
+            "field": "board",
+            "offset": 882,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 915,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 951,
+            "bytes": 582
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1561,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1584,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584901,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011181,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424377,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424418,
+            "bytes": 8088
+          },
+          {
+            "field": "weights",
+            "offset": 103432525,
+            "bytes": 2328
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434875,
+            "bytes": 2328
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437232,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437258,
+            "bytes": 3766872
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107204152,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107204193,
+            "bytes": 1192
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107205419,
+            "bytes": 18952
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          257,
+          319
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 1,
+        "capacity_values": 2368,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P2",
+      "fixture": "two-tone",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\two-tone-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\two-tone-observed.spot.bin",
+      "each_bytes": 107238593,
+      "baseline_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "observed_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 827
+          },
+          {
+            "field": "board",
+            "offset": 883,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 916,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 952,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1563,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1586,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584903,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011183,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424379,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424420,
+            "bytes": 8116
+          },
+          {
+            "field": "weights",
+            "offset": 103432555,
+            "bytes": 2336
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434913,
+            "bytes": 2336
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437278,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437304,
+            "bytes": 3779844
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107217170,
+            "bytes": 32
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107217223,
+            "bytes": 2368
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107219625,
+            "bytes": 18968
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          258,
+          320
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 2,
+        "capacity_values": 2370,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P2",
+      "fixture": "river",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\river-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P2\\river-observed.spot.bin",
+      "each_bytes": 20176,
+      "baseline_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "observed_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 831
+          },
+          {
+            "field": "board",
+            "offset": 887,
+            "bytes": 13
+          },
+          {
+            "field": "board_mask",
+            "offset": 922,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 958,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1569,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1592,
+            "bytes": 2252
+          },
+          {
+            "field": "tree_children",
+            "offset": 3869,
+            "bytes": 136
+          },
+          {
+            "field": "tree_actions",
+            "offset": 4029,
+            "bytes": 200
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 4255,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 4296,
+            "bytes": 7206
+          },
+          {
+            "field": "weights",
+            "offset": 11521,
+            "bytes": 2076
+          },
+          {
+            "field": "same_combo",
+            "offset": 13619,
+            "bytes": 2076
+          },
+          {
+            "field": "river_root_street",
+            "offset": 15724,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 15750,
+            "bytes": 3111
+          },
+          {
+            "field": "suit_perms",
+            "offset": 18883,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 18924,
+            "bytes": 1066
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 20024,
+            "bytes": 152
+          }
+        ],
+        "nodes": 33,
+        "hands": [
+          233,
+          280
+        ],
+        "node_kinds": [
+          12,
+          0,
+          10,
+          11
+        ],
+        "action_variants": [
+          10,
+          2,
+          10,
+          2,
+          8
+        ],
+        "river_some": 1,
+        "suit_permutations": 1,
+        "capacity_values": 18,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P3",
+      "fixture": "rainbow",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\rainbow-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\rainbow-observed.spot.bin",
+      "each_bytes": 107224371,
+      "baseline_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "observed_sha256": "ce293c42038ce56dfeaf68f08af829d29c4031a2cab9229667c245d50e8cd5a8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 826
+          },
+          {
+            "field": "board",
+            "offset": 882,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 915,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 951,
+            "bytes": 582
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1561,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1584,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584901,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011181,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424377,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424418,
+            "bytes": 8088
+          },
+          {
+            "field": "weights",
+            "offset": 103432525,
+            "bytes": 2328
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434875,
+            "bytes": 2328
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437232,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437258,
+            "bytes": 3766872
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107204152,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107204193,
+            "bytes": 1192
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107205419,
+            "bytes": 18952
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          257,
+          319
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 1,
+        "capacity_values": 2368,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P3",
+      "fixture": "two-tone",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\two-tone-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\two-tone-observed.spot.bin",
+      "each_bytes": 107238593,
+      "baseline_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "observed_sha256": "226ecf4cda3467e6877ff927f8e74c805a49dd54a196734eb0b9267b98793bab",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 827
+          },
+          {
+            "field": "board",
+            "offset": 883,
+            "bytes": 11
+          },
+          {
+            "field": "board_mask",
+            "offset": 916,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 952,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1563,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1586,
+            "bytes": 91583292
+          },
+          {
+            "field": "tree_children",
+            "offset": 91584903,
+            "bytes": 5426256
+          },
+          {
+            "field": "tree_actions",
+            "offset": 97011183,
+            "bytes": 6413170
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 103424379,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 103424420,
+            "bytes": 8116
+          },
+          {
+            "field": "weights",
+            "offset": 103432555,
+            "bytes": 2336
+          },
+          {
+            "field": "same_combo",
+            "offset": 103434913,
+            "bytes": 2336
+          },
+          {
+            "field": "river_root_street",
+            "offset": 103437278,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 103437304,
+            "bytes": 3779844
+          },
+          {
+            "field": "suit_perms",
+            "offset": 107217170,
+            "bytes": 32
+          },
+          {
+            "field": "hand_perm",
+            "offset": 107217223,
+            "bytes": 2368
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 107219625,
+            "bytes": 18968
+          }
+        ],
+        "nodes": 1346813,
+        "hands": [
+          258,
+          320
+        ],
+        "node_kinds": [
+          534362,
+          3250,
+          326600,
+          482601
+        ],
+        "action_variants": [
+          326600,
+          207762,
+          326600,
+          169053,
+          157547
+        ],
+        "river_some": 1176,
+        "suit_permutations": 2,
+        "capacity_values": 2370,
+        "all_typed_payload_endpoints_verified": true
+      }
+    },
+    {
+      "process": "P3",
+      "fixture": "river",
+      "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\river-baseline.spot.bin",
+      "observed": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D274-spot-observation\\P3\\river-observed.spot.bin",
+      "each_bytes": 20176,
+      "baseline_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "observed_sha256": "e583a15b8acc58b65623621af432a05acbf3161a42b998ba9883f244f4770fb8",
+      "entire_files_literal_equal": true,
+      "shape": {
+        "fields": [
+          {
+            "field": "config_json",
+            "offset": 39,
+            "bytes": 831
+          },
+          {
+            "field": "board",
+            "offset": 887,
+            "bytes": 13
+          },
+          {
+            "field": "board_mask",
+            "offset": 922,
+            "bytes": 8
+          },
+          {
+            "field": "tree_config_json",
+            "offset": 958,
+            "bytes": 583
+          },
+          {
+            "field": "tree_root_street",
+            "offset": 1569,
+            "bytes": 1
+          },
+          {
+            "field": "tree_nodes",
+            "offset": 1592,
+            "bytes": 2252
+          },
+          {
+            "field": "tree_children",
+            "offset": 3869,
+            "bytes": 136
+          },
+          {
+            "field": "tree_actions",
+            "offset": 4029,
+            "bytes": 200
+          },
+          {
+            "field": "tree_data_size",
+            "offset": 4255,
+            "bytes": 24
+          },
+          {
+            "field": "hands",
+            "offset": 4296,
+            "bytes": 7206
+          },
+          {
+            "field": "weights",
+            "offset": 11521,
+            "bytes": 2076
+          },
+          {
+            "field": "same_combo",
+            "offset": 13619,
+            "bytes": 2076
+          },
+          {
+            "field": "river_root_street",
+            "offset": 15724,
+            "bytes": 1
+          },
+          {
+            "field": "river_entries",
+            "offset": 15750,
+            "bytes": 3111
+          },
+          {
+            "field": "suit_perms",
+            "offset": 18883,
+            "bytes": 20
+          },
+          {
+            "field": "hand_perm",
+            "offset": 18924,
+            "bytes": 1066
+          },
+          {
+            "field": "data_vector_capacities",
+            "offset": 20024,
+            "bytes": 152
+          }
+        ],
+        "nodes": 33,
+        "hands": [
+          233,
+          280
+        ],
+        "node_kinds": [
+          12,
+          0,
+          10,
+          11
+        ],
+        "action_variants": [
+          10,
+          2,
+          10,
+          2,
+          8
+        ],
+        "river_some": 1,
+        "suit_permutations": 1,
+        "capacity_values": 18,
+        "all_typed_payload_endpoints_verified": true
+      }
+    }
+  ],
+  "observations": [
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 70533000,
+      "fixture": "rainbow",
+      "full_data_native_exact": true,
+      "hands": [
+        257,
+        319
+      ],
+      "nodes": 1346813,
+      "observed_ns": 65122400,
+      "order": "BO",
+      "profiled_constructor_ns": 65117500,
+      "river_ns": 2358600,
+      "symmetry_ns": 56100,
+      "tree_ns": 62570900,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 55510000,
+      "fixture": "two-tone",
+      "full_data_native_exact": true,
+      "hands": [
+        258,
+        320
+      ],
+      "nodes": 1346813,
+      "observed_ns": 56733600,
+      "order": "BO",
+      "profiled_constructor_ns": 56732000,
+      "river_ns": 2596700,
+      "symmetry_ns": 54100,
+      "tree_ns": 53924800,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 167600,
+      "fixture": "river",
+      "full_data_native_exact": true,
+      "hands": [
+        233,
+        280
+      ],
+      "nodes": 33,
+      "observed_ns": 146400,
+      "order": "BO",
+      "profiled_constructor_ns": 145500,
+      "river_ns": 22400,
+      "symmetry_ns": 17200,
+      "tree_ns": 5600,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 66590100,
+      "fixture": "rainbow",
+      "full_data_native_exact": true,
+      "hands": [
+        257,
+        319
+      ],
+      "nodes": 1346813,
+      "observed_ns": 69805500,
+      "order": "OB",
+      "profiled_constructor_ns": 69801900,
+      "river_ns": 2485700,
+      "symmetry_ns": 55700,
+      "tree_ns": 67089900,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 53514800,
+      "fixture": "two-tone",
+      "full_data_native_exact": true,
+      "hands": [
+        258,
+        320
+      ],
+      "nodes": 1346813,
+      "observed_ns": 56283000,
+      "order": "OB",
+      "profiled_constructor_ns": 56281900,
+      "river_ns": 2122600,
+      "symmetry_ns": 58900,
+      "tree_ns": 53939500,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 141100,
+      "fixture": "river",
+      "full_data_native_exact": true,
+      "hands": [
+        233,
+        280
+      ],
+      "nodes": 33,
+      "observed_ns": 161500,
+      "order": "OB",
+      "profiled_constructor_ns": 160700,
+      "river_ns": 26000,
+      "symmetry_ns": 18500,
+      "tree_ns": 4500,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 71737900,
+      "fixture": "rainbow",
+      "full_data_native_exact": true,
+      "hands": [
+        257,
+        319
+      ],
+      "nodes": 1346813,
+      "observed_ns": 68349500,
+      "order": "BO",
+      "profiled_constructor_ns": 68346600,
+      "river_ns": 2134200,
+      "symmetry_ns": 57700,
+      "tree_ns": 66023800,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 56497300,
+      "fixture": "two-tone",
+      "full_data_native_exact": true,
+      "hands": [
+        258,
+        320
+      ],
+      "nodes": 1346813,
+      "observed_ns": 55501900,
+      "order": "BO",
+      "profiled_constructor_ns": 55500100,
+      "river_ns": 2079500,
+      "symmetry_ns": 53800,
+      "tree_ns": 53240500,
+      "worker_count": 16
+    },
+    {
+      "CFR_iterations_GPU_calls": 0,
+      "CPU_only": true,
+      "baseline_ns": 185100,
+      "fixture": "river",
+      "full_data_native_exact": true,
+      "hands": [
+        233,
+        280
+      ],
+      "nodes": 33,
+      "observed_ns": 142600,
+      "order": "BO",
+      "profiled_constructor_ns": 142200,
+      "river_ns": 22000,
+      "symmetry_ns": 17200,
+      "tree_ns": 3900,
+      "worker_count": 16
+    }
+  ],
+  "errors": [
+    {
+      "case": "budget0",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget1",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget100",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 100; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_stack",
+      "river_not_started": true,
+      "same_error": "pot and stacks must be positive finite numbers",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_bet",
+      "river_not_started": true,
+      "same_error": "flop OOP bet: '2.5x' is a raise-only size — use % of pot or 'a'",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_board",
+      "river_not_started": true,
+      "same_error": "board must have 3 to 5 cards",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "empty_range",
+      "river_not_started": true,
+      "same_error": "OOP range has no combos left after board card removal",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "impossible_ranges",
+      "river_not_started": true,
+      "same_error": "OOP and IP ranges are mutually impossible: every OOP combo shares a card with every IP combo after board removal, so no deal exists (zero compatible pair mass) — every equity and EV would be 0/0",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget0",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget1",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget100",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 100; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_stack",
+      "river_not_started": true,
+      "same_error": "pot and stacks must be positive finite numbers",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_bet",
+      "river_not_started": true,
+      "same_error": "flop OOP bet: '2.5x' is a raise-only size — use % of pot or 'a'",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_board",
+      "river_not_started": true,
+      "same_error": "board must have 3 to 5 cards",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "empty_range",
+      "river_not_started": true,
+      "same_error": "OOP range has no combos left after board card removal",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "impossible_ranges",
+      "river_not_started": true,
+      "same_error": "OOP and IP ranges are mutually impossible: every OOP combo shares a card with every IP combo after board removal, so no deal exists (zero compatible pair mass) — every equity and EV would be 0/0",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget0",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget1",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "budget100",
+      "river_not_started": true,
+      "same_error": "tree too large: over the max_nodes budget of 100; reduce bet/raise sizes, max_raises, or effective stack",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_stack",
+      "river_not_started": true,
+      "same_error": "pot and stacks must be positive finite numbers",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_bet",
+      "river_not_started": true,
+      "same_error": "flop OOP bet: '2.5x' is a raise-only size — use % of pot or 'a'",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "bad_board",
+      "river_not_started": true,
+      "same_error": "board must have 3 to 5 cards",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "empty_range",
+      "river_not_started": true,
+      "same_error": "OOP range has no combos left after board card removal",
+      "symmetry_not_started": true
+    },
+    {
+      "case": "impossible_ranges",
+      "river_not_started": true,
+      "same_error": "OOP and IP ranges are mutually impossible: every OOP combo shares a card with every IP combo after board removal, so no deal exists (zero compatible pair mass) — every equity and EV would be 0/0",
+      "symmetry_not_started": true
+    }
+  ],
+  "medians": [
+    {
+      "fixture": "rainbow",
+      "baseline_ms": 70.533,
+      "observed_ms": 68.3495,
+      "tree_ms": 66.0238,
+      "river_ms": 2.3586,
+      "symmetry_ms": 0.0561,
+      "profiled_constructor_ms": 68.3466,
+      "observer_minus_baseline_ms": -2.183499999999995
+    },
+    {
+      "fixture": "two-tone",
+      "baseline_ms": 55.51,
+      "observed_ms": 56.283,
+      "tree_ms": 53.9248,
+      "river_ms": 2.1226,
+      "symmetry_ms": 0.0541,
+      "profiled_constructor_ms": 56.2819,
+      "observer_minus_baseline_ms": 0.7730000000000032
+    },
+    {
+      "fixture": "river",
+      "baseline_ms": 0.1676,
+      "observed_ms": 0.1464,
+      "tree_ms": 0.0045,
+      "river_ms": 0.0224,
+      "symmetry_ms": 0.0172,
+      "profiled_constructor_ms": 0.1455,
+      "observer_minus_baseline_ms": -0.021199999999999997
+    }
+  ],
+  "idealized_overlap_arithmetic_proxy_ms": 4.4857,
+  "planning_effort_constant_ms": 100.521554,
+  "proxy_above_effort_constant": false,
+  "source_candidate_created": false,
+  "new_GPU_CFR_solver_or_speed_samples": 0,
+  "scope_limits": "One fresh offline/locked release CPU-only librarytest compiler withoriginalgame prefix andseparate cfgtest profiledclone.3fresh exacttest processes BO/OB/BO,eachoriginal3canonical Spot pairs/all17fields/nativeeveryvalue+fullrawoutsideclocks,8originalstrict validation/budget errors withno river/symmetry. Full arrays/config/typedfloatbits/sortedriver strength/hand/suit/children/actions/data offsets/data-vector capacity comparisons. No GPU features/API/context/kernel/Solver/CFR iterations or GPU/fullsolve/speed samples. Original production source restored before native;RAYON16/defaultaffinity. Callingcurrent_num_threads initializes globalpool beforeclocks,so freshprocess isnot coldpool orfullsolve latency. Fresh CPU observer only. Stage/envelope/wall clocks arefinite instrumented observations,codegen/cold/warm/cache/pool effects remain. Sum min(per-fixture medianTree,medianRiver) is an idealized overlap arithmetic planning proxy,not removabletime upperbound ormeasured parallel gain.100.521554ms isonly1%of freshB360-36210052.1554ms as an effort constant,no historical/current timing sample pooling. No source or optimization admission fromtimers alone. HistoricalD044/D110/D183 timing excluded.",
+  "next_contract_review": "Only effort triage. Timers do not admit an optimization. Any overlap still needs supported max_nodes/validation/error ordering, speculative work, worker/FPU/cleanup/peak contracts and every existing exactness and complete-cycle performance gate."
+}

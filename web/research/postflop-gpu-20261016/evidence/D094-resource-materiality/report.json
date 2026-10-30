@@ -1,0 +1,66 @@
+{
+  "id": "D094-resource-materiality",
+  "at": "2026-10-17T07:28:43.190837+00:00",
+  "status": "pass_same_allocation_quantum_and_driver_occupancy",
+  "protocol_sha256": "7fac6448bc10554666a8589a837de36caf455e67a27d114e4ebfe771787ad149",
+  "device": {
+    "gpu": "NVIDIA GeForce RTX 5090",
+    "driver_api_version": 13030,
+    "major": 12,
+    "minor": 0,
+    "warp_size": 32,
+    "max_threads_block": 1024,
+    "max_threads_sm": 1536,
+    "regs_block": 65536,
+    "regs_sm": 65536,
+    "shared_block": 49152,
+    "shared_sm": 102400,
+    "num_sms": 170,
+    "shared_block_optin": 101376,
+    "reserved_shared_block": 1024,
+    "register_quantum_per_warp": 256,
+    "register_subpartitions": 4,
+    "kernel_launches": 0
+  },
+  "sdk_allocation_rows": 20480,
+  "independent_formula_and_pair_checks": 30780,
+  "retained_driver_matches": 60,
+  "all1024thread_counts_all10shapes_pairwise_equal": true,
+  "rounded_register_samples": [
+    {
+      "threads": 64,
+      "allocated_registers_block": 2560,
+      "nominal_counts": [
+        38,
+        40
+      ]
+    },
+    {
+      "threads": 128,
+      "allocated_registers_block": 5120,
+      "nominal_counts": [
+        38,
+        40
+      ]
+    },
+    {
+      "threads": 256,
+      "allocated_registers_block": 10240,
+      "nominal_counts": [
+        38,
+        40
+      ]
+    }
+  ],
+  "raw_stdout_sha256": "3b3d87e29a270cab76c47248c9391508b7f5665905912f93496e999917f9cd6e",
+  "binary_sha256": "9912ecccca534b9621228955af079dc2d1fd1c256f9b0de82a41bb64d0323f86",
+  "sdk_header_sha256": "a3445fd09846af0b16a9ab2b10b302522b72b0cd93e358a91bdd2dedd19bc8a2",
+  "e057_original_decision_unchanged": true,
+  "historical_outcomes_unchanged": true,
+  "source_activated": false,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Allocated registers/shared and limiting factors are outputs of NVIDIA12.9.79 CPU occupancy code using live queried compute12.0 properties, not hardware allocation counters. Model occupancies independently match60 retained driver queries. No speed, numerical, global/host-memory or broad no-tradeoff qualification."
+}

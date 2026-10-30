@@ -1,0 +1,30 @@
+{
+  "at": "2026-10-17T02:34:04.770050+00:00",
+  "status": "failed_stale_summary_count_observer",
+  "wrapper_returncode": 1,
+  "native_rustc_returncode": 0,
+  "native_probe_returncode": 0,
+  "error": "Final summary hard-coded717cases/1434launches despite819 successful per-case markers and fixed819-loop assertion.",
+  "execute_script_sha256": "d927f63f8bd3f409cb52b861881895986327fac1eb820edfe7209580f5caa053",
+  "probe_source_sha256": "c093eb6cd4f9297e906db7407e4c2f9d7fdad25db1cfef53333c02af1c47eb7f",
+  "raw_marker_summary": {
+    "all_inputs_and_guards_exact": true,
+    "all_raw_exact": true,
+    "candidate_accepted": false,
+    "cases": 717,
+    "guard_words_both_arms": 10240828,
+    "immutable_words_both_arms": 5199114,
+    "kernel_launches": 1434,
+    "output_words_both_arms": 12375858,
+    "performance_measurement": false,
+    "raw_device_inputs_retained_both_arms": true,
+    "solver_executions": 0,
+    "stage": "complete"
+  },
+  "changed_fields_only": [
+    "cases",
+    "kernel_launches"
+  ],
+  "new_native_runs": 0,
+  "required_before_timing": "Root decoder must verify full819-case inputs and both full GPU outputs/immutable images, exact EOF and recomputed inventories. No numerical mismatch observed."
+}

@@ -1,0 +1,24 @@
+{
+  "id": "D129",
+  "at": "2026-10-18T05:35:21.676918+00:00",
+  "scope": "Read-only ABI parser correction on original4sealed E078PTX and reports. No source/compilation/resource/native/applicationkernel/solver/timing rerun. Original rejected report/protocol remain immutable.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D129-ABI-pointer-audit.py": "dac214b21db2dfdd008f4a231c43ff8bc5be2ce278be75c1ba61c37cfebd653c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\protocol.json": "40817b8faafe8bb57126ff755196703d76f258fd715ea907f52d313b76e2bc23",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\report.json": "3dbf6c14274981fdab882fd65819bd738e678589cba97c852ec62ff28832f9d7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\execute.py": "557051ebf8e6e6b7647691a750244ba347f51c6d94a6082c66f573ce7fa5e1da",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\manifest.json": "b61584bf7a5fe5bbebed300d4d785262a5948b37a0420887cd1844438d780c21",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\candidate.cu": "ad94fe10d2fa80fd67bf1b4ef05c916b95202c3e6364a8193ab28d2c135740cf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\candidate-mod.rs": "2fda52098bb5f507bbb406743ae450616e94f4ac571737923f9074e8b54c7f34",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\execution\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\execution\\candidate-compute_120.ptx": "3912ae02aeea38352aba74df1b69979ee22117ee75d8067d06e14d01608f1a4c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\execution\\baseline-compute_75.ptx": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-resource\\execution\\candidate-compute_75.ptx": "0b0f54ed201ab0e1502c9d7da18470e17e8e562be6e032e474a9e96b3d7721c9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\common_e051_live.py": "1b465a2ecfb638b80564f268e4f549b553b84f0c74ecc3dc584fdb7a335d914e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\accepted-E051-live-20261018\\protected-main.json": "bb093d2c9c86a6d8e91034b18840e6ab9191758daa57bc843e803373cdc67718"
+  },
+  "cause": "Original regex .param .type NAME failed on .u64 .ptr .align1 NAME, omitting every pointer-qualified compute120declaration. Actual saved header has original20prefix and30candidateparameters. Sm75plain headers already passed; allactualresource/emission/otherentry gates pass.",
+  "fixed_criterion": "Same original20parameterprefix exact and candidate30ABI with9u64pointers+u32nh_o. Parse all complete declarations, allow only declared .ptr .alignN syntax, preserve qualifiers and compare exact originalprefixdeclarations/types/names/order. Reject unsupported/missing/duplicate/noncontiguous/unknownsyntax. Require physicalsource pointer/int declaration count agreement. No weakened gate or actualABIdefect waiver.",
+  "tests": "Plain/qualifiedpositive declarations; reject unknown type,align0/nonpower2,ptron32,missingname,unknown qualifier,aggregate,duplicate/noncontiguous index. Mixedprefix/extra-type/qualifier alterations must fail contract.",
+  "candidate_accepted": false
+}

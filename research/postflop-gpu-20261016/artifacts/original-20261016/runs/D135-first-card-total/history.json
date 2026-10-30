@@ -1,0 +1,41 @@
+{
+  "at": "2026-10-18T09:47:48.742046+00:00",
+  "bounded_local_history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "card_total|card_totals|tot_c = chunk_sum|first.card.*total",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "-i",
+        "card.total|card_total|total.*first.card|first.card.*total|tot_c.*cache|cache.*tot_c",
+        "research/postflop-gpu-20261016/experiments.md"
+      ],
+      "returncode": 0,
+      "stdout": "1919:One fixed source/resource form admitted: existing private uploaded node_na marks only reached folds-1, no public plan/schema/new payload. Before unchanged up_actionhelper/dispatch, CTAidentifies its one foldchild, executes exact original foldcopy/card/total reductions/payout/fullrowwrite, final CTAbarrier. Training-only separatefold launches removed; evaluation foldpath unchanged. Original down completes before up, reach immutable throughout, terminalCFVrows disjoint/persistent; delaying this producer1level has no otherconsumer. All other action/learning expressions/order retained. Staticshared1326+52+256floats(6536B),dynamic0; extra metadata/shared cost may erase gain. Local/spill/maxthreads/defaultfit/actualoccupancy/ABImechanism and otherentry guards precede any numerical run. Hostcompiledtag/continuation/rawGPU/fullcycle1%/strictfixture/fresh16/broad/state/F32/menu/save/resume/material/holdout/cumulative stillrequired. ReportSHA f92a6722e66c487e434c1324c6fede353b53537dbe81238eab4d6defbf7d7957. No current production change/adoption/speed or no-tradeoff claim; sourceform cannot be tuned/resampled after actualfailedqualification.\n1926:D128all12accepted retained metadata/32,412,240checks and6ownercontrolfixtures passed, no speed inference. One frozen off-tree2file source:CUDAad94fe10d2fa80fd67bf1b4ef05c916b95202c3e6364a8193ab28d2c135740cf,mod2fda52098bb5f507bbb406743ae450616e94f4ac571737923f9074e8b54c7f34. Original up_fold arithmetic suffix copied byte-exact into private forcedinline producer, same strided/sharedcard/totalreduction/payout/cachedrowwrite plus finalCTAbarrier. Only wrapperbefore original unchanged up_actionhelper/dispatch computes markedfoldchild; original8globalentries source exact. Hostprivate existing node_na foldentries-1, no extra array/payload/capacity/publicplan/save/quality/threadshape; soletrainingcaller appends matching10args (original20prefix+9pointers+nh_o). Training-onlyfold launches removed, evalbyteexact. Added hostmarking unit source notexecuted. Exact source/host reversals asserted. Sourcecontract CUDA12.9.2uniformbarrier/globalvisibility cited in synchronization-review; actual numerical equivalence unproven. Extra6536staticshared on everyactionCTA/metadata/barrier may hurt performance, no no-tradeoff claim.\n",
+      "stderr": ""
+    }
+  ],
+  "difference": "Precompute only the full ordered sum for each first hole card. Reuse retired chunk_sum storage. Original first-card lower/higher loops remain; the second-card total loop starts from the identical first-card accumulator. No reassociation or two-independent-card sum combination.",
+  "closed_forms_not_composed": [
+    "E029 zero complement",
+    "E063 precomputed cutoffs",
+    "E077 selective prefix stores",
+    "E082 duplicated chunk-prefix consumers",
+    "E083 initialization fences"
+  ],
+  "limits": "Bounded local history and source audit; no exhaustive remote novelty or speed claim."
+}

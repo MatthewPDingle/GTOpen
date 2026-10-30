@@ -1,0 +1,143 @@
+--- crates/solver/src/gpu/plan.rs
++++ crates/solver/src/gpu/plan.rs
+@@ -79,7 +79,7 @@
+     /// Dense physical reach slots, sharing storage exactly when owners match.
+     pub reach_slot: [Vec<u32>; 2],
+     pub reach_blocks: [usize; 2],
+-    /// CFV slots: persistent terminals plus alternating-level action/chance scratch.
++    /// CFV slots: persistent terminals plus lifetime-colored action/chance scratch.
+     /// Unvisited nodes have no allocation.
+     pub cfv_slot: Vec<u32>,
+     pub cfv_blocks: usize,
+@@ -211,31 +211,78 @@
+             }
+         }
+ 
+-        // Terminal CFVs stay resident for repeated BR/average evaluations.
+-        // Action/chance CFVs live only from their up-sweep level until the
+-        // immediately preceding level consumes them. Reuse those scratch
+-        // slots between even levels and between odd levels, with root at 0.
+-        let mut widths = vec![0usize; max_level as usize + 1];
++        // Cache terminals permanently. A scratch CFV lives from its producing
++        // up-sweep level through the immediately preceding consuming level.
++        // A one-action parent can overwrite its own action child's row at the
++        // same hand index: up_action finishes all child reads before its final
++        // store. Restrict sharing to disjoint pairs (child arity >= 2); chance
++        // gathers and all other input/output dependencies remain disjoint.
++        let (mut cfv_slot, mut cfv_blocks) = {
++            let levels = max_level as usize + 1;
++            let mut alias_parent = vec![false; n];
++            let mut alias_child = vec![false; n];
++            for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                if reached[ni] && node.kind == KIND_ACTION && node.num_children == 1 {
++                    let child = spot.tree.children[node.children_start as usize] as usize;
++                    let next = &spot.tree.nodes[child];
++                    if reached[child] && next.kind == KIND_ACTION && next.num_children >= 2 {
++                        alias_parent[ni] = true;
++                        alias_child[child] = true;
++                    }
++                }
++            }
++            // Node-id order within a level makes both coloring and uploads
++            // deterministic. A shared child's closed lifetime extends across
++            // its parent to level(child)-2. Every other interval is [l-1,l].
++            let mut groups = vec![Vec::<u32>::new(); levels];
++            for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE)
++                    && !alias_parent[ni]
++                {
++                    groups[level[ni] as usize].push(ni as u32);
++                }
++            }
++            let mut retired = vec![Vec::<u32>::new(); levels + 4];
++            let mut free = Vec::<u32>::new();
++            let mut slots = vec![u32::MAX; n];
++            let mut blocks = 0usize;
++            for l in (0..levels).rev() {
++                // Endpoints are closed: a row consumed in stage l cannot be
++                // assigned to another producer during the same stage.
++                free.append(&mut retired[l + 3]);
++                for &node in &groups[l] {
++                    let ni = node as usize;
++                    let slot = free.pop().unwrap_or_else(|| {
++                        let slot = blocks as u32;
++                        blocks += 1;
++                        slot
++                    });
++                    slots[ni] = slot;
++                    let retire = l + 1 - usize::from(alias_child[ni]);
++                    retired[retire].push(slot);
++                }
++            }
++            for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                if alias_parent[ni] {
++                    let child = spot.tree.children[node.children_start as usize] as usize;
++                    slots[ni] = slots[child];
++                }
++            }
++            // Root readback uses physical row zero. Swapping colors preserves
++            // every lifetime and avoids reserving an otherwise unused row.
++            if spot.tree.nodes[0].kind == KIND_ACTION || spot.tree.nodes[0].kind == KIND_CHANCE {
++                let root = slots[0];
++                for (ni, node) in spot.tree.nodes.iter().enumerate() {
++                    if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE) {
++                        if slots[ni] == 0 { slots[ni] = root; }
++                        else if slots[ni] == root { slots[ni] = 0; }
++                    }
++                }
++            }
++            (slots, blocks)
++        };
+         for (ni, node) in spot.tree.nodes.iter().enumerate() {
+-            if reached[ni] && (node.kind == KIND_ACTION || node.kind == KIND_CHANCE) {
+-                widths[level[ni] as usize] += 1;
+-            }
+-        }
+-        let mut parity_max = [0usize; 2];
+-        for (l, &width) in widths.iter().enumerate() {
+-            parity_max[l % 2] = parity_max[l % 2].max(width);
+-        }
+-        let base = [0usize, parity_max[0]];
+-        let mut used = vec![0usize; widths.len()];
+-        let mut cfv_slot = vec![u32::MAX; n];
+-        let mut cfv_blocks = parity_max[0] + parity_max[1];
+-        for (ni, node) in spot.tree.nodes.iter().enumerate() {
+-            if !reached[ni] { continue; }
+-            if node.kind == KIND_ACTION || node.kind == KIND_CHANCE {
+-                let l = level[ni] as usize;
+-                cfv_slot[ni] = (base[l % 2] + used[l]) as u32;
+-                used[l] += 1;
+-            } else {
++            if reached[ni] && node.kind != KIND_ACTION && node.kind != KIND_CHANCE {
+                 cfv_slot[ni] = cfv_blocks as u32;
+                 cfv_blocks += 1;
+             }
+@@ -543,7 +590,27 @@
+                         }
+                     }
+                     if l > 0 {
+-                        assert!(live[l].is_disjoint(&live[l - 1]), "a parent cannot overwrite child input storage");
++                        for &slot in live[l].intersection(&live[l - 1]) {
++                            let find = |depth: usize| {
++                                [(&plan.action_nodes, &plan.action_spans),
++                                 (&plan.chance_nodes, &plan.chance_node_spans)]
++                                    .into_iter().flat_map(|(nodes, spans)| {
++                                        let span = spans[depth];
++                                        nodes[span.start as usize..(span.start + span.count) as usize].iter()
++                                    }).copied().find(|&node| plan.cfv_slot[node as usize] as usize == slot).unwrap()
++                            };
++                            let parent = find(l - 1) as usize;
++                            let child = find(l) as usize;
++                            let p = &spot.tree.nodes[parent];
++                            let c = &spot.tree.nodes[child];
++                            assert_eq!(p.kind, KIND_ACTION, "chance output cannot alias any child");
++                            assert_eq!(p.num_children, 1, "only one-action parents may share inputs");
++                            assert_eq!(spot.tree.children[p.children_start as usize] as usize, child,
++                                "shared row must belong to this parent's sole child");
++                            assert_eq!(c.kind, KIND_ACTION);
++                            assert!(c.num_children >= 2, "shared pairs cannot form a chain");
++                            assert!(!plan.cc_child.contains(&(child as u32)), "orbit gathers cannot share a row");
++                        }
+                     }
+                 }
+                 assert!(used.iter().all(|&used| used));

@@ -1,0 +1,71 @@
+{
+  "id": "E080-resource-observer-readiness",
+  "at": "2026-10-18T07:42:05.614663+00:00",
+  "status": "CPU_ABI_and_memory_counter_catalog_available_only",
+  "own_probe_PID": 213532,
+  "platform": "Windows-11-10.0.26100-SP0",
+  "pointer_bytes": 8,
+  "FILETIME_bytes": 8,
+  "PROCESS_MEMORY_COUNTERS_EX_bytes": 80,
+  "before": {
+    "cb": 80,
+    "PageFaultCount": 177873,
+    "PeakWorkingSetSize": 28741632,
+    "WorkingSetSize": 28741632,
+    "QuotaPeakPagedPoolUsage": 1617080,
+    "QuotaPagedPoolUsage": 1616888,
+    "QuotaPeakNonPagedPoolUsage": 26968,
+    "QuotaNonPagedPoolUsage": 17264,
+    "PagefileUsage": 17104896,
+    "PeakPagefileUsage": 18190336,
+    "PrivateUsage": 17104896,
+    "CPU_ticks100ns": 3437500
+  },
+  "after": {
+    "cb": 80,
+    "PageFaultCount": 177886,
+    "PeakWorkingSetSize": 28782592,
+    "WorkingSetSize": 28745728,
+    "QuotaPeakPagedPoolUsage": 1618856,
+    "QuotaPagedPoolUsage": 1616696,
+    "QuotaPeakNonPagedPoolUsage": 29648,
+    "QuotaNonPagedPoolUsage": 16464,
+    "PagefileUsage": 17104896,
+    "PeakPagefileUsage": 18190336,
+    "PrivateUsage": 17104896,
+    "CPU_ticks100ns": 3437500
+  },
+  "counter_catalog_command": [
+    "powershell.exe",
+    "-NoProfile",
+    "-NonInteractive",
+    "-Command",
+    "(Get-Counter -ListSet 'GPU Process Memory' -ErrorAction Stop).Paths | ConvertTo-Json -Compress"
+  ],
+  "GPU_process_memory_counter_paths": [
+    "\\GPU Process Memory(*)\\Shared Usage",
+    "\\GPU Process Memory(*)\\Dedicated Usage",
+    "\\GPU Process Memory(*)\\Non Local Usage",
+    "\\GPU Process Memory(*)\\Local Usage",
+    "\\GPU Process Memory(*)\\Total Committed"
+  ],
+  "catalog_stdout": "[\"\\\\GPU Process Memory(*)\\\\Shared Usage\",\"\\\\GPU Process Memory(*)\\\\Dedicated Usage\",\"\\\\GPU Process Memory(*)\\\\Non Local Usage\",\"\\\\GPU Process Memory(*)\\\\Local Usage\",\"\\\\GPU Process Memory(*)\\\\Total Committed\"]\n",
+  "catalog_stderr": "",
+  "actual_GPU_counter_values_collected": false,
+  "actual_solver_processes_launched": 0,
+  "CPU_host_GPU_costs_qualified": false,
+  "primary_source_changed": false,
+  "candidate_adopted": false,
+  "authoritative_API_references": [
+    "https://learn.microsoft.com/en-us/windows/win32/api/pdh/nf-pdh-pdhgetformattedcounterarrayw",
+    "https://learn.microsoft.com/en-us/troubleshoot/windows-client/performance/gpu-process-memory-counters-report-wrong-value"
+  ],
+  "counter_limit": "Microsoft documents inaccurate per-process GPU memory values for affected Windows 10 applications. Catalog availability alone is not a valid GPU peak measurement. A prospective ability control must compare this OS/driver accounting with known real allocations and release cycles before using it, or use a separately validated allocation observer. Do not change HAGS, driver settings, privileges or hardware-counter permissions.",
+  "next_required": "Freeze and validate the actual resource observer, then a fixed before/after CPU, host/GPU peak and responsiveness package. Keep its timings separate from accepted primary/fresh16/holdout/cumulative scores. No fallback to source inspection or owned-payload accounting as whole-memory proof.",
+  "prior_remaining_root_report_sha256": "ea8fd0bd41ad160a8bfbf8302a61de825c444023094264c2f54e3eab7824fe21",
+  "source_main_live_PTX_custody_pass": true,
+  "free_space_bytes": {
+    "S": 766786080768,
+    "T": 1304034357248
+  }
+}

@@ -1,0 +1,219 @@
+{
+  "schema_version": 1,
+  "id": "D033-sparse-followup-design",
+  "kind": "prospective diagnostic proposal only",
+  "execution_authorized_by_this_artifact": false,
+  "execution_run_id": "unassigned; parent registers before launch",
+  "accepted_source": "E015",
+  "reference_diagnostic": "D033R1",
+  "question": "Do three fixed large captured-node intervals retain a useful order under much sparser boundary instrumentation?",
+  "fixture": "rainbow",
+  "board": "Ks7h2d",
+  "storage": "compressed",
+  "algorithm": "Dcfr",
+  "isomorphism": true,
+  "config": "exact embedded D033 anchor config, including rake_cap=3",
+  "warm_until": 140,
+  "check_every": 20,
+  "batch_length": 20,
+  "sample_iterations": [
+    160,
+    180,
+    200
+  ],
+  "batch_arm_order": [
+    [
+      "native",
+      "instrumented"
+    ],
+    [
+      "instrumented",
+      "native"
+    ],
+    [
+      "native",
+      "instrumented"
+    ]
+  ],
+  "raw_and_compressed_equality_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "exploit_anchor_checkpoints": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160,
+    180,
+    200
+  ],
+  "selector_rule": {
+    "families": [
+      "down_action",
+      "up_show",
+      "up_action"
+    ],
+    "per_family_per_graph": 1,
+    "primary_key": "largest grid.x*grid.y*grid.z",
+    "tie_break": "smallest ordinal in original strict-chain order",
+    "timings_used_to_select": false,
+    "resolved_selectors": [
+      {
+        "graph": 0,
+        "ordinal": 19,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      },
+      {
+        "graph": 0,
+        "ordinal": 29,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3788
+      },
+      {
+        "graph": 0,
+        "ordinal": 34,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      },
+      {
+        "graph": 1,
+        "ordinal": 19,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "down_action",
+        "shared_bytes": 0
+      },
+      {
+        "graph": 1,
+        "ordinal": 29,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_show",
+        "shared_bytes": 3044
+      },
+      {
+        "graph": 1,
+        "ordinal": 34,
+        "block": [
+          128,
+          1,
+          1
+        ],
+        "grid": [
+          141120,
+          1,
+          1
+        ],
+        "kernel": "up_action",
+        "shared_bytes": 0
+      }
+    ],
+    "require_resolved_shape_match": true,
+    "source_kernel_nodes_per_graph": 63
+  },
+  "event_boundaries_per_graph": [
+    19,
+    20,
+    29,
+    30,
+    34,
+    35
+  ],
+  "events_per_graph": 6,
+  "total_cloned_graph_event_nodes": 12,
+  "dense_reference_total_events": 128,
+  "boundary_topology": "Keep every original edge. For each selected boundary b, add K[b-1] -> E[b] -> K[b]. Deduplicate boundaries before creating events. No new kernel, kernel-param change, grid change, or numeric work.",
+  "selected_interval": "elapsed(E[i],E[i+1]) for selected node ordinal i only",
+  "allocation_lifetime": "Create two independent solver states once; clones reference their existing candidate buffers. Unique event handle per graph and boundary, retained/reused through every replay. No allocation per node sample/replay. No handle shared between graphs.",
+  "setup": "Clone/validate/instantiate sparse graphs and explicitly upload both original and sparse execs, then synchronize before all brackets. No extra learning replay.",
+  "sampling": "After each20-iteration whole batch completes, extract the final replay only before any event is rerecorded. No per-node/per-iteration host wait.",
+  "outer_timing": "Same native and instrumented20-iteration stream-event brackets and host wall timing as D033; initialization/setup/upload/check/readback excluded and explicitly labeled.",
+  "abs_outer_perturbation_pct": "abs(instrumented_device_batch_ms/native_device_batch_ms-1)*100",
+  "usefulness_screen": {
+    "all_three_outer_abs_perturbation_pct_lte": 10.0,
+    "meaning": "diagnostic distortion screen only, not a statistical or performance acceptance gate and not a bound on individual-node bias",
+    "failure": "Preserve and label inconclusive for native-like prioritization; no selector, threshold, schedule or sample-count adaptation and no follow-up extension based on outcome."
+  },
+  "output": {
+    "include": [
+      "full fixed selector metadata",
+      "source/clone topology",
+      "all selected intervals at all3checkpoints",
+      "outer batch perturbation",
+      "raw/q/scale/exploit/final anchor checks",
+      "near-resolution flags",
+      "all failures"
+    ],
+    "omit_unmeasured": [
+      "full graph envelope from sparse endpoints",
+      "inter-graph gap from sparse endpoints",
+      "all-family aggregate times",
+      "native device-time shares"
+    ],
+    "aggregation": "Show individual fixed-node values and per-selector range/median descriptively; do not extrapolate these3nodes to all kernels in their family."
+  },
+  "correctness": "Retain D033 bounded raw-before-eval comparison, complete q+scale comparison, every20 frozen exploit anchors and final full-state anchor. Same fail-closed error handling, memory preflight, graph/solver borrow ownership and checked cleanup.",
+  "terminal_policy": "One fixed3-batch invocation. Preserve all data, including failure. No trimming, selective replays, silent topology fallback, or timing-based extension.",
+  "no_claims": [
+    "native time shares",
+    "statistical significance",
+    "causal speedup",
+    "complete-cycle improvement",
+    "candidate acceptance"
+  ],
+  "source_changes_in_this_design": false,
+  "builds_or_gpu_calls_by_reviewer": false
+}

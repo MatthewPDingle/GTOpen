@@ -1,0 +1,5 @@
+Traceback (most recent call last):
+  File "X:\Dev\GTOpen-research\postflop-gpu-20261028\runs\E127-read-direct.py", line 110, in <module>
+    for k in['output_words_both_arms','immutable_words_both_arms','guard_words_both_arms']:assert complete[k]==counts[k]
+                                                                                                               ~~~~~~^^^
+KeyError: 'immutable_words_both_arms'

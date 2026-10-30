@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-17T17:48:52.797387+00:00",
+  "id": "D111-approved-retry-denied",
+  "user_message": "I approved the D112/E069 denial",
+  "goal_observed_status_on_resume": "active",
+  "blocked_audit_reset_for_user_resume": true,
+  "resumed_consecutive_blocked_goal_turns": 1,
+  "action": "One exact retry of previously denied D112/E069preparation command, same arguments and research workdir.",
+  "retry_count_after_user_approval": 1,
+  "result": "CreateProcess rejected before PowerShell execution",
+  "stated_reason": "blocked by policy",
+  "additional_rationale_available": false,
+  "candidate_script_directory_and_source_absent": true,
+  "native_or_compiler_started": false,
+  "solver_main_live_ptx_custody": "pass",
+  "further_retry_or_alternate_route": false,
+  "duplicate_user_approval_request": false,
+  "old_denial_evidence_preserved": true,
+  "accepted_cumulative_gain_pct": 12.4372274192464,
+  "last_primary_baseline": "B222",
+  "goal_left_active_under_fresh_blocked_audit": true,
+  "external_change_required": "Execution policy must permit approved candidate preparation. Prior explicit user approval alone did not make the command execute."
+}

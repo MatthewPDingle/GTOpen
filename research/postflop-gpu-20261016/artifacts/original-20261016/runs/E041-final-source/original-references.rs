@@ -1,0 +1,75 @@
+    impl ArenaLayout {
+    fn e041_original_write(&self, solver: &Solver, p: usize, which: usize, data: &[f32]) {
+        if !self.compact {
+            write_arena(solver, which != 0, p, data);
+            return;
+        }
+        let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+        if let Store::F32(buf) = store {
+            // Host spans are disjoint, just like parallel CPU CFR arenas.
+            self.copies.par_iter().for_each(|span| {
+                unsafe { buf.slice(span.host, span.len) }
+                    .copy_from_slice(&data[span.device..span.device + span.len]);
+            });
+            self.inactive.par_iter().for_each(|block| {
+                let dst = unsafe { buf.slice(block.host, block.len) };
+                let start = block.initial[which];
+                if start == usize::MAX { dst.fill(0.0); }
+                else { dst.copy_from_slice(&self.initial[which][start..start + block.len]); }
+            });
+            return;
+        }
+        self.active.par_iter().for_each(|block| {
+            unsafe {
+                store.write_f32(block.node, block.host, block.len,
+                    &data[block.device..block.device + block.len]);
+            }
+        });
+        self.inactive.par_iter().for_each(|block| {
+            let start = block.initial[which];
+            let values = if start == usize::MAX { &self.zeros[..block.len] }
+                else { &self.initial[which][start..start + block.len] };
+            unsafe { store.write_f32(block.node, block.host, block.len, values); }
+        });
+    }
+    }
+    fn legacy_sync(gpu: &mut GpuSolver, solver: &mut Solver) -> Result<(), String> {
+        gpu.stream.synchronize().map_err(e)?;
+        for p in 0..2 {
+            let len = gpu.d_regrets[p].len();
+            gpu.stream
+                .memcpy_dtoh(&gpu.d_regrets[p], &mut gpu.h_staging.as_mut_slice()[..len])
+                .map_err(e)?;
+            gpu.stream.synchronize().map_err(e)?;
+            gpu.arena_layout[p].e041_original_write(solver, p, 0, &gpu.h_staging.as_slice()[..len]);
+            gpu.stream
+                .memcpy_dtoh(&gpu.d_strat[p], &mut gpu.h_staging.as_mut_slice()[..len])
+                .map_err(e)?;
+            gpu.stream.synchronize().map_err(e)?;
+            gpu.arena_layout[p].e041_original_write(solver, p, 1, &gpu.h_staging.as_slice()[..len]);
+        }
+        solver.iteration = gpu.iteration;
+        if gpu.iso_active {
+            // only representative branches hold fresh data; queries/saves
+            // re-materialize siblings via Solver::ensure_symmetric
+            solver.mark_sym_dirty();
+        }
+        Ok(())
+    }
+
+    fn legacy_strategy(gpu: &mut GpuSolver, solver: &mut Solver) -> Result<(), String> {
+        gpu.stream.synchronize().map_err(e)?;
+        for p in 0..2 {
+            let len = gpu.d_strat[p].len();
+            gpu.stream
+                .memcpy_dtoh(&gpu.d_strat[p], &mut gpu.h_staging.as_mut_slice()[..len])
+                .map_err(e)?;
+            gpu.stream.synchronize().map_err(e)?;
+            gpu.arena_layout[p].e041_original_write(solver, p, 1, &gpu.h_staging.as_slice()[..len]);
+        }
+        solver.iteration = gpu.iteration;
+        if gpu.iso_active {
+            solver.mark_sym_dirty();
+        }
+        Ok(())
+    }

@@ -1,0 +1,100 @@
+--- audit-numerical.py
++++ audit-numerical-policy-1pct.py
+@@ -2,7 +2,7 @@
+ ROOT=pathlib.Path(r'S:\GTOpen-research\postflop-gpu-20261016')
+ OUT=ROOT/'comparisons/E037-independent-review';PLAN=ROOT/'runs/E037-primary-plan';EX=ROOT/'runs/E037-primary-execution'
+ assert not (OUT/'validation.json').exists() and not (OUT/'summary.md').exists(), 'Preserve any prior audit result'
+-terminal=json.loads((OUT/'terminal-inputs.json').read_text(encoding='utf-8'))
++terminal=json.loads((OUT/'terminal-inputs-policy-1pct.json').read_text(encoding='utf-8'))
+ assert terminal['id']=='E037' and terminal['root_all_stages_terminal'] is True
+ checks=collections.Counter();artifacts={}
+ def ck(b,label):
+@@ -20,6 +20,28 @@
+ pin(PLAN/'scripts-manifest.json','6f00150b84498fc9c9572b07b546f6e01c110d618b22ab9973749b42d53f8540')
+ pin(ROOT/'comparisons/E037-three-pair-comparison/report.json',terminal['comparison_sha256'])
+ P=load(PLAN/'protocol.json');C=load(ROOT/'comparisons/E037-three-pair-comparison/report.json')
++POLICY=ROOT/'runs/E037-policy-1pct'
++pin(POLICY/'policy.json','f2eaef2759f628db85a414e5496f7dec89be1e398f7d00d8d068d1db74be55d4')
++pin(POLICY/'scripts-manifest.json','bf84a6f7f685d42ee3fbcf7aed5737a073b8acbf9401544ddaa03c9cc1b4d37a')
++pin(POLICY/'authorization.json','df9e39cc5ad89c9eb9c9133b2205acd706926343c67c6d3ee1d326a38c4b9da3')
++pin(ROOT/'comparisons/E037-policy-review/report.json','80c14dd34db4fe95c617268fda3a962ac44a0d8e3203d4c876c438a44178c099')
++pin(PLAN/'authorization.json','03b36389ca3864e8bfc550c0dcceb724a1b486cf46a9950dc3293a6beaf219dc')
++POL=load(POLICY/'policy.json');PA=load(POLICY/'authorization.json');PM=load(POLICY/'scripts-manifest.json')
++for name in ['assess.py','compare_policy.py','primary.py','policy_guard.py']:pin(POLICY/name,PM['script_sha256'][name])
++ck(POL['required_gain_pct']==1.0 and POL['fixture_slowdown_threshold_pct']==0.0 and POL['original_assessor_prohibited'] and POL['primary_pass_is_preliminary'],'effective_user_policy')
++ck(POL['order']==P['order'] and POL['pairs']==P['pairs'],'effective_policy_preserves_workload')
++ck(PA['effective_policy_sha256']==sha(POLICY/'policy.json') and PA['policy_manifest_sha256']==sha(POLICY/'scripts-manifest.json') and PA['independent_policy_review_pass'],'policy_authorization_binding')
++pin(POL['root_decision']['path'],POL['root_decision']['sha256']);UD=load(POL['root_decision']['path'])
++RECEIPT=load(ROOT/'runs/E037-policy-execution/pre-primary.json');PE=load(ROOT/'runs/E037-policy-execution/exit.json')
++ck(dt(UD['at'])<=dt(POL['at'])<=dt(PA['at'])<=dt(RECEIPT['at']) and UD['pre_timing_evidence']['native_or_timing_run_started'] is False,'policy_fixed_before_native')
++ck(RECEIPT['all_seven_run_directories_absent'] is True and RECEIPT['order']==P['order'] and PE['returncode']==0,'effective_wrapper_complete')
++ck(RECEIPT['policy_sha256']==sha(POLICY/'policy.json') and RECEIPT['policy_manifest_sha256']==sha(POLICY/'scripts-manifest.json') and RECEIPT['policy_authorization_sha256']==sha(POLICY/'authorization.json') and RECEIPT['original_authorization_sha256']==sha(PLAN/'authorization.json'),'pre_primary_dual_authority_receipt')
++ck(RECEIPT['original_primary_sha256']==sha(PLAN/'primary.py') and RECEIPT['wrapper_sha256']==sha(POLICY/'primary.py'),'unchanged_runner_with_effective_wrapper')
++EP=C['effective_policy']
++ck(EP['sha256']==sha(POLICY/'policy.json') and EP['policy_manifest_sha256']==sha(POLICY/'scripts-manifest.json') and EP['policy_authorization_sha256']==sha(POLICY/'authorization.json'),'comparison_effective_policy_pins')
++ck(EP['original_protocol_sha256']==sha(PLAN/'protocol.json') and EP['original_authorization_sha256']==sha(PLAN/'authorization.json') and EP['root_user_decision']==POL['root_decision'],'comparison_original_authority_pins')
++ck(EP['pre_primary_receipt']=={'path':str(ROOT/'runs/E037-policy-execution/pre-primary.json'),'sha256':sha(ROOT/'runs/E037-policy-execution/pre-primary.json')} and EP['changed_before_any_native_timing'] and EP['primary_pass_is_preliminary'] and not EP['candidate_accepted'],'comparison_receipt_and_preliminary_scope')
++ck(EP['adoption_requirements']==POL['adoption_requirements'] and EP['no_material_cost_validation']['status']=='pending_resource_and_broader_qualification','confirmation_and_tradeoffs_still_pending')
+ ck(P['order']==['V037-unit','B116','E037R1','E037R2','B117','B118','E037R3'],'fixed_seven_run_order')
+ ck(P['pairs']==[{'baseline':'B116','candidate':'E037R1'},{'baseline':'B117','candidate':'E037R2'},{'baseline':'B118','candidate':'E037R3'}],'fixed_pairing')
+ ck(P['expected_unit_passed']==85 and P['expected_unit_ignored']==4,'frozen_unit_counts')
+@@ -70,6 +92,7 @@
+         for k,v in timing.items():
+             if k!='stage':ck(z[k]==v,'raw_stage_final_result_agreement')
+ for a,b in zip(ids,ids[1:]):ck(dt(runs[a]['finished_at'])<=dt(runs[b]['started_at']),'serialized_chronology')
++for identity in ids:ck(dt(RECEIPT['at'])<=dt(runs[identity]['started_at'])<=dt(runs[identity]['finished_at'])<=dt(PE['at']),'all_runs_after_policy_receipt_before_wrapper_exit')
+ ck(dt(BE['at'])<dt(runs[ids[0]]['started_at']),'build_terminal_before_unit_and_primary')
+ priorunit=(ROOT/'runs/V020-unit/stdout.log').read_text(encoding='utf-8')
+ prior_names=re.findall(r'^test (\S+) \.\.\.',priorunit,re.M)
+@@ -105,13 +128,15 @@
+         close(observed['baseline'][k]['median_ms'],bm,'comparison_baseline_component_median');close(observed['candidate'][k]['median_ms'],cm,'comparison_candidate_component_median')
+     full=table['components']['full_cycle_ms'];Bsum+=full['baseline_median_ms'];Csum+=full['candidate_median_ms']
+     regressions=[100*(c['results'][index]['full_cycle_ms']-b['results'][index]['full_cycle_ms'])/b['results'][index]['full_cycle_ms'] for b,c in zip(bs,cs)]
+-    guard=(-full['gain_pct']>3 and sum(x>3 for x in regressions)>=2)
+-    table['guard']={'median_regression_pct':-full['gain_pct'],'paired_regression_pct':regressions,'repeats_above3':sum(x>3 for x in regressions),'failed':guard}
++    guard=(-full['gain_pct']>0 and sum(x>0 for x in regressions)>=2)
++    table['guard']={'median_regression_pct':-full['gain_pct'],'paired_regression_pct':regressions,'repeats_above0':sum(x>0 for x in regressions),'failed':guard}
+     cg=C['performance']['fixture_regression_guard']['fixtures'][index]
+-    close(cg['median_regression_pct'],-full['gain_pct'],'guard_median');ck(cg['repetitions_above_3pct']==sum(x>3 for x in regressions) and cg['repeatable_material_regression']==guard,'guard_repeat_rule')
++    close(cg['median_regression_pct'],-full['gain_pct'],'guard_median');ck(cg['repetitions_above_0pct']==sum(x>0 for x in regressions) and cg['repeatable_measured_regression']==guard,'guard_repeat_rule')
+     fixture_tables.append(table)
+ score=gain(Bsum,Csum);close(C['performance']['baseline_full_cycle_ms'],Bsum,'primary_baseline_score');close(C['performance']['candidate_full_cycle_ms'],Csum,'primary_candidate_score');close(C['performance']['observed_gain_pct'],score,'primary_gain')
+-aggregate_pass=score>=2; guardfail=any(t['guard']['failed'] for t in fixture_tables); failed=not aggregate_pass or guardfail
++aggregate_pass=score>=1; guardfail=any(t['guard']['failed'] for t in fixture_tables); failed=not aggregate_pass or guardfail
++ck(C['performance']['required_gain_pct']==1.0 and C['performance']['fixture_regression_guard']['threshold_pct']==0.0,'published_effective_thresholds')
++ck(C['performance']['fixture_median_regression_above_0pct']==[t['fixture_id'] for t in fixture_tables if t['guard']['median_regression_pct']>0],'published_positive_fixture_slowdowns')
+ ck(C['performance']['aggregate_gate_met']==aggregate_pass and C['performance']['fixture_regression_guard']['failed']==guardfail,'independent_registered_gates')
+ expected_decision='rejected' if failed else 'qualifying'
+ ck(C['decision']==expected_decision and not C['accepted'] and not C['deployed'] and C['excluded_runs']==[],'correct_provisional_decision_no_exclusions')
+@@ -131,24 +156,26 @@
+     ck(C['cohorts'][label]['run_ids']==expected and C['cohorts'][label]['count']==3,'all_three_samples_retained')
+ AI=load(ROOT/'runs/E037-assessment/invocation.json');AE=load(ROOT/'runs/E037-assessment/exit.json')
+ ck(AE['returncode']==0 and AI['protocol_sha256']==sha(PLAN/'protocol.json'),'assessment_terminal_and_protocol')
++ck(AI['script_sha256']==sha(POLICY/'assess.py') and AI['effective_policy']==EP and str(POLICY/'compare_policy.py') in AI['command'] and '--policy-authorization-sha256' in AI['command'] and sha(POLICY/'authorization.json') in AI['command'],'only_effective_policy_assessment')
++ck(dt(PE['at'])<=dt(AI['at']),'effective_wrapper_terminal_before_assessment')
+ ck(dt(DONE['at'])<=dt(AI['at']) and dt(AI['at'])<=dt(C['created_at']),'assessment_after_all_runs')
+ ck(('--reject' in AI['command'])==failed and not C['performance']['statistical_significance_established'],'decision_no_significance_claim')
+-sha(ROOT/'runs/V020-unit/stdout.log');sha(OUT/'audit-numerical.py');sha(OUT/'terminal-inputs.json')
++sha(ROOT/'runs/V020-unit/stdout.log');sha(OUT/'audit-numerical-policy-1pct.py');sha(OUT/'terminal-inputs-policy-1pct.json')
+ result={'id':'E037-independent-numerical-review','at':datetime.datetime.now(datetime.timezone.utc).isoformat(),'verdict':'CONFIRMED_REJECTED' if failed else 'PASS_PRIMARY_PROVISIONAL_ONLY','numerical_audit_pass':True,
+- 'primary':{'baseline_sum_fixture_medians_ms':Bsum,'candidate_sum_fixture_medians_ms':Csum,'gain_pct':score,'minimum_pct':2,'aggregate_gate_met':aggregate_pass,'fixture_guard_failed':guardfail},
++ 'effective_policy':EP,'primary':{'baseline_sum_fixture_medians_ms':Bsum,'candidate_sum_fixture_medians_ms':Csum,'gain_pct':score,'minimum_pct':1,'aggregate_gate_met':aggregate_pass,'fixture_guard_failed':guardfail},
+  'all18_complete_non_timing_results_exact':True,'all138_convergence_checkpoints_exact':True,'all_complete_normalized_stage_trajectories_exact':True,'trajectories':trajectory,
+  'unit_inventory':{'passed':85,'failed':0,'ignored':4,'measured':0,'filtered':0,'matches_E020_inventory_plus_one_show_test':True,'focused_original_kernel_test_passed':True},'focused_unit_records':focused_records,
+  'chronology_including_unit':[{'id':i,'started_at':runs[i]['started_at'],'finished_at':runs[i]['finished_at']} for i in ids], 'components':fixture_tables,'pairs':pairs,
+  'checks':dict(checks),'assertions':sum(checks.values()),'input_sha256':artifacts,
+  'scope':'File-only numerical/order/gate audit. Build/source/prerequisite custody and restoration are independently audited in source-custody.json; this report does not substitute for that audit.',
+- 'broader_qualification':'Not run; inapplicable after primary rejection. No extension or rescue.' if failed else 'Not run; mandatory before acceptance, including raw old/new show/state validation, original controls, F32, holdout and cumulative.',
++ 'broader_qualification':'Not run; inapplicable after primary rejection. No extension or rescue.' if failed else 'Not run; fresh fixed16-pair confirmation under the user1%/no-repeatable-slowdown policy is mandatory, then raw old/new show/state validation, original controls, F32, holdout, cumulative and material memory/resource/compatibility evidence before acceptance.',
+  'limits':['Compressed full-state and convergence equality does not establish every possible F32, nonfinite or zero-row lifecycle state.','Warm-driver-cache complete-cycle scope; includes runtime NVRTC/JIT and readback, excludes Cargo/final fingerprinting/browser/API/disk saving.','Component medians are descriptive and do not establish causality or sum to whole-cycle median differences.','No statistical significance, speedup, acceptance or deployment claim.'],
+- 'reviewer_preparation_note':'Adapted file-only from the sealed E036 numerical parser before outcomes; E037 fixed IDs,85/4 inventory and the exact34-pair/68-launch immutable-original showdown marker. No outcome-dependent controls. No candidate script, native solver or GPU work by reviewer.',
++ 'reviewer_preparation_note':'Adapted file-only from the preserved E037 prepared audit after the independently reviewed user1% policy was frozen before native timing. Original numerical18/138 block and85/4 plus34/68 marker checks remain exact; only effective policy/receipt checks and timing-gate semantics change. No candidate script, native solver or GPU work by reviewer.',
+  'native_or_gpu_executed_by_reviewer':False,'candidate_accepted':False,'deployment_changed':False}
+ (OUT/'validation.json').write_text(json.dumps(result,indent=2)+'\n',encoding='utf8')
+ summary=f"""# E037 independent numerical audit
+ 
+-**{result['verdict']}.** Fixed sum of fixture medians: {Bsum:.4f} -> {Csum:.4f}ms; observed gain {score:.10f}%. Aggregate gate: {aggregate_pass}; repeated-fixture guard failure: {guardfail}. All six measurements retained.
++**{result['verdict']}.** Fixed sum of fixture medians: {Bsum:.4f} -> {Csum:.4f}ms; observed gain {score:.10f}%. User aggregate gate >=1%: {aggregate_pass}; repeated-fixture slowdown >0% guard failure: {guardfail}. All six measurements retained.
+ 
+ All18 complete non-timing result objects, all138 convergence checkpoints and complete normalized stage trajectories match exactly. Stops200/200/60. Units85passed,0failed,4ignored,0measured,0filtered; exact accepted E020 inventory plus one original-kernel showdown test passed with the34-pair/68-launch marker. All seven runs occurred in frozen order after separate feature compile-only and GPU-only builds.
+ 

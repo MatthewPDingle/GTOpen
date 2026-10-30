@@ -1,0 +1,31 @@
+--- retained/audit.py
++++ E086/audit.py
+@@ -1,8 +1,8 @@
+-"""Root full raw decoder for the fixed E048 mask/card chance comparison."""
++"""Root full raw decoder for the fixed E086 mask/bit-field chance comparison."""
+ import json,struct,sys
+ from pathlib import Path
+ HERE=Path(__file__).resolve().parent
+-sys.path.insert(0,str(HERE.parent/'small-gain-confirmation-plan'));import common as old
++sys.path.insert(0,str(HERE.parent/'accepted-E080-live-20261018'));import common_e080_live as old
+ P=old.read(HERE/'protocol.json');C=old.read(HERE/'execution/complete.json');corpus=old.read(HERE/'corpus.json');cases=corpus['cases'];checks=0
+ def req(v,m):
+  global checks
+@@ -18,7 +18,7 @@
+  def vecs(self):
+   n=self.u32();req(n<=20,'vector-list bounds');return [self.vec() for _ in range(n)]
+  def eof(self):req(self.at==len(self.data),'full raw endpoint')
+-rawdir=Path(P['raw_output']);inp=Reader(rawdir/'inputs.bin',b'E048_IN1');base=Reader(rawdir/'baseline.bin',b'E048_OUT1');cand=Reader(rawdir/'candidate.bin',b'E048_OUT1')
++rawdir=Path(P['raw_output']);inp=Reader(rawdir/'inputs.bin',b'E086_IN1');base=Reader(rawdir/'baseline.bin',b'E086_OUT1');cand=Reader(rawdir/'candidate.bin',b'E086_OUT1')
+ req(base.data==cand.data,'entire GPU output and immutable-image files equal')
+ output_words=0;immutable_words=0;guard_words=0;cpu_down_relations=0;full_up_cards=set();families={0:0,1:0}
+ def card_value(j,pattern,salt):return j%52 if pattern==0 else [0,25,51][j%3] if pattern==1 else (j*17+13)%52 if pattern==2 else (j+salt)%52
+@@ -76,6 +76,6 @@
+ req(families=={int(k):v for k,v in corpus['family_case_counts'].items()},'family inventory')
+ req(full_up_cards==set(range(52)),'every individual dealt card/all1326 hands covered on GPU')
+ req(output_words==end['output_words_both_arms'] and immutable_words==end['immutable_words_both_arms'] and guard_words==end['guard_words_both_arms'],'full word inventories recomputed')
+-old.custody();OUT=old.ROOT/'comparisons/E048-kernel-control';OUT.mkdir()
+-report={'id':'E048-kernel-control','at':old.now(),'status':'pass_scoped_chance_raw_equivalence','root_cross_check_only':True,'checks':checks,'cases':len(cases),'kernel_launches':2*len(cases),'family_cases':families,'output_words_both_arms':output_words,'actual_immutable_words_both_arms':immutable_words,'guard_words_both_arms':guard_words,'independent_cpu_down_relations_both_arms':cpu_down_relations,'individual_up_dealt_cards_full_canonical_hands':52,'full_raw_files_equal':True,'actual_immutable_images_preserved':True,'raw_file_sha256':C['raw_file_sha256'],'protocol_sha256':old.sha(HERE/'protocol.json'),'corpus_sha256':old.sha(HERE/'corpus.json'),'complete_sha256':old.sha(HERE/'execution/complete.json'),'audit_script_sha256':old.sha(HERE/'audit.py'),'accepted162_main_live_ptx_unchanged':True,'performance_measured':False,'candidate_accepted':False,'limits':'Finite canonical card/float corpus and small physical offsets; not malformed custom HandInfo or >2^32 span equivalence. Root decoder is not external independent review. No full solver or speed claim.'}
++old.custody();OUT=old.ROOT/'comparisons/E086-kernel-control';OUT.mkdir()
++report={'id':'E086-kernel-control','at':old.now(),'status':'pass_scoped_chance_raw_equivalence','root_cross_check_only':True,'checks':checks,'cases':len(cases),'kernel_launches':2*len(cases),'family_cases':families,'output_words_both_arms':output_words,'actual_immutable_words_both_arms':immutable_words,'guard_words_both_arms':guard_words,'independent_cpu_down_relations_both_arms':cpu_down_relations,'individual_up_dealt_cards_full_canonical_hands':52,'full_raw_files_equal':True,'actual_immutable_images_preserved':True,'raw_file_sha256':C['raw_file_sha256'],'protocol_sha256':old.sha(HERE/'protocol.json'),'corpus_sha256':old.sha(HERE/'corpus.json'),'complete_sha256':old.sha(HERE/'execution/complete.json'),'audit_script_sha256':old.sha(HERE/'audit.py'),'accepted162_main_live_ptx_unchanged':True,'performance_measured':False,'candidate_accepted':False,'limits':'Finite canonical card/float corpus and small physical offsets; not malformed custom HandInfo or >2^32 span equivalence. Root decoder is not external independent review. No full solver or speed claim.'}
+ old.save(OUT/'report.json',report);print(json.dumps({k:report[k] for k in ['status','checks','cases','kernel_launches','output_words_both_arms','actual_immutable_words_both_arms','guard_words_both_arms','independent_cpu_down_relations_both_arms']}));print(old.sha(OUT/'report.json'),flush=True)

@@ -1,0 +1,24 @@
+--- accepted/crates/solver/src/gpu/arena.rs
++++ diagnostic/crates/solver/src/gpu/arena.rs
+@@ -79,6 +79,7 @@
+     }
+ 
+     fn can_upload_zeros(&self, store: &Store, which: usize) -> bool {
++        let d088_start = std::time::Instant::now();
+         // Both inputs must prove positive-zero decoded bits: a negative q
+         // with +0 scale, or a zero q with -0 scale, can decode to -0.0.
+         // Check scales first so a warm arena can reject this path cheaply.
+@@ -95,8 +96,11 @@
+         };
+         // Keep previously captured inactive state on the existing path if a
+         // layout is reused. Fresh layouts already have the zero sentinels.
+-        zero && self.initial[which].is_empty()
+-            && self.inactive.iter().all(|block| block.initial[which] == usize::MAX)
++        let result = zero && self.initial[which].is_empty()
++            && self.inactive.iter().all(|block| block.initial[which] == usize::MAX);
++        eprintln!("D088_ZERO {{\"which\":{},\"positive_zero\":{},\"elapsed_ms\":{}}}",
++            which, result, d088_start.elapsed().as_secs_f64() * 1000.0);
++        result
+     }
+ 
+     pub(super) fn upload(

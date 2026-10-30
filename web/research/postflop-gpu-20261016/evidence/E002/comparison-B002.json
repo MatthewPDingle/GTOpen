@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "created_at": "2026-10-16T03:57:04Z",
+  "baseline_id": "B002",
+  "candidate_id": "E002",
+  "decision": "rejected",
+  "reason": "Rejected after the initial screen: serialized complete-cycle sum was 7.28% slower than B002, with no promising aggregate gain. Full arena fingerprints, exploitability bits and stopping iterations match on all three fixtures. One run per binary does not establish a statistically proven regression; isolated fixture changes may be timing noise. Broader correctness qualification was not performed.",
+  "screen_repetitions": {
+    "baseline": 1,
+    "candidate": 1
+  },
+  "correctness": {
+    "status": "pass",
+    "scope": "Exact three-fixture complete state fingerprints, exploitability bits and stopping-iteration screen; not full qualification"
+  },
+  "performance": {
+    "scope": "Initial single-run screen",
+    "aggregation": "Serialized sum of three registered complete fixture cycles",
+    "baseline_full_cycle_ms": 11724.6973,
+    "candidate_full_cycle_ms": 12578.288,
+    "observed_change_pct": 7.2802792102786285,
+    "statistical_regression_proven": false
+  },
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "baseline_full_cycle_ms": 6902.2426000000005,
+      "candidate_full_cycle_ms": 7438.9815,
+      "observed_change_pct": 7.7762972283819565,
+      "baseline_solve_ms": 5481.5136999999995,
+      "candidate_solve_ms": 6004.5468,
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176,
+      "equality_checks": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true,
+        "config": true,
+        "storage": true,
+        "algorithm": true,
+        "use_isomorphism": true,
+        "target_pct": true,
+        "check_every": true,
+        "max_iterations": true
+      }
+    },
+    {
+      "fixture_id": "two-tone",
+      "baseline_full_cycle_ms": 4713.9762,
+      "candidate_full_cycle_ms": 5038.7577,
+      "observed_change_pct": 6.889756889311416,
+      "baseline_solve_ms": 3321.058,
+      "candidate_solve_ms": 3683.2891,
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664,
+      "equality_checks": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true,
+        "config": true,
+        "storage": true,
+        "algorithm": true,
+        "use_isomorphism": true,
+        "target_pct": true,
+        "check_every": true,
+        "max_iterations": true
+      }
+    },
+    {
+      "fixture_id": "river",
+      "baseline_full_cycle_ms": 108.47850000000001,
+      "candidate_full_cycle_ms": 100.5488,
+      "observed_change_pct": -7.309927773706315,
+      "baseline_solve_ms": 17.6504,
+      "candidate_solve_ms": 17.3402,
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360,
+      "equality_checks": {
+        "fingerprint": true,
+        "state_fingerprint": true,
+        "exploit_bits": true,
+        "iteration": true,
+        "config": true,
+        "storage": true,
+        "algorithm": true,
+        "use_isomorphism": true,
+        "target_pct": true,
+        "check_every": true,
+        "max_iterations": true
+      }
+    }
+  ],
+  "input_reports": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B002\\report.json",
+      "sha256": "e7464ba4fe177135d5664a4cc70df801919cee937cbba4f2b1869462015a3941"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E002\\report.json",
+      "sha256": "31b8122fec7c4ff5699ec3f29776b002c2397ad4ae88491d8bdf3beb8ec219c9"
+    }
+  ],
+  "preserved_evidence": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E002.patch",
+      "sha256": "c55c56da5cac0751a7637f0c9de37e533d7592ae54cdd4f90c6109280224654e"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E002-action-chance-256.exe",
+      "sha256": "1cf2de68300251989f339dde0c5dfe4744adfd39832957c150b3b8d269e33219"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E002\\report.json",
+      "sha256": "31b8122fec7c4ff5699ec3f29776b002c2397ad4ae88491d8bdf3beb8ec219c9"
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E002\\stdout.log",
+      "sha256": "4f9fb77a225226d4c9475841a819507ca1b4ef62293e5d00a20c7c987b8b9110"
+    }
+  ]
+}

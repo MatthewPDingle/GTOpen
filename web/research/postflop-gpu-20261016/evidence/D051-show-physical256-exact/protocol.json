@@ -1,0 +1,119 @@
+{
+  "id": "D051",
+  "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+  "baseline": "Accepted E020 complete up_show",
+  "candidate": "Exact D050 complete up_show",
+  "baseline_cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "candidate_cuda_sha256": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558",
+  "baseline_physical_threads": 128,
+  "candidate_physical_threads": 256,
+  "logical_scan_threads": 128,
+  "matrix": {
+    "valid_opponent_counts": [
+      0,
+      1,
+      127,
+      128,
+      129,
+      255,
+      256,
+      257,
+      1081
+    ],
+    "final_boards": [
+      "Ks7h2dQhTc",
+      "AsKsQsJsTs"
+    ],
+    "other_player_valid_count": 257,
+    "player_orientations": [
+      0,
+      1
+    ],
+    "reach_profiles": [
+      "all_zero",
+      "sparse_rounding_witness",
+      "seeded_ordinary",
+      "subnormal_mixed_scales"
+    ],
+    "regular_comparison_pairs": 144,
+    "zero_count_pairs": 4,
+    "comparison_pairs": 148,
+    "kernel_launches": 296,
+    "active_nodes_per_regular_launch": 2,
+    "node_payouts": [
+      [
+        5,
+        -5,
+        0
+      ],
+      [
+        4.5,
+        -5,
+        -0.25
+      ]
+    ],
+    "root_ranges": "Final-board-valid hands plus deterministic hands blocked only by the turn/river; empty valid range retains blocked root hands. Largest legal final-board range1081.",
+    "zero_count_matrix": "Both boards and orientations at m257, seeded ordinary profile, count0 and positive grid."
+  },
+  "orientation_scope": "p0 binds own257/opponentm; p1 reverses ranges to ownm/opponent257. This is reversed-range orientation coverage, not a full independent crossing of each opponent count with both labels. up_show has no scalar player argument.",
+  "corpus_sha256": "a68daeefff0fd2cd968c8124e089586b62a91703a646030d3229c2ee53f68bf8",
+  "corpus_bytes": 4391430,
+  "expected": {
+    "geometries": 36,
+    "regular_pairs": 144,
+    "zero_count_pairs": 4,
+    "comparison_pairs": 148,
+    "kernel_launches": 296,
+    "stdout_markers": 151,
+    "raw_result_records": 148,
+    "active_words_compared": 78896,
+    "output_guard_word_checks": 525400,
+    "device_input_buffers_per_variant": 21,
+    "device_input_buffer_checks": 6216,
+    "sparse_royal_m257_witness_checks": 2
+  },
+  "source_compile_options": "arch=compute_120 only; other cudarc CompileOptions production defaults. Same context, separate full modules, root-only serialized execution.",
+  "resource_admission": "Before any launch require device/function maximum threads supports128/256 and every actual dynamic+static shared allocation fits default limit. No performance/resource regression gate.",
+  "required_correctness": [
+    "Every frozen actual poker rank checked against byte-copied accepted Rust evaluate7 before context creation. Python best-of21 evaluator independently generated ranks; frozen sorted/card/same/lower/upper metadata checked again.",
+    "Each variant launches full unmodified entry ABI over identical input bytes. All21device input buffers read back and compared, every output bit including padding/guards preserved and baseline/candidate full outputs compared.",
+    "Actual output_active mask includes all own root hands; hands excluded by final board zero. Empty own sorted lists with positive root hand count still zero active spans. count0 preserves all output guards.",
+    "Every active output word must overwrite stale guard; regular targetm>=127 nonzero profiles must yield nonzero words. Tiny m1 profiles may legitimately contain only zero valid reach.",
+    "All-zero/empty-valid cases explicitly require+0 active outputs. Sparse royal m257 disjoint-own witness must produce exact-0.25 in raked node for both orientations.",
+    "All observed nonfinite outputs remain mandatory bit comparisons and are separately recorded; no NaN/Inf input or payload generalization.",
+    "No duplicated raw-scan helper. Host injected expected-bit and guard-verifier failures are not numerical GPU cases.",
+    "Both newly compiled modules must reproduce all9 extracted PTX entries of independently reviewed D050, and8unaffected entries must match between variants."
+  ],
+  "raw_evidence": "raw-results.jsonl preserves baseline+candidate complete CFV output u32arrays and percase input/guard counts; corpus preserves all original device input bits.",
+  "stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "minimum_free_bytes": 53687091200,
+  "output_reservation_bytes": 1073741824,
+  "gpu_lock": "S:\\GTOpen-research\\postflop-gpu-20261016\\gpu-run.lock",
+  "live_solve_refusal": true,
+  "telemetry": "read-only pre/post only; no polling during native execution",
+  "preserve_failure_no_retry": true,
+  "candidate_variants": 1,
+  "outcome_triggered_extensions": false,
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "numerical_validation": "not executed",
+  "root_execution_requires": "Frozen independent source/script review; D050 terminal capacity and scoped compiled-scan PASS; all162 accepted E020 inputs exact; idle serialized slot. Preparer never builds or executes.",
+  "required_terminal_validation": {
+    "id": "D051",
+    "verdict": "PASS_EXACT_COMPLETE_UP_SHOW_COMPARISON",
+    "exactness_pass": true,
+    "numerical_validation": "executed",
+    "baseline_physical_threads": 128,
+    "candidate_physical_threads": 256,
+    "logical_scan_threads": 128,
+    "comparison_pairs": 148,
+    "kernel_launches": 296,
+    "performance_measurement": false,
+    "candidate_accepted": false
+  },
+  "terminal_validation_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D051-independent-review\\validation.json",
+  "later_gate": "Exact D051 is pre-activation only. E026 fixed primary and conditional original broad/F32/GPU/continuation/wide-turn/fresh cumulative gates remain unchanged."
+}

@@ -1,0 +1,19 @@
+{
+  "id": "E070-prospective-unexecuted-tail-admission",
+  "at": "2026-10-18T01:17:01.950894+00:00",
+  "execution_plan_sha256": "e274ca3b0aa5927691740141f7f8a3efb186fa57309c7f9223b8b3e821cbfb09",
+  "helper_resource_report_sha256": "a25c4018714e9c8022983402e55ac95c816163cb343d6721851101c6063f39ad",
+  "helper_ptx_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-baseline-compute_120.ptx": "82c1695b5f78b90a0e1a6c0c4078f1b486623ad4f9694d5f3b97154ee3c60aa3",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\projection-candidate-compute_120.ptx": "9e1a5b7a87ea92b0d5e89c2d89a541d3f3b2fb8ac436f377c2e9b8304330f12f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-baseline-compute_120.ptx": "e0d3f0abdecad1c69f69bc2c874c22ac90334c2a697d5fadfb35c9ffc6160aa6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\helper-resource\\execution\\ptx\\storage-copy-candidate-compute_120.ptx": "f4681cfc27a17a80d8de47db8e9ac516f5e5f3d514dce7d822b6ebd82a3bdc16"
+  },
+  "core_resource_report_sha256": "a9452fad3b7a5d4da8fe7915c5c7b5a7a74df1c166f48ca663f0e2d79cc19b8c",
+  "cases": 5953,
+  "kernel_launches": 11906,
+  "application_kernel_launches_before_seal": 3982,
+  "fixed_sampling": "Six native processes total because the original down process stopped before an invalid input could launch. Only remaining24down and three unstarted components execute; all5953retained IDs get one baseline/candidate pair, with no repeated completed pair or excluded case.",
+  "prior_completed_case_pairs": 1991,
+  "fixture_correction_sha256": "f8cb07635d0070707ab9bcc4744b4a2577b5bbeae232c3805caea27adb20d1ed"
+}

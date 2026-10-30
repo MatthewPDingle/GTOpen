@@ -1,0 +1,295 @@
+{
+  "id": "D238",
+  "at": "2026-10-29T03:16:05.692158+00:00",
+  "status": "declined_explicit_fold_card_lookahead_already_emitted",
+  "previous_goal_turn": "Progress: E109 exact engine/direct/fullcanonical/ordinary controls passed, but fixed completecycle screen rejected -0.295156912331% and riverguard. No rescue/adoption.",
+  "accepted_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "retained_current_driver_capture_sha256": "26d276c05245d7ab7c46c967e55e4d89e65325f3f54a622a55d362b70bb542eb",
+  "accepted_native_section_sha256": "2b2d28ef742395f8bd93b6c13673d22cb5421b4f18e0c2a01f3722c0b9fbee43",
+  "native_region": [
+    {
+      "pc_hex": "0x5c0",
+      "instruction": "LDG.E.CONSTANT R32, desc[UR6][R2.64+-0x20]"
+    },
+    {
+      "pc_hex": "0x5d0",
+      "instruction": "LDG.E.CONSTANT R34, desc[UR6][R2.64+-0x1c]"
+    },
+    {
+      "pc_hex": "0x5e0",
+      "instruction": "LDG.E.CONSTANT R36, desc[UR6][R2.64+-0x18]"
+    },
+    {
+      "pc_hex": "0x5f0",
+      "instruction": "LDG.E.CONSTANT R13, desc[UR6][R2.64+-0x14]"
+    },
+    {
+      "pc_hex": "0x600",
+      "instruction": "LDG.E.CONSTANT R17, desc[UR6][R2.64+-0x10]"
+    },
+    {
+      "pc_hex": "0x610",
+      "instruction": "LDG.E.CONSTANT R25, desc[UR6][R2.64+-0xc]"
+    },
+    {
+      "pc_hex": "0x620",
+      "instruction": "LDG.E.CONSTANT R30, desc[UR6][R2.64+-0x8]"
+    },
+    {
+      "pc_hex": "0x630",
+      "instruction": "LDG.E.CONSTANT R28, desc[UR6][R2.64+-0x4]"
+    },
+    {
+      "pc_hex": "0x640",
+      "instruction": "LDG.E.CONSTANT R26, desc[UR6][R2.64]"
+    },
+    {
+      "pc_hex": "0x650",
+      "instruction": "LDG.E.CONSTANT R24, desc[UR6][R2.64+0x4]"
+    },
+    {
+      "pc_hex": "0x660",
+      "instruction": "LDG.E.CONSTANT R22, desc[UR6][R2.64+0x8]"
+    },
+    {
+      "pc_hex": "0x670",
+      "instruction": "LDG.E.CONSTANT R20, desc[UR6][R2.64+0xc]"
+    },
+    {
+      "pc_hex": "0x680",
+      "instruction": "LDG.E.CONSTANT R18, desc[UR6][R2.64+0x10]"
+    },
+    {
+      "pc_hex": "0x690",
+      "instruction": "LDG.E.CONSTANT R16, desc[UR6][R2.64+0x14]"
+    },
+    {
+      "pc_hex": "0x6a0",
+      "instruction": "LDG.E.CONSTANT R14, desc[UR6][R2.64+0x18]"
+    },
+    {
+      "pc_hex": "0x6b0",
+      "instruction": "LDG.E.CONSTANT R12, desc[UR6][R2.64+0x1c]"
+    },
+    {
+      "pc_hex": "0x6c0",
+      "instruction": "IADD R11, R11, 0x10"
+    },
+    {
+      "pc_hex": "0x6d0",
+      "instruction": "IADD R8, R8, 0x10"
+    },
+    {
+      "pc_hex": "0x6e0",
+      "instruction": "ISETP.NE.AND P1, PT, R11, RZ, PT"
+    },
+    {
+      "pc_hex": "0x6f0",
+      "instruction": "IADD.64 R2, R2, 0x40"
+    },
+    {
+      "pc_hex": "0x700",
+      "instruction": "IMAD R19, R32, 0x4, R7.reuse"
+    },
+    {
+      "pc_hex": "0x710",
+      "instruction": "IMAD R21, R34, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x720",
+      "instruction": "LDS R19, [R19]"
+    },
+    {
+      "pc_hex": "0x730",
+      "instruction": "IMAD R23, R36, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x740",
+      "instruction": "LDS R21, [R21]"
+    },
+    {
+      "pc_hex": "0x750",
+      "instruction": "IMAD R15, R13, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x760",
+      "instruction": "LDS R23, [R23]"
+    },
+    {
+      "pc_hex": "0x770",
+      "instruction": "IMAD R13, R17, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x780",
+      "instruction": "LDS R15, [R15]"
+    },
+    {
+      "pc_hex": "0x790",
+      "instruction": "IMAD R17, R25, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x7a0",
+      "instruction": "LDS R13, [R13]"
+    },
+    {
+      "pc_hex": "0x7b0",
+      "instruction": "IMAD R25, R30, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x7c0",
+      "instruction": "LDS R17, [R17]"
+    },
+    {
+      "pc_hex": "0x7d0",
+      "instruction": "IMAD R29, R28, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x7e0",
+      "instruction": "LDS R25, [R25]"
+    },
+    {
+      "pc_hex": "0x7f0",
+      "instruction": "IMAD R30, R26, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x800",
+      "instruction": "LDS R26, [R29]"
+    },
+    {
+      "pc_hex": "0x810",
+      "instruction": "IMAD R31, R24, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x820",
+      "instruction": "LDS R24, [R30]"
+    },
+    {
+      "pc_hex": "0x830",
+      "instruction": "IMAD R32, R22, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x840",
+      "instruction": "LDS R22, [R31]"
+    },
+    {
+      "pc_hex": "0x850",
+      "instruction": "IMAD R20, R20, 0x4, R7.reuse"
+    },
+    {
+      "pc_hex": "0x860",
+      "instruction": "FADD R28, R19, R10"
+    },
+    {
+      "pc_hex": "0x870",
+      "instruction": "LDS R10, [R32]"
+    },
+    {
+      "pc_hex": "0x880",
+      "instruction": "IMAD R19, R18, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x890",
+      "instruction": "FADD R28, R28, R21"
+    },
+    {
+      "pc_hex": "0x8a0",
+      "instruction": "LDS R18, [R20]"
+    },
+    {
+      "pc_hex": "0x8b0",
+      "instruction": "IMAD R21, R16, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x8c0",
+      "instruction": "FADD R28, R28, R23"
+    },
+    {
+      "pc_hex": "0x8d0",
+      "instruction": "LDS R16, [R19]"
+    },
+    {
+      "pc_hex": "0x8e0",
+      "instruction": "IMAD R14, R14, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x8f0",
+      "instruction": "FADD R28, R28, R15"
+    },
+    {
+      "pc_hex": "0x900",
+      "instruction": "LDS R21, [R21]"
+    },
+    {
+      "pc_hex": "0x910",
+      "instruction": "IMAD R12, R12, 0x4, R7"
+    },
+    {
+      "pc_hex": "0x920",
+      "instruction": "FADD R28, R28, R13"
+    },
+    {
+      "pc_hex": "0x930",
+      "instruction": "LDS R13, [R14]"
+    },
+    {
+      "pc_hex": "0x940",
+      "instruction": "FADD R28, R28, R17"
+    },
+    {
+      "pc_hex": "0x950",
+      "instruction": "LDS R12, [R12]"
+    },
+    {
+      "pc_hex": "0x960",
+      "instruction": "FADD R25, R28, R25"
+    },
+    {
+      "pc_hex": "0x970",
+      "instruction": "FADD R25, R25, R26"
+    },
+    {
+      "pc_hex": "0x980",
+      "instruction": "FADD R25, R25, R24"
+    },
+    {
+      "pc_hex": "0x990",
+      "instruction": "FADD R25, R25, R22"
+    },
+    {
+      "pc_hex": "0x9a0",
+      "instruction": "FADD R25, R25, R10"
+    },
+    {
+      "pc_hex": "0x9b0",
+      "instruction": "FADD R25, R25, R18"
+    },
+    {
+      "pc_hex": "0x9c0",
+      "instruction": "FADD R16, R25, R16"
+    },
+    {
+      "pc_hex": "0x9d0",
+      "instruction": "FADD R16, R16, R21"
+    },
+    {
+      "pc_hex": "0x9e0",
+      "instruction": "FADD R13, R16, R13"
+    },
+    {
+      "pc_hex": "0x9f0",
+      "instruction": "FADD R10, R13, R12"
+    },
+    {
+      "pc_hex": "0xa00",
+      "instruction": "@P1 BRA `(.L_x_258)"
+    }
+  ],
+  "observations": {
+    "card_indices_preloaded_before_first_shared_load": 16,
+    "reach_shared_loads_before_first_accumulator_add": 10,
+    "ordered_accumulator_adds_in_region": 16
+  },
+  "decision": "Do not create a one-step software lookahead candidate for the existing card gather loop: exact accepted native code already exposes16independent global index loads and10shared values before its first used sum addition. Baseline PTX instruction interleaving alone would misdescribe native scheduling.",
+  "scope": "Static currentdriver/source-bound local loop witness, not dynamic utilization/latency/counter/headroom or proof every tail has full preloading. No optimizer/compiler/kernel/solve/speed samples. Shared bank remapping also remains closed perE057/E062/D188; no bank/width/unroll/source variant admitted.",
+  "candidate_accepted": false
+}

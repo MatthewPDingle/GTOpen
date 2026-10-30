@@ -1,0 +1,1 @@
+D067 independent audit passed: one CPU-only selected invocation, three native fold-map matches, five markers and all twelve planned incidence totals/per-level categories reproduced from retained maps and historical flags. Accepted E020 source, two PTX files, main HEAD and live executable are restored/unchanged. No timing or shortcut-correctness claim.

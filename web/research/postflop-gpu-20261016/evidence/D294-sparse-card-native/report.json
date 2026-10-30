@@ -1,0 +1,426 @@
+{
+  "id": "D294",
+  "at": "2026-10-29T18:25:25.666536+00:00",
+  "status": "pass_scoped_sparse_card_native_guard_compaction_fallback_and_join_witness",
+  "protocol_sha256": "a7cda83c06acc041fb963ba5f79bc88fae01e90b4a9cb27fe060855a6a97d32a",
+  "witness": {
+    "barriers": [
+      {
+        "PC": "0x590",
+        "op": "BAR.RED.OR.DEFER_BLOCKING 0x0, P0"
+      },
+      {
+        "PC": "0x8a0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "PC": "0x1430",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "PC": "0x1da0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      },
+      {
+        "PC": "0x20b0",
+        "op": "BAR.SYNC.DEFER_BLOCKING 0x0"
+      }
+    ],
+    "source_reach_guard": "param25constant0x43c ->unsignednh_o>1326;originalR12global/sharedword ->uint>0x67800000 ->ORR10 ->BAR.RED.OR/B2R P0.",
+    "unsafe_original_endpoint": "R15=originalend R14 at0x980;@P0 at0x990 ->0xec0reconverge ->same0xf00endstore. P0notrewritten insideguardtoskipdomain.",
+    "six_conditional_shared_position_stores_and_nonzero_bit_predicates": true,
+    "compaction_native_instructions": [
+      {
+        "PC": "0x940",
+        "op": "IMAD.WIDE.U32 R16, R12, 0x4, R4"
+      },
+      {
+        "PC": "0x950",
+        "op": "LDG.E.CONSTANT R20, desc[UR10][R16.64+0x4]"
+      },
+      {
+        "PC": "0x960",
+        "op": "BSSY.RECONVERGENT B1, `(.L_x_210)"
+      },
+      {
+        "PC": "0x970",
+        "op": "IADD R14, -R0, R20"
+      },
+      {
+        "PC": "0x980",
+        "op": "MOV R15, R14"
+      },
+      {
+        "PC": "0x990",
+        "op": "@P0 BRA `(.L_x_211)"
+      },
+      {
+        "PC": "0x9a0",
+        "op": "LDG.E.CONSTANT R21, desc[UR10][R16.64]"
+      },
+      {
+        "PC": "0x9b0",
+        "op": "IADD R23, -R0, R21"
+      },
+      {
+        "PC": "0x9c0",
+        "op": "ISETP.GE.U32.AND P1, PT, R23, R14, PT"
+      },
+      {
+        "PC": "0x9d0",
+        "op": "MOV R15, R23"
+      },
+      {
+        "PC": "0x9e0",
+        "op": "@P1 BRA `(.L_x_211)"
+      },
+      {
+        "PC": "0x9f0",
+        "op": "IADD R15, -R21, R20"
+      },
+      {
+        "PC": "0xa00",
+        "op": "BSSY.RECONVERGENT B2, `(.L_x_212)"
+      },
+      {
+        "PC": "0xa10",
+        "op": "MOV R17, R23"
+      },
+      {
+        "PC": "0xa20",
+        "op": "LOP3.LUT P1, R22, R15, 0x3, RZ, 0xc0, !PT"
+      },
+      {
+        "PC": "0xa30",
+        "op": "MOV R15, R23"
+      },
+      {
+        "PC": "0xa40",
+        "op": "@!P1 BRA `(.L_x_213)"
+      },
+      {
+        "PC": "0xa50",
+        "op": "LEA R16, R23.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xa60",
+        "op": "ISETP.NE.AND P2, PT, R22, 0x1, PT"
+      },
+      {
+        "PC": "0xa70",
+        "op": "IADD R17, R23, 0x1"
+      },
+      {
+        "PC": "0xa80",
+        "op": "LDS R15, [R16]"
+      },
+      {
+        "PC": "0xa90",
+        "op": "LEA R18, R15, UR7, 0x2"
+      },
+      {
+        "PC": "0xaa0",
+        "op": "MOV R15, R17"
+      },
+      {
+        "PC": "0xab0",
+        "op": "LDS R18, [R18]"
+      },
+      {
+        "PC": "0xac0",
+        "op": "ISETP.NE.AND P1, PT, R18, RZ, PT"
+      },
+      {
+        "PC": "0xad0",
+        "op": "@!P1 IADD R15, R23, RZ"
+      },
+      {
+        "PC": "0xae0",
+        "op": "@!P2 BRA `(.L_x_213)"
+      },
+      {
+        "PC": "0xaf0",
+        "op": "LDS R24, [R16+0x4]"
+      },
+      {
+        "PC": "0xb00",
+        "op": "ISETP.NE.AND P2, PT, R22, 0x2, PT"
+      },
+      {
+        "PC": "0xb10",
+        "op": "LEA R18, R24, UR7, 0x2"
+      },
+      {
+        "PC": "0xb20",
+        "op": "LDS R18, [R18]"
+      },
+      {
+        "PC": "0xb30",
+        "op": "ISETP.NE.AND P1, PT, R18, RZ, PT"
+      },
+      {
+        "PC": "0xb40",
+        "op": "@P1 LEA R19, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xb50",
+        "op": "@P1 IADD R17, R15, 0x1"
+      },
+      {
+        "PC": "0xb60",
+        "op": "@P1 STS [R19], R24"
+      },
+      {
+        "PC": "0xb70",
+        "op": "@P1 MOV R15, R17"
+      },
+      {
+        "PC": "0xb80",
+        "op": "IADD R17, R23, 0x2"
+      },
+      {
+        "PC": "0xb90",
+        "op": "@!P2 BRA `(.L_x_213)"
+      },
+      {
+        "PC": "0xba0",
+        "op": "LDS R16, [R16+0x8]"
+      },
+      {
+        "PC": "0xbb0",
+        "op": "IADD R17, R23, 0x3"
+      },
+      {
+        "PC": "0xbc0",
+        "op": "LEA R18, R16, UR7, 0x2"
+      },
+      {
+        "PC": "0xbd0",
+        "op": "LDS R18, [R18]"
+      },
+      {
+        "PC": "0xbe0",
+        "op": "ISETP.NE.AND P1, PT, R18, RZ, PT"
+      },
+      {
+        "PC": "0xbf0",
+        "op": "@P1 LEA R25, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xc00",
+        "op": "@P1 IADD R19, R15, 0x1"
+      },
+      {
+        "PC": "0xc10",
+        "op": "@P1 STS [R25], R16"
+      },
+      {
+        "PC": "0xc20",
+        "op": "@P1 MOV R15, R19"
+      },
+      {
+        "PC": "0xc30",
+        "op": "NOP"
+      },
+      {
+        "PC": "0xc40",
+        "op": "BSYNC.RECONVERGENT B2"
+      },
+      {
+        "PC": "0xc50",
+        "op": "IADD R16, R21, -R20"
+      },
+      {
+        "PC": "0xc60",
+        "op": "ISETP.GT.U32.AND P1, PT, R16, -0x4, PT"
+      },
+      {
+        "PC": "0xc70",
+        "op": "@P1 BRA `(.L_x_211)"
+      },
+      {
+        "PC": "0xc80",
+        "op": "LEA R16, R17.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xc90",
+        "op": "IADD R17, R17, 0x4"
+      },
+      {
+        "PC": "0xca0",
+        "op": "LDS R20, [R16]"
+      },
+      {
+        "PC": "0xcb0",
+        "op": "LEA R18, R20, UR7, 0x2"
+      },
+      {
+        "PC": "0xcc0",
+        "op": "LDS R18, [R18]"
+      },
+      {
+        "PC": "0xcd0",
+        "op": "ISETP.NE.AND P1, PT, R18, RZ, PT"
+      },
+      {
+        "PC": "0xce0",
+        "op": "@P1 LEA R23, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xcf0",
+        "op": "@P1 IADD R22, R15, 0x1"
+      },
+      {
+        "PC": "0xd00",
+        "op": "@P1 STS [R23], R20"
+      },
+      {
+        "PC": "0xd10",
+        "op": "@P1 MOV R15, R22"
+      },
+      {
+        "PC": "0xd20",
+        "op": "LDS R21, [R16+0x4]"
+      },
+      {
+        "PC": "0xd30",
+        "op": "LEA R19, R21, UR7, 0x2"
+      },
+      {
+        "PC": "0xd40",
+        "op": "LDS R19, [R19]"
+      },
+      {
+        "PC": "0xd50",
+        "op": "ISETP.NE.AND P2, PT, R19, RZ, PT"
+      },
+      {
+        "PC": "0xd60",
+        "op": "@P2 LEA R24, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xd70",
+        "op": "@P2 IADD R20, R15, 0x1"
+      },
+      {
+        "PC": "0xd80",
+        "op": "@P2 STS [R24], R21"
+      },
+      {
+        "PC": "0xd90",
+        "op": "@P2 MOV R15, R20"
+      },
+      {
+        "PC": "0xda0",
+        "op": "LDS R22, [R16+0x8]"
+      },
+      {
+        "PC": "0xdb0",
+        "op": "LEA R18, R22, UR7, 0x2"
+      },
+      {
+        "PC": "0xdc0",
+        "op": "LDS R18, [R18]"
+      },
+      {
+        "PC": "0xdd0",
+        "op": "ISETP.NE.AND P1, PT, R18, RZ, PT"
+      },
+      {
+        "PC": "0xde0",
+        "op": "@P1 LEA R23, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xdf0",
+        "op": "@P1 IADD R21, R15, 0x1"
+      },
+      {
+        "PC": "0xe00",
+        "op": "@P1 STS [R23], R22"
+      },
+      {
+        "PC": "0xe10",
+        "op": "@P1 MOV R15, R21"
+      },
+      {
+        "PC": "0xe20",
+        "op": "ISETP.NE.AND P1, PT, R17, R14, PT"
+      },
+      {
+        "PC": "0xe30",
+        "op": "LDS R20, [R16+0xc]"
+      },
+      {
+        "PC": "0xe40",
+        "op": "LEA R19, R20, UR7, 0x2"
+      },
+      {
+        "PC": "0xe50",
+        "op": "LDS R19, [R19]"
+      },
+      {
+        "PC": "0xe60",
+        "op": "ISETP.NE.AND P2, PT, R19, RZ, PT"
+      },
+      {
+        "PC": "0xe70",
+        "op": "@P2 LEA R21, R15.reuse, UR12, 0x2"
+      },
+      {
+        "PC": "0xe80",
+        "op": "@P2 IADD R18, R15, 0x1"
+      },
+      {
+        "PC": "0xe90",
+        "op": "@P2 STS [R21], R20"
+      },
+      {
+        "PC": "0xea0",
+        "op": "@P2 MOV R15, R18"
+      },
+      {
+        "PC": "0xeb0",
+        "op": "@P1 BRA `(.L_x_214)"
+      },
+      {
+        "PC": "0xec0",
+        "op": "NOP"
+      },
+      {
+        "PC": "0xed0",
+        "op": "BSYNC.RECONVERGENT B1"
+      },
+      {
+        "PC": "0xee0",
+        "op": "IMAD.U32 R14, R12, 0x4, R13"
+      },
+      {
+        "PC": "0xef0",
+        "op": "IADD R12, R11, R12"
+      },
+      {
+        "PC": "0xf00",
+        "op": "STS [R14], R15"
+      },
+      {
+        "PC": "0xf10",
+        "op": "ISETP.GE.U32.AND P1, PT, R12, 0x34, PT"
+      },
+      {
+        "PC": "0xf20",
+        "op": "@!P1 BRA `(.L_x_215)"
+      }
+    ],
+    "first_card_endpoint_consumer": "Afterlastbarrier: CGAsharedbase0x400,cardidxR23*4 ->LDSR31 ->originalcard_baseR0+endpoint at0x2420. Both card consumer paths are separately bound in D293PTX.",
+    "limits": "Bounded fixed-driver nativeguard/OR/compactionstore/fallback/firstendpoint/barrier witness. Does not fully symbolically interpret every pointer, every integer loop or secondnativeconsumer. Fullsource/D293PTX/directraw/engine/canonical/broadqualification remain mandatory, no universalIEEE orspeedclaim."
+  },
+  "negative_reader_fixtures": [
+    "wrong_threshold",
+    "wrong_position",
+    "wrong_fallback",
+    "missing_reduction"
+  ],
+  "all_owned_capture_disassembly_children_terminal": true,
+  "new_application_kernel_solver_or_speed_samples": 0,
+  "candidate_adopted": false
+}

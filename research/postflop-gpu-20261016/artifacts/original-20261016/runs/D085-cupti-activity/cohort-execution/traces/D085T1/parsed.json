@@ -1,0 +1,118 @@
+{
+  "records": 26529,
+  "collector": {
+    "event": "complete",
+    "records": 26529,
+    "kernels": 26230,
+    "memcopies": 290,
+    "memsets": 9,
+    "dropped": 0,
+    "errors": 0,
+    "invalid_timestamps": 0,
+    "outstanding_buffers": 0,
+    "peak_buffers": 3
+  },
+  "kernel_family_counts": {
+    "copy_root": 410,
+    "down_action": 5330,
+    "down_chance": 3690,
+    "up_fold": 5040,
+    "up_show": 2520,
+    "up_action": 5200,
+    "up_chance": 3780,
+    "up_action_eval": 260
+  },
+  "families": {
+    "copy_root": {
+      "count": 410,
+      "summed_ms": 0.533689,
+      "share_of_summed_kernel_time_pct": 0.011895290112516077
+    },
+    "down_action": {
+      "count": 5330,
+      "summed_ms": 772.483338,
+      "share_of_summed_kernel_time_pct": 17.217730574538383
+    },
+    "down_chance": {
+      "count": 3690,
+      "summed_ms": 119.592918,
+      "share_of_summed_kernel_time_pct": 2.6655832423234243
+    },
+    "up_fold": {
+      "count": 5040,
+      "summed_ms": 381.23528,
+      "share_of_summed_kernel_time_pct": 8.497278858523032
+    },
+    "up_show": {
+      "count": 2520,
+      "summed_ms": 1329.810513,
+      "share_of_summed_kernel_time_pct": 29.63988736288144
+    },
+    "up_action": {
+      "count": 5200,
+      "summed_ms": 1598.704905,
+      "share_of_summed_kernel_time_pct": 35.63322206243234
+    },
+    "up_chance": {
+      "count": 3780,
+      "summed_ms": 256.432271,
+      "share_of_summed_kernel_time_pct": 5.715568913274104
+    },
+    "up_action_eval": {
+      "count": 260,
+      "summed_ms": 27.764328,
+      "share_of_summed_kernel_time_pct": 0.6188336959147617
+    }
+  },
+  "graph_groups": [
+    {
+      "graph_id": 2,
+      "kernel_nodes": 63,
+      "repeats_each_node": 199,
+      "families": {
+        "copy_root": 1,
+        "down_action": 13,
+        "down_chance": 9,
+        "up_fold": 12,
+        "up_show": 6,
+        "up_action": 13,
+        "up_chance": 9
+      }
+    },
+    {
+      "graph_id": 5,
+      "kernel_nodes": 63,
+      "repeats_each_node": 199,
+      "families": {
+        "copy_root": 1,
+        "down_action": 13,
+        "down_chance": 9,
+        "up_fold": 12,
+        "up_show": 6,
+        "up_action": 13,
+        "up_chance": 9
+      }
+    },
+    {
+      "graph_id": 8,
+      "kernel_nodes": 103,
+      "repeats_each_node": 9,
+      "families": {
+        "copy_root": 1,
+        "down_action": 13,
+        "down_chance": 9,
+        "up_fold": 24,
+        "up_show": 12,
+        "up_action_eval": 26,
+        "up_chance": 18
+      }
+    }
+  ],
+  "summed_kernel_ms": 4486.557242,
+  "kernel_union_ms": 4485.399719,
+  "all_device_activity_union_ms": 4603.214652,
+  "device_activity_span_ms": 5010.608138,
+  "raw_trace_sha256": "20d3f3f5698a8c3fddcca59ee438127a3b39ee1c6c46a0f2aa754d0148722523",
+  "metadata_sha256": "0c05387a6be354ac47884446bdcfb370b195447d4933845bf07a87077d97b514",
+  "scope": "Traced activity only; family sums may overlap and are not uninstrumented wall-time attribution or removable speed headroom."
+}

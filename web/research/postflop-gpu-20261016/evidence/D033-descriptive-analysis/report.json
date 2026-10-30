@@ -1,0 +1,126 @@
+{
+  "id": "D033",
+  "at": "2026-10-16T09:40:32Z",
+  "raw_source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033R1\\stdout.log",
+  "raw_source_sha256": "ae26e9408b57c4df40f7a576ac3b32c6111200fc201a5a8d65210d9fc9ab76d7",
+  "kind": "diagnostic",
+  "accepted_performance_claim": false,
+  "checkpoints": [
+    160,
+    180,
+    200
+  ],
+  "native_20_iteration_device_ms": {
+    "samples": [
+      459.6063537597656,
+      460.85748291015625,
+      462.5217590332031
+    ],
+    "median": 460.85748291015625,
+    "min": 459.6063537597656,
+    "max": 462.5217590332031
+  },
+  "instrumented_20_iteration_device_ms": {
+    "samples": [
+      776.3331909179688,
+      793.2276611328125,
+      791.0625
+    ],
+    "median": 791.0625,
+    "min": 776.3331909179688,
+    "max": 793.2276611328125
+  },
+  "device_perturbation_pct": {
+    "samples": [
+      68.91263242277867,
+      72.11994825902643,
+      71.03249405034194
+    ],
+    "median": 71.03249405034194,
+    "min": 68.91263242277867,
+    "max": 72.11994825902643
+  },
+  "host_perturbation_pct": {
+    "samples": [
+      68.9011951707609,
+      72.11627438230484,
+      71.01343132488553
+    ],
+    "median": 71.01343132488553,
+    "min": 68.9011951707609,
+    "max": 72.11627438230484
+  },
+  "last_replay_paired_graph_family_ms": {
+    "copy_root": {
+      "samples": [
+        0.09417600184679031,
+        0.08060799911618233,
+        0.07657600194215775
+      ],
+      "median": 0.08060799911618233,
+      "min": 0.07657600194215775,
+      "max": 0.09417600184679031
+    },
+    "down_action": {
+      "samples": [
+        5.540991999208927,
+        5.526240028440952,
+        5.638975992798805
+      ],
+      "median": 5.540991999208927,
+      "min": 5.526240028440952,
+      "max": 5.638975992798805
+    },
+    "down_chance": {
+      "samples": [
+        1.855903998017311,
+        2.1268159970641136,
+        1.8469119742512703
+      ],
+      "median": 1.855903998017311,
+      "min": 1.8469119742512703,
+      "max": 2.1268159970641136
+    },
+    "up_action": {
+      "samples": [
+        10.683359984308481,
+        10.459839962422848,
+        10.36390395089984
+      ],
+      "median": 10.459839962422848,
+      "min": 10.36390395089984,
+      "max": 10.683359984308481
+    },
+    "up_chance": {
+      "samples": [
+        2.3962559923529625,
+        2.5032319724559784,
+        2.480032004415989
+      ],
+      "median": 2.480032004415989,
+      "min": 2.3962559923529625,
+      "max": 2.5032319724559784
+    },
+    "up_fold": {
+      "samples": [
+        3.421439968049526,
+        3.457407996058464,
+        3.6345599740743637
+      ],
+      "median": 3.457407996058464,
+      "min": 3.421439968049526,
+      "max": 3.6345599740743637
+    },
+    "up_show": {
+      "samples": [
+        7.639232084155083,
+        7.666304096579552,
+        8.088896036148071
+      ],
+      "median": 7.666304096579552,
+      "min": 7.639232084155083,
+      "max": 8.088896036148071
+    }
+  },
+  "interpretation": "All samples retained. Dense event instrumentation materially perturbed scheduling. Family values are sums of last-replay event intervals in two instrumented graphs, not batch means or uninstrumented kernel shares. No native cost fractions, event-cost subtraction, speedup or acceptance claim. Exactness/provenance independently audited separately."
+}

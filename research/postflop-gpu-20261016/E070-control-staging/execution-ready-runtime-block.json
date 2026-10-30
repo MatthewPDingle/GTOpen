@@ -1,0 +1,144 @@
+{
+  "id": "E070-execution-ready-runtime-block",
+  "at": "2026-10-17T23:26:43.080187+00:00",
+  "status": "execution_ready_native_access_blocked",
+  "execution_plan_sha256": "e274ca3b0aa5927691740141f7f8a3efb186fa57309c7f9223b8b3e821cbfb09",
+  "input_files_verified": 129,
+  "declared_cases": 5953,
+  "planned_kernel_launches": 11906,
+  "consecutive_goal_turn_block_evidence": [
+    {
+      "path": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\compiler-preparation-manifest.json",
+      "sha256": "f79c0ffcb0f04306def41ca9debe9d519469b66724c634e4b2a200eb473e8616",
+      "at": "2026-10-17T23:03:54.715666+00:00"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\host-integration-r2\\checkpoint.json",
+      "sha256": "26fff1cabe8d9991a11dc3d4557b3a9ee44e9df167b5ca14f6b2e5799620023a",
+      "at": "2026-10-17T23:10:58.817644+00:00"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\checkpoint.json",
+      "sha256": "959b2a12c51d2482315cf1883aa310109e3eead1324656aef0bcb41cb2d0bd07",
+      "at": "2026-10-17T23:18:34.465025+00:00"
+    }
+  ],
+  "blocked_audit": "Same current-chat on-request/restricted S-write and localhost condition persisted across at least three consecutive goal turns. Those turns made permitted preparation progress. Preparation is now complete; source integration and timing depend on the frozen native resource/numerical outcomes. No further meaningful permitted action advances those outcomes without a runtime permission change or another approval notification.",
+  "current_thread_approval_mode": "on-request",
+  "current_thread_sandbox": {
+    "type": "managed",
+    "file_system": {
+      "type": "restricted",
+      "entries": [
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "root"
+            }
+          },
+          "access": "read"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen"
+          },
+          "access": "write"
+        },
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "slash_tmp"
+            }
+          },
+          "access": "write"
+        },
+        {
+          "path": {
+            "type": "special",
+            "value": {
+              "kind": "tmpdir"
+            }
+          },
+          "access": "write"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen"
+          },
+          "access": "write"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.git"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.agents"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.codex"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.aws"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.git"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        },
+        {
+          "path": {
+            "type": "path",
+            "path": "X:\\Dev\\GTOpen\\.codex"
+          },
+          "access": "read",
+          "missing_path_behavior": "skip"
+        }
+      ]
+    },
+    "network": "restricted"
+  },
+  "required_access": "Actual current-chat permission to write S:\\GTOpen-research and perform localhost idle checks, without repeated native approval notifications. Human research authorization is already present.",
+  "no_more_approval_requests_sent": true,
+  "S_control_archive_exists": false,
+  "gpu_run_lock_exists": false,
+  "owned_preparation_processes": "All compiler/CPU check receipts terminal; no native resource/numerical process started.",
+  "new_GPU_executions": 0,
+  "new_NVRTC_executions": 0,
+  "new_speed_samples": 0,
+  "accepted_gain_changed": false,
+  "resume_action": "Apply Full access using this chat permissions control and confirm it; resume the goal after the actual runtime profile changes. Do not alter security state through files, private RPCs or alternate executors.",
+  "next_sealed_command": [
+    "python",
+    "-B",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\run_sealed_controls.py",
+    "--execute",
+    "e274ca3b0aa5927691740141f7f8a3efb186fa57309c7f9223b8b3e821cbfb09"
+  ],
+  "limits": "Prepared and guarded native campaign only; no new GPU correctness or performance result."
+}

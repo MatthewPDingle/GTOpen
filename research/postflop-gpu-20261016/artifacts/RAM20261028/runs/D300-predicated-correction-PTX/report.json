@@ -1,0 +1,333 @@
+{
+  "id": "D300",
+  "at": "2026-10-29T19:32:31.793176+00:00",
+  "status": "pass_scoped_predicated_correction_PTX_original_words_priority_and_barriers",
+  "protocol_sha256": "31be3a53bc2042ad98f3ac6242e66811ea09f5e4b5e69a152933c41ba6fa9c8a",
+  "witness": {
+    "all30_rank_correction_sites": [
+      {
+        "position": "%r132",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f137",
+        "reach_address": "%rd142",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r132, %r53;\n\tsetp.ge.u32 p_hi, %r132, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f137;\n\t@p_hi add.rn.f32 %f378, %f378, %f137;\n\t}"
+      },
+      {
+        "position": "%r135",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f142",
+        "reach_address": "%rd146",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r135, %r53;\n\tsetp.ge.u32 p_hi, %r135, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f142;\n\t@p_hi add.rn.f32 %f378, %f378, %f142;\n\t}"
+      },
+      {
+        "position": "%r138",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f147",
+        "reach_address": "%rd150",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r138, %r53;\n\tsetp.ge.u32 p_hi, %r138, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f147;\n\t@p_hi add.rn.f32 %f378, %f378, %f147;\n\t}"
+      },
+      {
+        "position": "%r141",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f152",
+        "reach_address": "%rd154",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r141, %r53;\n\tsetp.ge.u32 p_hi, %r141, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f152;\n\t@p_hi add.rn.f32 %f378, %f378, %f152;\n\t}"
+      },
+      {
+        "position": "%r144",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f157",
+        "reach_address": "%rd158",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r144, %r53;\n\tsetp.ge.u32 p_hi, %r144, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f157;\n\t@p_hi add.rn.f32 %f378, %f378, %f157;\n\t}"
+      },
+      {
+        "position": "%r147",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f162",
+        "reach_address": "%rd162",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r147, %r53;\n\tsetp.ge.u32 p_hi, %r147, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f162;\n\t@p_hi add.rn.f32 %f378, %f378, %f162;\n\t}"
+      },
+      {
+        "position": "%r150",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f167",
+        "reach_address": "%rd166",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r150, %r53;\n\tsetp.ge.u32 p_hi, %r150, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f167;\n\t@p_hi add.rn.f32 %f378, %f378, %f167;\n\t}"
+      },
+      {
+        "position": "%r153",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f172",
+        "reach_address": "%rd170",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r153, %r53;\n\tsetp.ge.u32 p_hi, %r153, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f172;\n\t@p_hi add.rn.f32 %f378, %f378, %f172;\n\t}"
+      },
+      {
+        "position": "%r163",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f185",
+        "reach_address": "%rd174",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r163, %r53;\n\tsetp.ge.u32 p_hi, %r163, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f185;\n\t@p_hi add.rn.f32 %f378, %f378, %f185;\n\t}"
+      },
+      {
+        "position": "%r166",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f190",
+        "reach_address": "%rd178",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r166, %r53;\n\tsetp.ge.u32 p_hi, %r166, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f190;\n\t@p_hi add.rn.f32 %f378, %f378, %f190;\n\t}"
+      },
+      {
+        "position": "%r169",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f195",
+        "reach_address": "%rd182",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r169, %r53;\n\tsetp.ge.u32 p_hi, %r169, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f195;\n\t@p_hi add.rn.f32 %f378, %f378, %f195;\n\t}"
+      },
+      {
+        "position": "%r172",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f200",
+        "reach_address": "%rd186",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r172, %r53;\n\tsetp.ge.u32 p_hi, %r172, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f200;\n\t@p_hi add.rn.f32 %f378, %f378, %f200;\n\t}"
+      },
+      {
+        "position": "%r179",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f209",
+        "reach_address": "%rd190",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r179, %r53;\n\tsetp.ge.u32 p_hi, %r179, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f209;\n\t@p_hi add.rn.f32 %f378, %f378, %f209;\n\t}"
+      },
+      {
+        "position": "%r182",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f214",
+        "reach_address": "%rd194",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r182, %r53;\n\tsetp.ge.u32 p_hi, %r182, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f214;\n\t@p_hi add.rn.f32 %f378, %f378, %f214;\n\t}"
+      },
+      {
+        "position": "%r188",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f220",
+        "reach_address": "%rd198",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r188, %r53;\n\tsetp.ge.u32 p_hi, %r188, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f220;\n\t@p_hi add.rn.f32 %f378, %f378, %f220;\n\t}"
+      },
+      {
+        "position": "%r194",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f226",
+        "reach_address": "%rd204",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r194, %r53;\n\tsetp.ge.u32 p_hi, %r194, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f226;\n\t@p_hi add.rn.f32 %f378, %f378, %f226;\n\t}"
+      },
+      {
+        "position": "%r197",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f231",
+        "reach_address": "%rd208",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r197, %r53;\n\tsetp.ge.u32 p_hi, %r197, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f231;\n\t@p_hi add.rn.f32 %f378, %f378, %f231;\n\t}"
+      },
+      {
+        "position": "%r200",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f236",
+        "reach_address": "%rd212",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r200, %r53;\n\tsetp.ge.u32 p_hi, %r200, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f236;\n\t@p_hi add.rn.f32 %f378, %f378, %f236;\n\t}"
+      },
+      {
+        "position": "%r203",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f241",
+        "reach_address": "%rd216",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r203, %r53;\n\tsetp.ge.u32 p_hi, %r203, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f241;\n\t@p_hi add.rn.f32 %f378, %f378, %f241;\n\t}"
+      },
+      {
+        "position": "%r206",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f246",
+        "reach_address": "%rd220",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r206, %r53;\n\tsetp.ge.u32 p_hi, %r206, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f246;\n\t@p_hi add.rn.f32 %f378, %f378, %f246;\n\t}"
+      },
+      {
+        "position": "%r209",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f251",
+        "reach_address": "%rd224",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r209, %r53;\n\tsetp.ge.u32 p_hi, %r209, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f251;\n\t@p_hi add.rn.f32 %f378, %f378, %f251;\n\t}"
+      },
+      {
+        "position": "%r212",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f256",
+        "reach_address": "%rd228",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r212, %r53;\n\tsetp.ge.u32 p_hi, %r212, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f256;\n\t@p_hi add.rn.f32 %f378, %f378, %f256;\n\t}"
+      },
+      {
+        "position": "%r215",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f261",
+        "reach_address": "%rd232",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r215, %r53;\n\tsetp.ge.u32 p_hi, %r215, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f261;\n\t@p_hi add.rn.f32 %f378, %f378, %f261;\n\t}"
+      },
+      {
+        "position": "%r226",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f274",
+        "reach_address": "%rd236",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r226, %r53;\n\tsetp.ge.u32 p_hi, %r226, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f274;\n\t@p_hi add.rn.f32 %f378, %f378, %f274;\n\t}"
+      },
+      {
+        "position": "%r229",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f279",
+        "reach_address": "%rd240",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r229, %r53;\n\tsetp.ge.u32 p_hi, %r229, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f279;\n\t@p_hi add.rn.f32 %f378, %f378, %f279;\n\t}"
+      },
+      {
+        "position": "%r232",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f284",
+        "reach_address": "%rd244",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r232, %r53;\n\tsetp.ge.u32 p_hi, %r232, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f284;\n\t@p_hi add.rn.f32 %f378, %f378, %f284;\n\t}"
+      },
+      {
+        "position": "%r235",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f289",
+        "reach_address": "%rd248",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r235, %r53;\n\tsetp.ge.u32 p_hi, %r235, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f289;\n\t@p_hi add.rn.f32 %f378, %f378, %f289;\n\t}"
+      },
+      {
+        "position": "%r242",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f298",
+        "reach_address": "%rd252",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r242, %r53;\n\tsetp.ge.u32 p_hi, %r242, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f298;\n\t@p_hi add.rn.f32 %f378, %f378, %f298;\n\t}"
+      },
+      {
+        "position": "%r245",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f303",
+        "reach_address": "%rd256",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r245, %r53;\n\tsetp.ge.u32 p_hi, %r245, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f303;\n\t@p_hi add.rn.f32 %f378, %f378, %f303;\n\t}"
+      },
+      {
+        "position": "%r251",
+        "lower_bound": "%r53",
+        "upper_bound": "%r54",
+        "lower_accumulator": "%f377",
+        "higher_accumulator": "%f378",
+        "same_original_reach_word": "%f309",
+        "reach_address": "%rd260",
+        "PTX": "{\n\t.reg .pred p_lo, p_hi, p_not_lo;\n\tsetp.lt.u32 p_lo, %r251, %r53;\n\tsetp.ge.u32 p_hi, %r251, %r54;\n\tnot.pred p_not_lo, p_lo;\n\tand.pred p_hi, p_hi, p_not_lo;\n\t@p_lo add.rn.f32 %f377, %f377, %f309;\n\t@p_hi add.rn.f32 %f378, %f378, %f309;\n\t}"
+      }
+    ],
+    "lower_bound_param": 12,
+    "upper_bound_param": 13,
+    "original_position_to_same_reach_word_addressing": true,
+    "readwrite_self_adds": true,
+    "priority": "lower iff pos<lb; higher iff pos>=ub AND NOT pos<lb, including malformed bound ordering",
+    "all5barriers_unchanged": [
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;",
+      "bar.sync \t0;"
+    ],
+    "unconditional_total_and_all_prefix_payout_source_unchanged": true,
+    "limits": "Bounded actual PTX operand/rank-address/predicate witness plus source inverse/Boolean contract; not a full PTX memory/FP interpreter. Readwrite chain/caller integration, native JIT form, full raw original controls and full qualification remain required."
+  },
+  "negative_reader_fixtures": [
+    "wrong_lower_comparison",
+    "wrong_else_priority",
+    "wrong_reach_operand",
+    "wrong_precision",
+    "missing_original_barrier"
+  ],
+  "new_compiler_GPU_kernel_solver_or_speed_samples": 0,
+  "candidate_adopted": false
+}

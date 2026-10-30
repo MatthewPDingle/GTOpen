@@ -1,0 +1,19 @@
+{
+  "at": "2026-10-29T14:10:22.837941+00:00",
+  "original_reader_sha256": "7cd2ecda96875b87b89fd7fb6c6a19a4000734e16ccb8d7c03da6ae0799b4e29",
+  "corrected_reader_sha256": "2e9cc977aef8395042e003eaa14de127ea214beccc0c96ad7129f6b9f15dae7b",
+  "original_failure": {
+    "started_at": "2026-10-29T14:09:43.861870+00:00",
+    "finished_at": "2026-10-29T14:09:44.674977+00:00",
+    "returncode": 1,
+    "error": null,
+    "cleanup": null
+  },
+  "cause": "Reader required constructor output config equal raw input. Accepted Spot::new_impl line142 uses carry_aggressor_through_checks.get_or_insert(false); all3 raw configs null and both actual full native outputs false. Correct only expected config for documented original normalization. Entire paired files still compared literally, no output normalization.",
+  "source_proof": {
+    "baseline_game_sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "literal": "config.tree.carry_aggressor_through_checks.get_or_insert(false);"
+  },
+  "new_compilers_native_cases_GPU_or_speed_samples": 0,
+  "original_frozen_protocol_and_reader_unchanged": true
+}

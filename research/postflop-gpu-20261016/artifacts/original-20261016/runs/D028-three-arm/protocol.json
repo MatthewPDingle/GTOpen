@@ -1,0 +1,76 @@
+{
+  "id": "D028",
+  "created_before_runs": "2026-10-16T07:58:16Z",
+  "purpose": "Locate whether the fresh original-baseline river regression is specific to E016 or shared with retained E015 under the current run history.",
+  "scope": "Diagnostic only. Does not replace, exclude or reclassify any prior timing cohort; no candidate acceptance from this script.",
+  "trigger": "E016 primary passed +4.1126% versus E015; fresh original-baseline cohort failed river regression guard in all three pairs, primarily in constructor initialization.",
+  "arms": {
+    "original": [
+      "baseline-complete",
+      "f2b93f5088f8395baaac9b47e7cdb89cfc92e7e33d9af50702b0ee8485e6ee6f"
+    ],
+    "E015": [
+      "E015-postflop_autoresearch",
+      "37e09be0b3d2ec66db6b49e13e09aa468a487218bd0215306f025bf7ca226eda"
+    ],
+    "E016": [
+      "E016-postflop_autoresearch",
+      "bab2bf04b107dba790a875efd611831e73dc47e5f6faa13e6351f88202dc2bcf"
+    ]
+  },
+  "order": [
+    {
+      "arm": "original",
+      "repetition": 1,
+      "id": "D028-original-1"
+    },
+    {
+      "arm": "E015",
+      "repetition": 1,
+      "id": "D028-E015-1"
+    },
+    {
+      "arm": "E016",
+      "repetition": 1,
+      "id": "D028-E016-1"
+    },
+    {
+      "arm": "E015",
+      "repetition": 2,
+      "id": "D028-E015-2"
+    },
+    {
+      "arm": "E016",
+      "repetition": 2,
+      "id": "D028-E016-2"
+    },
+    {
+      "arm": "original",
+      "repetition": 2,
+      "id": "D028-original-2"
+    },
+    {
+      "arm": "E016",
+      "repetition": 3,
+      "id": "D028-E016-3"
+    },
+    {
+      "arm": "original",
+      "repetition": 3,
+      "id": "D028-original-3"
+    },
+    {
+      "arm": "E015",
+      "repetition": 3,
+      "id": "D028-E015-3"
+    }
+  ],
+  "fixed_inputs": "Same frozen complete-cycle evaluator, workload, native binaries, full fixture order, compressed storage, 16 CPU threads and unprofiled environment.",
+  "interpretation_rules": [
+    "Retain all nine runs and all 27 fixture records. Compare full-cycle and component distributions across all arms.",
+    "Report original/E015 and original/E016 differences separately from E015/E016; do not infer a unique cause from timing location.",
+    "If the regression occurs before graph construction in solve, do not attribute it to graph capture without further evidence.",
+    "A favorable diagnostic does not erase the failed cumulative cohort or by itself establish stable cumulative performance."
+  ],
+  "source_hash": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed"
+}

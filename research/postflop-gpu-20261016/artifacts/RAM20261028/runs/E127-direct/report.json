@@ -1,0 +1,40 @@
+{
+  "id": "E127-direct",
+  "at": "2026-10-29T23:22:06.385633+00:00",
+  "status": "pass_all2457_original_and_derived_whole_physical_cases",
+  "protocol_sha256": "2babb29fa2bfc45644bb8258302648303617f9cc25d0fa35c567dc48b2f63537",
+  "counts": {
+    "input_seed_words": 49594518,
+    "immutable_post_words_both_arms": 26727726,
+    "output_words_both_arms": 72461310,
+    "guard_words_both_arms": 61228396,
+    "allocation_pairs_checked": 515970,
+    "cases": 2457
+  },
+  "kernel_launches": 7914,
+  "raw_files": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-direct\\execution\\raw\\baseline-inputs.bin": {
+      "bytes": 53701160,
+      "sha256": "482427bc9db8899ae47873e86887de77b07c178fa1d236e004442cebd58480cf"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-direct\\execution\\raw\\baseline.bin": {
+      "bytes": 144991425,
+      "sha256": "68045762ac62b37b20755f0e323745366d31701cfb2797f83181f55a3eb10900"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-direct\\execution\\raw\\candidate-inputs.bin": {
+      "bytes": 53701160,
+      "sha256": "482427bc9db8899ae47873e86887de77b07c178fa1d236e004442cebd58480cf"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-direct\\execution\\raw\\candidate.bin": {
+      "bytes": 144991425,
+      "sha256": "68045762ac62b37b20755f0e323745366d31701cfb2797f83181f55a3eb10900"
+    },
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E127-direct\\execution\\raw\\inputs.bin": {
+      "bytes": 198839996,
+      "sha256": "10c3632f6e3b9710962218f7915c06959a4731636d238610858dba0cb7d944d6"
+    }
+  },
+  "scope": "Exact baseline original child kernels then parent versus fused candidate. Entire original819 parent corpus retained; two819-case child/lock/own-grandchild-alias variants. Every input and seed independently regenerated, all12 immutable postarrays and all3 whole mutable outputs read both arms, allunowned guardwords exact, all15actual devicebuffers pairwise disjoint. No engine/canonical/runtime cost/speed/adoption claim.",
+  "solver_speed_samples": 0,
+  "candidate_accepted": false
+}

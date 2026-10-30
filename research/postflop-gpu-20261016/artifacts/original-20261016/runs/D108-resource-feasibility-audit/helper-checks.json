@@ -1,0 +1,74 @@
+{
+  "at": "2026-10-17T11:06:37.210888+00:00",
+  "checks": [
+    {
+      "name": "unchanged",
+      "admitted": true,
+      "warnings": []
+    },
+    {
+      "name": "feasible register/static/occupancy risk disclosed",
+      "admitted": true,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "static_shared_not_increased",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject local_bytes_per_thread",
+      "admitted": false,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "local_bytes_not_increased",
+        "static_shared_not_increased",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject dynamic_shared_bytes",
+      "admitted": false,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "static_shared_not_increased",
+        "dynamic_shared_not_increased",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject max_threads",
+      "admitted": false,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "static_shared_not_increased",
+        "max_threads_not_reduced",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject fits_default_limits",
+      "admitted": false,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "static_shared_not_increased",
+        "both_fit_default_limits",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject occupancy_by_threads",
+      "admitted": false,
+      "warnings": [
+        "allocated_registers_not_increased",
+        "static_shared_not_increased",
+        "driver_occupancy_not_reduced"
+      ]
+    },
+    {
+      "name": "reject missing register attribute",
+      "rejected": true
+    }
+  ],
+  "count": 8,
+  "native_compilation_or_execution": 0
+}

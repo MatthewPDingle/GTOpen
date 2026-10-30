@@ -1,0 +1,18 @@
+{
+  "id": "D148-packet-model",
+  "at": "2026-10-28T10:58:06.151696+00:00",
+  "status": "FROZEN_PRE_MODEL_EXECUTION",
+  "cases": 432,
+  "invalid_cases": 19,
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-prepare-packet-model.py": "38cb4cd814f4b1e5b0de0a4ba53c974dd013c18ac110e0545f3c6bdf02401bd0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packet-model.py": "9e6c702cdbc010ba713f962c1c1d6841c52c1e4ecd575ff7cb350a9153bce4ec",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packet-model\\cases.json": "8d6f5dfb80a960356e0e9c3f9bbb2cb3f2e988d692e90d5f34dc2798143455c0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packet-model\\invalid-cases.json": "bea512b23810f1180c2d60de93373cfb0cc248515517373095162b887ec2bcb1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\design-review.json": "ccfb5ca06a8a9c4a98c7e41169ef9b217592b51691a08a4b35320977ab5ca365",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\accepted-source.json": "951455cc2aed3e49a5a5ce36d9fdbc23d546387ce413326ef34bac1a9c56fe19",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\protected-main.json": "9c824952f93eeb41000947221a9718356a82b82a86d917b43ecfe8fd3e01311d"
+  },
+  "scope": "One fixed finite CPU model, independent direct host scatter, every physical host/scratch guard word, odd tails and injected output-corruption witnesses. High source offsets modeled as integers; no GPU allocation or FP quantization is implied. No extensions or source variants after a real model failure. No application kernel before this model passes."
+}

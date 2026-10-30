@@ -1,0 +1,116 @@
+{
+  "id": "E126",
+  "at": "2026-10-29T22:10:03.233140+00:00",
+  "status": "REJECTED_CLOSED_COMPUTE120_VECTOR_EMISSION_GATE",
+  "source_manifest_sha256": "8f07e2166cb296314d92bee9a805e7add96a22e6fed7ade6cd04317e56284660",
+  "resource_protocol_sha256": "7ab7d91497906b695b99a7f9edf81c12de5930e45bd4fb3aa2cbb927dd2b6cf4",
+  "resource_report_sha256": "58328a768f7776e3309d233e906fc1d6c045a158bd60a72e4baf89a35204f74b",
+  "root_recomputed_failed_gates": [
+    "compute_120:aligned_vector_pair_emitted"
+  ],
+  "complete_target_load_inventory": {
+    "compute_120": {
+      "baseline": {
+        "global_load_opcode_sites": {
+          "ld.global.nc.u32": 22,
+          "ld.global.nc.f32": 4
+        },
+        "target_section_sha256": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+        "barrier_sites": 5
+      },
+      "candidate": {
+        "global_load_opcode_sites": {
+          "ld.global.nc.u32": 22,
+          "ld.global.nc.f32": 4
+        },
+        "target_section_sha256": "a590e277dfe491bba169c99da76cc28223574d7268dff5a72c98cec77541fe25",
+        "barrier_sites": 5
+      }
+    },
+    "compute_75": {
+      "baseline": {
+        "global_load_opcode_sites": {
+          "ld.global.nc.u32": 22,
+          "ld.global.nc.f32": 4
+        },
+        "target_section_sha256": "77dc2bd1c113913149254ebeff5acd43e2ed13087e145bb316bfd8d0afb3abf6",
+        "barrier_sites": 5
+      },
+      "candidate": {
+        "global_load_opcode_sites": {
+          "ld.global.nc.u32": 22,
+          "ld.global.nc.f32": 4,
+          "ld.global.nc.v2.u32": 2
+        },
+        "target_section_sha256": "1988696ae0d5252e4f06d2a401fe3a388c4fab268ca8ae1b1ae755bd5a45f7dd",
+        "barrier_sites": 5
+      }
+    }
+  },
+  "all9_actual_driver_resources_exact": true,
+  "all9_ABI_headers_exact_both_architectures": true,
+  "all8_untargeted_PTX_bodies_exact": true,
+  "up_show_actual_resources": {
+    "application_kernels": 0,
+    "constant_bytes": 0,
+    "context_stack_after": 1024,
+    "context_stack_before": 1024,
+    "device_shared_limit": 49152,
+    "device_thread_limit": 1024,
+    "dynamic_shared_bytes": 26520,
+    "kernel": "up_show",
+    "local_bytes_per_thread": 0,
+    "max_threads": 1024,
+    "occupancy_by_threads": [
+      [
+        64,
+        3
+      ],
+      [
+        128,
+        3
+      ],
+      [
+        256,
+        3
+      ]
+    ],
+    "registers": 38,
+    "stage": "resource",
+    "static_shared_bytes": 1040,
+    "variant": "candidate"
+  },
+  "decision": "The RTX 5090 target emitted 22 scalar u32 and four scalar f32 global-load sites in both versions, with no wider pair load. The older compute75 target emitted two vector pair loads. The fixed form fails its compute120 emission gate and is closed before application kernels, numerical tests or solve timing. This is a compiler result, not a measured speed regression.",
+  "source_contract": "OneCRLFsourceedit:actualpointer8bytealignmentguard selectsuint2read oforiginaladjacentc0/c1u32words;original2scalarreadsotherwise. NoFP/addressset/payload/host/launch/qualitychangeintended.1277952CPUrow/card/baseaddresschecks,notC++/GPUfloatproof.",
+  "distinct_from_closed": "E031sharedoffsetcache/E099adjacenthandmemory/E121packedhandwords/E125narrowpermutationtable notcomposed. Fixedpairmetadatareadformclosed,notatuningrescueofthose mechanisms.",
+  "closed_form": "No width/guard/pointer/layout/cacheoperator/helper/architecture/kernel-subset/flags/source/quality/sample rescue or forcedinlinePTXretrial. Preservebotharchitectureoutcomes.",
+  "reporter_wording_correction": "Adaptedresourcecheckerretainedu16load/handpermtextinthelimitsandautomaticstatusmessagefromE125template. Itsactualsource,emittedvectorpredicate,params,targetentryup_show,resourcechecks andfrozenE126protocolarecorrect. Thisadditiveclosurecorrectstheprosenames;originalreport/checkerretained, no source/compiler/native/gatechange orrepeat.",
+  "scope": "Source/history/addresscontractandmodule/PTXresourcechecks only. Noactualapplicationkerneloutputs/numericalcorrectness/throughput/physicaltransaction/performancegain/universalvectorizationclaim.",
+  "new_Rust_compilers": 1,
+  "new_NVRTC_compiles": 2,
+  "owned_module_probe_processes": 1,
+  "application_kernel_launches": 0,
+  "solver_or_speed_trials": 0,
+  "all_owned_children_terminal": true,
+  "child_receipts": [
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E126-resource\\execution\\probe.exit.json",
+      "sha256": "bf003143a7f8527eacfe4a046516f953aa45c79b5cd9c67a28e308a696f29b2c",
+      "returncode": 0
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E126-resource\\execution\\rustc.exit.json",
+      "sha256": "f05622d847b66ff0a0b2c187722ddc7f5ef0b513548242f61c6a06ecc1565a35",
+      "returncode": 0
+    }
+  ],
+  "candidate_adopted": false,
+  "qualified_live_config": "E080/GPU/compressed/Rayon16/defaultaffinity",
+  "RAM_reference_sum_threefixture_medians_ms": 10456.4109,
+  "last_primary_baseline": "B380",
+  "next_unused_primary_baseline": "B381",
+  "next_unused_candidate": "E127",
+  "accepted_main_live_protected_PTX_D304_HTML_unchanged": true,
+  "all_new_bulk_X_S_readonly_no_T": true,
+  "goal_active": true
+}

@@ -1,0 +1,114 @@
+{
+  "id": "D240",
+  "at": "2026-10-29T03:19:52.397566+00:00",
+  "status": "pass_source_and_param_bound_fused_partial_PTX",
+  "protocol_sha256": "2e6e54f7cf048f5d1e2fcc0bfa87e9dcd5fcd8c49308b26c439f86c7b126eaf2",
+  "architecture_witnesses": {
+    "compute_120": {
+      "baseline": {
+        "global_fill_value": "%f24",
+        "global_fill_address": "%rd49",
+        "partial_value": "%f109",
+        "partial_rhs": "%f89",
+        "partial_producer": "later shared reread",
+        "loop_label": "$L__BB3_26",
+        "induction_register": "%r94",
+        "bound_parameter": 19,
+        "width_register": "%r10",
+        "TID_register": "%r96",
+        "recurrence_loop": "$L__BB3_26:\n\tmul.wide.s32 \t%rd133, %r94, 4;\n\tadd.s64 \t%rd135, %rd134, %rd133;\n\tld.shared.f32 \t%f89, [%rd135];\n\tadd.f32 \t%f109, %f109, %f89;\n\tadd.s32 \t%r94, %r94, %r10;\n\tsetp.lt.s32 \t%p19, %r94, %r40;\n\t@%p19 bra \t$L__BB3_26;",
+        "same_global_value_stored_to_shared": true,
+        "zero_seed_and_thread_j_stride_bound_verified": true,
+        "partial_store_after_card_loop": true,
+        "barrier_sites": 3,
+        "float_arithmetic_inventory": {
+          "add.f32": 34,
+          "sub.f32": 2,
+          "mul.f32": 1
+        }
+      },
+      "candidate": {
+        "global_fill_value": "%f26",
+        "global_fill_address": "%rd49",
+        "partial_value": "%f100",
+        "partial_rhs": "%f26",
+        "partial_producer": "global fill",
+        "loop_label": "$L__BB3_6",
+        "induction_register": "%r84",
+        "bound_parameter": 19,
+        "width_register": "%r6",
+        "TID_register": "%r92",
+        "recurrence_loop": "$L__BB3_6:\n\tcvt.s64.s32 \t%rd46, %r84;\n\tadd.s64 \t%rd47, %rd7, %rd46;\n\tshl.b64 \t%rd48, %rd47, 2;\n\tadd.s64 \t%rd49, %rd6, %rd48;\n\tld.global.nc.f32 \t%f26, [%rd49];\n\tmul.wide.s32 \t%rd50, %r84, 4;\n\tadd.s64 \t%rd52, %rd51, %rd50;\n\tst.shared.f32 \t[%rd52], %f26;\n\tadd.f32 \t%f100, %f100, %f26;\n\tadd.s32 \t%r84, %r84, %r6;\n\tsetp.lt.s32 \t%p5, %r84, %r37;\n\t@%p5 bra \t$L__BB3_6;",
+        "same_global_value_stored_to_shared": true,
+        "zero_seed_and_thread_j_stride_bound_verified": true,
+        "partial_store_after_card_loop": true,
+        "barrier_sites": 3,
+        "float_arithmetic_inventory": {
+          "add.f32": 34,
+          "sub.f32": 2,
+          "mul.f32": 1
+        }
+      }
+    },
+    "compute_75": {
+      "baseline": {
+        "global_fill_value": "%f16",
+        "global_fill_address": "%rd42",
+        "partial_value": "%f48",
+        "partial_rhs": "%f32",
+        "partial_producer": "later shared reread",
+        "loop_label": "$L__BB3_16",
+        "induction_register": "%r62",
+        "bound_parameter": 19,
+        "width_register": "%r19",
+        "TID_register": "%r64",
+        "recurrence_loop": "$L__BB3_16:\n\tmul.wide.s32 \t%rd83, %r62, 4;\n\tadd.s64 \t%rd85, %rd84, %rd83;\n\tld.shared.f32 \t%f32, [%rd85];\n\tadd.f32 \t%f48, %f48, %f32;\n\tadd.s32 \t%r62, %r62, %r19;\n\tsetp.lt.s32 \t%p14, %r62, %r32;\n\t@%p14 bra \t$L__BB3_16;\n",
+        "same_global_value_stored_to_shared": true,
+        "zero_seed_and_thread_j_stride_bound_verified": true,
+        "partial_store_after_card_loop": true,
+        "barrier_sites": 3,
+        "float_arithmetic_inventory": {
+          "add.f32": 10,
+          "sub.f32": 2,
+          "mul.f32": 1
+        }
+      },
+      "candidate": {
+        "global_fill_value": "%f18",
+        "global_fill_address": "%rd42",
+        "partial_value": "%f43",
+        "partial_rhs": "%f18",
+        "partial_producer": "global fill",
+        "loop_label": "$L__BB3_3",
+        "induction_register": "%r55",
+        "bound_parameter": 19,
+        "width_register": "%r3",
+        "TID_register": "%r60",
+        "recurrence_loop": "$L__BB3_3:\n\tcvt.s64.s32 \t%rd39, %r55;\n\tadd.s64 \t%rd40, %rd3, %rd39;\n\tshl.b64 \t%rd41, %rd40, 2;\n\tadd.s64 \t%rd42, %rd4, %rd41;\n\tld.global.nc.f32 \t%f18, [%rd42];\n\tmul.wide.s32 \t%rd43, %r55, 4;\n\tadd.s64 \t%rd45, %rd44, %rd43;\n\tst.shared.f32 \t[%rd45], %f18;\n\tadd.f32 \t%f43, %f43, %f18;\n\tadd.s32 \t%r55, %r55, %r3;\n\tsetp.lt.s32 \t%p4, %r55, %r29;\n\t@%p4 bra \t$L__BB3_3;\n",
+        "same_global_value_stored_to_shared": true,
+        "zero_seed_and_thread_j_stride_bound_verified": true,
+        "partial_store_after_card_loop": true,
+        "barrier_sites": 3,
+        "float_arithmetic_inventory": {
+          "add.f32": 10,
+          "sub.f32": 2,
+          "mul.f32": 1
+        }
+      }
+    }
+  },
+  "negative_fixtures": [
+    {
+      "arch": "compute_120",
+      "wrong_global_operand_detected": true
+    },
+    {
+      "arch": "compute_75",
+      "wrong_global_operand_detected": true
+    }
+  ],
+  "all_owned_children_terminal": true,
+  "application_kernels_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Operand/induction/source structural witness, not fullPTX CFG/FP simulator/universal IEEEpayload/nativebehavior/timing proof. Positive/wrongoperand negative fixtures required; no appkernels."
+}

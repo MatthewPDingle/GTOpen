@@ -1,0 +1,28 @@
+{
+  "id": "E060-scalar-root-check",
+  "at": "2026-10-17T08:28:25.361500+00:00",
+  "status": "pass_scoped_scalar_bit_equivalence",
+  "checks": 1252053,
+  "cases": 2130758,
+  "path_counts": {
+    "shared": 1252036,
+    "fallback": 685665,
+    "uniform": 193057
+  },
+  "full_outputs_byte_identical": true,
+  "all_input_words_unchanged": true,
+  "all_guard_words_exact": true,
+  "raw_artifact_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\inputs-after.bin": "d86dd3de5abcdfc7544f98d4c711d4ec782b0efbe60f235164fd5417152e85b7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\inputs.bin": "d86dd3de5abcdfc7544f98d4c711d4ec782b0efbe60f235164fd5417152e85b7",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\report.json": "dd48aeb0ddceb01c76bf0fcb639dc589a42d79a7d4015ccd755be93578f5541f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\scalar.ptx": "7dfc193ef8ae28ade837c2cc58a3a85550605b62e2b06776de5f6deb6bae26a9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\scalar_baseline.bin": "be1f8f4deaee550ee9e0b7a714ba39598d112fe58f7eaa9616ed2db9e6e9609f",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E060-scalar-control\\execution\\raw\\scalar_candidate.bin": "be1f8f4deaee550ee9e0b7a714ba39598d112fe58f7eaa9616ed2db9e6e9609f"
+  },
+  "source_expression_extraction_verified": true,
+  "limits": "Differential result bits from two separate compiled CUDA entry functions and sampled caller-valid float pairs. Not exhaustive all-float or other-GPU proof; baseline is the original native division, candidate expressions extracted from fixed source.",
+  "root_review_only": true,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

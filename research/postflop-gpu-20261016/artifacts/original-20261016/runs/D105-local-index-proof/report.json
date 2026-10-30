@@ -1,0 +1,22 @@
+{
+  "id": "D105-local-index-proof",
+  "at": "2026-10-17T10:25:29.524229+00:00",
+  "status": "pass_bounded_integer_address_model",
+  "proof": {
+    "base_address_cases": 55427463,
+    "base_patterns": 7,
+    "floating_results_compared": false,
+    "kernel_launches": 0,
+    "local_combinations": 7918209,
+    "max_local_element_index": 5303,
+    "no_memory_dereferences": true,
+    "stage": "integer_proof"
+  },
+  "combined_resource_protocol_sha256": "759a5e3b5daec75e1becefca0f89ad18949b46ce0c9e50e0b753d1cc4b9f959f",
+  "source_activated": false,
+  "application_kernel_launches": 0,
+  "floating_results_compared": false,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Exhaustive integer model plus source-level NLHEbounds. No actual pointer dereferences, GPU values, complete solver state or speed result."
+}

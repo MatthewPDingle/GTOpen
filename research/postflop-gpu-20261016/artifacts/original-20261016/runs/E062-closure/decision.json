@@ -1,0 +1,61 @@
+{
+  "id": "E062",
+  "at": "2026-10-17T09:45:49.877484+00:00",
+  "original_source_form": "E057",
+  "decision": "rejected_first_fresh_source_form_speed_qualification",
+  "aggregate_gain_pct": -0.9938628266406948,
+  "minimum_gain_pct": 1.0,
+  "fixture_guards": [
+    {
+      "fixture_id": "rainbow",
+      "median_slowdown_pct": 0.515039307339441,
+      "slower_pairs": 2,
+      "paired_slowdown_pct": [
+        0.14232119400727217,
+        -0.09010599029038176,
+        0.515039307339441
+      ],
+      "failed": true
+    },
+    {
+      "fixture_id": "two-tone",
+      "median_slowdown_pct": 1.510368022826897,
+      "slower_pairs": 1,
+      "paired_slowdown_pct": [
+        -1.0119038781098038,
+        2.3510851000483557,
+        -0.13287507185579261
+      ],
+      "failed": false
+    },
+    {
+      "fixture_id": "river",
+      "median_slowdown_pct": 7.896680938953863,
+      "slower_pairs": 3,
+      "paired_slowdown_pct": [
+        9.565174486171768,
+        15.032968207596703,
+        6.704500698199011
+      ],
+      "failed": true
+    }
+  ],
+  "all18results_138checkpoints_exact": true,
+  "ordinary_gpu_units_passed": 84,
+  "fresh_direct_kernel_pairs": 364,
+  "fresh_direct_kernel_launches": 728,
+  "fresh_resource_gate_passed": true,
+  "source_restored_accepted_E051": true,
+  "primary_report_sha256": "9c1cce4eb2ebff79944b5ba45623e9da7ff89386874c5e8415db435181873e2c",
+  "root_report_sha256": "86329b3d01524f7950df565929a0515c9a7b328f8b0229db9ee348e3055520fd",
+  "no_exclusions_pooling_extensions_or_source_variants": true,
+  "fresh16_broader_material_holdout_cumulative_not_run": true,
+  "historical_E057_decision_unchanged": true,
+  "alias_now_has_known_speed_outcome": true,
+  "not_eligible_for_future_never_timed_exception": true,
+  "D101_fixed_docket_exhausted": true,
+  "candidate_accepted": false,
+  "goal_active": true,
+  "limits": "Three-pair observed complete-cycle screen, no significance/universal slowdown or component-cause claim. Primary equality uses deterministic arena fingerprints and raw root/EV/stops/checkpoints, supplemented by full direct-kernel bytes.",
+  "comment_erratum": "The raw Rust wrapper first comment inherited an async-staging label. Pinned candidate CUDA b9c1b260895debf954def29b28804d3cd1cc0b431a668c698d72dda55693cec3 is exactly the E057 prefix mapping. This comment has no execution effect; sealed files unchanged."
+}

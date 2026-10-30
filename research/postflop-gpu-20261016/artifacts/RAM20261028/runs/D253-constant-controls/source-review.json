@@ -1,0 +1,59 @@
+{
+  "id": "D253",
+  "at": "2026-10-29T04:57:27.188093+00:00",
+  "previous_goal_turn": "Progress: E111 full raw/state/lifecycle and ordinary tests exact; fixed primary was151.625115840%slower, allthree fixtureguards failed. Closed withoutrescue, E080 retained.",
+  "hypothesis": "Prospective action discounts reside in a12byte per-module constant symbol instead of the existing12byte global allocation. Same three values updated on the same stream before eager/captured replay. Every action thread reads the same addresses; actual cache/code/host-query costs and all exactness/performance/material gates remain unmeasured. No poker candidate admitted.",
+  "semantic_history": "Not E044 pinned host staging, E055 conditional placement, E075 uniform immutable-node ldu loads or a variant of E111 clusters. No arithmetic/control/width/strategy/geometry/quality change proposed. Bounded local history is not universal novelty proof.",
+  "history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--format=%H %s",
+        "-G",
+        "__constant__|cuModuleGetGlobal|get_global|ld.const",
+        "--",
+        "crates/solver/src/gpu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "__constant__.*disc|gto_discounts|disc_const|constant.*discount",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 1,
+      "matches": []
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "__constant__.*disc|gto_discounts|disc_const|constant.*discount",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 0,
+      "matches": [
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D253-constant-controls\\primitive.cu"
+      ]
+    }
+  ],
+  "local_API": "Pinned cudarc0.19.7 CudaModule::get_global returns a borrowed CudaViewMut<u8>, not an owning CudaSlice despite its doc summary. Size12 checked before ephemeral typed f32view; module and stream remain alive. Never upgrade constant pointers into owning device allocation. Re-query-on-update cost is prospective and must count.",
+  "lifetime_obligation": "Never modify a symbol while any grid reading that same symbol is in flight. Same-stream copies precede each module graph replay. Separate live module symbols require actual nonoverlapping pointers/function/module handles and different patterns. Graphs drop before owning modules. Fresh module initialization separately checked. Future server/paging/module ownership must be audited; primitive cannot establish whole app support.",
+  "prospective_capacity": "Do not silently add a second persistent discount array. Future replacement must account the12byte symbol alongside all other payloads, module/constant overhead and actual driver costs; old global slice must not be freed as if it owned a module symbol. No material cost or capacity claim from source.",
+  "official_sources": [
+    "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-c-programming-guide/index.html#constant",
+    "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-c-best-practices-guide/index.html#constant-memory",
+    "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-driver-api/group__CUDA__MODULE.html"
+  ],
+  "scope": "Standalone feature/float-bit transport only; no CFR floating arithmetic, solver/source activation, speed/adoption or counter collection."
+}

@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-16T12:58:32.054197+00:00",
+  "status": "pass_source_only",
+  "python_ast_parse": [
+    "build.py",
+    "primary.py",
+    "assess.py"
+  ],
+  "production_sources_all162_match_E020": true,
+  "owned_sources_exactly": [
+    "crates/solver/src/gpu/kernels.cu",
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs",
+    "crates/solver/src/game.rs"
+  ],
+  "candidate_archive_sha256": "efb4b6cf424f5c685f52cad48488e9b35f87be05773f66486f532cb35b7186b6",
+  "candidate_cuda_exact_D043": true,
+  "candidate_cuda_prefix_exact_E020": true,
+  "unique_new_entry_marker": "extern \"C\" __global__ void up_action_opponent(",
+  "accepted_binary_rejects_candidate_binding": true,
+  "patch_apply_check": {
+    "returncode": 0,
+    "stdout": "",
+    "stderr": "",
+    "source_write": false
+  },
+  "run_ids_unused": [
+    "V023-unit",
+    "B074",
+    "E023R1",
+    "E023R2",
+    "B075",
+    "B076",
+    "E023R3"
+  ],
+  "unit_inventory_prospective": {
+    "passed": 86,
+    "ignored": 4,
+    "new_nonignored": [
+      "gpu::plan::tests::training_actor_partition_preserves_stable_coverage_and_coordinates",
+      "gpu::plan::tests::training_actor_metadata_bytes_are_exact_and_checked"
+    ]
+  },
+  "conditional_feature_test_required": "gpu::continuation_capacity::tests::training_actor_list_matches_observed_metadata_for_mixed_and_uniform_plans",
+  "build_target_previously_absent": true,
+  "wide_fixture_hash_unchanged": "650f86f364b0b67c7d8ebea4607391ca177a62bbd3315f833288305b56c197e2",
+  "adapted_from_scripts_manifest_sha256": "8663776389cb6e676dc66b2596a725f9257a698f1a7a99aaf22c7d5b65e1fcf7",
+  "normalized_script_diff_sha256": "622d8d453a3cf17148d39efdd5da85ba7201d91c9a90bf191850b8b2430765c4",
+  "reference_count": 17,
+  "builds": 0,
+  "native_tests": 0,
+  "gpu_executions": 0,
+  "checkout_mutations": 0,
+  "dashboard_mutations": 0
+}

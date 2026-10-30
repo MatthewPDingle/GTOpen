@@ -1,0 +1,58 @@
+{
+  "id": "E032-source-checks",
+  "accepted_entries_verified": 162,
+  "owned_sources": [
+    "crates/solver/src/gpu/mod.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/mod.rs": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16"
+  },
+  "unowned_entries_unchanged": 161,
+  "cuda_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "cuda_unchanged": true,
+  "evaluation_region_byte_exact": true,
+  "evaluation_region_sha256": "8c6add519a5f556d61e4bce3e84fcb4ad6044769b247a096763ea46f4ed685fa",
+  "complete_down_prefix_byte_exact": true,
+  "reverse_chance_action_suffix_byte_exact": true,
+  "launch_argument_config_bodies_exact": {
+    "up_fold": "a43d0320d01a3be7fcf4c5e56e6bab0a6844901a456e3a6ffb48a77b976f2735",
+    "up_show": "4ef073fa2ed91958e0151abf3e767ae68dbb071a59c1ec21aed7065b65dd6cd2",
+    "up_chance": "9a05622559505e2bb12ffc9922f81011eb8b945d6645935c70846139d69035d9",
+    "up_action": "3a148f33689e099d9cfa04517eca7f9964cc035567eb2911feaa812b19ac79a5"
+  },
+  "profile_bucket_ids_unchanged": [
+    3,
+    4,
+    5,
+    6
+  ],
+  "device_attribute_query_count": 1,
+  "query_before_stream_or_upload": true,
+  "query_failure_nonpositive_limit_behavior": "limit0 selects complete original per-level schedule, without a new constructor error",
+  "constructor_ownership": "New field comes from an early local scalar. No new borrow of plan after its fields move; original per-field uploads remain unchanged.",
+  "checked_full_count": "Each usize length converts via i32::try_from before u32 launch count. Both must fit queried positive/clamped grid limit; otherwise all-or-nothing fallback. Whole spans start0; original fallback spans retain preexisting handling.",
+  "no_new_device_buffers_or_dynamic_allocations": true,
+  "additional_host_scalar": "one u32 grid limit; no new host heap payload/schema",
+  "non_ascii_original_lines_exact": true,
+  "unit_inventory": {
+    "base_gpu_passed": 84,
+    "candidate_gpu_passed": 85,
+    "ignored": 4,
+    "new_tests": [
+      "gpu::tests::training_terminal_consolidation_covers_lists_and_falls_back"
+    ],
+    "existing_changed_test_flow": [
+      "legacy_iteration forces limit0 and restores before unwrapping Result",
+      "paired lifecycle asserts actual consolidation and profile buckets3/4 counts"
+    ],
+    "execution": "not run; prospective inventory only"
+  },
+  "test_scope": "CPU plan union/unique terminal slots/disjoint scratch/iso+full/empty/count/device fallback boundaries. Existing raw lifecycle controls compare schedules through shared paired_sweep; this is not an independent original implementation oracle. Frozen E020 and later original controls remain necessary.",
+  "readonly_patch_apply_check": "passed",
+  "compiler_native_gpu_execution": false,
+  "production_modified": false,
+  "failed_preparation_attempts": []
+}

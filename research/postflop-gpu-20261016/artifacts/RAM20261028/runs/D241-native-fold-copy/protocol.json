@@ -1,0 +1,43 @@
+{
+  "id": "D241",
+  "at": "2026-10-29T03:20:20.928616+00:00",
+  "status": "FROZEN_PRE_CANDIDATE_MODULE_LOAD",
+  "candidate_PTX": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\candidate-compute_120.ptx",
+  "capture_binary": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture.exe",
+  "nvdisasm": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\nvdisasm.exe",
+  "private_dll_dir": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private",
+  "baseline_capture": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture-report.json",
+  "baseline_before": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\before.json",
+  "baseline_SASS": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\disassemble.stdout.log",
+  "GPU_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "target_entries": [
+    "up_fold"
+  ],
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D241-native-fold-copy.py": "2bad5c12946b8efe0bacdb49dcd8bb89e3907c04a098035f55c450eb8bd72a95",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\protocol.json": "7467fc636f34ec98922824df5db6cc9cb44a2c8c441c9e04b7e6fc278eb307f4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\report.json": "ce4082c9251187245b9a4b86200c604e88548ba05b12e5c4d41c919f1e9ecd03",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D240-fold-copy-PTX\\protocol.json": "2e6e54f7cf048f5d1e2fcc0bfa87e9dcd5fcd8c49308b26c439f86c7b126eaf2",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D240-fold-copy-PTX\\report.json": "a5a7f425fd0cabd0392fbf809f47b0e7d1afefd666945d4575332ba7b754e70f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-source\\manifest.json": "75f1ec0249f52389f70ec3fec09e7029f936bfcdc9a4a5aa1a582c1819158984",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-source\\source-review.json": "60779daaf4d738f46a91556cf8864316cd9386683068a3e8c372333cdf99b24b",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\protocol.json": "633edf626f8b7dc28acdcd89fd504aa64796f74daf97d54fd5a49b5c72df5893",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture-report.json": "24749648fdca4961d191b1db86142af6c1c5c85dd112893873b65e136dc87e63",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\before.json": "40be8d21af4c78751679ca0d00f9e36950174979ec389147c6d0f0957c836598",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\module-0.cubin": "4abe2fc9f17f4a375ac8e424a7b058a74ce5cb15e4178dc5837c3481a7c91f47",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\execution\\baseline\\disassemble.stdout.log": "7bfee367551f7f7e4bf88ac731290c56b1b30d7f06277f702ae5740b53f7e061",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\capture.exe": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D225-chunk-native-bypass\\nvdisasm.exe": "3a6d6f72d67f6a78f9b5b53b9bca4aa697ff80850ea3bd20f5196a1d5c5ad0d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E110-resource\\execution\\candidate-compute_120.ptx": "c6b167140251bf7f59dbf86233668c2c9ed8eedc3d132047b5cac1168da6d84c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\checkpoint.dll": "f0252a31427a0d3000d6f2373781b7ef9b359daffe03a38c2dc32cd343aa6b46",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\cupti64_2025.2.1.dll": "be1ecb387e14c1c0515b3b162b44c89b480c9a12f16c60f7b82eb8b1ebc35e74",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_host.dll": "df3538d2311784dd6b426a9b107876d97f45126ddc44cee5239917313c54686d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_target.dll": "923e550ac7404187c26808ff331ec04db182d1c8d075603e9d67f507ad303125",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\pcsamplingutil.dll": "3bdb884dd971b09cb32833a66a6384b38b12b841e543d50a23ce65ae32e5e2b2"
+  },
+  "required_free_bytes": 8589934592,
+  "scope": "Reuse exact accepted-source120PTX/current-driverCUBIN/SASS baseline capturedD225, verify sameGPU/driver query and candidateCUDAdevice/APIidentity. Existing checksum-bound generic D098resourcecallback executable and nvdisasm onX. Onecandidateownedprimarycontext/moduleload plusone disassembler, no newcompiler/NVRTC/baselinecapture/applicationkernels/counters/injection/solves/speed/sourceactivation. Extract the affectedfoldentry sections for separate operand-qualified native reader. Baselinecode reuse is not timing sample reuse.",
+  "next_gate": "Beforefirstbarrier candidate global reach scalar feedsboth sharedstore andpartialFADD; baseline hasonly sharedstore. Trace candidate partial unchanged through cardloop to originaltotalpartsstore, baseline later sharedpartial loop. Same originalorderedFADD operands,reduction/barriers andABI/host/launches; no FP simulator/latency claim. Missing mechanism closes frozenform without source/order/width/helper/flag rescue."
+}

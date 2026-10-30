@@ -1,0 +1,44 @@
+{
+  "id": "D215",
+  "at": "2026-10-28T23:39:44.231143+00:00",
+  "status": "FROZEN_BEFORE_FIRST_WHOLE_PTX_CFG_READER",
+  "targets": {
+    "down_action": {
+      "parameter_count": 18,
+      "lock_pointer_parameter": 12
+    },
+    "up_action": {
+      "parameter_count": 20,
+      "lock_pointer_parameter": 13
+    },
+    "up_action_eval": {
+      "parameter_count": 17,
+      "lock_pointer_parameter": 11
+    }
+  },
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D215-nullable-lock-CFG.py": "f2af3ab6e9ac7ef2b9477af95717ebf82ea00c5e899793f5b88d0575801e276c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D215-nullable-lock-CFG\\calibration.json": "940aa8834fe4117b31389ecb10bd7257e0196f0115bf688f9f4078acc55329a9",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\protocol.json": "6bb8c4a46c2e03148c0572efad3eef9ea512795f4b9e51fbf39ce138d002bde0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\report.json": "7fae834bb49521df089d402e4bf38c7e3847329229c99afcad6c5afecb72caa3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\complete.json": "c1913c0ec3b2ef0afba2b1a8112f5baf8608b2f3d2da2504c048b6ae7ddec530",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source-r2\\source-review.json": "204d0305e798b8e8c0c0fe963d10db3dc9fbdc0fa31d26bc1518540170c9e24f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source-r2\\manifest.json": "022ca20ac97054d675500373b51d8e49da2bb3c557979b1529f6a31d1b038fa4",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_120-down_action.ptx.txt": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_120-up_action.ptx.txt": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_120-up_action_eval.ptx.txt": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_75-down_action.ptx.txt": "1ea29f7ce9cb7d24fd50d538f3009e50678be50d5da78ad1c2fedef8d5d007d5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_75-up_action.ptx.txt": "d278da60cc05f545b79df59e33b59fcd1454deac9f4558cbcc007fce7aaec07c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\baseline-compute_75-up_action_eval.ptx.txt": "75c57558af5840d26f69f4e3689e4702144b698db3a6b0b6071a4a13b7769407",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_120-down_action.ptx.txt": "b65094c72aa1f47cc0736086ae78ac44d2f1b32ad648711601ef66792fd1ce63",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_120-up_action.ptx.txt": "64ba2bdd507fa9ca2827ddb056486615db70e3155f23f0deca154d4ebafe9eb0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_120-up_action_eval.ptx.txt": "515830077379bd1ca3ef4646a352e6d5da0c915e16bd9a0c87b3da538f1c799c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_75-down_action.ptx.txt": "17d13d0f34c7e15f44d480ab6d1b88c2b42fe5a4520d6442a6357e59e38797f1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_75-up_action.ptx.txt": "d8660f0222383af7c17f0662c39e1d1c8abadbd71cbd9a3b3e7ad3b8d0802a49",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\execution\\candidate-compute_75-up_action_eval.ptx.txt": "b24f896ec0cdeff0ed794e360a4f69b60633a10a4bf4de3ffac2b73c7c8417c2"
+  },
+  "required_result": "For both120/75 and all3targets, original null argument retains reachable lock-offset reads (positive control), candidate null has none and at least one recognized guard, candidate present keeps reachable original reads. Unknown other branches take both successors. No numeric/FP equivalence or native liveness claim.",
+  "source_and_shader_fixed_before_compiler": true,
+  "GPU_kernel_or_speed_runs": 0
+}

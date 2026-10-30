@@ -1,0 +1,427 @@
+{
+  "cases": [
+    {
+      "id": "nl25-utg-open",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 6": 13.4,
+        "Fold": 86.6
+      },
+      "gtopen": {
+        "Fold": 86.00958,
+        "Raise 6": 13.990412999999998,
+        "Allin 200": 6.194759e-06
+      }
+    },
+    {
+      "id": "nl25-lj-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 18": 5.3,
+        "Call": 1.5,
+        "Fold": 93.2
+      },
+      "gtopen": {
+        "Fold": 94.85279,
+        "Call": 0.0028314265,
+        "Raise 18": 5.14434,
+        "Allin 200": 4.4124462e-05
+      }
+    },
+    {
+      "id": "nl25-sb-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 24": 5.1,
+        "Call": 0.3,
+        "Fold": 94.6
+      },
+      "gtopen": {
+        "Fold": 92.47694,
+        "Call": 3.1545337,
+        "Raise 24": 4.3684985,
+        "Allin 200": 3.0886713e-05
+      }
+    },
+    {
+      "id": "nl25-bb-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 27": 4.6,
+        "Call": 2.8,
+        "Fold": 92.6
+      },
+      "gtopen": {
+        "Fold": 88.464504,
+        "Call": 7.4790165,
+        "Raise 27": 4.056439500000001,
+        "Allin 200": 4.1986874e-05
+      }
+    },
+    {
+      "id": "nl25-str-vs-utg",
+      "wizard": {
+        "Allin 200": 0,
+        "Raise 30": 4.1,
+        "Call": 13.3,
+        "Fold": 82.6
+      },
+      "gtopen": {
+        "Fold": 73.54971,
+        "Call": 22.510922,
+        "Raise 30": 3.9392885000000004,
+        "Allin 200": 7.58445e-05
+      }
+    },
+    {
+      "id": "nl25-utg-vs-lj-3bet",
+      "wizard": {
+        "Allin 200": 8.6,
+        "Raise 45": 12.6,
+        "Call": 18.7,
+        "Fold": 60.1
+      },
+      "gtopen": {
+        "Fold": 41.565305,
+        "Call": 47.55945,
+        "Raise 45": 4.9407143,
+        "Allin 200": 5.934533
+      }
+    }
+  ],
+  "largest_disagreements": [
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "AA",
+      "local_regret_bb": 4.968998354677758,
+      "rounding_only_interval_bb": [
+        4.9589983546777585,
+        4.978998354677758
+      ],
+      "frequency_total_variation": 0.645324310249626,
+      "candidate": {
+        "Fold": 2.4962601e-10,
+        "Call": 2.4962601e-10,
+        "Raise 45": 0.35467568,
+        "Allin 200": 0.6453243
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 1.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": 55.21,
+        "Raise 45": 62.91,
+        "Call": 54.17,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9999967,
+      "wizard_incoming_weight": 0.9998,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.029153490341787772,
+      "refinement_regret_delta_bb": -0.22448067328535615
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "76s",
+      "local_regret_bb": 2.082014397421873,
+      "rounding_only_interval_bb": [
+        2.0720143974218734,
+        2.092014397421873
+      ],
+      "frequency_total_variation": 0.9992957956804299,
+      "candidate": {
+        "Fold": 0.835858,
+        "Call": 0.0006042477,
+        "Raise 45": 2.8906086e-07,
+        "Allin 200": 0.16353755
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 0.9998999999999999,
+        "Fold": 0.0001
+      },
+      "wizard_evs": {
+        "Allin 200": -9.37,
+        "Raise 45": 0.38,
+        "Call": 0.55,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.7755927,
+      "wizard_incoming_weight": 0.0908,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.07944566258203997,
+      "refinement_regret_delta_bb": -0.7363442330156493
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "55",
+      "local_regret_bb": 0.5299089360483,
+      "rounding_only_interval_bb": [
+        0.5199089360483,
+        0.5399089360483
+      ],
+      "frequency_total_variation": 0.9995483298575,
+      "candidate": {
+        "Fold": 0.9994775,
+        "Call": 0.00045167014,
+        "Raise 45": 6.317677e-05,
+        "Allin 200": 7.653085e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 1.0,
+        "Fold": 0.0
+      },
+      "wizard_evs": {
+        "Allin 200": -10.3,
+        "Raise 45": -1.1,
+        "Call": 0.53,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9957655,
+      "wizard_incoming_weight": 0.20879999999999999,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.0007226282545000087,
+      "refinement_regret_delta_bb": 0.00012594828409995262
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 0.519533353989856,
+      "rounding_only_interval_bb": [
+        0.509533353989856,
+        0.529533353989856
+      ],
+      "frequency_total_variation": 0.9991693253106,
+      "candidate": {
+        "Fold": 0.00083068083,
+        "Call": 0.00011807796,
+        "Raise 24": 0.99905074,
+        "Allin 200": 5.134912e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -11.13,
+        "Raise 24": -0.52,
+        "Call": -0.18,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.0012997058228500125,
+      "refinement_regret_delta_bb": 0.0006389077149590028
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "QJs",
+      "local_regret_bb": 0.40995243498476996,
+      "rounding_only_interval_bb": [
+        0.39995243498476996,
+        0.41995243498477
+      ],
+      "frequency_total_variation": 0.99987833854291,
+      "candidate": {
+        "Fold": 0.000121642275,
+        "Call": 0.99987686,
+        "Raise 45": 1.3791029e-06,
+        "Allin 200": 8.025792e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 1.0
+      },
+      "wizard_evs": {
+        "Allin 200": -9.95,
+        "Raise 45": -1.54,
+        "Call": -0.41,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.9999196,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.00016854552234997754,
+      "refinement_regret_delta_bb": 6.508704581298375e-05
+    },
+    {
+      "case": "nl25-bb-vs-utg",
+      "hand": "QJs",
+      "local_regret_bb": 0.34987648419798345,
+      "rounding_only_interval_bb": [
+        0.33987648419798344,
+        0.35987648419798346
+      ],
+      "frequency_total_variation": 0.999635905450315,
+      "candidate": {
+        "Fold": 9.4494e-06,
+        "Call": 0.00035467534,
+        "Raise 27": 0.9996359,
+        "Allin 200": 3.564063e-08
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 27": 0.0,
+        "Call": 0.005699999999999999,
+        "Fold": 0.9943000000000001
+      },
+      "wizard_evs": {
+        "Allin 200": -10.45,
+        "Raise 27": -0.35,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.10140156156173999,
+      "refinement_strategy_tv": 0.0004986519793300371,
+      "refinement_regret_delta_bb": 0.00016917888240303158
+    },
+    {
+      "case": "nl25-utg-vs-lj-3bet",
+      "hand": "A5s",
+      "local_regret_bb": 0.1816091262,
+      "rounding_only_interval_bb": [
+        0.1716091262,
+        0.1916091262
+      ],
+      "frequency_total_variation": 0.697288575797,
+      "candidate": {
+        "Fold": 0.0005640953,
+        "Call": 0.9406154,
+        "Raise 45": 4.7333106e-05,
+        "Allin 200": 0.05877318
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 45": 0.36579999999999996,
+        "Call": 0.30210000000000004,
+        "Fold": 0.3321
+      },
+      "wizard_evs": {
+        "Allin 200": -3.09,
+        "Raise 45": 0.0,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 0.99989516,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.006416366797127662,
+      "refinement_strategy_tv": 0.07468129412199996,
+      "refinement_regret_delta_bb": -0.22817771279999996
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "99",
+      "local_regret_bb": 0.010003113190926,
+      "rounding_only_interval_bb": [
+        3.113190925999737e-06,
+        0.020003113190926
+      ],
+      "frequency_total_variation": 0.9444446537793001,
+      "candidate": {
+        "Fold": 9.12331e-05,
+        "Call": 0.00056412973,
+        "Raise 18": 0.99934316,
+        "Allin 200": 1.5103886e-06
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.054900000000000004,
+        "Call": 0.08470000000000001,
+        "Fold": 0.8604
+      },
+      "wizard_evs": {
+        "Allin 200": -6.41,
+        "Raise 18": -0.01,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 0.0008993748907000078,
+      "refinement_regret_delta_bb": -4.2624171739998745e-06
+    },
+    {
+      "case": "nl25-sb-vs-utg",
+      "hand": "88",
+      "local_regret_bb": 0.0100007913215044,
+      "rounding_only_interval_bb": [
+        7.913215043994781e-07,
+        0.0200007913215044
+      ],
+      "frequency_total_variation": 0.97388712462308,
+      "candidate": {
+        "Fold": 5.2907413e-05,
+        "Call": 0.9998869,
+        "Raise 24": 5.9979928e-05,
+        "Allin 200": 2.3658716e-07
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 24": 0.10800000000000001,
+        "Call": 0.026000000000000002,
+        "Fold": 0.866
+      },
+      "wizard_evs": {
+        "Allin 200": -5.59,
+        "Raise 24": -0.01,
+        "Call": -0.01,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1096506484577298,
+      "refinement_strategy_tv": 0.0001549145420700239,
+      "refinement_regret_delta_bb": -1.0826417526001858e-06
+    },
+    {
+      "case": "nl25-lj-vs-utg",
+      "hand": "A5s",
+      "local_regret_bb": 0.009999919526441,
+      "rounding_only_interval_bb": [
+        0,
+        0.019999919526441
+      ],
+      "frequency_total_variation": 0.9201844829464987,
+      "candidate": {
+        "Fold": 0.99998444,
+        "Call": 3.505e-06,
+        "Raise 18": 1.1974274e-05,
+        "Allin 200": 5.1669975e-09
+      },
+      "wizard": {
+        "Allin 200": 0.0,
+        "Raise 18": 0.8332999999999999,
+        "Call": 0.08689999999999999,
+        "Fold": 0.07980000000000001
+      },
+      "wizard_evs": {
+        "Allin 200": -7.6,
+        "Raise 18": 0.01,
+        "Call": 0.0,
+        "Fold": 0.0
+      },
+      "candidate_incoming_weight": 1.0,
+      "wizard_incoming_weight": 1,
+      "candidate_branch_probability": 0.1399041643516226,
+      "refinement_strategy_tv": 2.1170544296237536e-05,
+      "refinement_regret_delta_bb": 1.101831869996378e-07
+    }
+  ],
+  "max_refinement_tv": 0.07944566258203997,
+  "max_regret_drift": 0.7363442330156493
+}
+All six action-value readouts validated.

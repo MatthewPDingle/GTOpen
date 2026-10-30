@@ -1,0 +1,101 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -69,6 +69,61 @@
+ 
+ fn e(err: impl std::fmt::Debug) -> String {
+     format!("cuda: {err:?}")
++}
++
++// Diagnostic-only host wall timers. No CUDA events or extra synchronization.
++#[derive(serde::Serialize)]
++struct LifecycleSpan {
++    stage: &'static str,
++    wall_ms: f64,
++    player: Option<usize>,
++    arena: Option<&'static str>,
++    bytes: Option<usize>,
++}
++
++struct LifecycleTrace {
++    phase: &'static str,
++    started: Option<std::time::Instant>,
++    last: Option<std::time::Instant>,
++    spans: Vec<LifecycleSpan>,
++}
++
++impl LifecycleTrace {
++    fn new(phase: &'static str) -> Self {
++        let enabled = std::env::var_os("POSTFLOP_AUTORESEARCH_LIFECYCLE_PROFILE")
++            .as_deref() == Some(std::ffi::OsStr::new("1"));
++        let started = enabled.then(std::time::Instant::now);
++        Self { phase, started, last: started,
++            spans: Vec::with_capacity(if enabled { 16 } else { 0 }) }
++    }
++
++    fn mark(&mut self, stage: &'static str, player: Option<usize>,
++            arena: Option<&'static str>, bytes: Option<usize>) {
++        if let Some(last) = self.last {
++            let now = std::time::Instant::now();
++            self.spans.push(LifecycleSpan {
++                stage, wall_ms: now.duration_since(last).as_secs_f64() * 1e3,
++                player, arena, bytes,
++            });
++            self.last = Some(now);
++        }
++    }
++
++    fn finish(self, completed: bool) {
++        if let Some(started) = self.started {
++            let wall_ms_before_logging = started.elapsed().as_secs_f64() * 1e3;
++            use std::io::Write;
++            let mut stderr = std::io::stderr().lock();
++            let _ = writeln!(stderr, "LIFECYCLE_PROFILE {}", serde_json::json!({
++                "schema_version": 1, "phase": self.phase, "completed": completed,
++                "thread": format!("{:?}", std::thread::current().id()),
++                "wall_ms_before_logging": wall_ms_before_logging, "spans": self.spans,
++                "clock": "host_wall", "diagnostic_only": true,
++                "extra_cuda_synchronizations": 0,
++                "note": "Host-call spans may submit asynchronous work; only explicitly named wait spans measure existing completion waits. Logging and timers perturb timing; exclude this run from performance qualification."
++            }));
++        }
++    }
+ }
+ 
+ pub struct GpuSolver {
+@@ -995,19 +1050,27 @@
+     /// Copy GPU arenas back into the CPU solver (for queries/BR/saves).
+     /// Works for both f32 and compressed CPU storage (encodes per node).
+     pub fn sync_to_cpu(&mut self, solver: &mut Solver) -> Result<(), String> {
++        let mut lifecycle = LifecycleTrace::new("full_readback");
+         self.stream.synchronize().map_err(e)?;
++        lifecycle.mark("initial_stream_wait", None, None, None);
+         for p in 0..2 {
+             let len = self.d_regrets[p].len();
+             self.stream
+                 .memcpy_dtoh(&self.d_regrets[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
++            lifecycle.mark("dtoh_host_call", Some(p), Some("regrets"), Some(len * 4));
+             self.stream.synchronize().map_err(e)?;
++            lifecycle.mark("dtoh_stream_wait", Some(p), Some("regrets"), Some(len * 4));
+             self.arena_layout[p].write(solver, p, 0, &self.h_staging.as_slice()[..len]);
++            lifecycle.mark("encode_scatter_restore_cpu", Some(p), Some("regrets"), Some(len * 4));
+             self.stream
+                 .memcpy_dtoh(&self.d_strat[p], &mut self.h_staging.as_mut_slice()[..len])
+                 .map_err(e)?;
++            lifecycle.mark("dtoh_host_call", Some(p), Some("strat"), Some(len * 4));
+             self.stream.synchronize().map_err(e)?;
++            lifecycle.mark("dtoh_stream_wait", Some(p), Some("strat"), Some(len * 4));
+             self.arena_layout[p].write(solver, p, 1, &self.h_staging.as_slice()[..len]);
++            lifecycle.mark("encode_scatter_restore_cpu", Some(p), Some("strat"), Some(len * 4));
+         }
+         solver.iteration = self.iteration;
+         if self.iso_active {
+@@ -1015,6 +1078,8 @@
+             // re-materialize siblings via Solver::ensure_symmetric
+             solver.mark_sym_dirty();
+         }
++        lifecycle.mark("publish_iteration_and_symmetry_flag_cpu", None, None, None);
++        lifecycle.finish(true);
+         Ok(())
+     }
+ 

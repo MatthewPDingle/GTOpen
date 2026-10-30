@@ -1,0 +1,41 @@
+--- accepted/mod.rs.patch
++++ E081/mod.rs.patch
+@@ -418,6 +418,11 @@
+         }
+     }
+ 
++    // Four independent action nodes per 128-thread block, one per warp.
++    fn action_cfg(nodes: u32) -> LaunchConfig {
++        Self::cfg(nodes.div_ceil(4), 0)
++    }
++
+     pub fn iterate(&mut self) -> Result<(), String> {
+         self.iteration += 1;
+         let disc = Discounts::for_iteration(self.algo, self.iteration);
+@@ -1011,7 +1016,7 @@
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
+-                        .launch(Self::cfg(sp.count, 0))
++                        .launch(Self::action_cfg(sp.count))
+                         .map_err(e)?;
+                 }
+                 prof_acc(&self.stream, &mut prof, 6, t0)?;
+@@ -1561,4 +1566,17 @@
+         assert_eq!(lifecycle, 12);
+     }
+ 
++    #[test]
++    fn packed_action_launch_covers_every_node_and_tail() {
++        for n in [0u32, 1, 2, 3, 4, 5, 7, 8, 9, 127, 128, 129, 1_346_813, u32::MAX] {
++            let cfg = GpuSolver::action_cfg(n);
++            assert_eq!(cfg.block_dim, (128, 1, 1));
++            assert_eq!(cfg.shared_mem_bytes, 0);
++            assert_eq!(cfg.grid_dim.1, 1);
++            assert_eq!(cfg.grid_dim.2, 1);
++            assert!(u64::from(cfg.grid_dim.0) * 4 >= u64::from(n));
++            assert!(cfg.grid_dim.0 == 0 || u64::from(cfg.grid_dim.0 - 1) * 4 < u64::from(n));
++        }
++    }
++
+ }

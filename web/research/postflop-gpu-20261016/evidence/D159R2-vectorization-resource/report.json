@@ -1,0 +1,1087 @@
+{
+  "id": "D159R2",
+  "at": "2026-10-28T12:48:40.436208+00:00",
+  "original_D159_probe_remains_failed_baseline_setup": true,
+  "retained_baseline_PTX_reused": true,
+  "total_main_compilations_across_R1_R2": 4,
+  "status": "declined_compiler_mechanism_or_resources",
+  "protocol_sha256": "718eb03f297ac3200a4eb1d36229a2c08609bdc08f7494fb1fd07734352f20fb",
+  "gates": {
+    "compute_120:nine_entry_inventory": true,
+    "compute_120:copy_root:ABI_exact": true,
+    "compute_120:down_action:ABI_exact": true,
+    "compute_120:down_chance:ABI_exact": true,
+    "compute_120:up_fold:ABI_exact": true,
+    "compute_120:up_show:ABI_exact": true,
+    "compute_120:up_chance:ABI_exact": true,
+    "compute_120:up_action:ABI_exact": true,
+    "compute_120:copy_span:ABI_exact": true,
+    "compute_120:up_action_eval:ABI_exact": true,
+    "compute_75:nine_entry_inventory": true,
+    "compute_75:copy_root:ABI_exact": true,
+    "compute_75:down_action:ABI_exact": true,
+    "compute_75:down_chance:ABI_exact": true,
+    "compute_75:up_fold:ABI_exact": true,
+    "compute_75:up_show:ABI_exact": true,
+    "compute_75:up_chance:ABI_exact": true,
+    "compute_75:up_action:ABI_exact": true,
+    "compute_75:copy_span:ABI_exact": true,
+    "compute_75:up_action_eval:ABI_exact": true,
+    "compute75_original_fallback_PTX_exact": true,
+    "copy_root:local_not_increased": true,
+    "copy_root:max_threads_not_reduced": true,
+    "copy_root:stack_not_increased": true,
+    "copy_root:matching_control_shapes": true,
+    "copy_root:all_original_legal_controls_feasible": true,
+    "down_action:local_not_increased": true,
+    "down_action:max_threads_not_reduced": true,
+    "down_action:stack_not_increased": true,
+    "down_action:matching_control_shapes": true,
+    "down_action:all_original_legal_controls_feasible": true,
+    "down_chance:local_not_increased": true,
+    "down_chance:max_threads_not_reduced": true,
+    "down_chance:stack_not_increased": true,
+    "down_chance:matching_control_shapes": true,
+    "down_chance:all_original_legal_controls_feasible": true,
+    "up_fold:local_not_increased": true,
+    "up_fold:max_threads_not_reduced": true,
+    "up_fold:stack_not_increased": true,
+    "up_fold:matching_control_shapes": true,
+    "up_fold:all_original_legal_controls_feasible": true,
+    "up_show:local_not_increased": true,
+    "up_show:max_threads_not_reduced": true,
+    "up_show:stack_not_increased": true,
+    "up_show:matching_control_shapes": true,
+    "up_show:all_original_legal_controls_feasible": true,
+    "up_chance:local_not_increased": true,
+    "up_chance:max_threads_not_reduced": true,
+    "up_chance:stack_not_increased": true,
+    "up_chance:matching_control_shapes": true,
+    "up_chance:all_original_legal_controls_feasible": true,
+    "up_action:local_not_increased": true,
+    "up_action:max_threads_not_reduced": true,
+    "up_action:stack_not_increased": true,
+    "up_action:matching_control_shapes": true,
+    "up_action:all_original_legal_controls_feasible": true,
+    "copy_span:local_not_increased": true,
+    "copy_span:max_threads_not_reduced": true,
+    "copy_span:stack_not_increased": true,
+    "copy_span:matching_control_shapes": true,
+    "copy_span:all_original_legal_controls_feasible": true,
+    "up_action_eval:local_not_increased": true,
+    "up_action_eval:max_threads_not_reduced": true,
+    "up_action_eval:stack_not_increased": true,
+    "up_action_eval:matching_control_shapes": true,
+    "up_action_eval:all_original_legal_controls_feasible": true,
+    "intended_changed_body": false,
+    "intended_vector_instruction_increase": false,
+    "retained_baseline:copy_root:resource_requery_exact": true,
+    "retained_baseline:down_action:resource_requery_exact": true,
+    "retained_baseline:down_chance:resource_requery_exact": true,
+    "retained_baseline:up_fold:resource_requery_exact": true,
+    "retained_baseline:up_show:resource_requery_exact": true,
+    "retained_baseline:up_chance:resource_requery_exact": true,
+    "retained_baseline:up_action:resource_requery_exact": true,
+    "retained_baseline:PTX_exact": true
+  },
+  "failed_gates": [
+    "intended_changed_body",
+    "intended_vector_instruction_increase"
+  ],
+  "changed_compute120_entries": [],
+  "vector_instruction_sites": {
+    "baseline": 0,
+    "candidate": 0
+  },
+  "per_entry_codegen": {
+    "copy_root": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "candidate_entry_sha256": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc"
+    },
+    "down_action": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "candidate_entry_sha256": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5"
+    },
+    "down_chance": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "candidate_entry_sha256": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea"
+    },
+    "up_fold": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "candidate_entry_sha256": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834"
+    },
+    "up_show": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "candidate_entry_sha256": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc"
+    },
+    "up_chance": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "candidate_entry_sha256": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b"
+    },
+    "up_action": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+      "candidate_entry_sha256": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472"
+    },
+    "copy_span": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "candidate_entry_sha256": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76"
+    },
+    "up_action_eval": {
+      "normalized_body_exact": true,
+      "baseline_vector_sites": [],
+      "candidate_vector_sites": [],
+      "baseline_entry_sha256": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06",
+      "candidate_entry_sha256": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    }
+  },
+  "raw_resource_rows": [
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "copy_root",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 26,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 40,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "down_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 30,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 15,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 13,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 39,
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 38,
+      "static_shared_bytes": 1040,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 30,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 16,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 8,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 62,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "copy_span",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 26,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": false,
+      "registers": 40,
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "copy_root",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 26,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 40,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "down_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 30,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 4,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 256,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 15,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 4324,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 13,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 5304,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 39,
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 20,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 1280,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 22000,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 26520,
+          "fits_default_limits": true,
+          "occupancy": 3,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_show",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 38,
+      "static_shared_bytes": 1040,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_chance",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 30,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 16,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 8,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 4,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 62,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "copy_span",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 26,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "context_stack_after": 1024,
+      "context_stack_before": 1024,
+      "controls": [
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 24,
+          "supported_by_original_source_limit": true,
+          "threads": 64
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 12,
+          "supported_by_original_source_limit": true,
+          "threads": 128
+        },
+        {
+          "dynamic_shared_bytes": 0,
+          "fits_default_limits": true,
+          "occupancy": 6,
+          "supported_by_original_source_limit": true,
+          "threads": 256
+        }
+      ],
+      "default_shared_limit": 49152,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "option_enabled": true,
+      "registers": 40,
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "compilations": 3,
+      "kernel_launches": 0,
+      "modules_loaded": 2,
+      "performance_measurements": 0,
+      "resource_rows": 18,
+      "retained_PTX_inputs": 1,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "PTX_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "candidate-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70"
+  },
+  "explicit_kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_samples": 0,
+  "new_E093_or_production_source_created": false,
+  "all_children_terminal": true,
+  "source_main_live_PTX_custody_pass": true,
+  "candidate_accepted": false,
+  "scope": "One target-specific compiler option on accepted source. Normalized PTX mechanism/ABI,exact unmodified75fallback and actual target compiled resource feasibility only. Static instruction sites are not runtime utilization,time or exact numerical behavior. Resource/ABI/body/mechanism failure closes this fixed option form without alternatives;an admission requires all unchanged exact numerical/broad/material/performance qualification."
+}

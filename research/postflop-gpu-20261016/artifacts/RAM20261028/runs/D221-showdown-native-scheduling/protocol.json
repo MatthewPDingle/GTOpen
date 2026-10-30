@@ -1,0 +1,42 @@
+{
+  "id": "D221",
+  "at": "2026-10-29T00:36:27.820117+00:00",
+  "status": "FROZEN_PRE_MODULE_LOAD",
+  "PTX": {
+    "baseline": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-resource\\baseline-compute_120.ptx",
+    "candidate": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-resource\\execution\\candidate-compute_120.ptx"
+  },
+  "capture_binary": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\capture.exe",
+  "nvdisasm": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\nvdisasm.exe",
+  "private_dll_dir": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-native-scheduling.py": "152085d47525ac5fa2388e73b431fc1be7ee63711b7d8aaa1463e1aa67c96b09",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D098-driver-machine-code-r2\\probe.cpp": "f4335efccce56976c1d2e407d7e5086aebe1d5242d7d840434d050dd59d2f11d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D098-driver-machine-code-r2\\protocol.json": "95385401b37f48b17a1efdd25cba0bd5263fe31381f9b9d85d2cfbc7e6ff87c2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D098-driver-machine-code-r2\\capture-report.json": "8decb39c994e265f5b08674176d4aea3284e3ac4c5a858b7d7bf0dde9d2d2337",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D098-driver-machine-code-r2\\build\\probe.exe": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D098-driver-machine-code\\vendor\\cuda_nvdisasm-windows-x86_64-12.9.88-archive\\bin\\nvdisasm.exe": "3a6d6f72d67f6a78f9b5b53b9bca4aa697ff80850ea3bd20f5196a1d5c5ad0d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\capture.exe": "71bb1a6409ae7c658575c4a466675b4354959492deb703080b586c49ef42b87a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D221-showdown-native-scheduling\\nvdisasm.exe": "3a6d6f72d67f6a78f9b5b53b9bca4aa697ff80850ea3bd20f5196a1d5c5ad0d3",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-resource\\report.json": "527f6937eefabb9736a68f6461fca594d1349b4c7bbdfade71f3193a756f6803",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-resource\\baseline-compute_120.ptx": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E107-resource\\execution\\candidate-compute_120.ptx": "469245a4686d06e08d818c3937cc506ddd55bf783d277532f83560e972014987",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\checkpoint.dll": "f0252a31427a0d3000d6f2373781b7ef9b359daffe03a38c2dc32cd343aa6b46",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\cupti64_2025.2.1.dll": "be1ecb387e14c1c0515b3b162b44c89b480c9a12f16c60f7b82eb8b1ebc35e74",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_host.dll": "df3538d2311784dd6b426a9b107876d97f45126ddc44cee5239917313c54686d",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\nvperf_target.dll": "923e550ac7404187c26808ff331ec04db182d1c8d075603e9d67f507ad303125",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D212-current-RAM-activity\\private\\pcsamplingutil.dll": "3bdb884dd971b09cb32833a66a6384b38b12b841e543d50a23ce65ae32e5e2b2"
+  },
+  "GPU_uuid": "GPU-a5459b5a-632b-3e73-d7f1-a06e167102ee",
+  "required_free_bytes": 8589934592,
+  "sequence": [
+    "baseline-capture",
+    "baseline-disassemble",
+    "candidate-capture",
+    "candidate-disassemble"
+  ],
+  "emission_gate": "All three candidate payout global-load instructions, traced from unchanged parameter byte offsets0x390/0x398/0x3a0, must precede the first BAR.SYNC; baseline must load after its scan barriers. A missing native mechanism closes this frozen source form. Conservative static witness only, no dynamic latency or speed claim.",
+  "scope": "Reuse checksum-bound original D098 generic module-capture executable and code unchanged; same cuModuleLoadData/default JIT as cudarc. Copy nvdisasm12.9.88 to X. Two owned primary-context module loads and two disassembly readers, no new compiler, application kernels, hardware counters, activity profiling, injection, live attach, solve or speed samples. Query helper occupancy uses zero dynamic shared and is not scored; actual worst-shape resources are E107-resource."
+}

@@ -1,0 +1,1387 @@
+{
+  "id": "D042-zero-proof-diagnostic",
+  "status": "pass",
+  "scope": "Diagnostic host spans only; predicate includes scales/snapshot checks. No performance acceptance.",
+  "protocol_sha256": "3ff2d365177915d851fca29e6d54e3472dc743dffd1d30ff5b64d74cf54e657c",
+  "all_complete_states_exact": 18,
+  "convergence_checks_exact": 138,
+  "profile_records": 36,
+  "uninstrumented_records": 0,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "ordinary_full_cycles_ms": [
+        5741.366400000001,
+        5770.460599999999,
+        5744.5078
+      ],
+      "instrumented_full_cycles_ms": [
+        5803.1125,
+        5751.977,
+        5751.0121
+      ],
+      "ordinary_median_ms": 5744.5078,
+      "instrumented_median_ms": 5751.977,
+      "median_change_pct": 0.1300233241914972,
+      "paired_change_pct": [
+        1.0754600159293082,
+        -0.320314118425824,
+        0.1132264107988501
+      ],
+      "counts": [
+        {
+          "player": 0,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 156020845,
+          "q_bytes": 312041690,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 156020845,
+          "device_bytes": 624083380
+        },
+        {
+          "player": 1,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 185172163,
+          "q_bytes": 370344326,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 185172163,
+          "device_bytes": 740688652
+        },
+        {
+          "player": 0,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 156020845,
+          "q_bytes": 312041690,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 156020845,
+          "device_bytes": 624083380
+        },
+        {
+          "player": 1,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 185172163,
+          "q_bytes": 370344326,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 185172163,
+          "device_bytes": 740688652
+        }
+      ],
+      "components": [
+        {
+          "variant": "i16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            100.64739999999999,
+            88.68860000000001,
+            85.11280000000001
+          ],
+          "median_ms": 88.68860000000001,
+          "range_ms": [
+            85.11280000000001,
+            100.64739999999999
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            12.1507,
+            10.933300000000001,
+            10.8744
+          ],
+          "median_ms": 10.933300000000001,
+          "range_ms": [
+            10.8744,
+            12.1507
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            16.421200000000002,
+            18.5065,
+            17.616199999999996
+          ],
+          "median_ms": 17.616199999999996,
+          "range_ms": [
+            16.421200000000002,
+            18.5065
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            88.4903,
+            86.9204,
+            89.3396
+          ],
+          "median_ms": 88.4903,
+          "range_ms": [
+            86.9204,
+            89.3396
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            3.4195,
+            3.4368999999999996,
+            3.3598000000000003
+          ],
+          "median_ms": 3.4195,
+          "range_ms": [
+            3.3598000000000003,
+            3.4368999999999996
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            16.108,
+            16.0925,
+            18.1138
+          ],
+          "median_ms": 16.108,
+          "range_ms": [
+            16.0925,
+            18.1138
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "two-tone",
+      "ordinary_full_cycles_ms": [
+        3889.2895,
+        3930.9775999999997,
+        3836.3252
+      ],
+      "instrumented_full_cycles_ms": [
+        3923.4927000000002,
+        3935.3959,
+        3828.4008
+      ],
+      "ordinary_median_ms": 3889.2895,
+      "instrumented_median_ms": 3923.4927000000002,
+      "median_change_pct": 0.8794202642925075,
+      "paired_change_pct": [
+        0.8794202642925075,
+        0.1123969772811817,
+        -0.20656225911193093
+      ],
+      "counts": [
+        {
+          "player": 0,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 156627930,
+          "q_bytes": 313255860,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 93381294,
+          "device_bytes": 373525176
+        },
+        {
+          "player": 1,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 185752640,
+          "q_bytes": 371505280,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 110745280,
+          "device_bytes": 442981120
+        },
+        {
+          "player": 0,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 156627930,
+          "q_bytes": 313255860,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 93381294,
+          "device_bytes": 373525176
+        },
+        {
+          "player": 1,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 185752640,
+          "q_bytes": 371505280,
+          "scale_words": 1346813,
+          "scale_bytes": 5387252,
+          "device_elements": 110745280,
+          "device_bytes": 442981120
+        }
+      ],
+      "components": [
+        {
+          "variant": "i16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            30.5843,
+            33.526199999999996,
+            30.1486
+          ],
+          "median_ms": 30.5843,
+          "range_ms": [
+            30.1486,
+            33.526199999999996
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            2.5108,
+            2.2816000000000005,
+            1.9716
+          ],
+          "median_ms": 2.2816000000000005,
+          "range_ms": [
+            1.9716,
+            2.5108
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            10.9978,
+            10.7706,
+            11.2802
+          ],
+          "median_ms": 10.9978,
+          "range_ms": [
+            10.7706,
+            11.2802
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            60.4893,
+            61.6945,
+            68.4353
+          ],
+          "median_ms": 61.6945,
+          "range_ms": [
+            60.4893,
+            68.4353
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            2.2506999999999997,
+            2.0693,
+            2.1513
+          ],
+          "median_ms": 2.1513,
+          "range_ms": [
+            2.0693,
+            2.2506999999999997
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            10.1463,
+            9.9795,
+            11.007200000000001
+          ],
+          "median_ms": 10.1463,
+          "range_ms": [
+            9.9795,
+            11.007200000000001
+          ]
+        }
+      ]
+    },
+    {
+      "fixture_id": "river",
+      "ordinary_full_cycles_ms": [
+        99.4898,
+        119.5763,
+        102.63759999999999
+      ],
+      "instrumented_full_cycles_ms": [
+        101.0433,
+        112.2737,
+        126.22710000000001
+      ],
+      "ordinary_median_ms": 102.63759999999999,
+      "instrumented_median_ms": 112.2737,
+      "median_change_pct": 9.388469722596792,
+      "paired_change_pct": [
+        1.5614666026064983,
+        -6.1070630216857325,
+        22.983292672470924
+      ],
+      "counts": [
+        {
+          "player": 0,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 3728,
+          "q_bytes": 7456,
+          "scale_words": 33,
+          "scale_bytes": 132,
+          "device_elements": 3728,
+          "device_bytes": 14912
+        },
+        {
+          "player": 1,
+          "which": 0,
+          "variant": "i16",
+          "q_words": 4480,
+          "q_bytes": 8960,
+          "scale_words": 33,
+          "scale_bytes": 132,
+          "device_elements": 4480,
+          "device_bytes": 17920
+        },
+        {
+          "player": 0,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 3728,
+          "q_bytes": 7456,
+          "scale_words": 33,
+          "scale_bytes": 132,
+          "device_elements": 3728,
+          "device_bytes": 14912
+        },
+        {
+          "player": 1,
+          "which": 1,
+          "variant": "u16",
+          "q_words": 4480,
+          "q_bytes": 8960,
+          "scale_words": 33,
+          "scale_bytes": 132,
+          "device_elements": 4480,
+          "device_bytes": 17920
+        }
+      ],
+      "components": [
+        {
+          "variant": "i16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            0.0021000000000000003,
+            0.0027,
+            0.0023
+          ],
+          "median_ms": 0.0023,
+          "range_ms": [
+            0.0021000000000000003,
+            0.0027
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            0.1311,
+            0.142,
+            0.12459999999999999
+          ],
+          "median_ms": 0.1311,
+          "range_ms": [
+            0.12459999999999999,
+            0.142
+          ]
+        },
+        {
+          "variant": "i16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            0.7139,
+            0.8430000000000001,
+            1.0139
+          ],
+          "median_ms": 0.8430000000000001,
+          "range_ms": [
+            0.7139,
+            1.0139
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "predicate",
+          "all_profiled_ms": [
+            0.0027,
+            0.0014,
+            0.0012999999999999997
+          ],
+          "median_ms": 0.0014,
+          "range_ms": [
+            0.0012999999999999997,
+            0.0027
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "alloc_zeros_host_call",
+          "all_profiled_ms": [
+            0.037399999999999996,
+            0.04,
+            0.0357
+          ],
+          "median_ms": 0.037399999999999996,
+          "range_ms": [
+            0.0357,
+            0.04
+          ]
+        },
+        {
+          "variant": "u16",
+          "stage": "existing_stream_wait",
+          "all_profiled_ms": [
+            0.009699999999999999,
+            0.07890000000000001,
+            0.0778
+          ],
+          "median_ms": 0.0778,
+          "range_ms": [
+            0.009699999999999999,
+            0.07890000000000001
+          ]
+        }
+      ]
+    }
+  ],
+  "raw_profiles": [
+    {
+      "run_id": "D042P1",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 49692.399999999994,
+        "alloc_zeros_host_call": 10047.1,
+        "existing_stream_wait": 7409.200000000001
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 50955,
+        "alloc_zeros_host_call": 2103.6000000000004,
+        "existing_stream_wait": 9012
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 40461.1,
+        "alloc_zeros_host_call": 1576.2,
+        "existing_stream_wait": 7668
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 48029.200000000004,
+        "alloc_zeros_host_call": 1843.3,
+        "existing_stream_wait": 8440
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 14216.3,
+        "alloc_zeros_host_call": 968,
+        "existing_stream_wait": 5335.2
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 16368,
+        "alloc_zeros_host_call": 1542.8,
+        "existing_stream_wait": 5662.6
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 13827.300000000001,
+        "alloc_zeros_host_call": 931.1999999999999,
+        "existing_stream_wait": 4473.3
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 46662,
+        "alloc_zeros_host_call": 1319.5,
+        "existing_stream_wait": 5673
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.1,
+        "alloc_zeros_host_call": 110,
+        "existing_stream_wait": 710.3
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1,
+        "alloc_zeros_host_call": 21.1,
+        "existing_stream_wait": 3.5999999999999996
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.4,
+        "alloc_zeros_host_call": 15.6,
+        "existing_stream_wait": 4.5
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P1",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.3,
+        "alloc_zeros_host_call": 21.8,
+        "existing_stream_wait": 5.2
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 40437.9,
+        "alloc_zeros_host_call": 9166.7,
+        "existing_stream_wait": 9344.6
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 48250.7,
+        "alloc_zeros_host_call": 1766.6,
+        "existing_stream_wait": 9161.900000000001
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 40232.200000000004,
+        "alloc_zeros_host_call": 1719.8999999999999,
+        "existing_stream_wait": 7493.4
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 46688.2,
+        "alloc_zeros_host_call": 1717,
+        "existing_stream_wait": 8599.1
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 15705.3,
+        "alloc_zeros_host_call": 1128,
+        "existing_stream_wait": 4988.6
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 17820.9,
+        "alloc_zeros_host_call": 1153.6000000000001,
+        "existing_stream_wait": 5782
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 13433.4,
+        "alloc_zeros_host_call": 819.9000000000001,
+        "existing_stream_wait": 4550
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 48261.1,
+        "alloc_zeros_host_call": 1249.3999999999999,
+        "existing_stream_wait": 5429.5
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.5999999999999999,
+        "alloc_zeros_host_call": 117.9,
+        "existing_stream_wait": 788.9000000000001
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.1,
+        "alloc_zeros_host_call": 24.1,
+        "existing_stream_wait": 54.1
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 0.6,
+        "alloc_zeros_host_call": 25.1,
+        "existing_stream_wait": 47.5
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P2",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 0.7999999999999999,
+        "alloc_zeros_host_call": 14.9,
+        "existing_stream_wait": 31.4
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 39088.1,
+        "alloc_zeros_host_call": 8965.8,
+        "existing_stream_wait": 7839.499999999999
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 46024.700000000004,
+        "alloc_zeros_host_call": 1908.6000000000001,
+        "existing_stream_wait": 9776.699999999999
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156020845,
+      "q_bytes": 312041690,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 156020845,
+      "device_bytes": 624083380,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 41166.9,
+        "alloc_zeros_host_call": 1605.5,
+        "existing_stream_wait": 8596.400000000001
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "rainbow",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185172163,
+      "q_bytes": 370344326,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 185172163,
+      "device_bytes": 740688652,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 48172.7,
+        "alloc_zeros_host_call": 1754.3000000000002,
+        "existing_stream_wait": 9517.4
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 14252,
+        "alloc_zeros_host_call": 955.3,
+        "existing_stream_wait": 5449.599999999999
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 15896.6,
+        "alloc_zeros_host_call": 1016.3,
+        "existing_stream_wait": 5830.6
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 156627930,
+      "q_bytes": 313255860,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 93381294,
+      "device_bytes": 373525176,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 13564.3,
+        "alloc_zeros_host_call": 833.1,
+        "existing_stream_wait": 5020.400000000001
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "two-tone",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 185752640,
+      "q_bytes": 371505280,
+      "scale_words": 1346813,
+      "scale_bytes": 5387252,
+      "device_elements": 110745280,
+      "device_bytes": 442981120,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 54871,
+        "alloc_zeros_host_call": 1318.2,
+        "existing_stream_wait": 5986.799999999999
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1.3,
+        "alloc_zeros_host_call": 97.89999999999999,
+        "existing_stream_wait": 974.8
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 0,
+      "variant": "i16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 1,
+        "alloc_zeros_host_call": 26.7,
+        "existing_stream_wait": 39.1
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 0,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 3728,
+      "q_bytes": 7456,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 3728,
+      "device_bytes": 14912,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 0.7,
+        "alloc_zeros_host_call": 18.5,
+        "existing_stream_wait": 38.6
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    },
+    {
+      "run_id": "D042P3",
+      "fixture_id": "river",
+      "schema_version": 1,
+      "diagnostic_only": true,
+      "player": 1,
+      "which": 1,
+      "variant": "u16",
+      "q_words": 4480,
+      "q_bytes": 8960,
+      "scale_words": 33,
+      "scale_bytes": 132,
+      "device_elements": 4480,
+      "device_bytes": 17920,
+      "zero": true,
+      "zero_path_executed": true,
+      "stage_us": {
+        "predicate": 0.6,
+        "alloc_zeros_host_call": 17.200000000000003,
+        "existing_stream_wait": 39.199999999999996
+      },
+      "extra_cuda_synchronizations": 0,
+      "predicate_calls": 1
+    }
+  ],
+  "ordinary_sum_fixture_medians_ms": 9736.4349,
+  "instrumented_sum_fixture_medians_ms": 9787.7434,
+  "observed_outer_change_pct": 0.526974200792929,
+  "absolute_change_limit_pct": 10.0,
+  "diagnostic_usefulness_guard_pass": true,
+  "U16_predicate_upper_sum_fixture_medians_ms": 150.1862,
+  "U16_predicate_upper_fraction_of_ordinary_pct": 1.5425173746090575,
+  "possible_2pct_headroom_established": false,
+  "upper_bound_exceeds_2pct": false,
+  "interpretation": "Below2pct does not justify a candidate from measured direct-scan headroom; whole-cycle/cache effects are not bounded by these host spans. Above2pct is not a projected gain or authorization. The10pct outer check does not bound component bias.",
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "native_process_wall_ms_including_teardown": {
+    "D042B1": 12766.00000000326,
+    "D042P1": 12858.99999999674,
+    "D042P2": 12735.000000000582,
+    "D042B2": 12766.00000000326,
+    "D042B3": 12656.000000002678,
+    "D042P3": 12688.00000000192
+  },
+  "evidence": {
+    "D042B1": {
+      "report_sha256": "ab4d0bd3d69da8c5f8a3eab7f206be9d64d60612195d8bde64cbd1e3b975dcc2",
+      "stdout_sha256": "e9dc2a8c34169cd0aa6d229a8af76d2bab53edc79941a104047f601d31d817d3"
+    },
+    "D042P1": {
+      "report_sha256": "4002bf652481a311108c0826335b729c34f9de9749137e4abc27e2a01e4eb23d",
+      "stdout_sha256": "c930556cb738d07571cd1e50c686228d967868ff0d7dc76fa1746950ebd522ad"
+    },
+    "D042P2": {
+      "report_sha256": "d686a70eb9d726df201a590ab496f640f94c61308a9185e5bdf0688c98743b5f",
+      "stdout_sha256": "48ae0c6657b57416545cf3b702f497dcea10937037f89903a1a1d98fc7293161"
+    },
+    "D042B2": {
+      "report_sha256": "a9646793bc6d0f82dc8bf54ad9eaacee101351a3fe9e654e6b7dbd4a7aaee2c7",
+      "stdout_sha256": "5d2aefecfe66b3066908cc605eb2632c3fc91aeb2fa5cc7fac1724b50bf21825"
+    },
+    "D042B3": {
+      "report_sha256": "308b0a3a07b3851bb6962a07b82204d1de8c1eaa2ea7bf26ca3ea1c2d3d6896c",
+      "stdout_sha256": "9de13b0561ca05ae323fe92f254103288268099c439ff9a3b48f39be170c645c"
+    },
+    "D042P3": {
+      "report_sha256": "e0fa19bbb0c98a1fd3914946ddfd53fb3de30f3642996bb8fa1be07fd9dba6c5",
+      "stdout_sha256": "fa18220b0917271ce7eaf2f0603ceb677aac446d127060a2859a67bbd5c005b4"
+    }
+  },
+  "binary_manifests": {
+    "ordinary": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+    "instrumented": "05b25733cabb70ca7fb07c4a68eb60fea9997fda22737af5ed7ff64d80aef01a"
+  }
+}

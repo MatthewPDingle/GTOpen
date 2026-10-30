@@ -1,0 +1,5307 @@
+[
+  {
+    "cpu_arena_bytes_per_arm": 1391071288,
+    "device_arena_elements": [
+      93381294,
+      110745280
+    ],
+    "device_free_bytes": 32496418816,
+    "device_per_arm_payload_bytes": 3607278948,
+    "device_reserve_bytes": 2147483648,
+    "device_total_bytes": 34190458880,
+    "diagnostic_only": true,
+    "dual_device_required_with_reserve": 9362041544,
+    "host_additional_required": 12266428016,
+    "host_free_after_spot_and_plan": 102279528448,
+    "host_free_before_spot": 102575394816,
+    "host_reserve_bytes": 8589934592,
+    "pinned_bytes_per_arm": 442981120,
+    "raw_compare_max_bytes": 8388608,
+    "shared_tree_bytes": 110623272,
+    "stage": "admission"
+  },
+  {
+    "exploit_bits": 4621471963641686934,
+    "instrumented_eval_graph_present": false,
+    "instrumented_eval_warmed": true,
+    "iteration": 20,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": false,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4614489749950135592,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 40,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4609632359124586068,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 60,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4606308451921813312,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 80,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4603500064677737792,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 100,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4601321529789973376,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 120,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "exploit_bits": 4599374301695986832,
+    "instrumented_eval_graph_present": true,
+    "instrumented_eval_warmed": true,
+    "iteration": 140,
+    "normal_production_method_both_arms": true,
+    "ordinary_eval_graph_present": true,
+    "ordinary_eval_warmed": true,
+    "stage": "warm_check"
+  },
+  {
+    "arrays": [
+      {
+        "array": "regrets",
+        "entries": 93381294,
+        "hash": "f43fc7ef581b03c6",
+        "player": 0
+      },
+      {
+        "array": "strategy",
+        "entries": 93381294,
+        "hash": "69f17e85b92dd521",
+        "player": 0
+      },
+      {
+        "array": "reach",
+        "entries": 117863172,
+        "hash": "94c684150eb140f8",
+        "player": 0
+      },
+      {
+        "array": "weights",
+        "entries": 258,
+        "hash": "4dd6782f968ea175",
+        "player": 0
+      },
+      {
+        "array": "regrets",
+        "entries": 110745280,
+        "hash": "24274c7fc31a3f9a",
+        "player": 1
+      },
+      {
+        "array": "strategy",
+        "entries": 110745280,
+        "hash": "e816db29ae776dd1",
+        "player": 1
+      },
+      {
+        "array": "reach",
+        "entries": 141110400,
+        "hash": "89812e23958944ff",
+        "player": 1
+      },
+      {
+        "array": "weights",
+        "entries": 320,
+        "hash": "e75c870e0d9c9525",
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "679329e51b4ff156",
+        "mode": 0,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "bb2e335ede18ec03",
+        "mode": 1,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "831ca9c26f57ccdb",
+        "mode": 0,
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "2d256d79722c9be6",
+        "mode": 1,
+        "player": 1
+      }
+    ],
+    "before_exploitability": false,
+    "cfv_scratch_compared": false,
+    "chunk_floats": 1048576,
+    "discount_bits": [
+      1065343094,
+      1056964608,
+      1065116085
+    ],
+    "iteration": 140,
+    "pass": true,
+    "peak_pairwise_snapshot_bytes": 8388608,
+    "post_evaluation": true,
+    "stage": "raw_exact"
+  },
+  {
+    "exploit_bits": 4599374301695986832,
+    "iteration": 140,
+    "post_evaluation": true,
+    "raw_and_compressed_pass": true,
+    "stage": "checkpoint_exact"
+  },
+  {
+    "instrumented": {
+      "comparison": "logical multiset only; no raw handles, arguments, memcpy addresses or edges",
+      "kernel_descriptors_sorted": [
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            10111,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            108,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            108,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            12861,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            12861,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            16259,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            16259,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            20078,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            24293,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            25722,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            32867,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            32867,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            362,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            362,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            4,
+            1,
+            1
+          ],
+          "kernel": "copy_root",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            40228,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            40228,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            54302,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            54302,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            5824,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            58589,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            58589,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6184,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6184,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            72,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            74308,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            74308,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            8574,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        }
+      ],
+      "node_count": 151,
+      "node_kinds": {
+        "CU_GRAPH_NODE_TYPE_KERNEL": 147,
+        "CU_GRAPH_NODE_TYPE_MEMCPY": 4
+      }
+    },
+    "iteration": 140,
+    "ordinary": {
+      "comparison": "logical multiset only; no raw handles, arguments, memcpy addresses or edges",
+      "kernel_descriptors_sorted": [
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            1,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            10111,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            108,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            108,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            12861,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            12861,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            147,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            16259,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            16259,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            18577,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            2,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            20078,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            216,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            22083,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            24293,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            255,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            25722,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            3,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            32867,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            32867,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            362,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            362,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            363,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            4,
+            1,
+            1
+          ],
+          "kernel": "copy_root",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            40228,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            40228,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            44911,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            506,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            54302,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            54302,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            5824,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            58589,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            58589,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            612,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6184,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6184,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            62876,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            6294,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            648,
+            1,
+            1
+          ],
+          "kernel": "up_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            72,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            74308,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            74308,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1032
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            75,
+            1,
+            1
+          ],
+          "kernel": "up_fold",
+          "shared_bytes": 1280
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            77382,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            8574,
+            1,
+            1
+          ],
+          "kernel": "down_chance",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "down_action",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_action_eval",
+          "shared_bytes": 0
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 5080
+        },
+        {
+          "block": [
+            128,
+            1,
+            1
+          ],
+          "grid": [
+            85740,
+            1,
+            1
+          ],
+          "kernel": "up_show",
+          "shared_bytes": 6320
+        }
+      ],
+      "node_count": 151,
+      "node_kinds": {
+        "CU_GRAPH_NODE_TYPE_KERNEL": 147,
+        "CU_GRAPH_NODE_TYPE_MEMCPY": 4
+      }
+    },
+    "own_module_function_mapping": true,
+    "raw_pointer_or_argument_comparison": false,
+    "stage": "graph_metadata"
+  },
+  {
+    "abs_host_batch_change_pct": 0.035156279042425354,
+    "arm_order": [
+      "ordinary",
+      "instrumented"
+    ],
+    "checkpoint": 160,
+    "event_record_counts": [
+      1,
+      1
+    ],
+    "host_batch_change_pct": 0.035156279042425354,
+    "instrumented_evaluation_device_envelope_ms": 12.975296020507812,
+    "instrumented_exploit_bits": 4597912096953046592,
+    "instrumented_host_batch_ms": 282.5524,
+    "iterations": 20,
+    "near_resolution": false,
+    "ordinary_exploit_bits": 4597912096953046592,
+    "ordinary_host_batch_ms": 282.4531,
+    "post_both_arm_completion": true,
+    "scope": "event-perturbed evaluation-device envelope; host20-iterate-plus-check usefulness only",
+    "stage": "batch",
+    "within_10pct": true
+  },
+  {
+    "arrays": [
+      {
+        "array": "regrets",
+        "entries": 93381294,
+        "hash": "704026823ce86b5c",
+        "player": 0
+      },
+      {
+        "array": "strategy",
+        "entries": 93381294,
+        "hash": "ecaa3a6384194be6",
+        "player": 0
+      },
+      {
+        "array": "reach",
+        "entries": 117863172,
+        "hash": "e5a7d196093bfa19",
+        "player": 0
+      },
+      {
+        "array": "weights",
+        "entries": 258,
+        "hash": "4dd6782f968ea175",
+        "player": 0
+      },
+      {
+        "array": "regrets",
+        "entries": 110745280,
+        "hash": "73501bbdc6929b4a",
+        "player": 1
+      },
+      {
+        "array": "strategy",
+        "entries": 110745280,
+        "hash": "1e69d73fad964a04",
+        "player": 1
+      },
+      {
+        "array": "reach",
+        "entries": 141110400,
+        "hash": "c32962f1a000bb45",
+        "player": 1
+      },
+      {
+        "array": "weights",
+        "entries": 320,
+        "hash": "e75c870e0d9c9525",
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "28f154628f68bbd8",
+        "mode": 0,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "2b572ac98d71c9b5",
+        "mode": 1,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "206874366f31aaaf",
+        "mode": 0,
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "d4a774316f73c24e",
+        "mode": 1,
+        "player": 1
+      }
+    ],
+    "before_exploitability": false,
+    "cfv_scratch_compared": false,
+    "chunk_floats": 1048576,
+    "discount_bits": [
+      1065344930,
+      1056964608,
+      1065145451
+    ],
+    "iteration": 160,
+    "pass": true,
+    "peak_pairwise_snapshot_bytes": 8388608,
+    "post_evaluation": true,
+    "stage": "raw_exact"
+  },
+  {
+    "exploit_bits": 4597912096953046592,
+    "iteration": 160,
+    "post_evaluation": true,
+    "raw_and_compressed_pass": true,
+    "stage": "checkpoint_exact"
+  },
+  {
+    "abs_host_batch_change_pct": 0.4136821460813511,
+    "arm_order": [
+      "instrumented",
+      "ordinary"
+    ],
+    "checkpoint": 180,
+    "event_record_counts": [
+      2,
+      2
+    ],
+    "host_batch_change_pct": 0.4136821460813511,
+    "instrumented_evaluation_device_envelope_ms": 12.971199989318848,
+    "instrumented_exploit_bits": 4596018308513263808,
+    "instrumented_host_batch_ms": 283.8502,
+    "iterations": 20,
+    "near_resolution": false,
+    "ordinary_exploit_bits": 4596018308513263808,
+    "ordinary_host_batch_ms": 282.68080000000003,
+    "post_both_arm_completion": true,
+    "scope": "event-perturbed evaluation-device envelope; host20-iterate-plus-check usefulness only",
+    "stage": "batch",
+    "within_10pct": true
+  },
+  {
+    "arrays": [
+      {
+        "array": "regrets",
+        "entries": 93381294,
+        "hash": "2b8b51a74e043acd",
+        "player": 0
+      },
+      {
+        "array": "strategy",
+        "entries": 93381294,
+        "hash": "e5e62bf0c658f42d",
+        "player": 0
+      },
+      {
+        "array": "reach",
+        "entries": 117863172,
+        "hash": "8a8dc2e7a87e73df",
+        "player": 0
+      },
+      {
+        "array": "weights",
+        "entries": 258,
+        "hash": "4dd6782f968ea175",
+        "player": 0
+      },
+      {
+        "array": "regrets",
+        "entries": 110745280,
+        "hash": "bc4f41f9ce6f877f",
+        "player": 1
+      },
+      {
+        "array": "strategy",
+        "entries": 110745280,
+        "hash": "71898b2803cc41c6",
+        "player": 1
+      },
+      {
+        "array": "reach",
+        "entries": 141110400,
+        "hash": "8e91215fe9d4bd3d",
+        "player": 1
+      },
+      {
+        "array": "weights",
+        "entries": 320,
+        "hash": "e75c870e0d9c9525",
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "d1da5e195d6ba6e1",
+        "mode": 0,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "00d426099ebb849e",
+        "mode": 1,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "0794808763dfae4e",
+        "mode": 0,
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "b642e7c1f245ff77",
+        "mode": 1,
+        "player": 1
+      }
+    ],
+    "before_exploitability": false,
+    "cfv_scratch_compared": false,
+    "chunk_floats": 1048576,
+    "discount_bits": [
+      1065346272,
+      1056964608,
+      1065168345
+    ],
+    "iteration": 180,
+    "pass": true,
+    "peak_pairwise_snapshot_bytes": 8388608,
+    "post_evaluation": true,
+    "stage": "raw_exact"
+  },
+  {
+    "exploit_bits": 4596018308513263808,
+    "iteration": 180,
+    "post_evaluation": true,
+    "raw_and_compressed_pass": true,
+    "stage": "checkpoint_exact"
+  },
+  {
+    "abs_host_batch_change_pct": 0.11276875077009807,
+    "arm_order": [
+      "ordinary",
+      "instrumented"
+    ],
+    "checkpoint": 200,
+    "event_record_counts": [
+      3,
+      3
+    ],
+    "host_batch_change_pct": -0.11276875077009807,
+    "instrumented_evaluation_device_envelope_ms": 12.977343559265137,
+    "instrumented_exploit_bits": 4594601713124613664,
+    "instrumented_host_batch_ms": 282.11789999999996,
+    "iterations": 20,
+    "near_resolution": false,
+    "ordinary_exploit_bits": 4594601713124613664,
+    "ordinary_host_batch_ms": 282.4364,
+    "post_both_arm_completion": true,
+    "scope": "event-perturbed evaluation-device envelope; host20-iterate-plus-check usefulness only",
+    "stage": "batch",
+    "within_10pct": true
+  },
+  {
+    "arrays": [
+      {
+        "array": "regrets",
+        "entries": 93381294,
+        "hash": "c893257d2e1347a7",
+        "player": 0
+      },
+      {
+        "array": "strategy",
+        "entries": 93381294,
+        "hash": "6c9ffc14fd73306a",
+        "player": 0
+      },
+      {
+        "array": "reach",
+        "entries": 117863172,
+        "hash": "5781592637ca6110",
+        "player": 0
+      },
+      {
+        "array": "weights",
+        "entries": 258,
+        "hash": "4dd6782f968ea175",
+        "player": 0
+      },
+      {
+        "array": "regrets",
+        "entries": 110745280,
+        "hash": "897064037b3cf538",
+        "player": 1
+      },
+      {
+        "array": "strategy",
+        "entries": 110745280,
+        "hash": "d88089b481cb742a",
+        "player": 1
+      },
+      {
+        "array": "reach",
+        "entries": 141110400,
+        "hash": "f0119dc4bc99c677",
+        "player": 1
+      },
+      {
+        "array": "weights",
+        "entries": 320,
+        "hash": "e75c870e0d9c9525",
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "e226badb419627be",
+        "mode": 0,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 258,
+        "hash": "5c0d711f494f0d06",
+        "mode": 1,
+        "player": 0
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "f172c92b6ba13a82",
+        "mode": 0,
+        "player": 1
+      },
+      {
+        "array": "evaluation_root",
+        "entries": 320,
+        "hash": "5d2548cb67f1f8fd",
+        "mode": 1,
+        "player": 1
+      }
+    ],
+    "before_exploitability": false,
+    "cfv_scratch_compared": false,
+    "chunk_floats": 1048576,
+    "discount_bits": [
+      1065347286,
+      1056964608,
+      1065186694
+    ],
+    "iteration": 200,
+    "pass": true,
+    "peak_pairwise_snapshot_bytes": 8388608,
+    "post_evaluation": true,
+    "stage": "raw_exact"
+  },
+  {
+    "exploit_bits": 4594601713124613664,
+    "iteration": 200,
+    "post_evaluation": true,
+    "raw_and_compressed_pass": true,
+    "stage": "checkpoint_exact"
+  },
+  {
+    "accepted_run": "E020C1",
+    "historical_anchor_run": "E015C1",
+    "original_run": "B038",
+    "stage": "final_anchor_exact",
+    "state_fingerprint": {
+      "algorithm": "Dcfr",
+      "arenas": [
+        {
+          "arena": "regrets",
+          "bytes": 318643112,
+          "entries": 156627930,
+          "hash": "81e4922faddee8df",
+          "kind": "i16",
+          "player": 0,
+          "scale_entries": 1346813
+        },
+        {
+          "arena": "strategy_sums",
+          "bytes": 318643112,
+          "entries": 156627930,
+          "hash": "9b1305ea75f444cf",
+          "kind": "u16",
+          "player": 0,
+          "scale_entries": 1346813
+        },
+        {
+          "arena": "regrets",
+          "bytes": 376892532,
+          "entries": 185752640,
+          "hash": "112676fa41d0253e",
+          "kind": "i16",
+          "player": 1,
+          "scale_entries": 1346813
+        },
+        {
+          "arena": "strategy_sums",
+          "bytes": 376892532,
+          "entries": 185752640,
+          "hash": "060e1d9bda7dbaa9",
+          "kind": "u16",
+          "player": 1,
+          "scale_entries": 1346813
+        }
+      ],
+      "exploit_bits": 4594601713124613664,
+      "hash": "9dd12ac305ce542f",
+      "iteration": 200,
+      "iteration_le_bytes": [
+        200,
+        0,
+        0,
+        0
+      ],
+      "method": "fnv1a64-little-endian-v1",
+      "root_strategy_bits": [
+        1064912653,
+        1065105931,
+        1065106440,
+        1065175304,
+        1065178885,
+        1065175304,
+        1065266180,
+        1065293571,
+        1065266435,
+        1065352192,
+        1065352192,
+        1065182216,
+        1065352192,
+        1065177096,
+        1065182216,
+        1065221894,
+        1065281283,
+        1065289475,
+        1065281283,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065173256,
+        1065352192,
+        1065352192,
+        1065169416,
+        1065173256,
+        1065262851,
+        1065227270,
+        1065281795,
+        1065285635,
+        1065281795,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065336577,
+        1065352192,
+        1065352192,
+        1065291523,
+        1065189127,
+        1065013520,
+        1065165062,
+        1065274372,
+        1065290755,
+        1065013520,
+        1065165318,
+        1065352192,
+        1065302018,
+        1065253125,
+        1065285634,
+        1065352192,
+        1065302018,
+        1065245187,
+        1065273092,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065300994,
+        1065352192,
+        1065134858,
+        1065352192,
+        1065352192,
+        1065273092,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065233157,
+        1065304833,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065300482,
+        1065351936,
+        1065352192,
+        1065352192,
+        1065350912,
+        1065304833,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065232389,
+        1065341440,
+        1065137930,
+        1065341440,
+        1065297922,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065343488,
+        1065281794,
+        1065352192,
+        1065351680,
+        1065352192,
+        1065352192,
+        1065177864,
+        1065297922,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065352192,
+        1065343488,
+        1064968210,
+        1065180421,
+        1065304834,
+        1064780049,
+        1065305090,
+        1065352192,
+        1065303042,
+        1065352192,
+        1065351936,
+        1065351936,
+        1065351936,
+        1065345024,
+        1065351936,
+        1065351936,
+        1065318914,
+        1065352192,
+        1065283074,
+        1065351936,
+        1065351424,
+        1065351936,
+        1065351936,
+        1065319681,
+        1065351936,
+        1065351936,
+        1064806169,
+        1065352192,
+        1065303042,
+        1065352192,
+        1065351936,
+        1065351936,
+        1065351936,
+        1065345024,
+        1065351936,
+        1065351936,
+        1065318914,
+        1064967954,
+        1065140998,
+        1065248259,
+        1065200645,
+        1064459305,
+        1065200645,
+        1065259267,
+        1064655392,
+        1065259267,
+        1065287938,
+        1065019658,
+        1065268483,
+        1065285123,
+        1065298690,
+        1065283586,
+        1065246981,
+        1065261827,
+        1065256451,
+        1065265412,
+        1065226500,
+        1065003792,
+        1065214212,
+        1065294851,
+        1065231108,
+        1065294851,
+        1065256452,
+        1065255427,
+        1065255427,
+        1065262339,
+        1065287938,
+        1065019407,
+        1065268483,
+        1065283586,
+        1065298690,
+        1065285123,
+        1065246981,
+        1065256451,
+        1065261827,
+        1065265412,
+        1065296387,
+        1065349376,
+        1065348608,
+        1065346816,
+        1065347584,
+        1065264131,
+        1065330433,
+        1065328129,
+        1065330433,
+        1065290755,
+        1065293570,
+        1065301250,
+        1065260548,
+        1065271298,
+        1065281027,
+        1065285891,
+        1065277955,
+        1065286402,
+        1065310977,
+        1065302786,
+        1065158153,
+        1065194247,
+        1065332225,
+        1065254403,
+        1065328641,
+        1065265667,
+        1065328641,
+        1065271812,
+        1065291010,
+        1065291010,
+        1065229828,
+        1065262083,
+        1065262083,
+        1065258499,
+        1065273090,
+        1065273090,
+        1065301250,
+        1065296387,
+        1065349376,
+        1065348608,
+        1065346816,
+        1065347584,
+        1065263876,
+        1065330433,
+        1065328129,
+        1065330433,
+        1065290755,
+        1065301250,
+        1065293570,
+        1065260548,
+        1065281282,
+        1065271298,
+        1065285891,
+        1065286402,
+        1065277955,
+        1065310977,
+        1065195525,
+        1065238533,
+        1065164038,
+        1065223174,
+        1065254404,
+        1065174536,
+        1065254916,
+        1065174536,
+        1065275138,
+        1065249285,
+        1065266436,
+        1065249285,
+        1065255427,
+        1065269763,
+        1065255427,
+        1065299458,
+        1065300738,
+        1065299458,
+        1020730962,
+        1014070572,
+        1014038046,
+        1009630711,
+        1009401516,
+        1009630711,
+        1000996354,
+        996736325,
+        1000963757,
+        947911936,
+        947911936,
+        1009188363,
+        947911936,
+        1009516028,
+        1009188363,
+        1006648959,
+        999063130,
+        997784853,
+        999063130,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        1009761777,
+        947911936,
+        947911936,
+        1010007526,
+        1009761777,
+        1001422495,
+        1005976862,
+        998997598,
+        998506100,
+        998997598,
+        947911936,
+        947911936,
+        947911936,
+        981597818,
+        947911936,
+        947911936,
+        997260589,
+        1008746015,
+        1017503246,
+        1010286224,
+        999947826,
+        997457188,
+        1017503246,
+        1010269841,
+        947911936,
+        994573736,
+        1002667446,
+        998506232,
+        947911936,
+        994573736,
+        1003683418,
+        1000111658,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        994835868,
+        947911936,
+        1012219264,
+        947911936,
+        947911936,
+        1000111658,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        1005223232,
+        993853062,
+        947911936,
+        947911936,
+        947911936,
+        947912192,
+        994967140,
+        950009376,
+        947911936,
+        947911936,
+        957349456,
+        993853062,
+        947911936,
+        947911936,
+        947911936,
+        947912192,
+        1005321532,
+        976748176,
+        1012022665,
+        976748176,
+        995622264,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        974651088,
+        998997737,
+        947911936,
+        952106624,
+        947911936,
+        947911936,
+        1009466878,
+        995622264,
+        947911936,
+        947911936,
+        947911936,
+        947911936,
+        974651088,
+        1018953164,
+        1009303214,
+        993852873,
+        1024192232,
+        993787340,
+        947911936,
+        994311800,
+        947911936,
+        950009376,
+        950009376,
+        950009376,
+        973078016,
+        950009376,
+        950009376,
+        990248558,
+        947912192,
+        998833902,
+        950009376,
+        954203488,
+        950009376,
+        950009376,
+        990052090,
+        950009376,
+        950009376,
+        1023774319,
+        947911936,
+        994311800,
+        947911936,
+        950009376,
+        950009376,
+        950009376,
+        973078016,
+        950009376,
+        950009376,
+        990248558,
+        1018961356,
+        1011826274,
+        1003290214,
+        1008008918,
+        1029324145,
+        1008008918,
+        1001881233,
+        1026186753,
+        1001881233,
+        998178306,
+        1017306810,
+        1000701621,
+        998571633,
+        995425878,
+        998768368,
+        1003453842,
+        1001553563,
+        1002241670,
+        1001094654,
+        1006075409,
+        1017814528,
+        1007140592,
+        996408660,
+        1005485603,
+        996408660,
+        1002241481,
+        1002372738,
+        1002372738,
+        1001488029,
+        998178306,
+        1017314839,
+        1000701621,
+        998768368,
+        995425878,
+        998571633,
+        1003453842,
+        1002241670,
+        1001553563,
+        1001094654,
+        996015462,
+        963640864,
+        965738208,
+        969408112,
+        967835296,
+        1001258660,
+        984743402,
+        985922996,
+        984743402,
+        997457188,
+        996736558,
+        994770538,
+        1001717217,
+        1000341184,
+        999095897,
+        998473334,
+        999489095,
+        998407931,
+        992280246,
+        994377334,
+        1010728388,
+        1008418350,
+        983826104,
+        1002503806,
+        985660864,
+        1001062058,
+        985660864,
+        1000275491,
+        997391898,
+        997391898,
+        1005649438,
+        1001520796,
+        1001520796,
+        1001979534,
+        1000111815,
+        1000111815,
+        994770538,
+        996015462,
+        963640864,
+        965738208,
+        969408112,
+        967835296,
+        1001291252,
+        984743402,
+        985922996,
+        984743402,
+        997457188,
+        994770538,
+        996736558,
+        1001717217,
+        999063271,
+        1000341184,
+        998473334,
+        998407931,
+        999489095,
+        992280246,
+        1008336588,
+        1004535136,
+        1010351758,
+        1006501126,
+        1002503613,
+        1009679860,
+        1002438080,
+        1009679860,
+        999849679,
+        1003158943,
+        1000963588,
+        1003158943,
+        1002372738,
+        1000537786,
+        1002372738,
+        995229066,
+        994901401,
+        995229066
+      ],
+      "scope": "all CPU regret and strategy entries and scales immediately after full GPU readback"
+    }
+  },
+  {
+    "accepted_performance_claim": false,
+    "candidate_accepted": false,
+    "checked_cleanup": true,
+    "checkpoints": [
+      140,
+      160,
+      180,
+      200
+    ],
+    "evaluation_intervals": 3,
+    "event_handles": 2,
+    "event_record_counts": [
+      3,
+      3
+    ],
+    "sample_iterations": [
+      160,
+      180,
+      200
+    ],
+    "scope": "two-tone captured evaluation-device envelope only",
+    "stage": "complete"
+  }
+]

@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-17T02:20:50.805803+00:00",
+  "status": "pass_scoped_parallel_zero_proof",
+  "protocol_sha256": "ea7de01564990becf44c08e3cc1a1996a83e2631c6b13d30e1443ac5979bbf03",
+  "unit_passed": 86,
+  "unit_ignored": 4,
+  "integer_or_checks": 3516,
+  "full_predicate_cases": 576,
+  "unit_report_sha256": "f1c001a5b0c1e965eae98cc8683b8dbd6c3f5a72a9eb763c66bffb456a89a76a",
+  "stdout_sha256": "505f52c93ae09ab28f6c2a625868aeecabfe3eff0122c9a83355ab3fb5107307",
+  "integer_marker": {
+    "checks": 3516,
+    "inputs_unchanged": true,
+    "lengths": [
+      0,
+      1,
+      7,
+      127,
+      128,
+      129,
+      1048575,
+      1048576,
+      1048577,
+      2097151,
+      2097152,
+      2097153,
+      3145745
+    ],
+    "raw_integer_or_exact": true,
+    "threads": [
+      1,
+      2,
+      16
+    ]
+  },
+  "predicate_marker": {
+    "accepted_original_exact": true,
+    "cases": 576,
+    "inputs_unchanged": true
+  },
+  "source_accepted162_restored": true,
+  "main_live_ptx_unchanged": true,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "Fixed CPU corpus against serial integer folds and exact accepted predicate; no universal timing, GPU-path or resource claim."
+}

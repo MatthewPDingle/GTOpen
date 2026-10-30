@@ -1,0 +1,37 @@
+{
+  "status": "PROSPECTIVE_NOT_EXECUTED",
+  "working_directory": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan",
+  "prerequisite": "Independent source/script reviews, accepted E020/server evidence, frozen one-file candidate and separate root activation/execution authorization. This plan alone grants no execution approval.",
+  "sequence": [
+    {
+      "stage": "fresh-gpu-only-build",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\build.py",
+        "ROOT_FILL_AUTHORIZATION_SHA256"
+      ],
+      "root_observes_terminal_exit_before_next": true
+    },
+    {
+      "stage": "fixed-unit-and-six-primary",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\primary.py"
+      ],
+      "root_observes_terminal_exit_before_next": true
+    },
+    {
+      "stage": "assess-all-six",
+      "command": [
+        "C:\\Program Files\\Python312\\python.exe",
+        "-B",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-primary-plan\\assess.py"
+      ],
+      "root_observes_terminal_exit_before_next": true
+    }
+  ],
+  "candidate_acceptance": false,
+  "deployment": false
+}

@@ -1,0 +1,45 @@
+{
+  "id": "D033",
+  "created_at": "2026-10-16T09:25:07.283410+00:00",
+  "kind": "test-only diagnostic implementation",
+  "git_head": "335eb247538f7449ec1863e99e20df55beb2b4c6",
+  "base_mod_sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+  "candidate_sha256": {
+    "crates/solver/src/gpu/mod.rs": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+    "crates/solver/src/gpu/graph_device_events.rs": "98e9da085c98198bbcddb77756697b6b50a5042d305627dd46b9679d79879b4c"
+  },
+  "patch_sha256": "144b2eee69a6c1ffd32d81453e7819f209b1174000ce6d44eddf5794137df355",
+  "protected_source_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/arena.rs": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "crates/solver/src/store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "crates/solver/tests/postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+    "crates/solver/Cargo.toml": "d5f94c27b284e456e75be12e0713dce9f8d16b16622ec1f50e5201614c88c5e6",
+    "Cargo.lock": "03c5654d741233c00f843bfed4146bc264ccceda5827944c2f585224c106c710",
+    "Cargo.toml": "7c4852f25afca57450c13de5ab336c28ba70d9405c16cfc1bbccee361d10c0ca",
+    "bench_spot.json": "62bcdd31eb723a10e6c86032eb4ba1f1088a284f8bdec164cb33e4130201397c"
+  },
+  "frozen_fingerprint_helper_sha256": "3cb6a47046fc880892b5215e717c126673d538135f1cf057860ada8ab1ebe4ed",
+  "test_filter": "gpu::graph_device_events::captured_graph_device_event_diagnostic",
+  "ignored": true,
+  "mechanical_checks": {
+    "exact_append_only": true,
+    "frozen_helper_byte_identity": true,
+    "no_kernel_setters_or_manual_kernel_launch": true,
+    "no_eager_profile": true,
+    "protected_files_unchanged": true,
+    "rustfmt_syntax_only_pass": true,
+    "git_diff_check_pass": true
+  },
+  "executed": {
+    "cargo_build": false,
+    "tests": false,
+    "gpu_calls": false
+  },
+  "scope_clarification": "actual authorized module name graph_device_events supersedes protocol placeholder graph_event_diagnostic",
+  "protocol_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-graph-event-design",
+  "oracle_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors"
+}

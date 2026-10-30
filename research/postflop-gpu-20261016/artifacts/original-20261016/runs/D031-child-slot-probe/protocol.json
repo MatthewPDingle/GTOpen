@@ -1,0 +1,55 @@
+{
+  "id": "D031",
+  "status": "prepared_not_executed",
+  "prepared_at": "2026-10-16T08:33:50.591722+00:00",
+  "kind": "prospective compiler/resource diagnostic only",
+  "parent_hypothesis": "D030",
+  "baseline_commit": "e868cfbb125002216f25046af2d88b22a697b2fd",
+  "baseline_source_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\kernels.cu",
+  "baseline_source_sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+  "baseline_source_bytes": 22624,
+  "baseline_source_fnv1a64": "3f0594b037a1dda3",
+  "candidate_transform": {
+    "scope": "up_action_impl and up_action only",
+    "four_child_addresses": "cfv_slot[children[cs + a]] -> child_cfv_slots[cs + a]",
+    "parameter_declarations_renamed": 2,
+    "template_forwarding_arguments_renamed": 4,
+    "float_source_expressions_changed": 0,
+    "ordering_changed": false,
+    "entrypoints_changed": false,
+    "launch_or_solver_integration": false
+  },
+  "execution_order": [
+    "baseline NVRTC + module load + up_action resource query",
+    "candidate NVRTC + module load + up_action resource query"
+  ],
+  "device_ordinal": 0,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "expected_architecture": "compute_120",
+  "same_context": true,
+  "nvrtc_options": "architecture only; every other cudarc CompileOptions field stays default",
+  "resource_query": {
+    "kernel": "up_action",
+    "threads": 128,
+    "dynamic_shared_bytes": 0,
+    "fields": [
+      "registers",
+      "local bytes per thread",
+      "static shared bytes",
+      "theoretical blocks/warps per SM"
+    ]
+  },
+  "ptx_outputs": [
+    "baseline.ptx",
+    "candidate.ptx",
+    "baseline-up_action.ptx",
+    "candidate-up_action.ptx"
+  ],
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measurement": false,
+  "numerical_validation": "not executed",
+  "serialization": "Parent must authorize execution after E017 measurements with no concurrent build/timing/GPU work. Existing gpu-run.lock and read-only live-server checks apply.",
+  "write_policy": "Sealed prepared inputs and all execution evidence use new output paths. Execution-started.json refuses retry/overwrite, including failed attempts.",
+  "qualification_boundary": "No candidate benefit or accuracy claim. PTX counts are static and resources are theoretical. Host precomputation/additional allocation and full-cycle costs remain untested."
+}

@@ -1,0 +1,157 @@
+{
+  "id": "D020-profile-design",
+  "status": "design_only_not_executed",
+  "created_at": "2026-10-16T06:40:46.090803+00:00",
+  "planned_run_ids": [
+    "D020",
+    "D020R2",
+    "D020R3"
+  ],
+  "inputs": {
+    "D000-baseline-profile.log": {
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D000-baseline-profile.log",
+      "sha256": "130ff230ed3c1c67039d0105c11c80b6368d47de4db97cbbf4843083cd01be7e",
+      "bytes": 1040
+    },
+    "D000-diagnostic.json": {
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D000\\diagnostic.json",
+      "sha256": "f0e53226d843a050cbe44d8d58201c29ee45dac064252e0c00b01490ef57f079",
+      "bytes": 1755
+    },
+    "E004-build-manifest.json": {
+      "source": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_autoresearch.manifest.json",
+      "sha256": "21c708b9e3732a9f501ca3afc713562d17a1537de62d77095192c84bb3d8cd4c",
+      "bytes": 25199
+    },
+    "E004-gpu-mod.rs": {
+      "source": "crates/solver/src/gpu/mod.rs",
+      "git_commit": "7c3b6be9126699b7f00081ceb6d17c6b49fdf8a9",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "bytes": 53239,
+      "matches_E004_build_manifest": true
+    },
+    "E004-postflop_autoresearch.rs": {
+      "source": "crates/solver/tests/postflop_autoresearch.rs",
+      "git_commit": "7c3b6be9126699b7f00081ceb6d17c6b49fdf8a9",
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858,
+      "matches_E004_build_manifest": true
+    },
+    "E004-postflop_perf.rs": {
+      "source": "crates/solver/tests/postflop_perf.rs",
+      "git_commit": "7c3b6be9126699b7f00081ceb6d17c6b49fdf8a9",
+      "sha256": "8c038250c584fa59b40d0a20ef443e55105e7617060a2eb297bea51db637db95",
+      "bytes": 3242,
+      "matches_E004_build_manifest": true
+    },
+    "E004-cfr.rs": {
+      "source": "crates/solver/src/cfr.rs",
+      "git_commit": "7c3b6be9126699b7f00081ceb6d17c6b49fdf8a9",
+      "sha256": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+      "bytes": 37546,
+      "matches_E004_build_manifest": true
+    }
+  },
+  "binary": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E004-postflop_autoresearch.exe",
+    "sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8",
+    "verified_read_only": true
+  },
+  "prior_raw_profile": [
+    {
+      "board": "Ks7h2d",
+      "kernel_ms": {
+        "copy_root": 0.0929,
+        "down_action": 5.7793,
+        "down_chance": 1.0895,
+        "up_fold": 3.4457000000000004,
+        "up_show": 7.795400000000001,
+        "up_chance": 1.5127,
+        "up_action": 9.427200000000001
+      },
+      "instrumented_sum_ms": 29.1427,
+      "normal_median_iteration_ms": 27.588,
+      "ratio": 1.0563542119762215
+    },
+    {
+      "board": "Ks7s2d",
+      "kernel_ms": {
+        "copy_root": 0.0886,
+        "down_action": 3.2649000000000004,
+        "down_chance": 0.6514999999999999,
+        "up_fold": 1.5851000000000002,
+        "up_show": 4.2772,
+        "up_chance": 1.4217999999999997,
+        "up_action": 5.862700000000001
+      },
+      "instrumented_sum_ms": 17.1518,
+      "normal_median_iteration_ms": 16.27,
+      "ratio": 1.0541979102642902
+    },
+    {
+      "board": "Ks7h2dQhTc",
+      "kernel_ms": {
+        "copy_root": 0.0402,
+        "down_action": 0.2147,
+        "down_chance": 0.0,
+        "up_fold": 0.22510000000000002,
+        "up_show": 0.4992999999999999,
+        "up_chance": 0.0,
+        "up_action": 0.3027
+      },
+      "instrumented_sum_ms": 1.282,
+      "normal_median_iteration_ms": 0.26,
+      "ratio": 4.930769230769231
+    }
+  ],
+  "prior_limits": [
+    "D000 did not record original binary hash or process start/end timestamps. Its raw log matches the hash in D000/diagnostic.json.",
+    "E004 postflop_timings source uses Solver::new (F32), 5 warmups and 3 batches of 20, then profiles iteration 66. This differs from the registered compressed evaluator and terminal iterations."
+  ],
+  "registered_scan": {
+    "stdout_logs_scanned": 99,
+    "optional_profile_stage_hits": 0
+  },
+  "expected_pre_profile_results": [
+    {
+      "fixture_id": "rainbow",
+      "storage": "compressed",
+      "iteration": 200,
+      "fingerprint": "65fb2853a11f3acc",
+      "exploit_bits": 4595130701932466176
+    },
+    {
+      "fixture_id": "two-tone",
+      "storage": "compressed",
+      "iteration": 200,
+      "fingerprint": "9dd12ac305ce542f",
+      "exploit_bits": 4594601713124613664
+    },
+    {
+      "fixture_id": "river",
+      "storage": "compressed",
+      "iteration": 60,
+      "fingerprint": "63944e67a4f99157",
+      "exploit_bits": 4595002455471455360
+    }
+  ],
+  "expected_profile_iterations": {
+    "rainbow": 201,
+    "two-tone": 201,
+    "river": 61
+  },
+  "kernel_names": [
+    "copy_root",
+    "down_action",
+    "down_chance",
+    "up_fold",
+    "up_show",
+    "up_chance",
+    "up_action"
+  ],
+  "profile_semantics": "One extra eager iteration for both players. Host wall time starts before launch-builder/argument submission and stops after stream synchronize for every launch. Sums per kind across levels and players; launches records counts. Not CUDA event device time; bypasses graph replay.",
+  "interpretation": "Rank broad late-state hotspots with per-kind median/range and ms/launch. No device-time-share or complete-cycle improvement claim. Counts are covariates, not calibrated overhead subtraction.",
+  "acceptance_eligible": false,
+  "gpu_executed": false,
+  "checkout_edits": false
+}

@@ -1,0 +1,20 @@
+{
+  "id": "D217",
+  "at": "2026-10-28T23:57:33.686931+00:00",
+  "status": "pass_all3_kernel_direct_nullable_lock_raw_equivalence",
+  "protocol_sha256": "b487fbf32c3756c612554c2db7f4c110e7b99e248b8d1b98db40319ce07cd4c5",
+  "cases": 8397,
+  "kernel_launches": 16794,
+  "output_words_both_arms": 123870304,
+  "immutable_words_both_arms": 71317818,
+  "guard_words_both_arms": 105806134,
+  "reader_checks": 1290599,
+  "category_report_sha256": {
+    "up": "274777748b7bdc4ced2c2aa9f5e02f594a75043018d833f7a3da623883ed83c1",
+    "down": "1eac3c19653689575b776ee8d72e504be79d3410dc2e39e8a0b8e94def36738a"
+  },
+  "all_owned_compilers_native_readers_terminal": true,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "scope": "Entire frozen direct corpus, all3changed entries, null/non-null, original raw value/menu/tail/count/role/mode/NaN/Inf/subnormal/overflow/zero guards plus p1reuse. Whole snapshots retained. No broad/fullcanonical/material/capacity/complete speed/adoption proof."
+}

@@ -1,0 +1,22 @@
+{
+  "id": "D212",
+  "at": "2026-10-28T23:20:04.058700+00:00",
+  "source": "Exact accepted E080 solver RLIB and original benchmark with only collector lifetime, 18 timestamp markers, full-suite assertions and identical bench include relocation. Complete evaluator byte reversal checked. Collector C++/DLL/import lib reused checksum-exact from original passed D087. Private SDK DLLs copied to X; no global install/PATH or settings change.",
+  "collector_lifetime": "Start only before first GPU constructor, once per process. Trace spans all three original fixtures without collector restart/state changes. Stop/flush after last score/fingerprint while final GPU solver/context alive; destructor cleanup remains. Six markers per fixture bracket init/solve/readback. Original numerical statements and wait/join/cadence/quality/cap remain intact.",
+  "scope": "Fresh current-RAM full3fixture baseline/trace cohort. No E105 kernels/source activated and no performance qualification/adoption. No hardware counter APIs or D104 retry. Raw activity has observer bias; usefulness guards do not establish unbiased per-kernel time, causality or achievable savings.",
+  "source_projection_exact": true,
+  "collector_source_SHA256": "1fd93739e96458e18c1fdf5b7a56b98b73ae9158581bf26015966bc739ca3fb9",
+  "original_copied_artifact_SHA256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\collector.cpp": "1fd93739e96458e18c1fdf5b7a56b98b73ae9158581bf26015966bc739ca3fb9",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.dll": "b6fff7fca8acbda3a88905df09d5f084fd6965cf7ea4a741253b89c7e41f4233",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D087-cupti-driver-profile\\build\\D087Collector.lib": "35a38ae508f0620673305a0a13f4f02afc0a122067823d10dbdbdf6751b4031d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\checkpoint.dll": "f0252a31427a0d3000d6f2373781b7ef9b359daffe03a38c2dc32cd343aa6b46",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\cupti64_2025.2.1.dll": "be1ecb387e14c1c0515b3b162b44c89b480c9a12f16c60f7b82eb8b1ebc35e74",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_host.dll": "df3538d2311784dd6b426a9b107876d97f45126ddc44cee5239917313c54686d",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\nvperf_target.dll": "923e550ac7404187c26808ff331ec04db182d1c8d075603e9d67f507ad303125",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\lib\\pcsamplingutil.dll": "3bdb884dd971b09cb32833a66a6384b38b12b841e543d50a23ce65ae32e5e2b2",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D085-cupti-activity\\vendor\\cuda_cupti\\cuda_cupti-windows-x86_64-12.9.79-archive\\include\\cupti_driver_cbid.h": "87bda1c526285330d1837fbc08af504e4a69b247242f7dec3446b3e8237d051d"
+  },
+  "historical_context": "Original D087 rainbow up_action_eval summed kernel durations were27.746596/27.755821/27.761606ms. Historical scope and RAM differ; no timing pooling or current complete-suite bound inferred. Fresh profiling is needed to assess E105 cost budget before numerical admission.",
+  "E105_cost_admission_rule": "If current sum of fixture-median up_action_eval activity duration is less than1% of fresh control sum fixture medians, decline this exact E105 form for insufficient demonstrated material headroom. This is a prospective budgeting proxy, not a universal speed upper bound; no samples/threshold/arity/helper/source/flags rescue. Otherwise semantic/direct/numeric/fullcycle gates still apply."
+}

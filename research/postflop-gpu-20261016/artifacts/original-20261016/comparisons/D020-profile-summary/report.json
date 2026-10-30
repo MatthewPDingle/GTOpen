@@ -1,0 +1,654 @@
+{
+  "schema_version": 1,
+  "id": "D020-profile-summary",
+  "created_at": "2026-10-16T06:47:13Z",
+  "kind": "diagnostic",
+  "accepted_gain": false,
+  "fixtures": [
+    {
+      "fixture_id": "rainbow",
+      "scored_iteration": 200,
+      "profile_iteration": 201,
+      "exact_scored_state": "pass",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 26,
+          "host_ms": [
+            9.987400000000001,
+            9.594499999999998,
+            8.980500000000001
+          ],
+          "median_host_ms": 9.594499999999998,
+          "min_host_ms": 8.980500000000001,
+          "max_host_ms": 9.987400000000001,
+          "median_host_ms_per_launch": 0.3690192307692307
+        },
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "host_ms": [
+            7.2803,
+            7.102800000000001,
+            6.9799999999999995
+          ],
+          "median_host_ms": 7.102800000000001,
+          "min_host_ms": 6.9799999999999995,
+          "max_host_ms": 7.2803,
+          "median_host_ms_per_launch": 0.5919000000000001
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 26,
+          "host_ms": [
+            5.371700000000001,
+            5.596400000000001,
+            5.6803
+          ],
+          "median_host_ms": 5.596400000000001,
+          "min_host_ms": 5.371700000000001,
+          "max_host_ms": 5.6803,
+          "median_host_ms_per_launch": 0.2152461538461539
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 24,
+          "host_ms": [
+            2.6327,
+            2.3123000000000005,
+            2.4605
+          ],
+          "median_host_ms": 2.4605,
+          "min_host_ms": 2.3123000000000005,
+          "max_host_ms": 2.6327,
+          "median_host_ms_per_launch": 0.10252083333333334
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 18,
+          "host_ms": [
+            1.5096999999999998,
+            1.4717,
+            1.4737999999999998
+          ],
+          "median_host_ms": 1.4737999999999998,
+          "min_host_ms": 1.4717,
+          "max_host_ms": 1.5096999999999998,
+          "median_host_ms_per_launch": 0.08187777777777777
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 18,
+          "host_ms": [
+            1.1055,
+            1.3403999999999996,
+            1.2208999999999999
+          ],
+          "median_host_ms": 1.2208999999999999,
+          "min_host_ms": 1.1055,
+          "max_host_ms": 1.3403999999999996,
+          "median_host_ms_per_launch": 0.06782777777777776
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "host_ms": [
+            0.09630000000000001,
+            0.092,
+            0.09290000000000001
+          ],
+          "median_host_ms": 0.09290000000000001,
+          "min_host_ms": 0.092,
+          "max_host_ms": 0.09630000000000001,
+          "median_host_ms_per_launch": 0.046450000000000005
+        }
+      ],
+      "raw_profiles": [
+        {
+          "run": "D020",
+          "excluded_from_score": true,
+          "fixture_id": "rainbow",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.09630000000000001,
+            5.371700000000001,
+            1.1055,
+            2.6327,
+            7.2803,
+            1.5096999999999998,
+            9.987400000000001
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R2",
+          "excluded_from_score": true,
+          "fixture_id": "rainbow",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.092,
+            5.596400000000001,
+            1.3403999999999996,
+            2.3123000000000005,
+            7.102800000000001,
+            1.4717,
+            9.594499999999998
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R3",
+          "excluded_from_score": true,
+          "fixture_id": "rainbow",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.09290000000000001,
+            5.6803,
+            1.2208999999999999,
+            2.4605,
+            6.9799999999999995,
+            1.4737999999999998,
+            8.980500000000001
+          ],
+          "stage": "diagnostic_profile"
+        }
+      ]
+    },
+    {
+      "fixture_id": "two-tone",
+      "scored_iteration": 200,
+      "profile_iteration": 201,
+      "exact_scored_state": "pass",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 26,
+          "host_ms": [
+            5.789000000000001,
+            6.071599999999999,
+            6.258799999999999
+          ],
+          "median_host_ms": 6.071599999999999,
+          "min_host_ms": 5.789000000000001,
+          "max_host_ms": 6.258799999999999,
+          "median_host_ms_per_launch": 0.2335230769230769
+        },
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "host_ms": [
+            4.4407,
+            5.566199999999999,
+            4.8732
+          ],
+          "median_host_ms": 4.8732,
+          "min_host_ms": 4.4407,
+          "max_host_ms": 5.566199999999999,
+          "median_host_ms_per_launch": 0.40609999999999996
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 26,
+          "host_ms": [
+            3.336500000000001,
+            4.0396,
+            4.2931
+          ],
+          "median_host_ms": 4.0396,
+          "min_host_ms": 3.336500000000001,
+          "max_host_ms": 4.2931,
+          "median_host_ms_per_launch": 0.15536923076923076
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 24,
+          "host_ms": [
+            1.8921,
+            3.0219,
+            2.3415
+          ],
+          "median_host_ms": 2.3415,
+          "min_host_ms": 1.8921,
+          "max_host_ms": 3.0219,
+          "median_host_ms_per_launch": 0.0975625
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 18,
+          "host_ms": [
+            1.8713000000000004,
+            2.1639000000000004,
+            1.7867
+          ],
+          "median_host_ms": 1.8713000000000004,
+          "min_host_ms": 1.7867,
+          "max_host_ms": 2.1639000000000004,
+          "median_host_ms_per_launch": 0.10396111111111113
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 18,
+          "host_ms": [
+            0.7247,
+            1.4889000000000001,
+            1.6974999999999996
+          ],
+          "median_host_ms": 1.4889000000000001,
+          "min_host_ms": 0.7247,
+          "max_host_ms": 1.6974999999999996,
+          "median_host_ms_per_launch": 0.08271666666666667
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "host_ms": [
+            0.0939,
+            0.2787,
+            0.1766
+          ],
+          "median_host_ms": 0.1766,
+          "min_host_ms": 0.0939,
+          "max_host_ms": 0.2787,
+          "median_host_ms_per_launch": 0.0883
+        }
+      ],
+      "raw_profiles": [
+        {
+          "run": "D020",
+          "excluded_from_score": true,
+          "fixture_id": "two-tone",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.0939,
+            3.336500000000001,
+            0.7247,
+            1.8921,
+            4.4407,
+            1.8713000000000004,
+            5.789000000000001
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R2",
+          "excluded_from_score": true,
+          "fixture_id": "two-tone",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.2787,
+            4.0396,
+            1.4889000000000001,
+            3.0219,
+            5.566199999999999,
+            2.1639000000000004,
+            6.071599999999999
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R3",
+          "excluded_from_score": true,
+          "fixture_id": "two-tone",
+          "iteration": 201,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            26,
+            18,
+            24,
+            12,
+            18,
+            26
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.1766,
+            4.2931,
+            1.6974999999999996,
+            2.3415,
+            4.8732,
+            1.7867,
+            6.258799999999999
+          ],
+          "stage": "diagnostic_profile"
+        }
+      ]
+    },
+    {
+      "fixture_id": "river",
+      "scored_iteration": 60,
+      "profile_iteration": 61,
+      "exact_scored_state": "pass",
+      "ranked_host_spans": [
+        {
+          "kernel": "up_show",
+          "launches_per_sample": 12,
+          "host_ms": [
+            0.6729999999999999,
+            0.3227,
+            0.2563
+          ],
+          "median_host_ms": 0.3227,
+          "min_host_ms": 0.2563,
+          "max_host_ms": 0.6729999999999999,
+          "median_host_ms_per_launch": 0.026891666666666664
+        },
+        {
+          "kernel": "down_action",
+          "launches_per_sample": 14,
+          "host_ms": [
+            0.23240000000000002,
+            0.9662000000000001,
+            0.29379999999999995
+          ],
+          "median_host_ms": 0.29379999999999995,
+          "min_host_ms": 0.23240000000000002,
+          "max_host_ms": 0.9662000000000001,
+          "median_host_ms_per_launch": 0.02098571428571428
+        },
+        {
+          "kernel": "up_action",
+          "launches_per_sample": 14,
+          "host_ms": [
+            0.24399999999999997,
+            0.7559000000000001,
+            0.2296
+          ],
+          "median_host_ms": 0.24399999999999997,
+          "min_host_ms": 0.2296,
+          "max_host_ms": 0.7559000000000001,
+          "median_host_ms_per_launch": 0.017428571428571425
+        },
+        {
+          "kernel": "up_fold",
+          "launches_per_sample": 12,
+          "host_ms": [
+            0.19849999999999998,
+            0.9027000000000001,
+            0.198
+          ],
+          "median_host_ms": 0.19849999999999998,
+          "min_host_ms": 0.198,
+          "max_host_ms": 0.9027000000000001,
+          "median_host_ms_per_launch": 0.016541666666666666
+        },
+        {
+          "kernel": "copy_root",
+          "launches_per_sample": 2,
+          "host_ms": [
+            0.0479,
+            0.3131,
+            0.0855
+          ],
+          "median_host_ms": 0.0855,
+          "min_host_ms": 0.0479,
+          "max_host_ms": 0.3131,
+          "median_host_ms_per_launch": 0.04275
+        },
+        {
+          "kernel": "down_chance",
+          "launches_per_sample": 0,
+          "host_ms": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "median_host_ms": 0.0,
+          "min_host_ms": 0.0,
+          "max_host_ms": 0.0,
+          "median_host_ms_per_launch": null
+        },
+        {
+          "kernel": "up_chance",
+          "launches_per_sample": 0,
+          "host_ms": [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "median_host_ms": 0.0,
+          "min_host_ms": 0.0,
+          "max_host_ms": 0.0,
+          "median_host_ms_per_launch": null
+        }
+      ],
+      "raw_profiles": [
+        {
+          "run": "D020",
+          "excluded_from_score": true,
+          "fixture_id": "river",
+          "iteration": 61,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            14,
+            0,
+            12,
+            12,
+            0,
+            14
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.0479,
+            0.23240000000000002,
+            0.0,
+            0.19849999999999998,
+            0.6729999999999999,
+            0.0,
+            0.24399999999999997
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R2",
+          "excluded_from_score": true,
+          "fixture_id": "river",
+          "iteration": 61,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            14,
+            0,
+            12,
+            12,
+            0,
+            14
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.3131,
+            0.9662000000000001,
+            0.0,
+            0.9027000000000001,
+            0.3227,
+            0.0,
+            0.7559000000000001
+          ],
+          "stage": "diagnostic_profile"
+        },
+        {
+          "run": "D020R3",
+          "excluded_from_score": true,
+          "fixture_id": "river",
+          "iteration": 61,
+          "kernel_names": [
+            "copy_root",
+            "down_action",
+            "down_chance",
+            "up_fold",
+            "up_show",
+            "up_chance",
+            "up_action"
+          ],
+          "launches": [
+            2,
+            14,
+            0,
+            12,
+            12,
+            0,
+            14
+          ],
+          "note": "one additional iteration with synchronization after each launch; absolute timing includes synchronization overhead",
+          "profile_ms": [
+            0.0855,
+            0.29379999999999995,
+            0.0,
+            0.198,
+            0.2563,
+            0.0,
+            0.2296
+          ],
+          "stage": "diagnostic_profile"
+        }
+      ]
+    }
+  ],
+  "inputs": [
+    {
+      "id": "D020",
+      "report_sha256": "21490b19029ff6cb873da5453c35042a5fa485f5da6eb6718c52a1b67775a869",
+      "stdout_sha256": "09f25950d346348f7cc818000a8d31f4655b62c433187285b4f4f0a12342bb96",
+      "binary_sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8"
+    },
+    {
+      "id": "D020R2",
+      "report_sha256": "8f3e0404379db43bbd0c56e3f2d424d22dbc2608916a2ddb5b92f37ebd3e56d6",
+      "stdout_sha256": "06e4537374b7c4c1aec64fbe4ef8927f8ce0be37d217b0159837f97e1cada414",
+      "binary_sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8"
+    },
+    {
+      "id": "D020R3",
+      "report_sha256": "eb9eb22b138804e8f20d3660b4220bf13d37822f89b0adb0848de0902f8c7c6b",
+      "stdout_sha256": "0d94da3251d616efa52eb3a12010a291d335e8ca4c911c52f7fe490ee3a2b1b8",
+      "binary_sha256": "b313699cd275ec138187e345782f23ee356318ce3a80a5f388284a974fb500c8"
+    }
+  ],
+  "interpretation": "Both flop fixtures rank up_action, up_show, then down_action highest in repeated synchronization-instrumented host spans. These are priorities for bounded experiments, not normal CUDA-graph device-time shares.",
+  "limits": [
+    "Three late-state samples per fixture after fingerprinting; GPU state advances one extra iteration then is discarded.",
+    "Host launch setup and per-launch stream synchronization replace normal graph replay, perturbing timing; no percentage of ordinary solve time is inferred.",
+    "First copy_root also drains preceding discount upload; river/small-kernel spans are especially overhead-sensitive.",
+    "Best-response/evaluation, initialization and readback are not profiled. All complete-cycle values from these diagnostic runs remain excluded from acceptance."
+  ]
+}

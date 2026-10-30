@@ -1,0 +1,24 @@
+{
+  "started_at": "2026-10-17T00:13:40.116703+00:00",
+  "finished_at": "2026-10-17T00:13:42.006060+00:00",
+  "command": [
+    "C:\\Program Files\\Python312\\python.exe",
+    "-B",
+    "tools/postflop_autoresearch.py",
+    "--id",
+    "V038-candidate-upload",
+    "--title",
+    "E038 V038-candidate-upload",
+    "--kind",
+    "validation",
+    "--binary",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E038-control-candidate-solver.exe",
+    "--build-manifest",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E038-control-candidate-solver.manifest.json",
+    "--test",
+    "gpu::arena::e038_upload_control::exact_u16_zero_upload_lifecycle"
+  ],
+  "returncode": 0,
+  "error": null,
+  "cleanup": null
+}

@@ -1,0 +1,147 @@
+{
+  "id": "D050-source-script-review",
+  "at": "2026-10-16T15:13:08.012274+00:00",
+  "status": "PASS_SOURCE_AND_PROSPECTIVE_RESOURCE_SCRIPT",
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "prepared_manifest": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D050-show-physical256-resource\\prepared-manifest.json",
+    "sha256": "ba3b390ffbff4f5080cfc07de713665a720c3a63c050341db312486269f04472"
+  },
+  "artifact_sha256": {
+    "README.md": "258a20f2038ec62250ee93d1a6459442df6f093477c7a6547f3225fd0ce513f2",
+    "baseline.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "candidate.cu": "01ea83f9b15df2e973b336b9dc76e6b4a4d15025c406f57cee507327d36cf558",
+    "baseline-scan.txt": "a94dc47ef7a00c2c4c7b4fd341a9d4c912d3513c80e6c5f8d885c1685762c2ad",
+    "candidate-scan.txt": "e2f3759e407106f11f8ac273d4d02f9b93d8eaa02da9f142d6019bbee7ca91a7",
+    "candidate.patch": "e199c8c9a142b91eed15b929879af2c12ddda56d93894b478f8d01cb675b8758",
+    "commands.json": "2e7efe9a9d01e4d5b7f46ead0c03a1d9e1c78f38987c91ee0a06ea856d29a4a0",
+    "preparation-checks.json": "fe9fb81504d9e78e7e78dc85c0f673fef2e7ef0b51dda9888a88b2b9f33e9bef",
+    "probe.rs": "d44e3e74e2e41fab063b354f38ccef4adc072ec0306826757b6ef78f763d3a3c",
+    "protocol.json": "4e00c0819eb76df4c48e26a7231242ae2c7d8655b765b18d3ed2cc820f3b27bd",
+    "run.py": "9c9b5c10bf05f7c8b1ba09a0fb0ee5e5a6c277a9843a0d2c9bde252c568fd281",
+    "runner-primitives-source.py": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+  },
+  "reference_pins": {
+    "D047_source_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D047-show-launch-source-audit\\manifest.json",
+      "sha256": "f1d038c481827a3c5569d0096f5821a3710b016444d64c3bcb0c46d51b067108"
+    },
+    "D047_source_note": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D047-show-launch-source-audit\\README.md",
+      "sha256": "8d57a48f6d4dadef9dac39e4a8af38fb7f62a6c0cf5b0486a8a6b8bdc583a94e"
+    },
+    "D049_prepared_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\prepared-manifest.json",
+      "sha256": "e8f8a736e52031ca63c98e7cfcb5ca906306d9e70384f9840eea64b95158b80d"
+    },
+    "D049_probe": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\probe.rs",
+      "sha256": "5fa9986b72903ebe105eae095b597991ebe47470973c7b47e535cc37c441d2c6"
+    },
+    "D049_runner": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\run.py",
+      "sha256": "386f6cd0f8a482bf46711abb774136397cea4d839ac5a081c84ad944ee853366"
+    },
+    "D049_terminal_review": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D049-independent-review\\validation.json",
+      "sha256": "3f1194dfdfe48358ef54f0b9fd80953e13d79348aa9257943ce0ad8194e643a6"
+    },
+    "D049_terminal_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\D049-independent-review\\manifest.json",
+      "sha256": "cea181a42e782b97203595ec6cfe3d28151445dd4754e462924b968763661a5e"
+    },
+    "E020_binary_manifest": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\binaries\\E020-postflop_autoresearch.manifest.json",
+      "sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768"
+    },
+    "D037_resource_report": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\report.json",
+      "sha256": "ce3b3ea70b7d91de23e555645feeba18d8df02d69d1456520dd948d7ef575543"
+    },
+    "wide_turn_protocol": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\protocol.json",
+      "sha256": "33d4a047f67d1b23bd125cbfc8c31b564b6cf6a8417da768023beb8389c71510"
+    },
+    "runner_primitives": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D049-down-action-pointer-resource\\runner-primitives-source.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70"
+    }
+  },
+  "dependency_rlibs": {
+    "cudarc": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+      "sha256": "690dae4070529facb88a0e1bb4bbeef4e6e5487eb52d4f61fdc4e95274d32d1c",
+      "bytes": 7170642
+    },
+    "serde_json": {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+      "sha256": "84310351565ad0603fada8083a9809c8b5390f290897e3b920f4c8d548689532",
+      "bytes": 2069500
+    }
+  },
+  "api_source": {
+    "path": "C:\\Users\\there\\.cargo\\registry\\src\\index.crates.io-1949cf8c6b5b557f\\cudarc-0.19.7\\src\\driver\\safe\\core.rs",
+    "sha256": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+    "checked_lines": [
+      2278,
+      2283,
+      2412,
+      2422,
+      2427
+    ]
+  },
+  "checks": {
+    "artifact_hashes_exact": 12,
+    "reference_hashes_exact": 11,
+    "dependency_rlib_hashes_exact": 2,
+    "protected_checkout_complete_map_exact": 162,
+    "python_ast_parse_only": [
+      "run.py",
+      "runner-primitives-source.py"
+    ],
+    "source_byte_reverse_exact": true,
+    "source_fnv_and_length_exact": true,
+    "execution_outputs_absent_at_review": [
+      "execution-started.json",
+      "probe.exe",
+      "report.json",
+      "baseline.ptx",
+      "candidate.ptx",
+      "failure.json"
+    ],
+    "scan_geometry": "At physical256, scan_threads=128 gives exactly the accepted physical128 chunk=ceil(m_o/128), lo_k and hi_k for lanes0..127. Each lane retains +0 accumulation and ascending reach additions, writes chunk_sum[tid+1], then later reads the same base and updates the same ascending prefix indices.",
+    "full_recurrence_and_empty_case": "All128 chunk writes occur, including empty chunks. Lane0 sets chunk_sum[0]=+0 and performs every original t=1..128 compound addition, including the unused tail. For m_o=0 every local loop is empty but all128 totals and recurrence steps remain; total selects+0 without reading prefix.",
+    "barriers_and_upper_lanes": "Every existing __syncthreads is unchanged and outside both new lane guards. The only early return is CTA-uniform b>=count. Upper128 lanes neither write nor read scan state; the unchanged257-float static array is sufficient. Full staging/zeroing and scan publication barriers remain before consumers.",
+    "independent_physical_work": "Original ro_sh/card-position staging, sorted reach gather, CFV zeroing and per-hand output retain their physical blockDim strides. Each index has one writer, zeroing completes before output, and each output hand retains its own ordered card loops and original float expressions. Valid widths1..255 retain their original scan geometry;256 intentionally uses128.",
+    "scope_and_abi": "Replacing exactly the candidate scan snippet with the original recovers all accepted CUDA bytes. Thus the up_show signature, eight other entries and all outside-scan source are unchanged. No host, evaluator, launch activation, memory-layout, arithmetic-expression or allocation edits are present.",
+    "host_only_integer_check": "Independently checked all m_o=0..1326:128 scan chunks exactly cover the sorted range without overlap, and physical256 independent loops exactly cover their index ranges. This is bounds/coverage evidence, not floating-point execution.",
+    "resource_shapes": "6300,5060,21808,26520 bytes equal16*max_sorted_opponent_hands+4*nh_o for the four declared shapes. Baseline occupancy uses128, candidate256; each passes the same per-shape dynamic shared bytes, and warps=blocks*(threads/32). Conservative1326 is explicitly not a measured primary fixture.",
+    "resource_api": "Pinned cudarc API accepts u32 block_size and usize dynamic_smem_size, returns u32 occupancy blocks; shared/local/max_threads attributes return i32. The probe uses those types consistently and computes total shared in i64.",
+    "probe_scope": "One baseline and one candidate compilation in one context with architecture-only production NVRTC options. Eight resource rows plus device/completion. No kernel-launch, solver, stream or device-arena API; queries only up_show attributes and theoretical occupancy.",
+    "runner_scope": "One-shot outputs and source/dependency/reference pins; D049 terminal rejection and D047 source verdict required; exact162 source map under shared GPU lock, readonly live-active refusal,51GiB free-space requirement, hidden owned children,600s bounds, cleanup before lock release and preserved raw logs/complete PTX/failures.",
+    "prospective_gates": "Exactly nine matching PTX entry names, unchanged up_show signature and eight other entry bodies required. Capacity requires requested threads/static+dynamic shared to fit and positive residency for every row. Registers/local bytes/blocks/warps are reported tradeoffs only. Actual source/PTX scan/guard/float-dependency inspection remains mandatory; the report keeps source_ptx_prerequisite_pass null and eligible_for_native_candidate false.",
+    "later_host_obligation": "Both evaluation and training up_show launch sites are documented for a later authorized256-thread candidate; no host change is implemented or claimed in this resource diagnostic."
+  },
+  "limits": [
+    "Source/prospective-script review only. Reviewer executed no rustc, NVRTC, native probe, kernel or solver and made no checkout/status changes.",
+    "Compilation, measured resources and generated PTX remain pending. Source operation order does not by itself prove compiled numeric equality.",
+    "Before a later native candidate, require the declared independent scan/PTX evidence and separate actual baseline128/candidate256 complete-up_show differential. Existing raw/compressed/F32/evaluation/lock/resume and complete-cycle qualification remain necessary.",
+    "No resource non-regression performance gate, native acceptance, speed claim, family/solve share claim or deployment change."
+  ],
+  "capacity_prerequisite_pass": null,
+  "source_ptx_prerequisite_pass": null,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "deployment_changed": false,
+  "reviewer_executions": {
+    "compiler": 0,
+    "native_probe": 0,
+    "kernel": 0,
+    "solver": 0,
+    "checkout_edits": 0,
+    "status_edits": 0
+  }
+}

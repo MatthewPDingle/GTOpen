@@ -1,0 +1,201 @@
+{
+  "at": "2026-10-17T07:43:50.966030+00:00",
+  "scope": "CPU work-list nonempty patterns only. Same accepted solver launch code and fixed200iteration/10check trajectory imply unchanged kernel graph node counts. Grid dimensions/metadata/transfer counts and durations may differ.",
+  "input_metadata": [
+    {
+      "case": 3,
+      "board": "Ks7h2d",
+      "sha256": "9198d6ae50b943f209d918042b11baccf629d5f7a490eb14d424102e873641b6",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-03.bin"
+    },
+    {
+      "case": 7,
+      "board": "Ks7s2d",
+      "sha256": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-07.bin"
+    }
+  ],
+  "patterns": [
+    {
+      "num_levels": 14,
+      "action_spans": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "chance_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false
+      ],
+      "chance_node_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false
+      ],
+      "fold_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "show_spans": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    },
+    {
+      "num_levels": 14,
+      "action_spans": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false
+      ],
+      "chance_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false
+      ],
+      "chance_node_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false
+      ],
+      "fold_spans": [
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "show_spans": [
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ]
+    }
+  ],
+  "patterns_equal": true,
+  "retained_rainbow_graph_kernel_nodes": [
+    63,
+    63,
+    103
+  ],
+  "expected_two_tone_graph_kernel_nodes_sorted": [
+    63,
+    63,
+    103
+  ],
+  "expected_kernel_records": 26230,
+  "formula": "sum over3graphs: kernel_nodes*(captured replays+1first eager invocation). Training2*63*200, evaluation103*10.",
+  "retained_profile_report_sha256": "3bfc34f688e2cc2976d923421fb60711729c170e9b4d66484612f53a3700dc08",
+  "performance_measured": false
+}

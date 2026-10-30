@@ -1,0 +1,131 @@
+--- crates/solver/src/gpu/mod.rs
++++ crates/solver/src/gpu/mod.rs
+@@ -205,29 +205,41 @@
+             return Err("GPU solver supports dcfr/cfr+ only".into());
+         }
+ 
+-        let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
+-        // F32 stores already support cheap direct DMA. Prefer that path if it
+-        // fits, avoiding inactive host snapshots on warm full-precision solves.
+-        // Compressed stores benefit from packing and parallel readback anyway;
+-        // a tight F32 budget can use the same exact compact representation.
+-        let full_needed = plan.staging_bytes()
+-            + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+-            + 512 * 1024 * 1024;
+-        if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+-            plan.use_full_action_arenas(&solver.spot);
+-        }
+-        let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
+-        let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
+-        if needed > budget_bytes {
+-            return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
+-                needed as f64 / 1e6, budget_bytes as f64 / 1e6));
+-        }
+-        let ctx = CudaContext::new(0).map_err(e)?;
+-        let stream = ctx.new_stream().map_err(e)?;
+-        // Everything in a GpuSolver runs on this one stream, so cudarc's
+-        // cross-stream event tracking is unnecessary — and the events it
+-        // records would invalidate CUDA graph capture.
+-        unsafe { ctx.disable_event_tracking() };
++        let (plan, (ctx, stream)) = coordinate_initialization(
++            solver.spot.tree.nodes.len() >= 65_536,
++            || {
++            let mut plan = GpuPlan::build(&solver.spot, solver.use_isomorphism);
++            // F32 stores already support cheap direct DMA. Prefer that path if it
++            // fits, avoiding inactive host snapshots on warm full-precision solves.
++            // Compressed stores benefit from packing and parallel readback anyway;
++            // a tight F32 budget can use the same exact compact representation.
++            let full_needed = plan.staging_bytes()
++                + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
++                + 512 * 1024 * 1024;
++            if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
++                plan.use_full_action_arenas(&solver.spot);
++            }
++            let arena_bytes = (plan.arena_elements[0] + plan.arena_elements[1]) as u64 * 8;
++            let needed = plan.staging_bytes() + arena_bytes + 512 * 1024 * 1024;
++            if needed > budget_bytes {
++                return Err(format!("spot needs ~{:.0} MB VRAM (budget {:.0} MB)",
++                    needed as f64 / 1e6, budget_bytes as f64 / 1e6));
++            }
++                Ok(plan)
++            },
++            || {
++            let ctx = CudaContext::new(0).map_err(e)?;
++            let stream = ctx.new_stream().map_err(e)?;
++            // Everything in a GpuSolver runs on this one stream, so cudarc's
++            // cross-stream event tracking is unnecessary — and the events it
++            // records would invalidate CUDA graph capture.
++            unsafe { ctx.disable_event_tracking() };
++
++                Ok((ctx, stream))
++            },
++        )?;
++        // The context/stream may have been created on the scoped worker.
++        ctx.bind_to_thread().map_err(e)?;
+ 
+         // Compile the PTX for the device we actually found: hardcoded
+         // compute_86 refuses to load on an A100 (8.0) and makes newer cards
+@@ -1112,6 +1124,19 @@
+ }
+ 
+ /// Per-node offset (-1 = unlocked) plus concatenated locked sigmas.
++/// Join the original CPU plan/budget work and CUDA ownership setup before
++/// returning either result. Budget errors keep their original priority.
++/// Small trees keep the original serial path; OS spawn failure falls back.
++fn coordinate_initialization<P,G:Send,F:FnOnce()->Result<P,String>,C:Fn()->Result<G,String>+Sync>(eligible:bool,plan:F,create:C)->Result<(P,G),String>{
++ if !eligible{let p=plan()?;return Ok((p,create()?));}
++ std::thread::scope(|scope|{
++  let worker=std::thread::Builder::new().name("gtopen-cuda-init".into()).spawn_scoped(scope,||create());
++  let p=plan();let result=worker.ok().map(|h|h.join());
++  let p=p?;
++  let gpu=match result{Some(Ok(v))=>v?,Some(Err(payload))=>std::panic::resume_unwind(payload),None=>create()?};
++  Ok((p,gpu))
++ })
++}
+ fn build_lock_table(solver: &Solver) -> (Vec<i64>, Vec<f32>) {
+     let n = solver.spot.tree.nodes.len();
+     let mut off = vec![-1i64; n];
+@@ -1155,6 +1180,43 @@
+ mod tests {
+     use super::*;
+     use crate::{parse_sizes, LockMode, PathStep, Spot, SpotConfig, StreetSizing, TreeConfig};
++
++    #[test]
++    fn context_plan_initialization_error_priority_and_cleanup() {
++        use std::sync::atomic::{AtomicUsize, Ordering};
++        struct Mock(Arc<AtomicUsize>);
++        impl Drop for Mock { fn drop(&mut self) { self.0.fetch_add(1, Ordering::SeqCst); } }
++        let mut controls = 0;
++ for eligible in[false,true]{for planmode in[0,1,2]{for gpumode in[0,1,2]{
++  let creates=Arc::new(AtomicUsize::new(0));let drops=Arc::new(AtomicUsize::new(0));let c=creates.clone();let d=drops.clone();
++  let outcome=std::panic::catch_unwind(std::panic::AssertUnwindSafe(||coordinate_initialization(eligible,||match planmode{0=>Ok(7usize),1=>Err("budget".to_string()),_=>panic!("plan mock")},||{c.fetch_add(1,Ordering::SeqCst);match gpumode{0=>Ok(Mock(d.clone())),1=>Err("cuda mock".to_string()),_=>panic!("cuda mock")}})));
++  let expected_creates=if eligible||planmode==0{1}else{0};assert_eq!(creates.load(Ordering::SeqCst),expected_creates);
++  match(planmode,gpumode,outcome){(1,_,Ok(Err(e)))=>assert_eq!(e,"budget"),(2,_,Err(_))=>{},(0,0,Ok(Ok((p,g))))=>{assert_eq!(p,7);drop(g);},(0,1,Ok(Err(e)))=>assert_eq!(e,"cuda mock"),(0,2,Err(_))=>{},_=>panic!("incorrect coordinator outcome")}
++  assert_eq!(drops.load(Ordering::SeqCst),if gpumode==0{expected_creates}else{0});controls+=1;
++ }}}
++        assert_eq!(controls, 18);
++    }
++
++    #[test]
++    fn context_worker_stream_roundtrip_with_active_primary_owner() {
++        // Match the existing CUDA-test convention when CUDA is unavailable.
++        let Ok(primary) = CudaContext::new(0) else { return; };
++        for eligible in [false, true] {
++            let (_, (ctx, stream)) = coordinate_initialization(eligible, || Ok(()), || {
++                let ctx = CudaContext::new(0).map_err(e)?;
++                let stream = ctx.new_stream().map_err(e)?;
++                unsafe { ctx.disable_event_tracking() };
++                Ok((ctx, stream))
++            }).unwrap();
++            ctx.bind_to_thread().unwrap();
++            assert!(*ctx == *primary);
++            let input: Vec<u32> = (0..257u32).map(|i| i.wrapping_mul(0x9e37_79b9) ^ 0x7fc0_1234).collect();
++            let device = stream.clone_htod(&input).unwrap();
++            let output = stream.clone_dtoh(&device).unwrap();
++            stream.synchronize().unwrap();
++            assert_eq!(input, output);
++        }
++    }
+ 
+     fn reach_reuse_solver(storage: crate::store::Storage, algo: Algorithm, compact: bool, menu: &str) -> Solver {
+         let sizing = || StreetSizing { bet: parse_sizes(menu).unwrap(), raise: vec![], donk: vec![] };

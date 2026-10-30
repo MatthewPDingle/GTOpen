@@ -1,0 +1,85 @@
+{
+  "id": "D037-resource",
+  "status": "prospective_frozen_before_execution",
+  "candidate_manifest_sha256": "0be733fa538bc03b97782f520b4eeb48a3dc10914882f977c90e1fc7ea2a7946",
+  "resource_shapes": [
+    {
+      "id": "rainbow_p0",
+      "nh_o": 319,
+      "m_max": 314,
+      "baseline_dynamic_bytes": 3788,
+      "candidate_dynamic_bytes": 6300
+    },
+    {
+      "id": "rainbow_p1",
+      "nh_o": 257,
+      "m_max": 252,
+      "baseline_dynamic_bytes": 3044,
+      "candidate_dynamic_bytes": 5060
+    },
+    {
+      "id": "river_p0",
+      "nh_o": 280,
+      "m_max": 280,
+      "baseline_dynamic_bytes": 3360,
+      "candidate_dynamic_bytes": 5600
+    },
+    {
+      "id": "river_p1",
+      "nh_o": 233,
+      "m_max": 233,
+      "baseline_dynamic_bytes": 2796,
+      "candidate_dynamic_bytes": 4660
+    },
+    {
+      "id": "full_hand_upper_bound",
+      "nh_o": 1326,
+      "m_max": 1326,
+      "baseline_dynamic_bytes": 15912,
+      "candidate_dynamic_bytes": 26520
+    },
+    {
+      "id": "empty_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 0,
+      "baseline_dynamic_bytes": 1276,
+      "candidate_dynamic_bytes": 1276
+    },
+    {
+      "id": "single_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 1,
+      "baseline_dynamic_bytes": 1284,
+      "candidate_dynamic_bytes": 1292
+    }
+  ],
+  "resource_rows": 14,
+  "same_context": true,
+  "expected_device": "NVIDIA GeForce RTX 5090",
+  "architecture": "compute_120",
+  "compile_options": "arch only; all other NVRTC defaults matching production",
+  "block_threads": 128,
+  "device_attributes": [
+    "default shared/block",
+    "opt-in shared/block",
+    "shared/SM",
+    "threads/block"
+  ],
+  "function_attributes": [
+    "registers",
+    "local bytes/thread",
+    "static shared bytes",
+    "max threads/block",
+    "theoretical occupancy"
+  ],
+  "default_shared_opt_in_mutations": 0,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "numerical_validation": "not executed",
+  "performance_measurement": false,
+  "candidate_accepted": false,
+  "per_stage_timeout_seconds": 600,
+  "heartbeat_seconds": 10,
+  "preserve_failure_no_overwrite": true,
+  "root_executes_only_after_review": true
+}

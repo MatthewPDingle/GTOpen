@@ -1,0 +1,17 @@
+{
+  "id": "E086",
+  "at": "2026-10-18T10:16:15.072351+00:00",
+  "owned": {
+    "crates/solver/src/gpu/kernels.cu": {
+      "base": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E086-source\\baseline.cu",
+      "candidate": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E086-source\\candidate.cu"
+    }
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/kernels.cu": "3b4121cf7835d9b467d40b18c9d9690115fc6e1d79a1db48b03c052be7372ee0"
+  },
+  "scope": "Only up_chance card-blocker predicate uses explicit bfe.u64 at positioncc_card[t],length1. Same mask/card inputs, branch decision for supported cards, original ordered floating accumulations, permutation, payout, buffers, host/ABI/launch/graph, quality and save behavior.",
+  "source_activated": false,
+  "candidate_accepted": false,
+  "previous_accepted": "E080"
+}

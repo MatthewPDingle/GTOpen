@@ -1,0 +1,3639 @@
+{
+  "id": "E070-resource",
+  "at": "2026-10-17T22:40:48.035951+00:00",
+  "status": "pass_resource_and_encoding_prerequisites",
+  "protocol_sha256": "fefbf83108af747226ad0052bd4cd50c755f34eb4bc3aeba77142f4d2d26bbca",
+  "gates": {
+    "compute_120:other5_entries_exact": true,
+    "compute_120:exact4_changed_entries": true,
+    "compute_120:down_action:ABI_transform": true,
+    "compute_120:down_action:narrow_metadata_load_emitted": true,
+    "compute_120:up_fold:ABI_transform": true,
+    "compute_120:up_fold:narrow_metadata_load_emitted": true,
+    "compute_120:up_action:ABI_transform": true,
+    "compute_120:up_action:narrow_metadata_load_emitted": true,
+    "compute_120:up_action_eval:ABI_transform": true,
+    "compute_120:up_action_eval:narrow_metadata_load_emitted": true,
+    "compute_75:other5_entries_exact": true,
+    "compute_75:exact4_changed_entries": true,
+    "compute_75:down_action:ABI_transform": true,
+    "compute_75:down_action:narrow_metadata_load_emitted": true,
+    "compute_75:up_fold:ABI_transform": true,
+    "compute_75:up_fold:narrow_metadata_load_emitted": true,
+    "compute_75:up_action:ABI_transform": true,
+    "compute_75:up_action:narrow_metadata_load_emitted": true,
+    "compute_75:up_action_eval:ABI_transform": true,
+    "compute_75:up_action_eval:narrow_metadata_load_emitted": true,
+    "down_action:local_bytes_not_increased": true,
+    "down_action:dynamic_shared_not_increased": true,
+    "down_action:max_threads_not_reduced": true,
+    "down_action:supports_all_fixed_thread_controls": true,
+    "down_action:both_fit_default_limits": true,
+    "down_action:positive_fixed_driver_occupancy": true,
+    "down_action:same_dynamic_bytes": true,
+    "up_fold:local_bytes_not_increased": true,
+    "up_fold:dynamic_shared_not_increased": true,
+    "up_fold:max_threads_not_reduced": true,
+    "up_fold:supports_all_fixed_thread_controls": true,
+    "up_fold:both_fit_default_limits": true,
+    "up_fold:positive_fixed_driver_occupancy": true,
+    "up_fold:same_dynamic_bytes": true,
+    "up_action:local_bytes_not_increased": true,
+    "up_action:dynamic_shared_not_increased": true,
+    "up_action:max_threads_not_reduced": true,
+    "up_action:supports_all_fixed_thread_controls": true,
+    "up_action:both_fit_default_limits": true,
+    "up_action:positive_fixed_driver_occupancy": true,
+    "up_action:same_dynamic_bytes": true,
+    "up_action_eval:local_bytes_not_increased": true,
+    "up_action_eval:dynamic_shared_not_increased": true,
+    "up_action_eval:max_threads_not_reduced": true,
+    "up_action_eval:supports_all_fixed_thread_controls": true,
+    "up_action_eval:both_fit_default_limits": true,
+    "up_action_eval:positive_fixed_driver_occupancy": true,
+    "up_action_eval:same_dynamic_bytes": true
+  },
+  "details": {
+    "down_action": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "down_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "down_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 32,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            20
+          ],
+          [
+            128,
+            10
+          ],
+          [
+            256,
+            5
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 46,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      },
+      "feasibility": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "reject_resource_prefilter",
+          "gates": {
+            "allocated_registers_not_increased": false,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": false
+          },
+          "nominal_registers": [
+            40,
+            46
+          ],
+          "allocated_registers_per_warp": [
+            1280,
+            1536
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 2560,
+              "candidate": 3072
+            },
+            {
+              "threads": 128,
+              "baseline": 5120,
+              "candidate": 6144
+            },
+            {
+              "threads": 256,
+              "baseline": 10240,
+              "candidate": 12288
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [
+          "allocated_registers_not_increased",
+          "driver_occupancy_not_reduced"
+        ],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    },
+    "up_fold": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5304,
+        "fits_default_limits": true,
+        "kernel": "up_fold",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            13
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 39,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 1232,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 5304,
+        "fits_default_limits": true,
+        "kernel": "up_fold",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            13
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 1232,
+        "variant": "candidate"
+      },
+      "feasibility": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "admit_numerical_controls",
+          "gates": {
+            "allocated_registers_not_increased": true,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": true
+          },
+          "nominal_registers": [
+            39,
+            40
+          ],
+          "allocated_registers_per_warp": [
+            1280,
+            1280
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 2560,
+              "candidate": 2560
+            },
+            {
+              "threads": 128,
+              "baseline": 5120,
+              "candidate": 5120
+            },
+            {
+              "threads": 256,
+              "baseline": 10240,
+              "candidate": 10240
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    },
+    "up_action": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 62,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 64,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            16
+          ],
+          [
+            128,
+            8
+          ],
+          [
+            256,
+            4
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 62,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      },
+      "feasibility": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "admit_numerical_controls",
+          "gates": {
+            "allocated_registers_not_increased": true,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": true
+          },
+          "nominal_registers": [
+            62,
+            62
+          ],
+          "allocated_registers_per_warp": [
+            2048,
+            2048
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 4096,
+              "candidate": 4096
+            },
+            {
+              "threads": 128,
+              "baseline": 8192,
+              "candidate": 8192
+            },
+            {
+              "threads": 256,
+              "baseline": 16384,
+              "candidate": 16384
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    },
+    "up_action_eval": {
+      "baseline": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action_eval",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "baseline"
+      },
+      "candidate": {
+        "actual_block_threads": 128,
+        "dynamic_shared_bytes": 0,
+        "fits_default_limits": true,
+        "kernel": "up_action_eval",
+        "kernel_launches": 0,
+        "local_bytes_per_thread": 0,
+        "max_threads": 1024,
+        "occupancy_by_threads": [
+          [
+            64,
+            24
+          ],
+          [
+            128,
+            12
+          ],
+          [
+            256,
+            6
+          ]
+        ],
+        "performance_measurement": false,
+        "registers": 40,
+        "shape": "same128threads_max1326hands",
+        "stage": "resource",
+        "static_shared_bytes": 0,
+        "variant": "candidate"
+      },
+      "feasibility": {
+        "status": "admit_numerical_controls",
+        "gates": {
+          "local_bytes_not_increased": true,
+          "dynamic_shared_not_increased": true,
+          "max_threads_not_reduced": true,
+          "supports_all_fixed_thread_controls": true,
+          "both_fit_default_limits": true,
+          "positive_fixed_driver_occupancy": true
+        },
+        "prior_strict_allocation_diagnostic": {
+          "status": "admit_numerical_controls",
+          "gates": {
+            "allocated_registers_not_increased": true,
+            "local_bytes_not_increased": true,
+            "static_shared_not_increased": true,
+            "dynamic_shared_not_increased": true,
+            "max_threads_not_reduced": true,
+            "both_fit_default_limits": true,
+            "driver_occupancy_not_reduced": true
+          },
+          "nominal_registers": [
+            40,
+            40
+          ],
+          "allocated_registers_per_warp": [
+            1280,
+            1280
+          ],
+          "allocated_registers_per_block": [
+            {
+              "threads": 64,
+              "baseline": 2560,
+              "candidate": 2560
+            },
+            {
+              "threads": 128,
+              "baseline": 5120,
+              "candidate": 5120
+            },
+            {
+              "threads": 256,
+              "baseline": 10240,
+              "candidate": 10240
+            }
+          ],
+          "performance_qualified": false,
+          "candidate_accepted": false
+        },
+        "resource_warnings": [],
+        "performance_qualified": false,
+        "candidate_accepted": false
+      }
+    }
+  },
+  "abi": {
+    "compute_120:down_action": {
+      "baseline": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ],
+        [
+          "u32",
+          "",
+          "17"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "regrets1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "float*"
+          },
+          {
+            "name": "reach1",
+            "type": "float*"
+          },
+          {
+            "name": "nh0",
+            "type": "int"
+          },
+          {
+            "name": "nh1",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "regrets1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "float*"
+          },
+          {
+            "name": "reach1",
+            "type": "float*"
+          },
+          {
+            "name": "nh0",
+            "type": "int"
+          },
+          {
+            "name": "nh1",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_120:up_fold": {
+      "baseline": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "15"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "16"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ],
+        [
+          "u32",
+          "",
+          "20"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "15"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "16"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ],
+        [
+          "u32",
+          "",
+          "20"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_twin",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "node_tlose",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "pc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "pc2",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_off",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_idx",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "same_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_o",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_twin",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "node_tlose",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "pc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "pc2",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_off",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_idx",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "same_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_o",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_120:up_action": {
+      "baseline": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "15"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "16"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "15"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "16"
+        ],
+        [
+          "u32",
+          "",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets_p",
+            "type": "float*"
+          },
+          {
+            "name": "strat_p",
+            "type": "float*"
+          },
+          {
+            "name": "rsrc_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach_p_buf",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "disc",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets_p",
+            "type": "float*"
+          },
+          {
+            "name": "strat_p",
+            "type": "float*"
+          },
+          {
+            "name": "rsrc_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach_p_buf",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "disc",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_120:up_action_eval": {
+      "baseline": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u32",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          " .ptr .align 1",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u32",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "5"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "6"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "7"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "8"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "9"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "10"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "11"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "12"
+        ],
+        [
+          "u64",
+          " .ptr .align 1",
+          "13"
+        ],
+        [
+          "u32",
+          "",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "mode",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "strat_p",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "mode",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "strat_p",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_75:down_action": {
+      "baseline": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u64",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u64",
+          "",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ],
+        [
+          "u32",
+          "",
+          "17"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u64",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "regrets1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "float*"
+          },
+          {
+            "name": "reach1",
+            "type": "float*"
+          },
+          {
+            "name": "nh0",
+            "type": "int"
+          },
+          {
+            "name": "nh1",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "regrets1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "float*"
+          },
+          {
+            "name": "reach1",
+            "type": "float*"
+          },
+          {
+            "name": "nh0",
+            "type": "int"
+          },
+          {
+            "name": "nh1",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_75:up_fold": {
+      "baseline": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u64",
+          "",
+          "15"
+        ],
+        [
+          "u64",
+          "",
+          "16"
+        ],
+        [
+          "u64",
+          "",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ],
+        [
+          "u32",
+          "",
+          "20"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u64",
+          "",
+          "15"
+        ],
+        [
+          "u64",
+          "",
+          "16"
+        ],
+        [
+          "u64",
+          "",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ],
+        [
+          "u32",
+          "",
+          "20"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_twin",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "node_tlose",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "pc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "pc2",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_off",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_idx",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "same_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_o",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_twin",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "node_tlose",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "rsrc0",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "rsrc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach0",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "reach1",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "pc1",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "pc2",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_off",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "card_idx",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "same_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_o",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_75:up_action": {
+      "baseline": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u64",
+          "",
+          "15"
+        ],
+        [
+          "u64",
+          "",
+          "16"
+        ],
+        [
+          "u64",
+          "",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ],
+        [
+          "u32",
+          "",
+          "19"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u64",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u64",
+          "",
+          "15"
+        ],
+        [
+          "u64",
+          "",
+          "16"
+        ],
+        [
+          "u32",
+          "",
+          "17"
+        ],
+        [
+          "u32",
+          "",
+          "18"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets_p",
+            "type": "float*"
+          },
+          {
+            "name": "strat_p",
+            "type": "float*"
+          },
+          {
+            "name": "rsrc_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach_p_buf",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "disc",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "regrets_p",
+            "type": "float*"
+          },
+          {
+            "name": "strat_p",
+            "type": "float*"
+          },
+          {
+            "name": "rsrc_p",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "reach_p_buf",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "disc",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    },
+    "compute_75:up_action_eval": {
+      "baseline": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u32",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u64",
+          "",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ],
+        [
+          "u32",
+          "",
+          "16"
+        ]
+      ],
+      "candidate": [
+        [
+          "u64",
+          "",
+          "0"
+        ],
+        [
+          "u32",
+          "",
+          "1"
+        ],
+        [
+          "u32",
+          "",
+          "2"
+        ],
+        [
+          "u32",
+          "",
+          "3"
+        ],
+        [
+          "u32",
+          "",
+          "4"
+        ],
+        [
+          "u64",
+          "",
+          "5"
+        ],
+        [
+          "u64",
+          "",
+          "6"
+        ],
+        [
+          "u64",
+          "",
+          "7"
+        ],
+        [
+          "u64",
+          "",
+          "8"
+        ],
+        [
+          "u64",
+          "",
+          "9"
+        ],
+        [
+          "u64",
+          "",
+          "10"
+        ],
+        [
+          "u64",
+          "",
+          "11"
+        ],
+        [
+          "u64",
+          "",
+          "12"
+        ],
+        [
+          "u64",
+          "",
+          "13"
+        ],
+        [
+          "u32",
+          "",
+          "14"
+        ],
+        [
+          "u32",
+          "",
+          "15"
+        ]
+      ],
+      "source_parameter_schema": {
+        "baseline": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "mode",
+            "type": "int"
+          },
+          {
+            "name": "node_player",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_na",
+            "type": "const int* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "strat_p",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ],
+        "candidate": [
+          {
+            "name": "nodes",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "start",
+            "type": "int"
+          },
+          {
+            "name": "count",
+            "type": "int"
+          },
+          {
+            "name": "p",
+            "type": "int"
+          },
+          {
+            "name": "mode",
+            "type": "int"
+          },
+          {
+            "name": "node_attrs",
+            "type": "const unsigned short* __restrict__"
+          },
+          {
+            "name": "node_data_off",
+            "type": "const u64* __restrict__"
+          },
+          {
+            "name": "node_children_start",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "children",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "strat_p",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "lock_off",
+            "type": "const long long* __restrict__"
+          },
+          {
+            "name": "lock_sigma",
+            "type": "const float* __restrict__"
+          },
+          {
+            "name": "cfv_slot",
+            "type": "const u32* __restrict__"
+          },
+          {
+            "name": "cfv",
+            "type": "float*"
+          },
+          {
+            "name": "nh_p",
+            "type": "int"
+          },
+          {
+            "name": "nh_max",
+            "type": "int"
+          }
+        ]
+      }
+    }
+  },
+  "emitted_mechanism": {
+    "compute_120:down_action": {
+      "candidate_PTX_narrow_global_load_sites": 5,
+      "driver_SASS_inspected": false
+    },
+    "compute_120:up_fold": {
+      "candidate_PTX_narrow_global_load_sites": 1,
+      "driver_SASS_inspected": false
+    },
+    "compute_120:up_action": {
+      "candidate_PTX_narrow_global_load_sites": 5,
+      "driver_SASS_inspected": false
+    },
+    "compute_120:up_action_eval": {
+      "candidate_PTX_narrow_global_load_sites": 1,
+      "driver_SASS_inspected": false
+    },
+    "compute_75:down_action": {
+      "candidate_PTX_narrow_global_load_sites": 5,
+      "driver_SASS_inspected": false
+    },
+    "compute_75:up_fold": {
+      "candidate_PTX_narrow_global_load_sites": 1,
+      "driver_SASS_inspected": false
+    },
+    "compute_75:up_action": {
+      "candidate_PTX_narrow_global_load_sites": 5,
+      "driver_SASS_inspected": false
+    },
+    "compute_75:up_action_eval": {
+      "candidate_PTX_narrow_global_load_sites": 1,
+      "driver_SASS_inspected": false
+    }
+  },
+  "raw_markers": [
+    {
+      "architecture": "compute_120",
+      "block_limit": 1024,
+      "device": "NVIDIA GeForce RTX 5090",
+      "kernel_launches": 0,
+      "shared_limit": 49152,
+      "stage": "device"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5304,
+      "fits_default_limits": true,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 39,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "baseline"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "down_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 32,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          20
+        ],
+        [
+          128,
+          10
+        ],
+        [
+          256,
+          5
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 46,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 5304,
+      "fits_default_limits": true,
+      "kernel": "up_fold",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          13
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 1232,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 64,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          16
+        ],
+        [
+          128,
+          8
+        ],
+        [
+          256,
+          4
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 62,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "actual_block_threads": 128,
+      "dynamic_shared_bytes": 0,
+      "fits_default_limits": true,
+      "kernel": "up_action_eval",
+      "kernel_launches": 0,
+      "local_bytes_per_thread": 0,
+      "max_threads": 1024,
+      "occupancy_by_threads": [
+        [
+          64,
+          24
+        ],
+        [
+          128,
+          12
+        ],
+        [
+          256,
+          6
+        ]
+      ],
+      "performance_measurement": false,
+      "registers": 40,
+      "shape": "same128threads_max1326hands",
+      "stage": "resource",
+      "static_shared_bytes": 0,
+      "variant": "candidate"
+    },
+    {
+      "candidate_accepted": false,
+      "compile_variants": 4,
+      "kernel_launches": 0,
+      "performance_measurement": false,
+      "resource_rows": 8,
+      "solver_executions": 0,
+      "stage": "complete"
+    }
+  ],
+  "ptx_sha256": {
+    "baseline-compute_120": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+    "baseline-compute_75": "21f11fbb05bd51236ef5efaddc87fcd506ce61eeff6d9d8fa19406b5ef27eb70",
+    "candidate-compute_120": "8b17cfd0ea4831624f9a9c7b6fcbb1c61bff0aa061ddcf9897123b9b329f8718",
+    "candidate-compute_75": "34c711b7619d41635791ea430c25e39f443c5e807cf10a44b48ee8b428a62dc9"
+  },
+  "entry_body_sha256": {
+    "baseline-compute_120": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "a20ea968297e0b3f0cc4f814df2e6762d1f4d1419a16b2f21ffc14061bcc40d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "e9643284959c7c27c6926c75ce1a0a42df5f30f305224aa4f50e8910a2d56834",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "2f2032804e2ac0d3ac54f9d9823ec94597ccd226a8dbacc00f9d0d3f253be472",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "7c62aab1f8419bf26eb604b04a3a9a886fa592161d21ec64cad70cc0a606bb06"
+    },
+    "baseline-compute_75": {
+      "copy_root": "9b5c147d0813ddc2c884dde0d71d69814e17c358f80342812fdfc4e824dc8288",
+      "down_action": "1ea29f7ce9cb7d24fd50d538f3009e50678be50d5da78ad1c2fedef8d5d007d5",
+      "down_chance": "19311a8c0889b895ad01a020e1257f48cd3bec86fa474df7fffa14ca24e4df41",
+      "up_fold": "d69e25c1be0cb07b33680eaa7de95948132eb7e5bfa1c63d664dc55e53c24726",
+      "up_show": "77dc2bd1c113913149254ebeff5acd43e2ed13087e145bb316bfd8d0afb3abf6",
+      "up_chance": "77a1249fc563c777cbdab6dab016a0f7859ab7eae36f4d405d4b9a5595b5985a",
+      "up_action": "d278da60cc05f545b79df59e33b59fcd1454deac9f4558cbcc007fce7aaec07c",
+      "copy_span": "5f18cd7c592957bd8da157619569ffb6786bced307cb2a94afd2c9fd9bfc1c6c",
+      "up_action_eval": "75c57558af5840d26f69f4e3689e4702144b698db3a6b0b6071a4a13b7769407"
+    },
+    "candidate-compute_120": {
+      "copy_root": "49bf6a6392c8e3097a231541fa5dfbe4858cbeb45a6c3b11e23f37f2b3dbc2fc",
+      "down_action": "b7ff4d1527f1cddbd2d4f41f301d4a96f8e0bd7fafe42f3a38371a7b6ab745d5",
+      "down_chance": "a3c8a17f35daeafb155fa0b28f21c575cc02531dc738d6f9a74a9311afb236ea",
+      "up_fold": "4843fd8479e16e27fd6aac3539df1c92ac64085a6ffb39f2bac921446f931488",
+      "up_show": "4720bdd17efe4256cc34863ac49d277cf78d132fdd4af50a67784a986d6dd8fc",
+      "up_chance": "03fd5135c2382c67afc7e1ce54dca4e98176c459a1ee9edbd4a67851c5de965b",
+      "up_action": "06c4735d7c336374017a698b32a4046498fdd3beb9c8f3af39fbbe2aa5939cd2",
+      "copy_span": "1b1ca58d8e2d4087e626c459751fa15707c6566ff706fe02e84db2d0d5737a76",
+      "up_action_eval": "5acde63facbf3bb9d015179b175ff9fb6f1709d2e2bdf24b8393ad1decc29f4e"
+    },
+    "candidate-compute_75": {
+      "copy_root": "9b5c147d0813ddc2c884dde0d71d69814e17c358f80342812fdfc4e824dc8288",
+      "down_action": "f94b2df098cff3fc824b6bc5fa4a9dd4f67bba47318f9244f0aa4f9e14078299",
+      "down_chance": "19311a8c0889b895ad01a020e1257f48cd3bec86fa474df7fffa14ca24e4df41",
+      "up_fold": "df095e31ae4e76cf6fd9efefa7e3b8e2a771e06eb9444324deb1fbd59e147496",
+      "up_show": "77dc2bd1c113913149254ebeff5acd43e2ed13087e145bb316bfd8d0afb3abf6",
+      "up_chance": "77a1249fc563c777cbdab6dab016a0f7859ab7eae36f4d405d4b9a5595b5985a",
+      "up_action": "bf6938a8292fe68262c1dff5796912e9f354e4626f00fef7bcefe2f1aa293039",
+      "copy_span": "5f18cd7c592957bd8da157619569ffb6786bced307cb2a94afd2c9fd9bfc1c6c",
+      "up_action_eval": "f5711efc255bcd2867fc0d233dbe9a17d14ff59941882e525f1dcb410dc69eb3"
+    }
+  },
+  "binary_sha256": "723cbb4ed94086ba1ce119ff6c5967d44ddd3318e29ce72b3048b578380cb3ab",
+  "stdout_sha256": "f00ba8f3c28e69d66d78987d4065802402c0a428f200a801d05c6a29b68e6d23",
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "host_integration_implemented": false,
+  "accepted_main_live_ptx_unchanged": true,
+  "limits": "Compiler PTX narrow loads and driver attributes/occupancy only. No driver SASS, GPU floating-result equivalence, actual integrated allocation/graph/CPU/peak/capacity or speed qualification. No source activation."
+}

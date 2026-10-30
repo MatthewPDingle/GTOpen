@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-18T05:21:48.004522+00:00",
+  "status": "pass_integer_page_address_model",
+  "page_sizes": [
+    4096,
+    8192,
+    65536
+  ],
+  "offsets": "every two-byte-aligned offset within each page",
+  "lengths": [
+    0,
+    1,
+    2,
+    2047,
+    2048,
+    2049,
+    4095,
+    4096,
+    4097,
+    8192,
+    8193
+  ],
+  "cases": 428032,
+  "checked_page_addresses": 493550,
+  "proof": "Independent expected page-ID set equals computed one-read-per-page set, no duplicate/gap, all typed indices aligned and strictly inside initialized borrowed slice. Checked arithmetic for byte/end setup. Production page size is queried, not this test constant. Model covers declared finite domain, not arbitrary integer proof.",
+  "native_or_compiler_executions": 0
+}

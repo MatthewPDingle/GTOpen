@@ -1,0 +1,20 @@
+{
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 11291.3518,
+    "candidate_full_cycle_ms": 11099.8155,
+    "observed_gain_pct": 1.6963097368022821,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": false,
+    "fixture_median_regression_above_3pct": [],
+    "statistical_significance_established": false
+  },
+  "scope": "Repeated warm-cache compressed-storage complete-cycle screen",
+  "reason": "Rejected: 3 measurements per binary; sum of fixture medians 11291.3518 -> 11099.8155 ms (1.6963% observed gain). Below the registered 2% gate; no reproducible benefit established. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness suites were not run because the performance screen failed. Timing spread is reported; no statistical significance or production deployment is claimed.",
+  "correctness": {
+    "status": "pending",
+    "exact_compressed_screen": "pass",
+    "broader_validation": "not run",
+    "f32_storage": "not run"
+  }
+}

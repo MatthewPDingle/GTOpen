@@ -1,0 +1,36 @@
+{
+  "id": "E048-resource-root-check",
+  "at": "2026-10-17T02:53:52.877979+00:00",
+  "status": "pass_resource_feasibility_only",
+  "checks": 250,
+  "root_cross_check_only": true,
+  "resource_report_sha256": "11d2a50b1f77834360ccea390764c9911cc56e917dbf9023c95804d726419197",
+  "down_registers": [
+    30,
+    28
+  ],
+  "up_registers": [
+    30,
+    30
+  ],
+  "same_occupancy": [
+    [
+      64,
+      24
+    ],
+    [
+      128,
+      12
+    ],
+    [
+      256,
+      6
+    ]
+  ],
+  "exact_changed_abi_and_other7_entries": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "accepted162_main_live_ptx_unchanged": true,
+  "candidate_accepted": false,
+  "limits": "Root source/PTX/raw-marker/receipt verification, not external independent review or numerical/speed qualification."
+}

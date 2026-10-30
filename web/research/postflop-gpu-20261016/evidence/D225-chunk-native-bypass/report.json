@@ -1,0 +1,1669 @@
+{
+  "id": "D225",
+  "at": "2026-10-29T01:16:00.337661+00:00",
+  "status": "pass_static_native_chunk_bypass",
+  "reader_plan_sha256": "f6e261ac7aa4a16581d65dd05c67a3b338ae6055228bba478e0930e9145438d4",
+  "gates": {
+    "baseline:five_barriers": true,
+    "baseline:one_integer_quotient_reciprocal_site": true,
+    "baseline:capture:terminal_zero": true,
+    "baseline:disassemble:terminal_zero": true,
+    "candidate:five_barriers": true,
+    "candidate:one_integer_quotient_reciprocal_site": true,
+    "candidate:capture:terminal_zero": true,
+    "candidate:disassemble:terminal_zero": true,
+    "candidate:witness:0x800": true,
+    "candidate:witness:0x830": true,
+    "candidate:witness:0x840": true,
+    "candidate:witness:0x850": true,
+    "candidate:witness:0x860": true,
+    "candidate:witness:0x870": true,
+    "candidate:witness:0x880": true,
+    "candidate:witness:0x890": true,
+    "candidate:witness:0x8a0": true,
+    "candidate:witness:0x8b0": true,
+    "candidate:witness:0x8c0": true,
+    "candidate:witness:0x8e0": true,
+    "candidate:witness:0x9e0": true,
+    "candidate:witness:0xa00": true,
+    "candidate:witness:0xa10": true,
+    "candidate:nonpower_label_enters_reciprocal_region": true,
+    "candidate:fast_jump_bypasses_reciprocal_to_scan_join": true,
+    "baseline:width_from_same_builtin": true,
+    "baseline:unconditional_reciprocal_in_chunk_region": true,
+    "all_widths:static_bypass_truth_table": true
+  },
+  "witnesses": {
+    "baseline": {
+      "barriers_hex": [
+        "0x540",
+        "0x820",
+        "0xce0",
+        "0x1640",
+        "0x1950"
+      ],
+      "reciprocal_hex": [
+        "0x890"
+      ]
+    },
+    "candidate": {
+      "barriers_hex": [
+        "0x530",
+        "0x810",
+        "0xd40",
+        "0x16a0",
+        "0x19d0"
+      ],
+      "reciprocal_hex": [
+        "0x8e0"
+      ]
+    }
+  },
+  "exact_candidate_instructions": {
+    "0x800": {
+      "expected": "LDCU UR7, c[0x0][0x360]",
+      "actual": "LDCU UR7, c[0x0][0x360]"
+    },
+    "0x830": {
+      "expected": "UIADD3 UR4, UPT, UPT, UR7, -0x1, URZ",
+      "actual": "UIADD3 UR4, UPT, UPT, UR7, -0x1, URZ"
+    },
+    "0x840": {
+      "expected": "ULOP3.LUT UP0, URZ, UR7, UR4, URZ, 0xc0, !UPT",
+      "actual": "ULOP3.LUT UP0, URZ, UR7, UR4, URZ, 0xc0, !UPT"
+    },
+    "0x850": {
+      "expected": "IADD R13, R4, UR4",
+      "actual": "IADD R13, R4, UR4"
+    },
+    "0x860": {
+      "expected": "BRA.U UP0, `(.L_x_208)",
+      "actual": "BRA.U UP0, `(.L_x_208)"
+    },
+    "0x870": {
+      "expected": "FLO.U32 R18, UR7",
+      "actual": "FLO.U32 R18, UR7"
+    },
+    "0x880": {
+      "expected": "IADD R18, -R18, 0x1f",
+      "actual": "IADD R18, -R18, 0x1f"
+    },
+    "0x890": {
+      "expected": "LOP3.LUT R18, R18, 0x1f, RZ, 0x3c, !PT",
+      "actual": "LOP3.LUT R18, R18, 0x1f, RZ, 0x3c, !PT"
+    },
+    "0x8a0": {
+      "expected": "SHF.R.U32.HI R18, RZ, R18, R13",
+      "actual": "SHF.R.U32.HI R18, RZ, R18, R13"
+    },
+    "0x8b0": {
+      "expected": "BRA `(.L_x_209)",
+      "actual": "BRA `(.L_x_209)"
+    },
+    "0x8c0": {
+      "expected": "UI2F.U32.RP UR4, UR7",
+      "actual": "UI2F.U32.RP UR4, UR7"
+    },
+    "0x8e0": {
+      "expected": "MUFU.RCP R18, UR4",
+      "actual": "MUFU.RCP R18, UR4"
+    },
+    "0x9e0": {
+      "expected": "IMAD R13, R14, R18.reuse, RZ",
+      "actual": "IMAD R13, R14, R18.reuse, RZ"
+    },
+    "0xa00": {
+      "expected": "IADD R19, R13, R18",
+      "actual": "IADD R19, R13, R18"
+    },
+    "0xa10": {
+      "expected": "VIMNMX.S32 R18, R4, R19, PT",
+      "actual": "VIMNMX.S32 R18, R4, R19, PT"
+    }
+  },
+  "width_path_models": [
+    {
+      "width": 1,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 0
+    },
+    {
+      "width": 2,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 1
+    },
+    {
+      "width": 3,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 4,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 2
+    },
+    {
+      "width": 5,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 6,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 7,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 8,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 3
+    },
+    {
+      "width": 9,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 10,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 11,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 12,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 13,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 14,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 15,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 16,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 4
+    },
+    {
+      "width": 17,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 18,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 19,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 20,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 21,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 22,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 23,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 24,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 25,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 26,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 27,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 28,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 29,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 30,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 31,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 32,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 5
+    },
+    {
+      "width": 33,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 34,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 35,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 36,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 37,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 38,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 39,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 40,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 41,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 42,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 43,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 44,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 45,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 46,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 47,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 48,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 49,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 50,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 51,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 52,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 53,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 54,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 55,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 56,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 57,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 58,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 59,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 60,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 61,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 62,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 63,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 64,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 6
+    },
+    {
+      "width": 65,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 66,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 67,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 68,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 69,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 70,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 71,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 72,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 73,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 74,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 75,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 76,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 77,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 78,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 79,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 80,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 81,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 82,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 83,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 84,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 85,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 86,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 87,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 88,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 89,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 90,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 91,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 92,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 93,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 94,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 95,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 96,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 97,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 98,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 99,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 100,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 101,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 102,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 103,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 104,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 105,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 106,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 107,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 108,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 109,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 110,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 111,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 112,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 113,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 114,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 115,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 116,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 117,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 118,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 119,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 120,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 121,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 122,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 123,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 124,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 125,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 126,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 127,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 128,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 7
+    },
+    {
+      "width": 129,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 130,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 131,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 132,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 133,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 134,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 135,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 136,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 137,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 138,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 139,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 140,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 141,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 142,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 143,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 144,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 145,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 146,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 147,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 148,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 149,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 150,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 151,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 152,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 153,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 154,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 155,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 156,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 157,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 158,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 159,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 160,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 161,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 162,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 163,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 164,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 165,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 166,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 167,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 168,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 169,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 170,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 171,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 172,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 173,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 174,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 175,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 176,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 177,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 178,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 179,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 180,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 181,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 182,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 183,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 184,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 185,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 186,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 187,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 188,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 189,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 190,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 191,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 192,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 193,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 194,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 195,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 196,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 197,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 198,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 199,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 200,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 201,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 202,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 203,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 204,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 205,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 206,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 207,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 208,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 209,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 210,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 211,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 212,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 213,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 214,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 215,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 216,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 217,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 218,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 219,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 220,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 221,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 222,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 223,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 224,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 225,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 226,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 227,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 228,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 229,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 230,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 231,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 232,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 233,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 234,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 235,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 236,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 237,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 238,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 239,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 240,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 241,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 242,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 243,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 244,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 245,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 246,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 247,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 248,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 249,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 250,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 251,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 252,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 253,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 254,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 255,
+      "nonpower_branch_predicate": true,
+      "modeled_reachable_reciprocal": true,
+      "fastpath_shift": null
+    },
+    {
+      "width": 256,
+      "nonpower_branch_predicate": false,
+      "modeled_reachable_reciprocal": false,
+      "fastpath_shift": 8
+    }
+  ],
+  "fastpath_chunk_checks": 11943,
+  "LUT_truth_checks": 8,
+  "native_semantic_inferences": "LOP3 LUT0xc0 is bitwiseAandB for conventional A/B/C truth index4A+2B+C; predicate result is interpreted as nonzero, matched to retained PTX setp.ne on same width AND. Constant0x360 is mapped to ntid.x from the matching sole integer-divider region. FLO.U32 is interpreted as most-significant-set index; subsequent31-minus/xor31 yields log2 for nonzero power widths. These native instruction/source mappings are static inferences cross-checked against exhaustively decoded PTX; device float/exactness tests remain mandatory.",
+  "all_owned_capture_and_disassembly_children_terminal": true,
+  "new_application_kernels_solves_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Static driverJIT control-flow/operand witnesses and PTX-linked integer model; no general SASS simulator, device-floating equivalence, measured latency, universal compiler guarantee or speed claim. Real original/candidate whole-output/input controls including nonpower widths required before full solver and complete-cycle timing."
+}

@@ -1,0 +1,60 @@
+{
+  "id": "D153",
+  "at": "2026-10-28T11:22:35.833726+00:00",
+  "status": "integration_contract_staged_not_implemented",
+  "prior_statuses_preserved": {
+    "D148": "finite_packet_integer_model_pass_not_GPU_or_integration_proof",
+    "D149": "closed_invalid_fixture_not_regraded_or_pooled",
+    "D150": "fresh_corrected_fixture_finite_liveness_pass",
+    "D151": "auxiliary_compile_load_resource_prerequisites_pass",
+    "D152": "actual_packet_CPU_oracle_controls_pass"
+  },
+  "new_source_audit": [
+    "Stored continuation Memory/Disk persist only the four learning arrays. Seven-buffer workspaces also move reach and CFV allocations for reuse; that does not make CFV contents canonical persisted state. D148 earlier wording about state operations must be read with this distinction.",
+    "Symmetric and stored continuation constructors require zero F32 arrays. Paged continuation validates F32 on every sweep. A compressed-only fast path must decline these formats before optional module setup. These wrappers were source-audited, not executed by D150; no universal paging claim.",
+    "Plain changing-root continuation permits compressed data but requires CfrPlus/no actual isomorphism. D150 covers32 such actual sweeps with changing reaches and scratch clobbers. Its save/load fixtures explicitly restore the intended two flags. Application save format remains unchanged.",
+    "GpuSolver::sync_to_cpu and sync_strategy first synchronize; training performs an up pass and eager/queued evaluation regenerate mode0 terminals before private mode1 reuse. No optional scratch phase may run inside a captured graph or between those private modes.",
+    "PinnedBuf currently owns a raw f32 pointer/len without an initialized-prefix field. A new path must initialize its entire checked used prefix as raw bytes before creating typed views, borrow it exclusively through both existing completion waits, and retain original fallback behavior. No reference or cached device pointer may escape."
+  ],
+  "prospective_first_integration_form": {
+    "status": "fixed_before_any_integrated_source_or_timing_not_an_accepted_candidate",
+    "admission": "All selected stores must be compressed signed-regret/unsigned-strategy, actual device cc12.0, and aggregate selected active f32 source bytes at least16777216 (16MiB). Both current CFV and pinned staging lengths must hold65544 four-byte words. Validate all blocks/scale owners/host/source bounds and all checked arithmetic before optional module loading or writes. Decline whole call on unsupported conditions.",
+    "size_rule_rationale": "Prospective coarse large-transfer admission to avoid paying module/packet setup on small readbacks.16MiB is a fixed implementation policy, not an empirical crossover or a proven optimal threshold. It is chosen before integration/performance observations and must not be tuned after a failed screen.",
+    "packet_shape": "Exactly128 GPU threads, at most31 descriptors and at most65544 u32 words per packet, matching actual D152 data controls. Full u64 source indices and loop induction. No alternate block width, runtime NVRTC, extra explicit device output/descriptor allocations, or per-packet host heap allocation.",
+    "shader": "Persisted source-bound compute120 PTX SHA 579e3c44469c9c8052097970f7bb37cb307e2bb18ded5aed15aed40f47e19292; separate lazily loaded auxiliary module. Main accepted CUDA source and runtime compiler flags remain byte unchanged. Driver module JIT/loading/ownership/destruction must be included in complete-process resource/lifecycle checks.",
+    "learning_and_CPU_contract": "All four device learning arrays remain read-only. Direct scatter raw signed/unsigned q bits and exact per-node scale into original host offsets. Preserve original inactive restoration and F32 path. Original iteration/symmetry publication remains exact. CFV may change only after the original entry fence and must regenerate before future reads.",
+    "host_borrow": "Raw-initialize only checked prefix before new typed views; no simultaneous f32/u32 typed alias and no references beyond joined transfer completion. Descriptor/output regions disjoint. Load packet descriptor bits into the existing CFV allocation and download only packed scales/q into the initialized existing pinned owner. Current live buffer lengths/ownership validated on each call, including after workspace swaps.",
+    "failure": "Unsupported setup declines before optional activity. Submission/runtime failures must drain queued work and propagate the original error, with host staging and source references alive through completion. No silent partial-result fallback after launches.",
+    "cost_boundary": "Any module/cached functions, host metadata, copy/scatter work, fences and destruction costs must be measured. If ownership changes move costs outside benchmark full_cycle_ms, retain entire-process wall/lifecycle diagnostics; do not call relocation a speedup."
+  },
+  "required_before_timing": [
+    "Implement one isolated source-bound integration form without altering accepted application files. Pin exact fallback reversal, main CUDA hash and PTX provenance. Preserve originals and reject the form after actual numerical/resource failure.",
+    "Run exact typed-view/packet planning/decline/guards tests with current actual layouts. Force the same internal packed path in finite engine controls so tiny fixtures cannot pass only through fallback; verify noiso/algorithm after load as in D150.",
+    "Compare all65 other device fields, all CPU q/scales/query/save/lock/resume state, subsequent graphs/evaluation/continuation, complete physical CFV and logical regeneration with explicit expected scratch differences. Ordinary F32/small/unsupported paths must exhibit zero optional loads/allocations/launches.",
+    "Measure actual module/setup/CPU/device/pinned/metadata/graph resource effects, peak memory and capacity boundaries. No claim that zero local bytes or no explicit new output buffers implies no total resource cost."
+  ],
+  "qualification_after_correctness": "Only then freeze fresh complete-solve three-pair screen at>=1% unrounded aggregate with strict fixture slowdown guard. Advancing candidates need separately frozen16pair confirmation, broad/material/capacity/holdout/fresh-original qualification. No source/threshold/width/shape/sample rescue after an actual failed integrated form.",
+  "new_integrated_source_created": false,
+  "new_performance_candidate_created": false,
+  "performance_measurements": 0,
+  "candidate_accepted": false,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation.rs": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_storage.rs": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_paging.rs": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\store.rs": "ff329f9c6dd48dd746b567104f9b67bf980889b8c640c01e87bc0dcf336c4eb7",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\cfr.rs": "9ffc748ccda06443431e8a905a83a07707965e6d49f661045e1df8602817a638",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D148-packet-model\\report.json": "cc5918377912c206072baf2a809715629f6fbc909a54ad096ebbb4817bd8db88",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D149-invalid-fixture\\report.json": "e031906e7bfee0a9dc275529f35b85f0e0e83231617e563c3c6c7d15ee769237",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D149-invalid-fixture\\fixture-repair-review.json": "9ab6d68b31c259f90bc2c8cca412c0be2e04198319e208d568d11915fe955c8f",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D150-CFV-liveness\\report.json": "50b286bb388817ffbc9dc4391b80cd4d077cdb1f9c4c5a2286a29e23f6cdd9d1",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D151-auxiliary-resource\\report.json": "6da2500f5816c6c5f5bf06fae0f78461c908d838d280a5c24934b832ce6704e8",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\comparisons\\D152-packet-numerics\\report.json": "c84485cb77eba8c1bdaa1e0cbae08a44813a1df336c981e44b431b7235885dca",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D151-auxiliary-resource\\packet.cu": "f0d9672a359ebe589de887095ad9dadcf7086d98d19010d79091bac6837dc905",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D151-auxiliary-resource\\execution\\packet-compute_120.ptx": "579e3c44469c9c8052097970f7bb37cb307e2bb18ded5aed15aed40f47e19292"
+  }
+}

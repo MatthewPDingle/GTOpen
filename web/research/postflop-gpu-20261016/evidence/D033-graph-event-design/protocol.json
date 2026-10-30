@@ -1,0 +1,74 @@
+{
+  "schema_version": 1,
+  "id": "D033",
+  "kind": "diagnostic_design",
+  "fixture": "rainbow",
+  "board": "Ks7h2d",
+  "storage": "compressed",
+  "algorithm": "Dcfr",
+  "isomorphism": true,
+  "final_iteration": 200,
+  "warm_until": 140,
+  "check_every": 20,
+  "sample_iterations": [
+    160,
+    180,
+    200
+  ],
+  "batch_length": 20,
+  "batch_arm_order": [
+    [
+      "native",
+      "instrumented"
+    ],
+    [
+      "instrumented",
+      "native"
+    ],
+    [
+      "native",
+      "instrumented"
+    ]
+  ],
+  "raw_and_compressed_equality_checkpoints": [
+    140,
+    160,
+    180,
+    200
+  ],
+  "exploit_anchor_checkpoints": [
+    20,
+    40,
+    60,
+    80,
+    100,
+    120,
+    140,
+    160,
+    180,
+    200
+  ],
+  "events_per_graph": "N+1 shared boundaries for N original kernel nodes",
+  "node_samples": "last replay only in each 20-iteration batch, not a batch mean",
+  "outer_envelope": "separate stream events around every 20-iteration arm; includes normal host gaps/discount upload and all instrumentation",
+  "graph_setup": "clone, validate, add events, instantiate with original flags, upload both native and cloned graph execs and synchronize before brackets; no extra learning replay",
+  "raw_compare_chunk_floats": 1048576,
+  "raw_compare_max_transient_bytes": 8388608,
+  "cpu_arena_bytes_per_arm": 1386321040,
+  "scope": [
+    "temporary test-only wiring after further authorization",
+    "one ignored GPU-only lib test",
+    "no production statement or kernel changes",
+    "no frozen evaluator/control changes",
+    "no live server mutation",
+    "no profiler/elevation/install",
+    "no performance acceptance"
+  ],
+  "future_env": {
+    "RAYON_NUM_THREADS": "16",
+    "POSTFLOP_AUTORESEARCH_PROFILE": "0",
+    "POSTFLOP_AUTORESEARCH_STORAGE": "compressed",
+    "POSTFLOP_AUTORESEARCH_FIXTURE": "rainbow"
+  },
+  "failure_policy": "fail closed and preserve all evidence; no topology, memory, timer, or exactness fallback silently substitutes another workload"
+}

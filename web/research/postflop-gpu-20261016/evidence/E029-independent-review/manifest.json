@@ -1,0 +1,21 @@
+{
+  "id": "E029-independent-review",
+  "at": "2026-10-16T17:33:42.359194+00:00",
+  "frozen": true,
+  "numerical_verdict": "CONFIRMED_REJECTED",
+  "source_custody_verdict": "PASS_SOURCE_BUILD_DIRECT_PREREQUISITE_CUSTODY",
+  "artifact_sha256": {
+    "audit-numerical.py": "b98a3a22cf680aeb500edd6eb4b8db90a884ba6b5ffc0119ea95b083d72ba0a8",
+    "audit-adaptation.patch": "4762a344aa6041ed3f901cd0ac972a060729db6dba2fd032389a59262cddcf08",
+    "audit-preparation.json": "3cb25a503ab0757bba336368afc6b5132b1a7e430830accf5384df06f9ad9ad9",
+    "audit.stdout.log": "259ee10bd83c9d91144db699911ef01274816e3c8fa59761ab6133b6a02868be",
+    "audit.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "audit-exit.json": "5a837f12dc63ee4e7a086d4f41129ae8c425f5e0eb02b9f8fc4161f509055cd8",
+    "validation.json": "216bc52dd26be86fb6aa0369eb784dddac2f93a813235f23add90dceacda55d6",
+    "summary.md": "b97e2ea31d137559b1aeb2857a4aab5f8af9d9e92790c6d8e180d014d9724a94",
+    "source-custody.json": "e10934620a3f7326310934a3504f7d91a57c29268aa44b24c32407f24266ceab"
+  },
+  "reviewer_execution": "One terminal file-only numerical audit, exit 0, 675 assertions; no compiler, native solver/test, GPU, production, dashboard or live-server action. Independent custody review passed 605 checks. No excluded samples or extension.",
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

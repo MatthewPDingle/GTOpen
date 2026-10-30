@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-16T08:34:17Z",
+  "candidate": "E017",
+  "decision": "rejected",
+  "reason": "0.349175% complete-cycle gain fails registered2% threshold; no repeated fixture regression.",
+  "retained_candidate": "E015",
+  "candidate_sha256": {
+    "crates/solver/src/gpu/mod.rs": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+    "crates/solver/src/gpu/plan.rs": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e97a8e025e4ec4b2900685720756fcbaeb61f38b2cd8274149118eec8bb8bf9f"
+  },
+  "restored_sha256": {
+    "crates/solver/src/gpu/mod.rs": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2"
+  },
+  "candidate_archive": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design",
+  "comparison_sha256": "784cb39c8c58aa2d3732778f943135592ab946d7e79814ad8777e58339590c0a",
+  "only_restored_files": [
+    "crates/solver/src/gpu/mod.rs",
+    "crates/solver/src/gpu/plan.rs",
+    "crates/solver/src/gpu/continuation_capacity.rs"
+  ],
+  "main_source_unchanged": true,
+  "live_binary_untouched": true
+}

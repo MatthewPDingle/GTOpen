@@ -1,0 +1,56 @@
+{
+  "at": "2026-10-18T10:27:03.856217+00:00",
+  "status": "source_only_unimplemented_next_lead",
+  "lead": "Bound host pinned staging and stream complete-node transfer groups serially",
+  "source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "crates/solver/src/gpu/arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e"
+  },
+  "accepted_source_facts": [
+    "Constructor allocates cached page-locked max(plan.arena_elements)float words before uploads.",
+    "Fresh zero compressed uploads do not need the staging image, but final full readback reuses it.",
+    "Warm compressed uploads currently decode a whole arena into staging. Compact inactive snapshots and full/F32 layouts need exact preservation.",
+    "Per-node quantization needs each full node vector to retain its original scale/encoding."
+  ],
+  "retained_actual_geometry_report_sha256": "359a777d0427992cc19ed68c9fd786af10c2f55d0490732c24de0b495a001cec",
+  "retained_actual_geometries": [
+    {
+      "frame": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\0-rainbow-device-frame.bin",
+      "frame_sha256": "9b405c4b39185b7d6ff532468fa14958cd0ee4b0c62974a5fedf32a1ad9f796a",
+      "per_player_float_arena_words": [
+        156020845,
+        185172163
+      ],
+      "current_host_pinned_staging_bytes": 740688652
+    },
+    {
+      "frame": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\1-two-tone-device-frame.bin",
+      "frame_sha256": "e8015142f49a860e48a73cb22534811ed87e889790fe37405a3ac953034f53dd",
+      "per_player_float_arena_words": [
+        93381294,
+        110745280
+      ],
+      "current_host_pinned_staging_bytes": 442981120
+    },
+    {
+      "frame": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\execution\\B1\\2-river-device-frame.bin",
+      "frame_sha256": "f4bb35cfc329b7ff8abf0319aa3a9b87a15dba6c8b3d43cd3624e4236b426344",
+      "per_player_float_arena_words": [
+        3728,
+        4480
+      ],
+      "current_host_pinned_staging_bytes": 17920
+    }
+  ],
+  "distinct_hypothesis": "Reduce actual pinned allocation size and use one serial bounded staging window for complete-node uploads/readbacks. Unlike closedE040, no two-window overlap/pipeline/work scheduling variation. This needs separate admission and must not compose or tune E040.",
+  "risks": [
+    "More DMA submissions/stream waits and transfer descriptors may erase allocation/cache benefits.",
+    "Extra persistent metadata and all-thread CPU cost must be measured.",
+    "Accepted E080 overlaps existing allocation/setup with zero checks, so isolated allocation spans are not removable complete-cycle headroom.",
+    "Warm/F32/full/compact/inactive/materialization/state/error paths require full exact control; no fresh-zero-only fixture exemption."
+  ],
+  "next_action": "Audit closed history and existing transfer layout for a distinct fixed bounded-allocation form; freeze source/equivalence/component and actual material gates before any implementation/native process. No candidate/source/timing exists here.",
+  "new_native_processes": 0,
+  "candidate_accepted": false,
+  "limits": "Retained actual geometry and current source facts only; no predicted gain, current headroom, tested bounded allocation or performance result."
+}

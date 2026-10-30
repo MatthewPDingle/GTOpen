@@ -1,0 +1,25 @@
+{
+  "scope": "host f32 source-order illustration only; no GPU or full CFV execution",
+  "m_o": 257,
+  "nonzero_sorted_reach_bits": [
+    1065353216,
+    864026624,
+    864026624,
+    864026624
+  ],
+  "remaining_positive_zero_values": 253,
+  "rounding": "each addition rounded to binary32, ties-to-even",
+  "baseline": {
+    "block_width": 128,
+    "chunk": 3,
+    "prefix_index3_bits": 1065353216,
+    "total_bits": 1065353216
+  },
+  "naive_changed_width": {
+    "block_width": 256,
+    "chunk": 2,
+    "prefix_index3_bits": 1065353217,
+    "total_bits": 1065353217
+  },
+  "conclusion": "The source arithmetic grouping changes; launch-only exactness is not justified."
+}

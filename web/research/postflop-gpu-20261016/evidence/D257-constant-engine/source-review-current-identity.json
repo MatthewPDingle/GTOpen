@@ -1,0 +1,43 @@
+{
+  "id": "D257-current-source-identity",
+  "at": "2026-10-29T05:32:09.824939+00:00",
+  "original_protocol_sha256": "59ed3a1ee00f96b7793b56ab5ca4b60a891c0803580e4f7590197cabe57229f4",
+  "original_review_sha256": "ab78939373290a574b5437c8a780da3843762836412d3f717d38dc3149e76f52",
+  "authoritative_frozen_production_projection": {
+    "baseline": {
+      "frozen_host_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "adapted_host_sha256": "04780ae099c1ec16bb05c8628e9711686c4a8fa6082e23755dad406ba13343d3",
+      "known_plan_cfg_sealed_PTX_adapters_reverse_exact": true,
+      "observer_replacements": [],
+      "observer_full_reverse_to_original": true
+    },
+    "candidate": {
+      "frozen_host_sha256": "af98b370b319eb1308c7898e6c8156e51e8dbaafd41586fcf7eba45b7ef2280d",
+      "adapted_host_sha256": "6260613148dbed25c773df94e5eb57759fbc2f8f5502952e0655d7af45f38028",
+      "known_plan_cfg_sealed_PTX_adapters_reverse_exact": true,
+      "observer_replacements": [
+        {
+          "old": "        records.push(crate::capture_zero(&self.stream,\"disc\",&self.d_disc,&mut out));",
+          "new": "        let mut discount_bytes=self.discount_symbol().unwrap();\n        let discount_view=unsafe{discount_bytes.transmute_mut::<f32>(3).unwrap()};\n        records.push(crate::capture_zero(&self.stream,\"disc\",&discount_view,&mut out));"
+        },
+        {
+          "old": "        field!(\"d_disc\", &self.d_disc);",
+          "new": "        let mut discount_bytes=self.discount_symbol().unwrap();\n        let discount_view=unsafe{discount_bytes.transmute_mut::<f32>(3).unwrap()};\n        field!(\"d_disc\", &discount_view);"
+        }
+      ],
+      "observer_full_reverse_to_original": true
+    }
+  },
+  "authoritative_scope": "Originalfull36caseF32/compressed/DCFR/CFR+/iso/noiso/cold/warm/eager/graph/locks/save/resume/plaincontinuation raw corpus. All66semanticconstructor/devicefields retained; formerd_disc labelnowcandidateconstant3floatrawimage. Actualwrapper4448baseline/4400candidate checkedprospectively; everyothermetadata field mustexactlymatch. Bothinfos retained. All144actualconstructor discountregions/size/memoryspace/arms/calls retained; current pairregions disjoint. No numericaltolerance ordevicefieldomission. Fullcanonical/ordinary/material/performance gates remain.",
+  "template_provenance_fields_historical_only": {
+    "accepted_source_reversal_exact_after_standalone_plan_and_cfg_exposure_adapters": true,
+    "same_GPU_type_both_arms": true,
+    "parent_host_adapter_sha256": "1588b23ddb81686e51b5ba796d1ebe3bcca3f8e49d8f3c4aba8a19669009812f",
+    "host_and_entire_fixed_case_phase_corpus_unchanged": true,
+    "explicit_arm_binding_marker": "D242_PTX_BIND",
+    "source_reversal_exact_to_current_production_after_only_old_plan_cfg_sealed_PTX_adapters": false,
+    "production_host_sha256": "aec70bbb133dfc0e886d2a28e2a9777d9138adb879f2935e17e5125bc5b63604",
+    "source_reversal_exact_to_frozen_E111_after_documented_adapters": true
+  },
+  "clarification": "Copied review metadata retains prior E111 template host hash/boolean keys. They do not identify the current source. The two byte-exact production_source_projection objects and frozen E112manifest are authoritative. This addendum precedes compiler and application kernels, changes no source/corpus/oracle/gate/arguments/sample."
+}

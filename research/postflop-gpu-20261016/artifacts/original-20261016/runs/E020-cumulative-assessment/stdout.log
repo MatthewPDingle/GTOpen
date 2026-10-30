@@ -1,0 +1,67 @@
+{
+  "id": "E020-cumulative-comparison",
+  "decision": "qualifying",
+  "scope": "Repeated warm-cache compressed-storage complete-cycle screen",
+  "reason": "Qualification pending: 3 measurements per binary; sum of fixture medians 10952.0754 -> 9815.2669 ms (10.3798% observed gain). No gain accepted by this helper. Exact complete-state fingerprints, exploitability bits and stopping iterations match on all three compressed fixtures. F32 storage and broader correctness qualification remain pending. Timing spread is reported; no statistical significance or production deployment is claimed.",
+  "performance": {
+    "aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+    "baseline_full_cycle_ms": 10952.0754,
+    "candidate_full_cycle_ms": 9815.266899999999,
+    "observed_gain_pct": 10.379845449201353,
+    "required_gain_pct": 2.0,
+    "aggregate_gate_met": true,
+    "fixture_median_regression_above_3pct": [],
+    "fixture_regression_guard": {
+      "threshold_pct": 3.0,
+      "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+      "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+      "fixtures": [
+        {
+          "fixture_id": "rainbow",
+          "median_regression_pct": -10.763388848617526,
+          "paired_regression_pct": [
+            -10.7419204704872,
+            -10.650708324066535,
+            -10.909647174679936
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "rainbow: median regression -10.7634%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "two-tone",
+          "median_regression_pct": -10.076409571882625,
+          "paired_regression_pct": [
+            -9.399655940200665,
+            -10.322341928862892,
+            -9.783167446704265
+          ],
+          "repetitions_above_3pct": 0,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "two-tone: median regression -10.0764%; 0/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        },
+        {
+          "fixture_id": "river",
+          "median_regression_pct": 0.7128343556410366,
+          "paired_regression_pct": [
+            -9.713041421808148,
+            5.532380281300684,
+            0.9283041512347506
+          ],
+          "repetitions_above_3pct": 1,
+          "paired_repetitions": 3,
+          "required_repetitions": 2,
+          "repeatable_material_regression": false,
+          "reason": "river: median regression 0.7128%; 1/3 paired repetitions exceed 3% (requires median >3% and at least 2 repetitions)."
+        }
+      ],
+      "affected_fixtures": [],
+      "failed": false
+    },
+    "statistical_significance_established": false
+  }
+}

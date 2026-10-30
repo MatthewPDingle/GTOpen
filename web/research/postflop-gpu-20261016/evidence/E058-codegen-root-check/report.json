@@ -1,0 +1,45 @@
+{
+  "id": "E058-codegen-root-check",
+  "at": "2026-10-17T07:38:44.070785+00:00",
+  "status": "intended_division_skipping_absent",
+  "checks": 69,
+  "resource_report_sha256": "dcfa91bc88baea206ff4724bd96598669c1c620f0b7bff121bb9fe7722b3d9b5",
+  "resource_protocol_sha256": "7e6a36971bf873dd4c10b82620127b99069ffd57426c2f9685e07f6052a2e802",
+  "reported_registers": [
+    40,
+    40
+  ],
+  "allocated_registers_per_warp": [
+    1280,
+    1280
+  ],
+  "local_bytes": [
+    32,
+    32
+  ],
+  "scalar_division_sites": [
+    18,
+    18
+  ],
+  "changed_full_entry_lines": [
+    438,
+    439
+  ],
+  "baseline_changed_lines": [
+    "\tdiv.rn.f32 \t%f175, %f16, 0f40400000;",
+    "\tsetp.leu.f32 \t%p30, %f15, 0f2B8CBCCC;"
+  ],
+  "candidate_changed_lines": [
+    "\tsetp.leu.f32 \t%p30, %f15, 0f2B8CBCCC;",
+    "\tdiv.rn.f32 \t%f175, %f16, 0f40400000;"
+  ],
+  "only_independent_adjacent_compare_divide_swapped": true,
+  "all_other_full_entry_lines_exact": true,
+  "all_other8entries_exact": true,
+  "abi_exact": true,
+  "kernel_launches": 0,
+  "solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false,
+  "limits": "PTX comparison proves no skipped fallback operation in this fixed compiler form. It is not final-SASS analysis or a runtime slowdown/speed measurement. No numerical equivalence or universal mechanism claim."
+}

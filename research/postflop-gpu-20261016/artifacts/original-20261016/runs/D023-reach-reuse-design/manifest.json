@@ -1,0 +1,145 @@
+{
+  "schema_version": 1,
+  "diagnostic": "D023-reach-reuse-design",
+  "status": "source_only_not_implemented_not_run",
+  "created_utc": "2026-10-16T07:05:04.046557+00:00",
+  "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+  "observed_checkout_head": "d6b9e77118d96d05a6d7f47e271dff7a35ec3205",
+  "current_worktree_hashes_unchanged_during_preservation": true,
+  "current_source_is_not_accepted_baseline": "E014 source preparation is independent; immutable E004 git source snapshots anchor all line references.",
+  "performed": {
+    "production_edits": false,
+    "build": false,
+    "test": false,
+    "gpu": false,
+    "benchmark": false,
+    "dashboard_write": false
+  },
+  "sources": [
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/mod.rs",
+      "snapshot": "e004-source/crates/solver/src/gpu/mod.rs",
+      "bytes": 53239,
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "current_worktree_sha256": "183bf4ce61d2fe3f2f71703c0890967b977dbf8ae065e3235ab8e9d366bb720b"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/kernels.cu",
+      "snapshot": "e004-source/crates/solver/src/gpu/kernels.cu",
+      "bytes": 22624,
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0",
+      "current_worktree_sha256": "cfcbaff4ed6815fd6d27ffd2b2d3bb95fba64c0e56bee96308e64df5605a8704"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/plan.rs",
+      "snapshot": "e004-source/crates/solver/src/gpu/plan.rs",
+      "bytes": 25472,
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "current_worktree_sha256": "039dde407eb440021d1d6afd46cacc77bd7959f60bf146bd30807ae84b4208bb"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/continuation.rs",
+      "snapshot": "e004-source/crates/solver/src/gpu/continuation.rs",
+      "bytes": 14687,
+      "sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00",
+      "current_worktree_sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/continuation_paging.rs",
+      "snapshot": "e004-source/crates/solver/src/gpu/continuation_paging.rs",
+      "bytes": 6240,
+      "sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec",
+      "current_worktree_sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/src/gpu/continuation_storage.rs",
+      "snapshot": "e004-source/crates/solver/src/gpu/continuation_storage.rs",
+      "bytes": 19541,
+      "sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc",
+      "current_worktree_sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+    },
+    {
+      "source_commit": "5e021499c67c840f8c88e4378e5889918bbe27c6",
+      "path": "crates/solver/examples/postflop_action_census.rs",
+      "snapshot": "e004-source/crates/solver/examples/postflop_action_census.rs",
+      "bytes": 8425,
+      "sha256": "ab23270cdb569fe5b625c68ecaf2efb0556e0e033ac738fb22ac9f4628e8c603",
+      "current_worktree_sha256": "ab23270cdb569fe5b625c68ecaf2efb0556e0e033ac738fb22ac9f4628e8c603"
+    }
+  ],
+  "external_inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D001-action-census.log",
+      "bytes": 22176,
+      "sha256": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e"
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\research\\autoresearch\\events.jsonl",
+      "bytes": 912836,
+      "sha256": "e5e68bcbbe077eb5a761bee3aaddc5addc26f748c6c46b07b4dc81eebf3b0d2d"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "audit.md",
+      "bytes": 11497,
+      "sha256": "e7d7d7fe55b29dfb90d2f2aa866eb6385beff637261e3251752fad14f73d51db"
+    },
+    {
+      "path": "D001-action-census.log",
+      "bytes": 22176,
+      "sha256": "9e1c4779fc7f26536edce23e214ee12431bbc024f8695be66556e4983e5b418e"
+    },
+    {
+      "path": "e004-source/crates/solver/examples/postflop_action_census.rs",
+      "bytes": 8425,
+      "sha256": "ab23270cdb569fe5b625c68ecaf2efb0556e0e033ac738fb22ac9f4628e8c603"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/continuation.rs",
+      "bytes": 14687,
+      "sha256": "cfee0f3f84fa0d2bc7d5ad749b76eadbb9884091fe3483b9e25cf9bbe051bc00"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/continuation_paging.rs",
+      "bytes": 6240,
+      "sha256": "6a7c5241a6c1b600f32376d58267f45ccb8f08365858d1fa5d2b8fb9d072b5ec"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/continuation_storage.rs",
+      "bytes": 19541,
+      "sha256": "a06d496233ef7dba7f9cf05db5658c872e2fd50a8f013e72035a9c39c14727cc"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/kernels.cu",
+      "bytes": 22624,
+      "sha256": "8fe86cb859124592f9df13821f4a300450045620e6947e99466e4228b78c20d0"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/mod.rs",
+      "bytes": 53239,
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b"
+    },
+    {
+      "path": "e004-source/crates/solver/src/gpu/plan.rs",
+      "bytes": 25472,
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680"
+    },
+    {
+      "path": "prior-search.json",
+      "bytes": 2655,
+      "sha256": "b4c38d8e591a975f658d03b729440823f83b8bb0fb5c17c8afeadb8269619943"
+    },
+    {
+      "path": "work-counts.json",
+      "bytes": 2025,
+      "sha256": "5d44b530175dede3ccca04d18800bd15dc8c97908b9a07eea8f0b1e9c138f363"
+    }
+  ]
+}

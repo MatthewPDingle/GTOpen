@@ -1,0 +1,111 @@
+--- E033-primary-plan/protocol.json
++++ E033-primary-plan-r2/protocol.json
+@@ -1,5 +1,5 @@
+ {
+-  "id": "E033-primary-plan",
++  "id": "E033-primary-plan-r2",
+   "at": "2026-10-16T19:50:54.136751+00:00",
+   "status": "FROZEN_PROSPECTIVE_NOT_EXECUTED",
+   "candidate": "E033",
+@@ -204,5 +204,18 @@
+     "scope": "Every separate candidate process must enable all three fixed fixture windows and complete normalization inside the full readback boundary. No silent fallback, missing marker or cleanup error may qualify. Logging/timer costs remain included.",
+     "ordinary_unit_cleanup_error_guard": "V033-unit raw log must contain no E033_CACHE_CLEANUP_ERROR; ordinary policy marker counts are unconstrained."
+   },
+-  "expected_feature_only_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback"
++  "expected_feature_only_test": "gpu::tests::persisting_l2_continuation_rearms_after_readback",
++  "revision": "R2 admission-only repair of sealed unexecuted R1",
++  "preexisting_target_artifacts": {
++    "crates/solver/target/research-fixtures/postflop-latest.ptx": {
++      "sha256": "e43fa3d105cac9429a61836e16a9ee53a5ee6abd69ff1895746be406c2aba717",
++      "bytes": 239582
++    },
++    "crates/solver/target/research-fixtures/preflop-latest.ptx": {
++      "sha256": "2a5e3b55c3129c45c2cb692e8180013221c6a3f92042c685980805a5082e68ba",
++      "bytes": 431937
++    }
++  },
++  "r1_scripts_manifest_sha256": "cc3a71ce30dbc8921a369481e74acc7b6f07aabf06ae6e0996678cd55d196457",
++  "preexisting_target_artifact_gate": "Only the two exact pre-existing generated PTX paths are excluded from Git untracked source-name admission. Both full bytes/size are pinned before and after builds and throughout primary provenance checks; neither belongs to accepted/candidate source maps. Every other unexpected tracked/untracked solver path is rejected. No target deletion or broad ignore."
+ }
+--- E033-primary-plan/compile_check.py
++++ E033-primary-plan-r2/compile_check.py
+@@ -32,7 +32,7 @@
+ owned = changed_sources + new_sources
+ all_owned = owned
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = '86f08d04b6cc8c7aad0027be8c84b644eb70dcf757f023c2a5742af289699f08'
++protocol_hash = '35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135'
+ out = ar.RESEARCH / 'runs/E033-compile-check'
+ target = ar.RESEARCH / 'build-check-e033-research'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+@@ -76,7 +76,12 @@
+     assert not (set(new_sources) & set(accepted))
+     tracked = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+     untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+-    assert set(tracked) | set(untracked) == set(owned), (tracked, untracked)
++    preserved = json.loads((here/'protocol.json').read_text(encoding='utf-8'))['preexisting_target_artifacts']
++    assert set(preserved) == {'crates/solver/target/research-fixtures/postflop-latest.ptx', 'crates/solver/target/research-fixtures/preflop-latest.ptx'}
++    for name, pin in preserved.items():
++        assert name not in accepted and name not in current, name
++        assert ar.sha256(repo/name) == pin['sha256'] and (repo/name).stat().st_size == pin['bytes'], name
++    assert set(tracked) | (set(untracked) - set(preserved)) == set(owned), (tracked, untracked)
+ 
+ 
+ 
+--- E033-primary-plan/build.py
++++ E033-primary-plan-r2/build.py
+@@ -32,7 +32,7 @@
+ owned = changed_sources + new_sources
+ all_owned = owned
+ assert set(authorization['candidate_sources']) == set(owned)
+-protocol_hash = '86f08d04b6cc8c7aad0027be8c84b644eb70dcf757f023c2a5742af289699f08'
++protocol_hash = '35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135'
+ out = ar.RESEARCH / 'runs/E033-build'
+ target = ar.RESEARCH / 'build-e033-primary'
+ def interrupted(signum, _frame): raise KeyboardInterrupt(f'received signal {signum}')
+@@ -76,7 +76,12 @@
+     assert not (set(new_sources) & set(accepted))
+     tracked = subprocess.check_output(['git', 'diff', '--name-only', 'HEAD', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+     untracked = subprocess.check_output(['git', 'ls-files', '--others', '--exclude-standard', '--', 'crates/solver'], cwd=repo, text=True).splitlines()
+-    assert set(tracked) | set(untracked) == set(owned), (tracked, untracked)
++    preserved = json.loads((here/'protocol.json').read_text(encoding='utf-8'))['preexisting_target_artifacts']
++    assert set(preserved) == {'crates/solver/target/research-fixtures/postflop-latest.ptx', 'crates/solver/target/research-fixtures/preflop-latest.ptx'}
++    for name, pin in preserved.items():
++        assert name not in accepted and name not in current, name
++        assert ar.sha256(repo/name) == pin['sha256'] and (repo/name).stat().st_size == pin['bytes'], name
++    assert set(tracked) | (set(untracked) - set(preserved)) == set(owned), (tracked, untracked)
+ 
+ 
+ 
+--- E033-primary-plan/primary.py
++++ E033-primary-plan-r2/primary.py
+@@ -8,7 +8,7 @@
+ 
+ here = Path(__file__).resolve().parent
+ protocol_path = here / 'protocol.json'
+-assert ar.sha256(protocol_path) == '86f08d04b6cc8c7aad0027be8c84b644eb70dcf757f023c2a5742af289699f08'
++assert ar.sha256(protocol_path) == '35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135'
+ protocol = json.loads(protocol_path.read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ 
+--- E033-primary-plan/assess.py
++++ E033-primary-plan-r2/assess.py
+@@ -16,8 +16,8 @@
+ import postflop_compare as compare
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+-protocol = base / 'runs/E033-primary-plan/protocol.json'
+-assert ar.sha256(protocol) == '86f08d04b6cc8c7aad0027be8c84b644eb70dcf757f023c2a5742af289699f08'
++protocol = base / 'runs/E033-primary-plan-r2/protocol.json'
++assert ar.sha256(protocol) == '35699be1ddbd6fce1fddb1f01dd91449d3b7b89c1aafe7334fadd9b5c12b3135'
+ plan = json.loads(protocol.read_text(encoding='utf-8'))
+ here=protocol.parent
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+--- E033-primary-plan/README.md
++++ E033-primary-plan-r2/README.md
+@@ -11,3 +11,5 @@
+ Root authorization.json must name candidate E033; E020_accepted, E020_server_qualification_pass, independent_source_review_pass and independent_script_review_pass must be true. `prerequisites` contains path/sha256 pairs for E020_acceptance, E020_server_qualification, E033_source_review, E033_script_review and D064_terminal_review. `candidate_sources` contains both repository paths with exact archived path/sha256 records. `evidence_sha256` pins the final scripts-manifest/protocol, source archive and its artifacts, root preparation decision and prerequisite reports. The same immutable authorization hash is supplied to both builds and bound into every binary manifest. No template placeholder grants permission.
+ 
+ A qualifying primary still requires independent audit, original state/menu/resume/F32/GPU controls, exact old/new raw-state and cache lifetime/error/continuation checks, the fixed wide-turn holdout and fresh-original cumulative cohort under later authorization. The feature-only continuation unit must execute in that later qualification; a no-run build does not test it. These conditional packages are not prepared here.
++
++R2 preserves sealed R1 unchanged. The only admission repair excludes two exact pre-existing generated PTX paths from the Git untracked source set and pins their full bytes/size. All other source identity, build, unit, marker, measurement and qualification requirements are unchanged. Authorization belongs in this R2 directory; builds and seven reserved native IDs retain their original unused names.

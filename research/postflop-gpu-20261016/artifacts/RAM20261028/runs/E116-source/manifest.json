@@ -1,0 +1,152 @@
+{
+  "id": "E116",
+  "at": "2026-10-29T14:23:06.502689+00:00",
+  "status": "FROZEN_OFF_TREE_SOURCE_ONLY",
+  "input_sha256": {
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E116-stage-source.py": "ea80375feef7bca5666e54e2de6d75d99be33ee4b73072b1f0f8906ba6cb495c",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D275-single-positive-scout\\report.json": "f313f5d4df389e43f6aaf0035233d74da654ea0d34a1793be811b54c35c2f40a",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D275-single-positive-scout\\hit-classification.json": "53dd3c67b0a956eb112d2593e192b3bcb71510c8df00beeca96a94a3e2b5f9f5",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D276-single-positive-census\\protocol.json": "6b4f66a78a4048c8bf11753cb4b7c81296a2d7aeb5c8d2c931f93d946bab1935",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D276-single-positive-census\\report.json": "61a9cdc8c986b816fd8a6c3c8ad3aaa20f2da1f8e394493f0532e78c8206f011",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D276-single-positive-census\\execution\\reader.exit.json": "05989085ec05d141974a844ec8c7bd0cf65db1441fbf57351cd6460f89a798e0",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\common.py": "8459773a71ddd47701a01d8c38ee47e24a13348b25d94e0f3a6eb345a395ee28"
+  },
+  "owned_path": "crates/solver/src/gpu/kernels.cu",
+  "baseline_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_sha256": "3128ecf06d02861926b4f270fb7a46ba728fb8d7fc06aa9a1821390e8fb4cc4c",
+  "edits": [
+    {
+      "helper": "down_action_impl",
+      "before": "\r\n        float sum = 0.f;",
+      "after": "\r\n        u32 positive_count = 0;\r\n        float sum = 0.f;"
+    },
+    {
+      "helper": "down_action_impl",
+      "before": "\r\n            sum += r > 0.f ? r : 0.f;",
+      "after": "\r\n            sum += r > 0.f ? r : 0.f;\r\n            positive_count += r > 0.f;"
+    },
+    {
+      "helper": "down_action_impl",
+      "before": "\r\n        float pr = parent_reach[i];",
+      "after": "\r\n        // Used only inside the original sum > 1e-12f branch.\r\n        bool one_positive = positive_count == 1 && __float_as_uint(sum) < 0x7f800000u;\r\n        float pr = parent_reach[i];"
+    },
+    {
+      "helper": "down_action_impl",
+      "before": "v = pr * ((r > 0.f ? r : 0.f) / sum);",
+      "after": "v = pr * (one_positive ? (r > 0.f ? 1.f : 0.f) : ((r > 0.f ? r : 0.f) / sum));"
+    },
+    {
+      "helper": "up_action_impl",
+      "before": "\r\n            float sum = 0.f;",
+      "after": "\r\n            u32 positive_count = 0;\r\n            float sum = 0.f;"
+    },
+    {
+      "helper": "up_action_impl",
+      "before": "\r\n                sum += r > 0.f ? r : 0.f;",
+      "after": "\r\n                sum += r > 0.f ? r : 0.f;\r\n                positive_count += r > 0.f;"
+    },
+    {
+      "helper": "up_action_impl",
+      "before": "\r\n            float uni = 1.f / (float)na;",
+      "after": "\r\n            // Used only inside the original sum > 1e-12f branch.\r\n            bool one_positive = positive_count == 1 && __float_as_uint(sum) < 0x7f800000u;\r\n            float uni = 1.f / (float)na;"
+    },
+    {
+      "helper": "up_action_impl",
+      "before": "float sig = sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : uni;",
+      "after": "float sig = sum > 1e-12f ? (one_positive ? (r > 0.f ? 1.f : 0.f) : (r > 0.f ? r : 0.f) / sum) : uni;"
+    }
+  ],
+  "inverse_entire_CRLF_source_byte_exact": true,
+  "source_activated": false,
+  "new_compilers_GPU_CFR_solver_or_speed_samples": 0,
+  "arithmetic_contract": "Count strictly positive regrets during unchanged ascending original f32 sum in unlocked down_action and training up_action. Only within original sum>1e-12 branch, exactly1positive and finite sum allow normalized sigma+1/+0, bypass division. Keep every original multiply, expectation reduction, strategy FMA/update, regret discount/update and output write, plus original fallback/locked/opponent/zero-sum/nonfinite paths. NaN/inf/overflow/signedzero/subnormal and payload behavior require actual raw CUDA equivalence; source reasoning alone does not qualify.",
+  "scope": "One CUDA source only, no host/plan/ABI/entry/launch/block/menu/array/cache/allocation/precision/compiler-flag/cadence/quality/save change. Existing NA2/3/4/generic dispatch unchanged; E047 NA1 template binding is not composed. No zero-reach/zero-output shortcut, omitted multiplication, persistent sigma cache, clamp spelling or closed E091/E028/D199 form. No implementation/result-driven arity/selection/helper/threshold/source/flags/sample rescue.",
+  "counterevidence": "Existing E047 changes template binding for na1 and failed its speed screen; current form binds no arity and depends on per-hand regret distribution across original menus. Extra count/predicate/branch/register/control cost is unqualified and may outweigh avoided divisions. Endpoint fractions are not per-iteration incidence or time/headroom. Source is not adopted.",
+  "retained_endpoint_fractions": [
+    {
+      "fixture": "rainbow",
+      "stage": "converged",
+      "all_unlocked_endpoint_fraction": 0.649577278666213,
+      "actions_ge2_node_hands": 140222383,
+      "actions_ge2_eligible_endpoint_fraction": 0.6947299704641305
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "continued",
+      "all_unlocked_endpoint_fraction": 0.6489182307333234,
+      "actions_ge2_node_hands": 140222383,
+      "actions_ge2_eligible_endpoint_fraction": 0.6940251115258824
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "locked",
+      "all_unlocked_endpoint_fraction": 0.6495037164587256,
+      "actions_ge2_node_hands": 140222126,
+      "actions_ge2_eligible_endpoint_fraction": 0.6946513776292338
+    },
+    {
+      "fixture": "rainbow",
+      "stage": "resumed",
+      "all_unlocked_endpoint_fraction": 0.651366940183441,
+      "actions_ge2_node_hands": 140222126,
+      "actions_ge2_eligible_endpoint_fraction": 0.6966441159221904
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "converged",
+      "all_unlocked_endpoint_fraction": 0.6431077323821438,
+      "actions_ge2_node_hands": 85617994,
+      "actions_ge2_eligible_endpoint_fraction": 0.6878351880096607
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "continued",
+      "all_unlocked_endpoint_fraction": 0.6428906806371869,
+      "actions_ge2_node_hands": 85617994,
+      "actions_ge2_eligible_endpoint_fraction": 0.6876030405477614
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "locked",
+      "all_unlocked_endpoint_fraction": 0.641632985475882,
+      "actions_ge2_node_hands": 85617736,
+      "actions_ge2_eligible_endpoint_fraction": 0.6862580085042193
+    },
+    {
+      "fixture": "two-tone",
+      "stage": "resumed",
+      "all_unlocked_endpoint_fraction": 0.642502472579722,
+      "actions_ge2_node_hands": 85617736,
+      "actions_ge2_eligible_endpoint_fraction": 0.6871879676893115
+    },
+    {
+      "fixture": "river",
+      "stage": "converged",
+      "all_unlocked_endpoint_fraction": 0.6949317738791423,
+      "actions_ge2_node_hands": 3078,
+      "actions_ge2_eligible_endpoint_fraction": 0.6949317738791423
+    },
+    {
+      "fixture": "river",
+      "stage": "continued",
+      "all_unlocked_endpoint_fraction": 0.6939571150097466,
+      "actions_ge2_node_hands": 3078,
+      "actions_ge2_eligible_endpoint_fraction": 0.6939571150097466
+    },
+    {
+      "fixture": "river",
+      "stage": "locked",
+      "all_unlocked_endpoint_fraction": 0.6745166959578207,
+      "actions_ge2_node_hands": 2845,
+      "actions_ge2_eligible_endpoint_fraction": 0.6745166959578207
+    },
+    {
+      "fixture": "river",
+      "stage": "resumed",
+      "all_unlocked_endpoint_fraction": 0.6523725834797891,
+      "actions_ge2_node_hands": 2845,
+      "actions_ge2_eligible_endpoint_fraction": 0.6523725834797891
+    }
+  ],
+  "required_next": "Freeze compiler/resource/actual raw CUDA protocol before running any compiler. Require exact9entry ABI, untouched7entry bodies/resources, no local/shared/stack growth or supported-block/defaultoccupancy loss, changed target code with actual guarded division bypass and no FP contraction/reassociation/fast-math flags. Then full direct corpus including unusual floats/NaN payloads/overflow/near-threshold/locks/menus/hand+block tails/countzero/guards and immutable arrays. Require meaningful single-positive taken/fallback witnesses in both target helpers and exact original full engine/canonical raw physical state. Only afterward ordinary real-NVRTC/JIT builds/units and original fullcycle>=1%/strictfixture/fresh16/broad/material/capacity/holdout/freshoriginal/cumulative/application gates; actual failure closes form without rescue."
+}

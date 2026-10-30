@@ -1,0 +1,18 @@
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -390,6 +390,7 @@
+                 u64 idx = doff + (u64)a * nh_p + i;
+                 strat_p[idx] = strat_p[idx] * ds + reach * sig;
+             }
++            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+             for (int a = 0; a < na; a++) {
+                 u64 idx = doff + (u64)a * nh_p + i;
+                 float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+@@ -397,7 +398,6 @@
+                 float d = r > 0.f ? pos : neg;
+                 regrets_p[idx] = r * d + (val - out);
+             }
+-            cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     } else {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {

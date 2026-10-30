@@ -1,0 +1,45 @@
+{
+  "id": "E065",
+  "at": "2026-10-17T10:48:12.682536+00:00",
+  "decision": "rejected_fixed_CPU_component_admission",
+  "candidate_tree_sha256": "f01643acc261efc11df7e5e9cffbb3977e9e67a01ad8ba2211414af5be3437b4",
+  "tree_fields_capacities_configs_exact": true,
+  "native_error_equalities": 10,
+  "raw_files": 23,
+  "raw_bytes": 2470234362,
+  "typed_node_rows": 10822609,
+  "typed_word_pairs": 159838548,
+  "root_checks": 201948021,
+  "component_median_saving_ms": 45.4204,
+  "required_component_saving_ms": 107.80847100000001,
+  "component_guards": [
+    {
+      "id": 0,
+      "positive_median_slowdown": false,
+      "slower_pairs": 2,
+      "failed": false
+    },
+    {
+      "id": 1,
+      "positive_median_slowdown": false,
+      "slower_pairs": 1,
+      "failed": false
+    },
+    {
+      "id": 2,
+      "positive_median_slowdown": true,
+      "slower_pairs": 6,
+      "failed": true
+    }
+  ],
+  "native_report_sha256": "3a06831d67a3ab26a45b8d645e4df28f22bb92d7156907b51361292b58b7a424",
+  "root_report_sha256": "96853dde62a4d63ed0d4a9b868b1ab32afe09a93a178557da1923079e800fba5",
+  "source_activated": false,
+  "GPU_executions": 0,
+  "whole_cycle_timing_runs": 0,
+  "no_scope_threshold_placement_cache_shape_or_sample_rescue": true,
+  "candidate_accepted": false,
+  "all_owned_children_terminal": true,
+  "goal_active": true,
+  "limits": "CPU tree-builder wrapper only, includes fixed config deserialization; outer actual solve gain not measured. River component guard is not a measured whole-solver regression. Historical full-cycle number used only as frozen admission reference; no .42%whole-cycle inference."
+}

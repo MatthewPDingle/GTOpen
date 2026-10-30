@@ -1,0 +1,323 @@
+--- D036-r3/probe.rs
++++ E030-direct/probe.rs
+@@ -1,4 +1,4 @@
+-//! D036: standalone full-kernel and supplementary reduction differential; no timing.
++//! E030: actual complete-up_fold card-task-order differential; no timing.
+ use cudarc::{driver::{CudaContext, CudaFunction, CudaStream, LaunchConfig, PushKernelArg},
+     nvrtc::{compile_ptx_with_opts, CompileOptions}};
+ use serde_json::{json, Value};
+@@ -34,8 +34,6 @@
+ const GUARD: u32 = 0x4b123456;
+ const BASELINE: &str = include_str!("baseline.cu");
+ const CANDIDATE: &str = include_str!("candidate.cu");
+-const RAW_BASELINE: &str = include_str!("raw-baseline.cu");
+-const RAW_CANDIDATE: &str = include_str!("raw-candidate.cu");
+ const CORPUS: &str = include_str!("corpus.json");
+ 
+ fn fnv(bytes: impl IntoIterator<Item=u8>) -> String {
+@@ -50,7 +48,7 @@
+ fn padded(mut v: Vec<u32>) -> Vec<u32> { if v.is_empty() { v.push(GUARD); } v }
+ fn emit(v: Value) -> Result<()> {
+     let mut stdout = std::io::stdout().lock();
+-    writeln!(stdout, "D036_PROBE {}", v)?; stdout.flush()?; Ok(())
++    writeln!(stdout, "E030_DIRECT_EXACT {}", v)?; stdout.flush()?; Ok(())
+ }
+ fn record(file: &mut BufWriter<std::fs::File>, v: Value) -> Result<()> {
+     serde_json::to_writer(&mut *file, &v)?; file.write_all(b"\n")?; file.flush()?; Ok(())
+@@ -75,71 +73,10 @@
+         .map(|(i,v)| json!({"index":i,"bits":format!("{v:08x}")})).collect();
+     json!({"count":v.iter().filter(|&&v| !finite(v)).count(),"first_16":examples})
+ }
+-fn cpu_total(data: &[u32], block: usize) -> u32 {
+-    let mut partial = vec![0.0f32; block];
+-    for (lane, value) in partial.iter_mut().enumerate() {
+-        for i in (lane..data.len()).step_by(block) { *value += f32::from_bits(data[i]); }
+-    }
+-    let mut step = block/2;
+-    while step>0 {
+-        for lane in 0..step { partial[lane] += partial[lane+step]; }
+-        step >>= 1;
+-    }
+-    partial[0].to_bits()
+-}
+-
+-fn raw_checks(stream: &Arc<CudaStream>, funcs: &[CudaFunction;2], corpus: &Value,
+-    raw: &mut BufWriter<std::fs::File>) -> Result<usize> {
+-    let cases = corpus["raw_cases"].as_array().unwrap();
+-    let mut input=Vec::new(); let mut offsets=Vec::new(); let mut lengths=Vec::new();
+-    for case in cases {
+-        input.extend([GUARD;7]); offsets.push(input.len() as u32);
+-        let data=words(&case["bits"]); lengths.push(data.len() as u32); input.extend(data); input.extend([GUARD;7]);
+-    }
+-    let d_data=stream.clone_htod(&floats(&input))?;
+-    let d_offsets=stream.clone_htod(&offsets)?; let d_lengths=stream.clone_htod(&lengths)?;
+-    let count=cases.len() as u32;
+-    let initial=vec![GUARD;2+3*cases.len()+2];
+-    let mut active=vec![false;initial.len()]; for i in 0..cases.len() { active[2+3*i]=true; }
+-    for block in [128,16,32,64,256] {
+-        let mut outputs=Vec::new();
+-        for (variant,function) in ["baseline","candidate"].into_iter().zip(funcs) {
+-            let mut out=stream.clone_htod(&initial)?;
+-            unsafe { stream.launch_builder(function).arg(&d_data).arg(&d_offsets).arg(&d_lengths)
+-                .arg(&count).arg(&mut out).launch(LaunchConfig { grid_dim:(count+2,1,1), block_dim:(block,1,1), shared_mem_bytes:0 })?; }
+-            let actual=stream.clone_dtoh(&out)?;
+-            let unchanged=bits(&stream.clone_dtoh(&d_data)?);
+-            let read_offsets=stream.clone_dtoh(&d_offsets)?; let read_lengths=stream.clone_dtoh(&d_lengths)?;
+-            stream.synchronize()?;
+-            record(raw,json!({"scope":"raw_total","variant":variant,"block":block,"output_bits":actual}))?;
+-            exact(&input,&unchanged,"raw input immutable")?; exact(&offsets,&read_offsets,"raw offsets immutable")?;
+-            exact(&lengths,&read_lengths,"raw lengths immutable")?; guards(&initial,&actual,&active)?;
+-            outputs.push(actual);
+-        }
+-        let mut required=0usize; let mut optional_mismatches=0usize;
+-        for (i,case) in cases.iter().enumerate() {
+-            let a=outputs[0][2+3*i]; let b=outputs[1][2+3*i];
+-            let cpu=cpu_total(&words(&case["bits"]),block as usize);
+-            let required_case=case["required"].as_bool().unwrap();
+-            record(raw,json!({"scope":"raw_total_case","id":case["id"],"block":block,"required":required_case,
+-                "baseline_bits":a,"candidate_bits":b,"cpu_same_tree_bits":cpu,"baseline_finite":finite(a),"candidate_finite":finite(b)}))?;
+-            exact(&[a],&[b],"raw candidate including overflow")?;
+-            if required_case {
+-                if !finite(a) || !finite(b) || !finite(cpu) { return Err(format!("Required raw case nonfinite: {} block{block}",case["id"]).into()); }
+-                exact(&[a],&[b],"raw candidate")?; exact(&[cpu],&[a],"raw CPU same-tree oracle")?; required+=1;
+-            } else if a!=b { optional_mismatches+=1; }
+-        }
+-        emit(json!({"stage":"raw_total_exact","block":block,"required_cases":required,"optional_cases":cases.len()-required,
+-            "optional_bit_mismatches":optional_mismatches,"baseline_hash":hash_words(&outputs[0]),"candidate_hash":hash_words(&outputs[1]),
+-            "input_immutable":true,"guards_checked":initial.len()-cases.len(),"baseline_nonfinite":nonfinite(&outputs[0]),
+-            "candidate_nonfinite":nonfinite(&outputs[1]),"performance_measurement":false}))?;
+-    }
+-    Ok(10)
+-}
+-
+ fn full_checks(stream: &Arc<CudaStream>, funcs: &[CudaFunction;2], corpus: &Value,
+-    raw: &mut BufWriter<std::fs::File>) -> Result<(usize,usize,usize)> {
++    raw: &mut BufWriter<std::fs::File>) -> Result<Value> {
+     let mut launches=0usize; let mut required_words=0usize; let mut nonzero_words=0usize;
++    let mut active_words=0usize; let mut guard_words=0usize; let mut input_words=0usize;
+     for scenario in corpus["full_scenarios"].as_array().unwrap() {
+         let id=scenario["id"].as_str().unwrap();
+         let nh_p=scenario["nh_p"].as_i64().unwrap() as i32;
+@@ -154,14 +91,16 @@
+         let nodes=words(&scenario["nodes"]); let rsrc0=words(&scenario["rsrc0"]); let rsrc1=words(&scenario["rsrc1"]);
+         let reach0=words(&scenario["reach0_bits"]); let reach1=words(&scenario["reach1_bits"]);
+         let pc1=padded(words(&scenario["pc1"])); let pc2=padded(words(&scenario["pc2"]));
+-        let off=words(&scenario["card_off"]); let idx=padded(words(&scenario["card_idx"]));
++        let off_base=words(&scenario["card_off"]); let off_candidate=words(&scenario["candidate_card_off"]);
++        let idx=padded(words(&scenario["card_idx"]));
+         let same=padded(words(&scenario["same_p"])); let slots=words(&scenario["cfv_slot"]);
+         let d_nodes=stream.clone_htod(&nodes)?; let d_owner=stream.clone_htod(&owner)?;
+         let d_twin=stream.clone_htod(&floats(&twin))?; let d_tlose=stream.clone_htod(&floats(&tlose))?;
+         let d_rsrc0=stream.clone_htod(&rsrc0)?; let d_rsrc1=stream.clone_htod(&rsrc1)?;
+         let d_reach0=stream.clone_htod(&floats(&reach0))?; let d_reach1=stream.clone_htod(&floats(&reach1))?;
+         let d_pc1=stream.clone_htod(&pc1)?; let d_pc2=stream.clone_htod(&pc2)?;
+-        let d_off=stream.clone_htod(&off)?; let d_idx=stream.clone_htod(&idx)?;
++        let d_off_base=stream.clone_htod(&off_base)?; let d_off_candidate=stream.clone_htod(&off_candidate)?;
++        let d_idx=stream.clone_htod(&idx)?;
+         let d_same=stream.clone_htod(&same)?; let d_slots=stream.clone_htod(&slots)?;
+         let initial=vec![GUARD;scenario["cfv_words"].as_u64().unwrap() as usize];
+         let mut active=vec![false;initial.len()]; let mut required=active.clone();
+@@ -179,31 +118,50 @@
+                 let actual_active=if actual_count==0 { vec![false;active.len()] } else { active.clone() };
+                 let mut outputs=Vec::new();
+                 for (variant,function) in ["baseline","candidate"].into_iter().zip(funcs) {
++                    let (off,d_off)=if variant=="baseline" {(&off_base,&d_off_base)} else {(&off_candidate,&d_off_candidate)};
+                     let mut d_out=stream.clone_htod(&floats(&initial))?;
+                     unsafe { stream.launch_builder(function).arg(&d_nodes).arg(&start).arg(&actual_count).arg(&p)
+                         .arg(&d_owner).arg(&d_twin).arg(&d_tlose).arg(&d_rsrc0).arg(&d_rsrc1)
+-                        .arg(&d_reach0).arg(&d_reach1).arg(&d_pc1).arg(&d_pc2).arg(&d_off).arg(&d_idx)
++                        .arg(&d_reach0).arg(&d_reach1).arg(&d_pc1).arg(&d_pc2).arg(d_off).arg(&d_idx)
+                         .arg(&d_same).arg(&d_slots).arg(&mut d_out).arg(&nh_p).arg(&nh_o).arg(&nh_max)
+                         .launch(LaunchConfig {grid_dim:(actual_count as u32+2,1,1),block_dim:(block,1,1),shared_mem_bytes:nh_o as u32*4})?; }
+                     launches+=1;
+                     let out=bits(&stream.clone_dtoh(&d_out)?);
++                    // Retain the output and all readback hashes before any equality check.
++                    let owner_bits:Vec<u32>=owner.iter().map(|&v|v as u32).collect();
++                    let mut inputs:Vec<(&str,Vec<u32>,Vec<u32>)>=Vec::new();
++                    macro_rules! gather { ($host:expr,$actual:expr,$name:expr) => {
++                        inputs.push(($name,($host).to_vec(),$actual));
++                    }; }
++                    gather!(&nodes,stream.clone_dtoh(&d_nodes)?,"nodes");
++                    gather!(&owner_bits,stream.clone_dtoh(&d_owner)?.into_iter().map(|v|v as u32).collect(),"owner");
++                    gather!(&twin,bits(&stream.clone_dtoh(&d_twin)?),"twin");
++                    gather!(&tlose,bits(&stream.clone_dtoh(&d_tlose)?),"tlose");
++                    gather!(&rsrc0,stream.clone_dtoh(&d_rsrc0)?,"rsrc0");
++                    gather!(&rsrc1,stream.clone_dtoh(&d_rsrc1)?,"rsrc1");
++                    gather!(&reach0,bits(&stream.clone_dtoh(&d_reach0)?),"reach0");
++                    gather!(&reach1,bits(&stream.clone_dtoh(&d_reach1)?),"reach1");
++                    gather!(&pc1,stream.clone_dtoh(&d_pc1)?,"pc1");
++                    gather!(&pc2,stream.clone_dtoh(&d_pc2)?,"pc2");
++                    gather!(off,stream.clone_dtoh(d_off)?,"card_off");
++                    gather!(&idx,stream.clone_dtoh(&d_idx)?,"card_idx");
++                    gather!(&same,stream.clone_dtoh(&d_same)?,"same_p");
++                    gather!(&slots,stream.clone_dtoh(&d_slots)?,"cfv_slot");
++                    stream.synchronize()?;
++                    assert_eq!(inputs.len(),14);
++                    let input_records:Vec<Value>=inputs.iter().map(|(name,a,b)|json!({"name":name,"words":a.len(),
++                        "expected_fnv1a64":hash_words(a),"actual_fnv1a64":hash_words(b)})).collect();
+                     record(raw,json!({"scope":"full_up_fold","scenario":id,"p":p,"block":block,"count":actual_count,
+-                        "variant":variant,"output_bits":out}))?;
++                        "variant":variant,"output_bits":out,"input_readbacks":input_records}))?;
+                     guards(&initial,&out,&actual_active)?;
+-                    macro_rules! unchanged { ($host:expr,$device:expr,$name:expr) => {
+-                        exact($host,&stream.clone_dtoh($device)?,$name)?;
+-                    }; }
+-                    unchanged!(&nodes,&d_nodes,"nodes");
+-                    if stream.clone_dtoh(&d_owner)?!=owner { return Err("owner input changed".into()); }
+-                    exact(&twin,&bits(&stream.clone_dtoh(&d_twin)?),"twin")?;
+-                    exact(&tlose,&bits(&stream.clone_dtoh(&d_tlose)?),"tlose")?;
+-                    unchanged!(&rsrc0,&d_rsrc0,"rsrc0"); unchanged!(&rsrc1,&d_rsrc1,"rsrc1");
+-                    exact(&reach0,&bits(&stream.clone_dtoh(&d_reach0)?),"reach0")?;
+-                    exact(&reach1,&bits(&stream.clone_dtoh(&d_reach1)?),"reach1")?;
+-                    unchanged!(&pc1,&d_pc1,"pc1"); unchanged!(&pc2,&d_pc2,"pc2");
+-                    unchanged!(&off,&d_off,"card_off"); unchanged!(&idx,&d_idx,"card_idx");
+-                    unchanged!(&same,&d_same,"same_p"); unchanged!(&slots,&d_slots,"cfv_slot");
+-                    stream.synchronize()?;
++                    for (name,expected,actual) in &inputs {
++                        if expected!=actual {
++                            record(raw,json!({"scope":"input_mismatch","scenario":id,"p":p,"block":block,"count":actual_count,
++                                "variant":variant,"name":name,"expected_bits":expected,"actual_bits":actual}))?;
++                        }
++                        exact(expected,actual,name)?;
++                        input_words+=expected.len();
++                    }
+                     outputs.push(out);
+                 }
+                 let mut checked=0usize; let mut nonzero=0usize; let mut changed=0usize; let mut optional_mismatches=0usize;
+@@ -221,8 +179,11 @@
+                 }
+                 if checked>0 && changed==0 {return Err(format!("No required active output changed from stale guard: {id}").into());}
+                 required_words+=checked; nonzero_words+=nonzero;
++                active_words+=actual_active.iter().filter(|&&v|v).count();
++                guard_words+=2*(initial.len()-actual_active.iter().filter(|&&v|v).count());
+                 emit(json!({"stage":"full_fold_exact","scenario":id,"p":p,"block":block,"count":actual_count,
+                     "nh_p":nh_p,"nh_o":nh_o,"dynamic_shared_bytes":nh_o*4,"required_words":checked,
++                    "active_words":actual_active.iter().filter(|&&v|v).count(),"device_input_buffer_checks":28,
+                     "required_nonzero_words_excluding_stale_guard":nonzero,"required_changed_words":changed,
+                     "optional_bit_mismatches":optional_mismatches,
+                     "baseline_hash":hash_words(&outputs[0]),"candidate_hash":hash_words(&outputs[1]),
+@@ -233,65 +194,79 @@
+         }}
+     }
+     if nonzero_words==0 {return Err("No nonzero required full-kernel outputs; vacuous proof".into());}
+-    Ok((launches,required_words,nonzero_words))
++    Ok(json!({"comparison_pairs":launches/2,"kernel_launches":launches,"active_words_per_arm":active_words,
++        "required_finite_words_per_arm":required_words,"required_nonzero_words":nonzero_words,
++        "output_guard_checks_both_arms":guard_words,"input_buffer_checks_both_arms":launches*14,"input_word_checks_both_arms":input_words}))
+ }
+ 
++fn validate_corpus(corpus:&Value) -> Result<()> {
++    assert_eq!(corpus["guard_bits"].as_u64(),Some(GUARD as u64));
++    let scenarios=corpus["full_scenarios"].as_array().unwrap();assert_eq!(scenarios.len(),17);
++    for scenario in scenarios {
++        let off=words(&scenario["card_off"]);let packed=words(&scenario["candidate_card_off"]);let idx=words(&scenario["card_idx"]);
++        let nh_o=scenario["nh_o"].as_u64().unwrap() as usize;let nh_p=scenario["nh_p"].as_u64().unwrap() as usize;
++        assert_eq!(off.len(),53);assert_eq!(packed.len(),105);assert_eq!(&packed[..53],off.as_slice());
++        assert_eq!(off[0],0);assert!(off.windows(2).all(|w|w[0]<=w[1]));assert_eq!(off[52] as usize,idx.len());assert_eq!(idx.len(),2*nh_o);
++        let mut order:Vec<u32>=(0..52).collect();order.sort_by_key(|&card|(std::cmp::Reverse(off[card as usize+1]-off[card as usize]),card));
++        assert_eq!(&packed[53..],order.as_slice());let mut permutation=packed[53..].to_vec();permutation.sort_unstable();assert_eq!(permutation,(0..52).collect::<Vec<u32>>());
++        let hands=scenario["opponent_hands"].as_array().unwrap();assert_eq!(hands.len(),nh_o);
++        for card in 0..52 {
++            let expected:Vec<u32>=hands.iter().enumerate().filter(|(_,h)|h.as_array().unwrap().iter().any(|v|v.as_u64()==Some(card))).map(|(i,_)|i as u32).collect();
++            assert_eq!(&idx[off[card as usize] as usize..off[card as usize+1] as usize],expected.as_slice());
++        }
++        assert_eq!(scenario["own_hands"].as_array().unwrap().len(),nh_p);
++        for key in ["pc1","pc2","same_p"] {assert_eq!(words(&scenario[key]).len(),nh_p);}
++        for key in ["reach0_bits","reach1_bits"] {assert!(words(&scenario[key]).iter().all(|&v|finite(v)));}
++        assert_eq!(scenario["start"].as_u64(),Some(2));assert_eq!(scenario["count"].as_u64(),Some(56));
++        assert!(scenario["nh_max"].as_u64().unwrap() as usize>=nh_p.max(nh_o));
++    }
++    Ok(())
++}
+ fn run() -> Result<()> {
+-    // Harness checks only; these injected failures are not CUDA numerical cases.
++    // Host verifier injections are not native numerical cases.
+     if exact(&[1],&[0],"injected bit").is_ok() {return Err("bit mismatch self-test failed".into());}
+     if guards(&[GUARD],&[0],&[false]).is_ok() {return Err("guard mismatch self-test failed".into());}
+-    let corpus:Value=serde_json::from_str(CORPUS)?;
+-    if corpus["guard_bits"].as_u64()!=Some(GUARD as u64) {return Err("wrong guard".into());}
++    let corpus:Value=serde_json::from_str(CORPUS)?;validate_corpus(&corpus)?;
+     emit(json!({"stage":"harness_checks","expected_bit_injection_rejected":true,"guard_injection_rejected":true,
++        "metadata_validated":true,"full_scenarios":17,"baseline_offset_words":53,"candidate_offset_words":105,
+         "corpus_fnv1a64":fnv(CORPUS.bytes()),"counts_as_gpu_numerical_case":false}))?;
+-    let ctx=CudaContext::new(0)?;
+-    let stream=ctx.new_stream()?;
+-    let device=ctx.name()?; if device!="NVIDIA GeForce RTX 5090" {return Err(format!("wrong device {device}").into());}
+-    let (major,minor)=ctx.compute_capability()?; if (major,minor)!=(12,0) {return Err("wrong architecture".into());}
+-    let arch: &'static str=Box::leak(format!("compute_{major}{minor}").into_boxed_str());
+-    let mut modules=Vec::new();
+-    for (variant,source) in [("baseline",BASELINE),("candidate",CANDIDATE),("raw-baseline",RAW_BASELINE),("raw-candidate",RAW_CANDIDATE)] {
+-        let ptx=compile_ptx_with_opts(source,CompileOptions {arch:Some(arch),..Default::default()})?;
++    let ctx=CudaContext::new(0)?;let stream=ctx.new_stream()?;
++    let device=ctx.name()?;if device!="NVIDIA GeForce RTX 5090" {return Err(format!("wrong device {device}").into());}
++    let (major,minor)=ctx.compute_capability()?;if (major,minor)!=(12,0) {return Err("wrong architecture".into());}
++    let shared_limit=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_SHARED_MEMORY_PER_BLOCK)?;
++    let thread_limit=ctx.attribute(cudarc::driver::sys::CUdevice_attribute::CU_DEVICE_ATTRIBUTE_MAX_THREADS_PER_BLOCK)?;
++    let mut modules=Vec::new();let mut resources=Vec::new();
++    for (variant,source) in [("baseline",BASELINE),("candidate",CANDIDATE)] {
++        let ptx=compile_ptx_with_opts(source,CompileOptions {arch:Some("compute_120"),..Default::default()})?;
+         let mut file=OpenOptions::new().write(true).create_new(true).open(format!("{variant}.ptx"))?;
+-        file.write_all(ptx.to_src().as_bytes())?; file.flush()?;
+-        let module=ctx.load_module(ptx)?;
+-        if !variant.starts_with("raw-") {
+-            let f=module.load_function("up_fold")?;
+-            for nh_o in [0u32,257,319,1326] {
+-                emit(json!({"stage":"resource","source_variant":variant,"source_fnv1a64":fnv(source.bytes()),
+-                    "source_bytes":source.len(),"kernel":"up_fold","device":device,"architecture":arch,
+-                    "compile_options":"architecture only; all other CompileOptions default, matching accepted production",
+-                    "registers":f.num_regs()?,"local_bytes_per_thread":f.local_size_bytes()?,"static_shared_bytes":f.shared_size_bytes()?,
+-                    "max_threads_per_block":f.max_threads_per_block()?,
+-                    "block_threads":128,"nh_o":nh_o,"dynamic_shared_bytes":nh_o*4,
+-                    "occupancy_blocks_per_sm_128":f.occupancy_max_active_blocks_per_multiprocessor(128,(nh_o*4) as usize,None)?,
+-                    "scope":"theoretical occupancy/resources only","performance_measurement":false}))?;
++        file.write_all(ptx.to_src().as_bytes())?;file.flush()?;
++        let module=ctx.load_module(ptx)?;let function=module.load_function("up_fold")?;
++        for block in [128,16,32,64,256] {
++            assert!(function.max_threads_per_block()?>=block && thread_limit>=block);
++            for scenario in corpus["full_scenarios"].as_array().unwrap() {
++                assert!(function.shared_size_bytes()? as usize+4*scenario["nh_o"].as_u64().unwrap() as usize<=shared_limit as usize);
+             }
+         }
++        resources.push(json!({"variant":variant,"source_fnv1a64":fnv(source.bytes()),"source_bytes":source.len(),
++            "registers":function.num_regs()?,"local_bytes_per_thread":function.local_size_bytes()?,"static_shared_bytes":function.shared_size_bytes()?,
++            "max_threads_per_block":function.max_threads_per_block()?,"scope":"capacity metadata only; no resource nonregression gate"}));
+         modules.push(module);
+     }
++    emit(json!({"stage":"device","device":device,"architecture":"compute_120","production_block":128,"tested_blocks":[128,16,32,64,256],
++        "max_shared_bytes_per_block_default":shared_limit,"max_threads_per_block":thread_limit,"resources":resources,
++        "compile_options":"architecture only; all other production defaults","performance_measurement":false}))?;
+     let full=[modules[0].load_function("up_fold")?,modules[1].load_function("up_fold")?];
+-    let raw_funcs=[modules[2].load_function("raw_total")?,modules[3].load_function("raw_total")?];
+-    let file=OpenOptions::new().write(true).create_new(true).open("raw-results.jsonl")?;
+-    let mut raw=BufWriter::new(file);
+-    let raw_launches=raw_checks(&stream,&raw_funcs,&corpus,&mut raw)?;
+-    let (full_launches,required_words,nonzero_words)=full_checks(&stream,&full,&corpus,&mut raw)?;
+-    raw.flush()?; stream.synchronize()?; ctx.check_err()?;
+-    drop(raw_funcs); drop(full); drop(modules);
+-    stream.synchronize()?; ctx.check_err()?;
+-    emit(json!({"stage":"complete","required_exact":true,"all_observed_gpu_bits_exact":true,
+-        "all_raw_case_pairs":corpus["raw_cases"].as_array().unwrap().len()*5,
+-        "required_raw_case_pairs":corpus["raw_cases"].as_array().unwrap().iter().filter(|v|v["required"]==true).count()*5,
+-        "full_case_pairs":full_launches/2,"required_full_output_words":required_words,"required_nonzero_words":nonzero_words,
+-        "kernel_launches":raw_launches+full_launches,"raw_kernel_launches":raw_launches,"full_kernel_launches":full_launches,
+-        "fallback_blocks":[16,32,64,256],"specialized_block":128,"input_immutability":true,"output_guards":true,
+-        "optional_overflow_reported_separately":true,"nan_input_payload_guarantee":false,
+-        "solver_executions":0,"performance_measurement":false,"candidate_accepted":false}))?;
+-    Ok(())
++    let file=OpenOptions::new().write(true).create_new(true).open("raw-results.jsonl")?;let mut raw=BufWriter::new(file);
++    let totals=full_checks(&stream,&full,&corpus,&mut raw)?;raw.flush()?;stream.synchronize()?;ctx.check_err()?;
++    drop(full);drop(modules);stream.synchronize()?;ctx.check_err()?;
++    emit(json!({"stage":"complete","totals":totals,"required_exact":true,"all_observed_gpu_bits_exact":true,
++        "production_block":128,"supplementary_blocks":[16,32,64,256],"input_immutability":true,"output_guards":true,
++        "overflow_reported_separately":true,"nan_input_payload_guarantee":false,"raw_kernel_launches":0,
++        "solver_executions":0,"performance_measurement":false,"candidate_accepted":false}))?;Ok(())
+ }
+ fn main() {
+     if let Err(error)=run() {
+         let _=emit(json!({"stage":"invalid","error":error.to_string(),"performance_measurement":false}));
+-        eprintln!("D036 invalid: {error}"); std::process::exit(1);
+-    }
+-}
++        eprintln!("E030 direct invalid: {error}"); std::process::exit(1);
++    }
++}

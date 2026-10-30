@@ -1,0 +1,54 @@
+--- accepted/kernels.cu.patch
++++ E081/kernels.cu.patch
+@@ -346,8 +346,10 @@
+     int nh_p, int nh_max)
+ {
+     float pos = disc[0], neg = disc[1], ds = disc[2];
+-    int b = blockIdx.x;
+-    if (b >= count) return;
++    int b = blockIdx.x * ((blockDim.x + 31u) >> 5) + (threadIdx.x >> 5);
++    if (b >= count) return;
++    const int lane = threadIdx.x & 31u;
++    const int width = min(32u, blockDim.x - (threadIdx.x & ~31u));
+     u32 n = nodes[start + b];
+     const int na = NA == 0 ? node_na[n] : NA;
+     u32 cs = node_children_start[n];
+@@ -356,7 +358,7 @@
+         if (loff >= 0) {
+             // locked: fixed sigma, no regret/strategy update
+             const float* sig = lock_sigma + loff;
+-            for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++            for (int i = lane; i < nh_p; i += width) {
+                 float out = 0.f;
+                 for (int a = 0; a < na; a++)
+                     out += sig[a * nh_p + i] * cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+@@ -369,7 +371,7 @@
+         // register-cache regrets and child values for the common small-na case
+         float rc[8], vc[8];
+         bool small = na <= 8;
+-        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++        for (int i = lane; i < nh_p; i += width) {
+             float sum = 0.f;
+             for (int a = 0; a < na; a++) {
+                 float r = regrets_p[doff + (u64)a * nh_p + i];
+@@ -400,7 +402,7 @@
+             cfv[(u64)cfv_slot[n] * nh_max + i] = out;
+         }
+     } else {
+-        for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++        for (int i = lane; i < nh_p; i += width) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)
+                 acc += cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
+@@ -425,8 +427,9 @@
+                                     // captured graphs stay iteration-invariant
+     int nh_p, int nh_max)
+ {
+-    if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
++    int b = blockIdx.x * ((blockDim.x + 31u) >> 5) + (threadIdx.x >> 5);
++    if (b >= count) return;
++    const int na = node_na[nodes[start + b]];
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+     if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);

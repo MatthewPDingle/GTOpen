@@ -1,0 +1,23 @@
+{
+  "id": "E039-kernel-control",
+  "at": "2026-10-17T00:28:13.970382+00:00",
+  "status": "pass_scoped_gpu_equivalence",
+  "case_count": 175,
+  "kernel_launches": 350,
+  "full_raw_output_words_retained_both_arms": 2032418,
+  "independently_decoded_guard_words_per_arm": 992177,
+  "raw_outputs_byte_identical": true,
+  "raw_case_shapes_and_output_lengths_verified": true,
+  "native_immutable_input_words_verified": 163536,
+  "input_check_limit": "Post-device immutable input checks are native assertions and retained case markers; only seeded input bytes, not a second raw device-input snapshot, are retained.",
+  "source162_main_live_ptx_unchanged": true,
+  "control_complete_sha256": "4c6c4a62c0d1e09c1204cea0f7219fa4f355ccd739804ee5d4307c362b179389",
+  "raw_artifact_sha256": {
+    "inputs.bin": "ad9f5bfdcfd5abc1488dde8f9ee8c05c909b4b53701249e847f2f5b84096f2fb",
+    "baseline.bin": "82e2f4b40f20def0d53bc12250111ea74b42c7a592339adf67eded7832e6563c",
+    "candidate.bin": "82e2f4b40f20def0d53bc12250111ea74b42c7a592339adf67eded7832e6563c"
+  },
+  "performance_measurement": false,
+  "solver_executions": 0,
+  "candidate_accepted": false
+}

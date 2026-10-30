@@ -1,0 +1,13 @@
+# E032 prospective fixed primary plan
+
+Unexecuted narrow adaptation of the frozen E030 build/primary/assessment scripts. The candidate consolidates training terminal launches after the downward pass, with checked total/grid bounds and the original per-level fallback. Only mod.rs changes. Kernel bytes, block dimensions, dynamic shared bytes, arithmetic and evaluation scheduling stay unchanged; terminal grid sizes, launch count and order change. There is no resource probe, direct-kernel prerequisite or pre-primary feature compile.
+
+Root runs one fresh GPU-only library/evaluator build in build-e032-primary, then the fixed unit screen and B101/E032R1, E032R2/B102, B103/E032R3. The unchanged evaluator requires all 18 complete non-timing results and 138 convergence records exact, at least 2% aggregate complete-cycle improvement and the existing conjunctive repeated 3% fixture guard. No measurement exclusions, extensions or rescue variants. All compiler processes must terminate before native tests.
+
+The build retains accepted 162-source identity except the sole reviewed host file, exact source copies/patch, fresh GPU-only Cargo artifacts and target containment, complete unchanged E020 CUDA embedded, compiler-override refusal, live-idle/GPU lock, disk reserve and bounded owned-child cleanup. CUDA inclusion alone cannot prove the host change; fresh artifacts and exact host source identity are required together. Root authorizes and performs source activation/restoration separately; this preparation does not execute those actions.
+
+The new host geometry/count/fallback unit and the test-only original per-level reference share a dispatch helper. Their independence is limited. The immutable accepted E020 benchmark remains the actual independent primary comparison. If primary qualifies, independent original state/menu/resume, F32, GPU, graph/eager/profiled, warm/locks/post-evaluation, standalone/continuation/paging/stored, fixed wide-turn and fresh-original cumulative checks remain required under separate authorization. No conditional harness is prepared here and a primary pass is not acceptance.
+
+Root preserves candidate bytes, rejected patch and every failure, restores only the owned mod.rs to E020, verifies the accepted 162-source map and checks the exact live target/desktop-runtime/release/gto-server.exe remains unchanged. The scripts clean up only their own process trees; no checkout reset or broad deletion is performed.
+
+The earlier wording that all launch shapes were unchanged is preserved in draft-r1 and corrected in draft-correction.json. Only block dimensions/shared bytes/ABI stay fixed; terminal grids and scheduling intentionally differ.

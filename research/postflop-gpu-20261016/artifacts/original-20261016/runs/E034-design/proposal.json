@@ -1,0 +1,82 @@
+{
+  "id": "E034-test-eligibility-proposal",
+  "status": "PROPOSED_TEST_ONLY_CORRECTION_NOT_EXECUTED",
+  "at": "2026-10-16T20:14:30.976137+00:00",
+  "parent": "E033",
+  "diagnosis": "The failed assertion demands policy enablement for a nine-node d_cfv_slot allocation of 36 bytes. Production deliberately permits only fully owned 128-byte lines; floor(36/128)*128=0, so CachePolicy::prefix rejects eligibility and prepare returns None before policy mutation. The native log reports exactly that fallback before the assertion. This is a test eligibility mismatch; no numerical mismatch was observed at this failure, and the tiny fixture numerical trajectory was not reached.",
+  "failure_evidence": {
+    "stdout_lines": [
+      181,
+      187
+    ],
+    "candidate_mod_line": 1586,
+    "native_summary": {
+      "passed": 86,
+      "failed": 1,
+      "ignored": 4
+    },
+    "native_failure_status": "E033 unit gate failed; preserved",
+    "performance_evidence": false,
+    "planned_benchmark_directories_absent": {
+      "B104": true,
+      "E033R1": true,
+      "E033R2": true,
+      "B105": true,
+      "B106": true,
+      "E033R3": true
+    }
+  },
+  "source_proof": [
+    {
+      "path": "E033-design/candidate/cache_policy.rs",
+      "lines": [
+        30,
+        33
+      ],
+      "fact": "prefix rejects zero aligned length"
+    },
+    {
+      "path": "E033-design/candidate/cache_policy.rs",
+      "lines": [
+        63,
+        78
+      ],
+      "fact": "prepare returns None at failed prefix before stream policy mutation"
+    },
+    {
+      "path": "E033-design/candidate/mod.rs",
+      "lines": [
+        1557,
+        1599
+      ],
+      "fact": "same existing matrix includes large eligible flop/turn fixtures and a nine-node river fixture"
+    }
+  ],
+  "correction": "Replace only the unconditional assertion inside the existing evaluation test with explicit zero-window fallback assertions and nonzero-window required-enable/exact-size assertions. Keep every fixture, loop, lock, budget and numerical assertion unchanged. Nonzero windows still require enabled policy on the qualification device, so unsupported fallback cannot masquerade as enabled coverage.",
+  "production_implementation_byte_exact_to_E033": true,
+  "new_cache_module_byte_exact_reference": "e87bd468b383645387019868a81de96fe89a5741f81d675821497df0cc8c9f14",
+  "numerical_assertions_and_workload_unchanged": true,
+  "test_declarations_unchanged": true,
+  "gpu_only_expected_inventory": {
+    "passed": 87,
+    "ignored": 4,
+    "total": 91
+  },
+  "checks": {
+    "exact_single_replacement_and_reverse": true,
+    "only_existing_test_body_changed": true,
+    "all_six_primary_run_directories_absent": true
+  },
+  "reviewer_only_note": "One exploratory listing used a nonexistent primary-execution subdirectory; corrected by verifying the six canonical run directories directly. No execution was attempted.",
+  "reference_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\manifest.json": "ce92311e2aa1cec5977e7ed5cf9fad6cb96fd2f1f373fced496c9ca208f92324",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\mod.rs": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\cache_policy.rs": "e87bd468b383645387019868a81de96fe89a5741f81d675821497df0cc8c9f14",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\cleanup-source.cu": "78a08095e0ce8d377484db21d8a6c3a4ca8cdc5c58bb46f338d33b838add5d15",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\stdout.log": "0e1c06d447025e83f2493df795741d6e02318025c0fbebb92269d7e40e93ca84",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\V033-unit\\report.json": "74b8726cccad4d6621d91f310d2ca7cb07ffee6412ec934caa0da3c53e0f6f89"
+  },
+  "authorization_boundary": "Only this source-only proposal is prepared. Await root authorization before full successor package or activation/build/native work.",
+  "compiler_native_gpu_executed": false,
+  "candidate_accepted": false
+}

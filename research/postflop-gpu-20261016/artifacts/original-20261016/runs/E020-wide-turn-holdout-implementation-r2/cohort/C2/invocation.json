@@ -1,0 +1,39 @@
+{
+  "at": "2026-10-16T11:22:41.455074+00:00",
+  "args": [
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\build\\binaries\\E020-holdout.exe",
+    "postflop_wide_turn_holdout",
+    "--exact",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "cwd": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C2",
+  "timeout_seconds": 600,
+  "environment": {
+    "RAYON_NUM_THREADS": "16",
+    "CARGO_TARGET_DIR": null,
+    "RUSTFLAGS": null,
+    "CARGO_ENCODED_RUSTFLAGS": null,
+    "POSTFLOP_HOLDOUT_STATE": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\cohort\\C2\\state.bin"
+  },
+  "compiler_override_absence_check": {
+    "keys": [
+      "CARGO_BUILD_RUSTC",
+      "CARGO_BUILD_RUSTC_WORKSPACE_WRAPPER",
+      "CARGO_BUILD_RUSTC_WRAPPER",
+      "CARGO_BUILD_RUSTFLAGS",
+      "CARGO_BUILD_TARGET",
+      "CARGO_ENCODED_RUSTFLAGS",
+      "RUSTC",
+      "RUSTC_WORKSPACE_WRAPPER",
+      "RUSTC_WRAPPER",
+      "RUSTFLAGS"
+    ],
+    "patterns": [
+      "CARGO_PROFILE_RELEASE_*",
+      "CARGO_TARGET_*_RUSTFLAGS"
+    ],
+    "present": {}
+  }
+}

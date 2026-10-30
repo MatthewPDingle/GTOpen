@@ -1,0 +1,31 @@
+{
+  "at": "2026-10-17T03:25:18.534003+00:00",
+  "protocol_sha256": "7e582f0ccda82aa2ebfd74bbe3efe9eabaafcfa5d46f22065d4a6bde67285b3a",
+  "records": [
+    {
+      "mode": "cpu",
+      "id": "V049-cpu",
+      "passed": 46,
+      "ignored": 1,
+      "inventory_total": 47,
+      "stdout_sha256": "407e2ff1ed7d50392e1c05bfb7cae11b57ef59ef0e714034c697e3df832691ae",
+      "report_sha256": "3a2ee72c9213e7d35589b939a7740021ea481adef3925a5e4d54e8265bd370cb"
+    },
+    {
+      "mode": "gpu",
+      "id": "V049-unit",
+      "passed": 86,
+      "ignored": 4,
+      "inventory_total": 90,
+      "stdout_sha256": "70c9c8da9c990e2229e550cb782d345b9a91d2efbb1240a2b6f51e893e967f6d",
+      "report_sha256": "2022c3b9b2965140571c01cc652e19b67f82a9152ed90600fd6654c032e67317"
+    }
+  ],
+  "status": "pass_provenance_controls",
+  "predicate_comparisons": 5600,
+  "fast_path_witnesses_required": true,
+  "cpu_only_ordinary_passed": true,
+  "gpu_ordinary_passed": true,
+  "candidate_accepted": false,
+  "limits": "Access-history and exact original predicate controls plus ordinary tests. No GPU timing, CPU performance, final codegen, or broader adoption qualification."
+}

@@ -1,0 +1,47 @@
+{
+  "id": "E070-three-continuation-helper-raw-preparation",
+  "status": "unexecuted_correctness_controls",
+  "cases": 2120,
+  "planned_kernel_launches": 4240,
+  "rustc_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\continuation-raw\\probe.exe"
+  ],
+  "input_sha256": {
+    "corpus.json": "d50cde98adc72e7782fcae4a2e7b4658f78b1c1df68de50676c2d5a2f4f6be41",
+    "probe.rs": "7ead914ec71301607e6ae2010cc775665432638020844674d272c193abee7622"
+  },
+  "conservative_full_raw_bytes": 3305908780,
+  "maximum_mutable_GPU_payload_bytes": 27051248,
+  "storage_reservation": "Combined main+helper correctness raw outputs fit within the existing8GiB peak reservation; recheck66GiB free on S at native admission.",
+  "PTX_dependency": "Read the four compute_120 PTX files from the separately sealed successful helper resource run. Parent must pin their SHA256 before and after the one numerical process, and retain that exact PTX manifest before any application kernel launch.",
+  "candidate_sources": {
+    "crates/solver/src/gpu/mod.rs": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+    "crates/solver/src/gpu/continuation.rs": "68df35ad03dc38d7a6fecbc59e39aa94d1b412b1c2a4b76fee8ae2ef8c6ad463",
+    "crates/solver/src/gpu/continuation_storage.rs": "c85f03297ba6af551a1b5a1a44971906e5d3e0934dc2f6a5bcf32f1aae36c693",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8a07855c5058673d55c71d921c6d52e6e461011670d362ea41b1d1db9d06856f",
+    "crates/solver/src/gpu/continuation_projection.cu": "3cf76f4ce9dcc56da58642ea8a922a402f555f25fb98b9f8deffff34b68e25d5",
+    "crates/solver/src/gpu/continuation_storage_copy.cu": "61c655562fe407e3239e9c09384225e18c21e79c4e81620e435f62c2ba8dc5da",
+    "crates/solver/src/gpu/kernels.cu": "ffe6c46aa48fbae149ace1288ea512814da11b840c648e6a260759e427c54ec8"
+  },
+  "no_rescue": "Fixed2120cases, one baseline/candidate launch each, no resampling/extra/excluded cases or candidate source/compiler-option rescue.",
+  "native_admission_pending": true,
+  "GPUexecutions": 0,
+  "NVRTC_processes": 0,
+  "limits": "Host compilation preparation only; no numerical result or speed measurement."
+}

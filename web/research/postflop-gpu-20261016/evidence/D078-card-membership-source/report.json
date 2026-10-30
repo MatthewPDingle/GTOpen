@@ -1,0 +1,54 @@
+{
+  "id": "D078-card-membership-source",
+  "at": "2026-10-17T02:45:29.326403+00:00",
+  "status": "source_algebra_pass_pending_bounded_compiler_design",
+  "root_review_only": true,
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\continuation_capacity.rs": "e8b38a1c828e56d84af55f562270327e59dbcbc68d7bb6f289a90ab93f795ed2",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\save.rs": "7ff782defae9848c317de59d93677ae9873060a485b0d1dc8c329b5adc6a11b9"
+  },
+  "proposal": "For valid canonical hands, replace the down_chance/up_chance 64-bit mask membership tests with equality against the existing GPU hand_c1/hand_c2 arrays. Potentially remove the two redundant private device hand-mask buffers. Preserve all public CPU plan fields, floating expressions/order, launch shapes and graph ordering.",
+  "algebra": {
+    "domain": "All c1,c2,dealt card IDs0..51, including duplicate-card pairs for algebra only; actual poker hands require c1!=c2.",
+    "cases": 140608,
+    "distinct_card_hand_cases": 137904,
+    "all_equal": true,
+    "raw_schema": "D078ALG1 then140608 records of5 bytes(c1,c2,dealt,originalBool,newBool), lexicographic order.",
+    "raw_sha256": "9d4c6b8a07317a43bee870b41b48e37e814419e1a154cb7d20cd133699e02709",
+    "proof_kind": "CPU exhaustive boolean identity only, not compiled CUDA/numerical/solve or speed proof."
+  },
+  "input_invariant": "game.rs184 constructs each HandInfo.mask as card_mask(c1)|card_mask(c2), with c1/c2 from canonical combo_from_index; supported saved-session load reconstructs through Spot::new_lenient. Source search found no in-engine HandInfo construction outside that factory and no mask assignment mutation. Public Rust fields can be manually inconsistent; no equivalence is claimed for malformed custom HandInfo values or IDs outside0..51. Confirm all continuation/testing callers before implementation.",
+  "gpu_callers": {
+    "private_masks": "mod.rs131/350",
+    "evaluation_down": "mod.rs607-608",
+    "evaluation_up": "mod.rs715",
+    "training_down": "mod.rs840-841",
+    "training_up": "mod.rs947",
+    "ordinary_test_full_down_reference": "mod.rs1265",
+    "payload_accounting": "continuation_capacity.rs34/53"
+  },
+  "resource_design": "No new card buffer or host packing. Reuse uploaded u32 card arrays already required by fold/show kernels. If masks are removed, device payload decreases8*(nh0+nh1)bytes and two allocations; private solver field count falls. GPU plan CPU fields remain untouched, and both actual/expected metadata accounting must reflect the reduction without changing capacity vector indices. No material resource/speed claim follows yet.",
+  "novelty": {
+    "preserved_patch_candidate_review_search": "No match found for mask-to-card-comparison descriptions or card equality in retained candidate/patch/readme/review search.",
+    "local_all_ref_history_stdout": "",
+    "limits": "Local records/text search, no exhaustive remote-history claim. Separate from E046 triplet layout and E047 arity routing. E031 offset-cache mechanism is not revived."
+  },
+  "possible_costs": [
+    "Two32bit loads/predicates replace one64bit load/bit operation; extra pointers and code may increase registers or run slower.",
+    "Removing allocations can affect constructor/lifetime/allocator behavior; qualification must use whole-cycle and material-cost evidence."
+  ],
+  "next_prerequisites": [
+    "Confirm valid-hand domain for every supported caller and exact host/feature payload integration before any source activation.",
+    "One frozen two-kernel compiler/ABI/resource probe, no launch: changed down_chance/up_chance, other7 entries exact; no register/local/shared/thread-limit/occupancy regression. No packing/factor sweep after outcome.",
+    "Direct old-mask/new-card GPU raw controls for both kernels across all canonical hand/dealt-card relations, zero counts, tails, identity/nonidentity permutations and float payload stress.",
+    "Only then fresh feature/primary builds, ordinary suite and fixed3pair1%/strict fixture screen. Fresh16pair/broader/holdout/cumulative/resource qualification before adoption."
+  ],
+  "candidate_source_written": false,
+  "compiler_gpu_solver_executions": 0,
+  "performance_measured": false,
+  "candidate_accepted": false
+}

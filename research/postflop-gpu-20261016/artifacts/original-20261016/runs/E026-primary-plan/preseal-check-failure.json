@@ -1,0 +1,10 @@
+{
+  "at": "2026-10-16T15:23:38.851570+00:00",
+  "stage": "file-only final preparation validation before scripts seal",
+  "failure": "AssertionError on exact fixed primary order",
+  "cause": "Inherited V025-unit label remained after E025-to-E026 substitutions",
+  "repair": "Replace that unit ID with predeclared V026-unit in protocol and primary, recompute pinned protocol hash; no schedule/gate/source change",
+  "preserved_draft_manifest_sha256": "0f0e1caeec12e92d229096101b28476f2b07dbe5a806d34e69cc7581cc902c1e",
+  "source_archive_unchanged": true,
+  "no_execution_or_status_or_checkout_changes": true
+}

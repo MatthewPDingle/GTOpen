@@ -1,0 +1,26 @@
+--- accepted/arena.patch
++++ E083/arena.patch
+@@ -125,12 +125,13 @@
+         &mut self, stream: &Arc<CudaStream>, solver: &Solver, p: usize, which: usize,
+         staging: &mut [f32],
+     ) -> Result<CudaSlice<f32>, String> {
+-        self.upload_prechecked(stream, solver, p, which, staging, None)
++        self.upload_prechecked(stream, solver, p, which, staging, None, false)
+     }
+ 
+     pub(super) fn upload_prechecked(
+         &mut self, stream: &Arc<CudaStream>, solver: &Solver, p: usize, which: usize,
+         staging: &mut [f32], check: Option<&ZeroCheck<'_>>,
++        defer_zero_sync: bool,
+     ) -> Result<CudaSlice<f32>, String> {
+         let store = if which == 0 { &solver.regrets[p] } else { &solver.strat[p] };
+         let zero = match check {
+@@ -141,7 +142,7 @@
+             // Fresh compressed arenas need neither f32 host decoding nor a
+             // host-to-device copy. Inactive positive-zero sentinels stay intact.
+             let device = stream.alloc_zeros::<f32>(self.len).map_err(e)?;
+-            stream.synchronize().map_err(e)?;
++            if !defer_zero_sync { stream.synchronize().map_err(e)?; }
+             return Ok(device);
+         }
+         if !self.compact {

@@ -1,0 +1,19 @@
+{
+  "id": "E065",
+  "at": "2026-10-17T10:32:02.085753+00:00",
+  "status": "STAGED_NOT_FROZEN_FOR_NATIVE",
+  "source_scope": "tree.rs only, no CUDA/GpuPlan/Store/quality/evaluator/menu change. First successful advance_street child supplies completed output ranges. Other same-state card children append clones and translate only absolute indices/data offsets. runout_chance source unchanged.",
+  "proof_obligations": [
+    "For a fixed advance_street invocation all child BuildState values and board_mask are identical; no card value is passed into action_node. Preserve all phantom subtrees and52slot SENTINELplacement.",
+    "Inductively each completed subtree has contiguous node/child/action ranges and no external child references. All nonsentinel child IDs are shifted by node destination delta.",
+    "Only action/chance children_start fields shift; only action actions_start and player-specific data_offset shift. All terminal/unused fields and every f64 bit stay cloned exactly.",
+    "Nested first-child templates are complete before outer replay. Templates retain indices/counts only, so Vec reallocation cannot invalidate a borrowed pointer. No unsafe access introduced.",
+    "Compute all destination ends/deltas and data totals before mutation. When a whole clone cannot fit node budget/integer bounds, execute original recursive path, preserving errors rather than introducing an early different failure.",
+    "Each appended range length is no greater than current vector length. Under current Vec amortized growth, reserve by that length should cross at mostone doubling just as gradual append; require exact actual returned capacities, do not infer physical peak from this proof.",
+    "Same number/order/layout of nodes/actions/children and exact two data sizes must be proved on full raw trees, not merely root EV/fingerprint. Validate strict/lenient legacy, aggression carry, all-in/budget/error and arbitrary menu cases before production."
+  ],
+  "costs_pending": "Output copying is required and retained. New local template descriptor, translation pass and allocation order need CPU/process/peak/lifetime checks. No retained hash cache or duplicate template vectors, but no materially-free assertion before measurement.",
+  "source_audit_sha256": "59a6730a4e9c5fbfc52c2bc5b648010da79f0e2b5f4844a12eb80aba7eac69b0",
+  "native_executions": 0,
+  "candidate_accepted": false
+}

@@ -1,0 +1,29 @@
+--- retained-control/execute.py
++++ E082-control/execute.py
+@@ -2,7 +2,7 @@
+ from pathlib import Path
+ import json,shutil,subprocess,sys,time
+ H=Path(__file__).resolve().parent;R=H.parent.parent
+-sys.path.insert(0,str(R/'runs/accepted-E051-live-20261018'));import common_e051_live as old
++sys.path.insert(0,str(R/'runs/accepted-E080-live-20261018'));import common_e080_live as old
+ assert len(sys.argv)==2;old.pin(H/'protocol.json',sys.argv[1]);P=old.read(H/'protocol.json');O=H/'execution'
+ def verify():
+  for p,h in P['input_sha256'].items():old.pin(p,h)
+@@ -24,14 +24,14 @@
+ verify()
+ with old.ar.exclusive_lock(R/'gpu-run.lock'):
+  old.ar.refuse_active(old.ar.live_status());assert shutil.disk_usage(R).free>=66*1024**3;assert not O.exists()and not(H/'probe.exe').exists();O.mkdir()
+- assert old.read(P['host_report'])['status']=='pass_compiled_prefix_tags_against_retained_model'
+- assert all(old.read(P['effective_resource_report'])['effective_gates'].values())
++ assert old.read(P['resource_report'])['status']=='pass_compiled_prefix_consumer_prerequisites'
++ assert all(old.read(P['resource_report'])['gates'].values())
+  child(P['rustc_command'],'rustc',180);verify()
+  binary=H/'probe.exe';data=binary.read_bytes()
+  assert(H/'baseline.ptx').read_bytes()in data and(H/'candidate.ptx').read_bytes()in data
+  old.save(O/'build-complete.json',{'at':old.now(),'binary_sha256':old.sha(binary),'exact_sealed_PTX_embedded':True,'compiler_terminal':True,'numerical_launches':0})
+  child([str(binary)],'probe',900);verify()
+- markers=[json.loads(x.split('E077_EXACT ',1)[1])for x in(O/'probe.stdout.log').read_text(encoding='utf-8').splitlines()if'E077_EXACT 'in x]
++ markers=[json.loads(x.split('E082_EXACT ',1)[1])for x in(O/'probe.stdout.log').read_text(encoding='utf-8').splitlines()if'E082_EXACT 'in x]
+  assert len(markers)==1823 and markers[0]['stage']=='corpus_validated'and markers[1]['stage']=='device'and markers[-1]['stage']=='complete'
+  corpus=old.read(H/'corpus.json');matrix=[(w,c)for w in P['widths']for c in corpus['cases']]
+  for (width,case),row in zip(matrix,markers[2:-1]):assert row['stage']=='full_show_exact'and row['case_id']==case['id']and row['threads']==width and row['all_output_bits_exact']and row['input_bits_unchanged']

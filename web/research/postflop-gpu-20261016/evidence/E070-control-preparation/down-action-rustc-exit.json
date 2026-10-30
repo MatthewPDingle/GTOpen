@@ -1,0 +1,32 @@
+{
+  "id": "E070-down-action-compiler-receipt",
+  "started": "2026-10-17T22:59:33.444844+00:00",
+  "finished": "2026-10-17T22:59:37.503089+00:00",
+  "compiler_pid": 341028,
+  "returncode": 0,
+  "error": null,
+  "all_owned_compiler_handles_terminal": true,
+  "GPUexecutions": 0,
+  "preparation_sha256": "3423df7f4ca836148f7ffbee7b0273e9fa7ab03f4392b509f82cf923c37f0ed5",
+  "compiler_command": [
+    "rustc",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\probe.rs",
+    "--edition=2021",
+    "-C",
+    "opt-level=3",
+    "-C",
+    "codegen-units=1",
+    "-C",
+    "lto=thin",
+    "-L",
+    "dependency=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps",
+    "--extern",
+    "cudarc=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libcudarc-ba3140064b5903a3.rlib",
+    "--extern",
+    "serde_json=S:\\GTOpen-research\\postflop-gpu-20261016\\build\\release\\deps\\libserde_json-83a0670a02a34a4d.rlib",
+    "-o",
+    "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\probe.exe"
+  ],
+  "child_only_TMP_TEMP": "X:\\Dev\\GTOpen\\research\\postflop-gpu-20261016\\E070-control-staging\\down-action\\compiler-tmp",
+  "binary_sha256": "e0b8662351aff3d50ec1a9f144df8064acad7985f56bde4bd2bbace624cb11d5"
+}

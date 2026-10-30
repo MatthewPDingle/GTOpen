@@ -1,0 +1,248 @@
+{
+  "schema_version": 1,
+  "candidate": "E016",
+  "diagnostic": "whole-test and runner-process lifetime boundary cross-check",
+  "status": "no_obvious_whole_test_or_process_regression_in_retained_cohort",
+  "primary_score_unchanged": true,
+  "run_rows": {
+    "B041": {
+      "test_summary_ms": 12330.0,
+      "runner_process_wall_ms": 12547.0000000023,
+      "sum_fixture_cycles_ms": 9728.0361,
+      "sum_fingerprint_ms": 2411.6857999999997,
+      "test_minus_cycles_ms": 2601.9639000000006,
+      "test_minus_cycles_and_fingerprints_ms": 190.2781000000009,
+      "runner_minus_test_ms": 217.0000000022992
+    },
+    "B042": {
+      "test_summary_ms": 12410.0,
+      "runner_process_wall_ms": 12671.999999998661,
+      "sum_fixture_cycles_ms": 9792.0665,
+      "sum_fingerprint_ms": 2410.5191999999997,
+      "test_minus_cycles_ms": 2617.933499999999,
+      "test_minus_cycles_and_fingerprints_ms": 207.41429999999946,
+      "runner_minus_test_ms": 261.9999999986612
+    },
+    "B043": {
+      "test_summary_ms": 12380.0,
+      "runner_process_wall_ms": 12625.0,
+      "sum_fixture_cycles_ms": 9762.0023,
+      "sum_fingerprint_ms": 2410.8557,
+      "test_minus_cycles_ms": 2617.9977,
+      "test_minus_cycles_and_fingerprints_ms": 207.14199999999983,
+      "runner_minus_test_ms": 245.0
+    },
+    "E016": {
+      "test_summary_ms": 11950.0,
+      "runner_process_wall_ms": 12171.999999998661,
+      "sum_fixture_cycles_ms": 9341.8051,
+      "sum_fingerprint_ms": 2405.189,
+      "test_minus_cycles_ms": 2608.1949000000004,
+      "test_minus_cycles_and_fingerprints_ms": 203.00590000000057,
+      "runner_minus_test_ms": 221.99999999866122
+    },
+    "E016R2": {
+      "test_summary_ms": 11940.0,
+      "runner_process_wall_ms": 12157.000000002881,
+      "sum_fixture_cycles_ms": 9353.3416,
+      "sum_fingerprint_ms": 2391.1054,
+      "test_minus_cycles_ms": 2586.6584000000003,
+      "test_minus_cycles_and_fingerprints_ms": 195.55300000000034,
+      "runner_minus_test_ms": 217.00000000288128
+    },
+    "E016R3": {
+      "test_summary_ms": 11920.0,
+      "runner_process_wall_ms": 12203.000000001339,
+      "sum_fixture_cycles_ms": 9343.5951,
+      "sum_fingerprint_ms": 2374.1306,
+      "test_minus_cycles_ms": 2576.4048999999995,
+      "test_minus_cycles_and_fingerprints_ms": 202.27429999999958,
+      "runner_minus_test_ms": 283.0000000013388
+    }
+  },
+  "paired_diagnostics": [
+    {
+      "baseline": "B041",
+      "candidate": "E016",
+      "saved_ms": {
+        "test_summary_ms": 380.0,
+        "runner_process_wall_ms": 375.000000003638,
+        "sum_fixture_cycles_ms": 386.23099999999977,
+        "sum_fingerprint_ms": 6.496799999999894,
+        "test_minus_cycles_ms": -6.230999999999767,
+        "test_minus_cycles_and_fingerprints_ms": -12.727799999999661,
+        "runner_minus_test_ms": -4.999999996362021
+      }
+    },
+    {
+      "baseline": "B042",
+      "candidate": "E016R2",
+      "saved_ms": {
+        "test_summary_ms": 470.0,
+        "runner_process_wall_ms": 514.99999999578,
+        "sum_fixture_cycles_ms": 438.72490000000107,
+        "sum_fingerprint_ms": 19.41379999999981,
+        "test_minus_cycles_ms": 31.27509999999893,
+        "test_minus_cycles_and_fingerprints_ms": 11.861299999999119,
+        "runner_minus_test_ms": 44.999999995779945
+      }
+    },
+    {
+      "baseline": "B043",
+      "candidate": "E016R3",
+      "saved_ms": {
+        "test_summary_ms": 460.0,
+        "runner_process_wall_ms": 421.9999999986612,
+        "sum_fixture_cycles_ms": 418.40719999999965,
+        "sum_fingerprint_ms": 36.72510000000011,
+        "test_minus_cycles_ms": 41.59280000000035,
+        "test_minus_cycles_and_fingerprints_ms": 4.867700000000241,
+        "runner_minus_test_ms": -38.000000001338776
+      }
+    }
+  ],
+  "medians": {
+    "test_summary_ms": {
+      "baseline": 12380.0,
+      "candidate": 11940.0,
+      "saved_ms": 440.0,
+      "improvement_pct": 3.5541195476575083
+    },
+    "runner_process_wall_ms": {
+      "baseline": 12625.0,
+      "candidate": 12171.999999998661,
+      "saved_ms": 453.0000000013388,
+      "improvement_pct": 3.588118811891794
+    },
+    "sum_fixture_cycles_ms": {
+      "baseline": 9762.0023,
+      "candidate": 9343.5951,
+      "saved_ms": 418.40719999999965,
+      "improvement_pct": 4.286079711331348
+    },
+    "sum_fingerprint_ms": {
+      "baseline": 2410.8557,
+      "candidate": 2391.1054,
+      "saved_ms": 19.750300000000152,
+      "improvement_pct": 0.8192236474377168
+    },
+    "test_minus_cycles_ms": {
+      "baseline": 2617.933499999999,
+      "candidate": 2586.6584000000003,
+      "saved_ms": 31.27509999999893,
+      "improvement_pct": 1.1946483743761616
+    },
+    "test_minus_cycles_and_fingerprints_ms": {
+      "baseline": 207.14199999999983,
+      "candidate": 202.27429999999958,
+      "saved_ms": 4.867700000000241,
+      "improvement_pct": 2.3499338617954058
+    },
+    "runner_minus_test_ms": {
+      "baseline": 245.0,
+      "candidate": 221.99999999866122,
+      "saved_ms": 23.000000001338776,
+      "improvement_pct": 9.387755102587258
+    }
+  },
+  "all_three_test_times_lower": true,
+  "all_three_runner_times_lower": true,
+  "mean_paired_saved_ms": {
+    "test_summary_ms": 436.6666666666667,
+    "runner_process_wall_ms": 437.33333333269303,
+    "sum_fixture_cycles_ms": 414.45436666666683,
+    "sum_fingerprint_ms": 20.878566666666604,
+    "test_minus_cycles_ms": 22.21229999999984,
+    "test_minus_cycles_and_fingerprints_ms": 1.3337333333332329,
+    "runner_minus_test_ms": 0.6666666660263824
+  },
+  "scope": [
+    "Frozen fixture score ends at full readback before fingerprinting; loop scope drops gpu and host after result emission, before next fixture and suite completion (postflop_autoresearch.rs:193-289).",
+    "Rust test summary includes all fixture scopes/destructors and fingerprinting, rounded to 0.01 seconds; it excludes later process teardown.",
+    "Runner monotonic process_wall_ms starts immediately after Popen and ends after output queue drain and proc.wait (postflop_autoresearch.py:331-373). It includes runtime and post-test process exit but also runner/dashboard/output processing and polling latency, and excludes initial Popen call. It is a noisy process-envelope diagnostic, not a pure application end-to-end metric.",
+    "Test minus registered cycles and separately timed fingerprints includes logging/JSON/setup/drop/other test work and rounding. It is not isolated destructor time; test and process clocks have different boundaries.",
+    "All three pairs favor E016 in both broader clocks. The residual has mixed signs and cannot identify or prove zero extra graph destruction cost. No obvious shifted cost erased the measured cycle saving in this cohort. No significance or standalone destructor claim."
+  ],
+  "inputs": [
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B041\\report.json",
+      "sha256": "351a713432d1ec9c607d66242b5e1d44bca75483a5b270a37bf2b1ca7897b7ad",
+      "bytes": 132595
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B041\\stdout.log",
+      "sha256": "dcb99a986550be8fadd8ee5bd93c4f40eb26f1e817be0b5bdd01795911d2ba63",
+      "bytes": 34142
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B042\\report.json",
+      "sha256": "38c4d11578a6932103354e35cc59b784cd554f365ebb717d5b4699c5a80fb2b3",
+      "bytes": 132590
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B042\\stdout.log",
+      "sha256": "4103ac8cbb18b17058175e2d7054387f6665810c17bd44bad926ed118a8e9b97",
+      "bytes": 34134
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B043\\report.json",
+      "sha256": "0f79ab9113453d548c6782e4cef7556b8d3d6c391abecafd9ceb643eb60d2b82",
+      "bytes": 132661
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\B043\\stdout.log",
+      "sha256": "adc0f7346d36b28d9b7ef174cb8844ff84807a54ac0d19ce8c81c16a8b5a2f83",
+      "bytes": 34217
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016\\report.json",
+      "sha256": "ba4cf69f94a6e41765f2f72c70fddd67a8d120afbb13b0944b597c7163516f0f",
+      "bytes": 132583
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016\\stdout.log",
+      "sha256": "c820a2500356c0115eea5c5119e4152f312cd8276b26a60d2cd367c560c9aea1",
+      "bytes": 34120
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016R2\\report.json",
+      "sha256": "9f38ec9ceecd28349ec60ff6a123f4935cad7680a0746faa99fdafed8eb0d80f",
+      "bytes": 132584
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016R2\\stdout.log",
+      "sha256": "7a11c1305d95451504e4a551119b8c8463dd324fd79a1c0a50f5685c63d28020",
+      "bytes": 34117
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016R3\\report.json",
+      "sha256": "b11b9410564d97eb23e4eed6a5dc4d701f4fa0270e73fe9a88187b267b1e2fd4",
+      "bytes": 132620
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016R3\\stdout.log",
+      "sha256": "5e76ba4009440fb9cedcac2b4f5faf39fd003e4d5d80e4dd84b0a884ff6f58e2",
+      "bytes": 34153
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\tools\\postflop_autoresearch.py",
+      "sha256": "d6943a80d80d1cd515e1b83bb9109f5d27d78ce5c9dfc2ce21b16e0e1d188b70",
+      "bytes": 23096
+    },
+    {
+      "path": "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs",
+      "sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+      "bytes": 12858
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\validation.json",
+      "sha256": "84b620daa89baf6d97eff6d9271429fcc53bc9e8dd4d42bd0fcce3ed9883c7c0",
+      "bytes": 24128
+    },
+    {
+      "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E016-independent-review\\summary.md",
+      "sha256": "a02eccb11efb009259d7f87cddf4683a275dc616da6139c211c2aa4f30e4de61",
+      "bytes": 2646
+    }
+  ]
+}

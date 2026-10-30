@@ -1,0 +1,109 @@
+{
+  "at": "2026-10-28T08:21:08.989240+00:00",
+  "status": "pass_checkpoint",
+  "goal_status": "active",
+  "previous_goal_turn": "progress: E089 compiled/raw/full-solve trial completed and rejected below 1%",
+  "this_turn": "progress: restored verified server after reboot; completed D141 integer model and prepared E090; followed new user RAM/storage instruction with a separate fresh E080 baseline on X and verified the updated tracker",
+  "measurement_epoch": "RAM20261028",
+  "best_accepted_configuration": "E080, GPU, compressed, Rayon16",
+  "fresh_baseline_ms": 10456.4109,
+  "native_unit_tests_passed": 86,
+  "native_unit_tests_ignored": 4,
+  "scored_processes": 5,
+  "prespecified_warmup_processes": 1,
+  "scored_exact_full_results": 15,
+  "scored_exact_checkpoints": 115,
+  "all_six_complete_processes_exact_results": 18,
+  "all_six_complete_processes_exact_checkpoints": 138,
+  "all_seven_native_children_terminal": true,
+  "native_receipts": {
+    "RAM20261028-V01": {
+      "sha256": "fc4d1aa80478ecb32eb892f51a0dbe4f8f68d647930900bd854f19e0ed185f77",
+      "returncode": 0
+    },
+    "RAM20261028-W01": {
+      "sha256": "edf222e1e96d06d96eae66f35fb716810c3457947e73638c44e4deeb72824e76",
+      "returncode": 0
+    },
+    "RAM20261028-B01": {
+      "sha256": "0cf9050281dd148588d6f7d218f2424586ba550c504be458dac0065f7be8696b",
+      "returncode": 0
+    },
+    "RAM20261028-B02": {
+      "sha256": "162dac9214f933da72453203c800eac26b5abcaf524dc0ac1b8e6e150978827c",
+      "returncode": 0
+    },
+    "RAM20261028-B03": {
+      "sha256": "fcba340b080629a7aa04a2acf3068f8d39c09a7c50a9036d13a103980de22c67",
+      "returncode": 0
+    },
+    "RAM20261028-B04": {
+      "sha256": "c3014ff9874dfd1721c4eb9443accf612b537aa02fd42bc68a17ccee16f6411f",
+      "returncode": 0
+    },
+    "RAM20261028-B05": {
+      "sha256": "f9ae8dd6b83436596dbc059cf7f7e6713499915c70657ba8baefbbc177e5dfc2",
+      "returncode": 0
+    }
+  },
+  "original_assessment_publication_failure_preserved": true,
+  "reader_only_repair_did_not_rerun_measurements": true,
+  "measurement_UI_preserved_at_original_hash": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\epoch\\dashboard-at-measurement.html",
+  "tracker_current_HTTP_bytes_exact": true,
+  "tracker_browser_check": "Fresh baseline and per-fixture values rendered correctly; earlier14.74% gain and graph explicitly labeled previous RAM. Console0errors0warnings; owned browser closed.",
+  "tracker_screenshot": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\output\\playwright\\ram-baseline-desktop.png",
+  "tracker_screenshot_sha256": "893f0f7478701f2d8e01ba7030e66d01922cac68d9dd1953563dbed552a16b51",
+  "source_main_live_PTX_custody_pass": true,
+  "new_output_root": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028",
+  "output_root_free_bytes": 5172285915136,
+  "historical_archive_preserved_read_only": "S:\\GTOpen-research\\postflop-gpu-20261016",
+  "next_trial": "E090, exact two host stride statements, checksum-verified references and dependencies on X",
+  "next_trial_GPU_validation_run": false,
+  "new_optimizer_gain_claimed": false,
+  "RAM_causal_speedup_claimed": false,
+  "live_server_intended_to_remain_running": 26528,
+  "live_status": {
+    "/api/status": {
+      "state": "idle",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "exploit_chips": 0.0,
+      "exploit_pct": 0.0,
+      "elapsed_secs": 0.0,
+      "history": [],
+      "tree": null,
+      "spot_request": null,
+      "error": ""
+    },
+    "/api/preflop/status": {
+      "state": "",
+      "phase": "",
+      "gpu": false,
+      "gpu_note": "",
+      "iteration": 0,
+      "published_iteration": 0,
+      "accuracy_iteration": null,
+      "target_gap": null,
+      "stop_reason": "",
+      "preview_note": "",
+      "gaps": [],
+      "gap_total": 0.0,
+      "evs": [],
+      "hero": null,
+      "frozen": [],
+      "error": "",
+      "realization_note": "",
+      "multiway_equity_model": ""
+    },
+    "/api/reports/status": {
+      "running": false,
+      "name": "",
+      "done": 0,
+      "total": 0,
+      "board": "",
+      "error": "",
+      "seconds": 0.0
+    }
+  }
+}

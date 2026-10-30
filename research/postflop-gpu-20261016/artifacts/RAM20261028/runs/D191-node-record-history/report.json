@@ -1,0 +1,28 @@
+{
+  "id": "D191",
+  "at": "2026-10-28T20:14:33.057280+00:00",
+  "status": "declined_closed_layout_family_scope_change_before_source",
+  "prospect": "Interleave immutable per-node 32-bit fields into one record, keeping the original separate u64 data offset and all bits/widths.",
+  "source_inventory": {
+    "32bit_per_node_arrays": 13,
+    "separate_64bit_offset_arrays": 1,
+    "logical_bytes_per_node": 60,
+    "possible_unpadded_32bit_record_bytes": 52,
+    "calculation_is_not_native_resource_or_bandwidth_measurement": true
+  },
+  "classification": "No literal prior full node-record name found, but that is weak evidence. E046 already changes SoA metadata to interleaved records, including the same pinned-staging packing/drain and unchanged logical-payload idea. Moving the same layout mechanism to more fields/nodes is a scope change, not sufficient evidence of a distinct optimization. E070 compressed node attributes is separately closed; no narrowing or combination is admitted.",
+  "closure": "Decline before source, compiler, CUDA query, metadata model or performance observation. Do not relabel an interleaving scope/width/field/padding/threshold change as a new candidate.",
+  "implementation_obligations_not_executed": "All continuation/projection/capacity consumers would need coverage, including continuation.rs, continuation_storage.rs and continuation_capacity.rs. No layout/native/readback/capacity or material proof exists for this prospect.",
+  "new_compiler_native_GPU_or_timing_processes": 0,
+  "source_candidate_written": false,
+  "new_gain_accepted": false,
+  "inputs": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E046-resource\\report.json": "2086fbb064b8956c300b28f562ef79751bdf8a3e1d59d7b1489c1272ef0504b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-source\\source-review.json": "a39da40905499a8c74503a81ecaf7c6f66b3119141fdbd676acfcf8e902904fe",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E070-three-pair-comparison\\report.json": "a8cfb74ecd19ba31453a65a5b7b2c39d3095568cf4e4e1b4261a600e989fb4a6",
+    "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D191-node-record-history\\history.json": "1efd645c9d53ea247b87dcb6f18f43806df7a7f570965f5b9fd1a35371f1ff96"
+  }
+}

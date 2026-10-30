@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>7.1.1.1. CUPTI::PcSamplingUtil::BufferInfo &mdash; Cupti 12.9 documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/design-style.b7bb847fb20b106c3d81b95245e65545.min.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/omni-style.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/api-styles.css" type="text/css" />
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/mermaid-init.js"></script>
+        <script src="../_static/design-tabs.js"></script>
+        <script src="../_static/version.js"></script>
+        <script src="../_static/social-media.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="7.1.1.2. CUPTI::PcSamplingUtil::CUptiUtil_GetBufferInfoParams" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_buffer_info_params.html" />
+    <link rel="prev" title="7.1.1. CUPTI::PcSamplingUtil" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html" />
+ 
+
+
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+
+<a href="../index.html">
+  <img src="../_static/Logo_and_CUDA.png" class="logo" alt="Logo"/>
+</a>
+
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../index.html">CUPTI</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../overview/overview.html">Overview</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../release-notes/release-notes.html">1. Release Notes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../main/main.html">2. Usage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../library-support/library-support.html">3. Library support</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../special-configurations/special-configurations.html">4. Special Configurations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">5. Modules</a></li>
+<li class="toctree-l1"><a class="reference internal" href="data-structures.html">6. Data Structures</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="namespaces.html">7. Namespaces</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="namespace_c_u_p_t_i.html">7.1. CUPTI</a><ul class="current">
+<li class="toctree-l3 current"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html">7.1.1. PcSamplingUtil</a><ul class="current">
+<li class="toctree-l4 current"><a class="current reference internal" href="#">7.1.1.1. BufferInfo</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_buffer_info_params.html">7.1.1.2. CUptiUtil_GetBufferInfoParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_header_data_params.html">7.1.1.3. CUptiUtil_GetHeaderDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___get_pc_samp_data_params.html">7.1.1.4. CUptiUtil_GetPcSampDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___merge_pc_samp_data_params.html">7.1.1.5. CUptiUtil_MergePcSampDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_c_upti_util___put_pc_samp_data_params.html">7.1.1.6. CUptiUtil_PutPcSampDataParams</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_header.html">7.1.1.7. Header</a></li>
+<li class="toctree-l4"><a class="reference internal" href="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_pc_sampling_stall_reasons.html">7.1.1.8. PcSamplingStallReasons</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html#enumerations">7.1.1.9. Enumerations</a></li>
+<li class="toctree-l4"><a class="reference internal" href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html#functions">7.1.1.10. Functions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="namespace_n_v.html">7.2. NV</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../copyright-and-licenses/index.html">Copyright and Licenses</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../notices-header/notices-header.html">Notices</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Cupti</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+
+
+<li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+  
+    <li><a href="namespaces.html"><span class="section-number">7. </span>Namespaces</a> &raquo;</li>
+    <li><a href="namespace_c_u_p_t_i.html"><span class="section-number">7.1. </span>CUPTI</a> &raquo;</li>
+    <li><a href="namespace_c_u_p_t_i_1_1_pc_sampling_util.html"><span class="section-number">7.1.1. </span>CUPTI::PcSamplingUtil</a> &raquo;</li>
+<li><span class="section-number">7.1.1.1. </span>CUPTI::PcSamplingUtil::BufferInfo</li>
+
+      <li class="wy-breadcrumbs-aside">
+      </li>
+<li class="wy-breadcrumbs-aside">
+
+
+  <span>v2025.2.1 |</span>
+
+
+
+  <a href="https://developer.nvidia.com/cupti" class="reference external">Archive</a>
+
+
+  <span>&nbsp;</span>
+</li>
+
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="cupti-pcsamplingutil-bufferinfo">
+<h1><span class="section-number">7.1.1.1. </span>CUPTI::PcSamplingUtil::BufferInfo<a class="headerlink" href="#cupti-pcsamplingutil-bufferinfo" title="Permalink to this headline"></a></h1>
+<dl class="cpp struct">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil10BufferInfoE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil10BufferInfoE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil10BufferInfoE"></span><span id="CUPTI::PcSamplingUtil::BufferInfo"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info"></span><span class="k"><span class="pre">struct</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">BufferInfo</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil10BufferInfoE" title="Permalink to this definition"></a><br /></dt>
+<dd><p><a class="reference internal" href="#struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info"><span class="std std-ref">BufferInfo</span></a> will be stored in the file for every buffer i.e for every call of UtilDumpPcSamplingBufferInFile() API. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric-h3 rubric" id="breathe-section-title-public-members">Public Members</p>
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo11recordCountE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil10BufferInfo11recordCountE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil10BufferInfo11recordCountE"></span><span id="CUPTI::PcSamplingUtil::BufferInfo::recordCount__uint64_t"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info_1af52c64f1420d18a8d66f53cfa651cc40"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">recordCount</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo11recordCountE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Total number of PC records. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo15numStallReasonsE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil10BufferInfo15numStallReasonsE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil10BufferInfo15numStallReasonsE"></span><span id="CUPTI::PcSamplingUtil::BufferInfo::numStallReasons__s"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info_1a389ccacbadaad9f2be3a3cc7294effb9"></span><span class="n"><span class="pre">size_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numStallReasons</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo15numStallReasonsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Count of all stall reasons supported on the GPU. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo23numSelectedStallReasonsE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil10BufferInfo23numSelectedStallReasonsE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil10BufferInfo23numSelectedStallReasonsE"></span><span id="CUPTI::PcSamplingUtil::BufferInfo::numSelectedStallReasons__uint64_t"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info_1a0f0542150810d3b91812acef51c2bfb3"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">numSelectedStallReasons</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo23numSelectedStallReasonsE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Total number of stall reasons in single record. </p>
+</dd></dl>
+
+<dl class="cpp var">
+<dt class="sig sig-object cpp" id="_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo14bufferByteSizeE">
+<span id="_CPPv3N5CUPTI14PcSamplingUtil10BufferInfo14bufferByteSizeE"></span><span id="_CPPv2N5CUPTI14PcSamplingUtil10BufferInfo14bufferByteSizeE"></span><span id="CUPTI::PcSamplingUtil::BufferInfo::bufferByteSize__uint64_t"></span><span class="target" id="struct_c_u_p_t_i_1_1_pc_sampling_util_1_1_buffer_info_1a136750131ec4f18bcd1c5459fc5fc42f"></span><span class="n"><span class="pre">uint64_t</span></span><span class="w"> </span><span class="sig-name descname"><span class="n"><span class="pre">bufferByteSize</span></span></span><a class="headerlink" href="#_CPPv4N5CUPTI14PcSamplingUtil10BufferInfo14bufferByteSizeE" title="Permalink to this definition"></a><br /></dt>
+<dd><p>Buffer size in Bytes. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+<img src="../_static/NVIDIA-LogoBlack.svg" class="only-light"/>
+<img src="../_static/NVIDIA-LogoWhite.svg" class="only-dark"/>
+
+<p class="notices">
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-policy/" target="_blank">Privacy Policy</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/privacy-center/" target="_blank">Manage My Privacy</a>
+|
+<a href="https://www.nvidia.com/en-us/preferences/start/" target="_blank">Do Not Sell or Share My Data</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/terms-of-service/" target="_blank">Terms of Service</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/accessibility/" target="_blank">Accessibility</a>
+|
+<a href="https://www.nvidia.com/en-us/about-nvidia/company-policies/" target="_blank">Corporate Policies</a>
+|
+<a href="https://www.nvidia.com/en-us/product-security/" target="_blank">Product Security</a>
+|
+<a href="https://www.nvidia.com/en-us/contact/" target="_blank">Contact</a>
+</p>
+
+<p>
+  Copyright &#169; 2018-2025, NVIDIA Corporation &amp; Affiliates. All rights reserved.
+</p>
+
+    <p>
+      <span class="lastupdated">Last updated on May 12, 2025.
+      </span></p>
+
+  </div>
+
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+ 
+
+
+
+</body>
+</html>

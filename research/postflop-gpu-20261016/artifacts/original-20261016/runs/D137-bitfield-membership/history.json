@@ -1,0 +1,65 @@
+{
+  "at": "2026-10-18T10:16:15.015793+00:00",
+  "bounded_local_history": [
+    {
+      "command": [
+        "git",
+        "log",
+        "--all",
+        "--oneline",
+        "-G",
+        "bfe.u64|bit.field.*extract",
+        "--",
+        "crates/solver/src/gpu/kernels.cu"
+      ],
+      "returncode": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-n",
+        "-i",
+        "bfe\\.u64|bit.field.extract|bitfield.*membership",
+        "research/postflop-gpu-20261016/experiments.md"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "command": [
+        "rg",
+        "-l",
+        "bfe\\.u64",
+        "S:\\GTOpen-research\\postflop-gpu-20261016\\runs",
+        "-g",
+        "*.cu"
+      ],
+      "returncode": 1,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "accepted_current_private_PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "accepted_up_chance_bit_ops": [
+    "shr.u64 \t%rd53, %rd15, %r47;",
+    "and.b64  \t%rd54, %rd53, 1;",
+    "shr.u64 \t%rd67, %rd15, %r50;",
+    "and.b64  \t%rd68, %rd67, 1;",
+    "shr.u64 \t%rd81, %rd15, %r53;",
+    "and.b64  \t%rd82, %rd81, 1;",
+    "shr.u64 \t%rd96, %rd15, %r56;",
+    "and.b64  \t%rd97, %rd96, 1;",
+    "shr.u64 \t%rd110, %rd15, %r59;",
+    "and.b64  \t%rd111, %rd110, 1;",
+    "shr.u64 \t%rd124, %rd15, %r62;",
+    "and.b64  \t%rd125, %rd124, 1;",
+    "shr.u64 \t%rd138, %rd15, %r65;",
+    "and.b64  \t%rd139, %rd138, 1;"
+  ],
+  "declined_source_equivalence_lead": "Original left-onehot/AND is already lowered to right-shift/AND in retained accepted PTX; ordinary source-direction rewrite not implemented.",
+  "distinct_form": "Explicit unsigned64bit length1 bit-field extraction in up_chance only. Original hand-mask buffers, card IDs, public and private metadata, ABI and host unchanged. No E048card-ID comparisons/removed masks, E039sharedmetadata, E046packing or E085cache hunk composed.",
+  "limits": "Local matched history and retained PTX only. No exhaustive semantic/remote novelty, actual SASS count, timing or removable-overhead claim."
+}

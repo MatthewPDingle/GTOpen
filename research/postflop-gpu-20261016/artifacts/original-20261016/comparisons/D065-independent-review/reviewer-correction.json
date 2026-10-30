@@ -1,0 +1,7 @@
+{
+  "failure": "Reviewer-only added exact component-sum assertion failed before report creation.",
+  "original_audit_sha256": "0acc827bc72a62e8f3a0dad0e47c56843a005d6e131368e4c333f42b73a5fb5a",
+  "correction": "Frozen evaluator uses independent outer and component instants. Interstage/logging gaps are included in full_cycle_ms; observed positive residuals0.0157..0.0545ms are not a numerical or protocol failure. Require component sum within outer timing, retain official outer score and leave gaps unattributed.",
+  "candidate_or_evidence_modified": false,
+  "native_or_gpu_execution": false
+}

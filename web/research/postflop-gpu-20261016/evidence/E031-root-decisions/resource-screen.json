@@ -1,0 +1,17 @@
+{
+  "id": "E031-resource-screen",
+  "at": "2026-10-16T18:39:31Z",
+  "preparation_sha256": "aa106b33d678610c24a8c684451b506736bcccd33540ccdd47f88218a332e9b0",
+  "scope": "Prospective feasibility screen for the single frozen static53-offset-cache variant; no performance/numerical claim.",
+  "requirements": [
+    "Exact accepted E020 and single reviewed candidate, production architecture-only NVRTC options.",
+    "Registered shapes use identical dynamicshared bytes and128threads for botharms; source changes only intended static cache.",
+    "Botharms fit queried default shared and thread limits at every registeredshape.",
+    "Candidate has no new local/spill bytes and no theoretical active-blocks-per-SM decrease at any registeredshape.",
+    "Staticshared growth is explained by53u32 storage and compileralignment; other eight PTX entries remain unchanged.",
+    "Report physical register counts; an increase alone with unchanged occupancy is not labelled a measured speed regression."
+  ],
+  "on_failure": "Do not progress this variant into primary tests; preserve all outputs. No outcome-driven variant rescue.",
+  "on_pass": "Resource feasibility only. Separate numerical controls and full-cycle fixed cohort remain necessary; root authorizes any next step separately.",
+  "compiler_native_gpu_executed": false
+}

@@ -1,0 +1,33 @@
+{
+  "at": "2026-10-29T08:38:33.673881+00:00",
+  "parent_probe_sha256": "f5030d634b8ee6aa245b2210fa14bb5056dcb150538b5e9814af7cb8fec9382d",
+  "all_original_probe_statements_reverse_exact_after_namespace": true,
+  "edits": [
+    {
+      "position": 309,
+      "old": "#[path=\"gpu/mod.rs\"]mod observed;",
+      "new": "#[path=\"observed.rs\"]mod observed;"
+    },
+    {
+      "position": 9173,
+      "old": " std::fs::create_dir(&out).unwrap();",
+      "new": " std::fs::create_dir(&out).unwrap(); D271_OUTPUT.set(out.clone()).unwrap();"
+    },
+    {
+      "position": 10441,
+      "old": "assert_eq!(bc, gc); same_files(&bp, &gp);",
+      "new": "assert_eq!(bc, gc); g.d271_same_constructor(&bp,&gp);"
+    },
+    {
+      "position": 16193,
+      "old": "    assert_eq!(D271_BINDS[0].load(std::sync::atomic::Ordering::SeqCst),72);assert_eq!(D271_BINDS[1].load(std::sync::atomic::Ordering::SeqCst),72);",
+      "new": "    assert_eq!(D271_BINDS[0].load(std::sync::atomic::Ordering::SeqCst),72);assert_eq!(D271_BINDS[1].load(std::sync::atomic::Ordering::SeqCst),72);\n    d271_extra_lock_controls(&out);\n    assert_eq!(D271_BINDS[0].load(std::sync::atomic::Ordering::SeqCst),78);assert_eq!(D271_BINDS[1].load(std::sync::atomic::Ordering::SeqCst),78);"
+    },
+    {
+      "position": 18040,
+      "old": "assert_eq!(D271_ARM.load(std::sync::atomic::Ordering::SeqCst),arm);result",
+      "new": "assert_eq!(D271_ARM.load(std::sync::atomic::Ordering::SeqCst),arm);assert_eq!(result.d271_arm(),arm);result"
+    }
+  ],
+  "additions": "Independent CPU map and whole-frame inverse, complete53field encoder, raw kind/map capture, forwarding two-host diagnostic enum,6fixed extra GPU lock cases. No original statement/case/phase/numerical assertion omitted."
+}

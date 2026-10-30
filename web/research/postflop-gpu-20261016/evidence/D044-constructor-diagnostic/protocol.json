@@ -1,0 +1,130 @@
+{
+  "id": "D044-constructor-diagnostic",
+  "at": "2026-10-16T13:16:39.479041+00:00",
+  "status": "prospective diagnostic only",
+  "candidate": "D044",
+  "reference": "accepted E020",
+  "order": [
+    "D044B1",
+    "D044P1",
+    "D044P2",
+    "D044B2",
+    "D044B3",
+    "D044P3"
+  ],
+  "pairs": [
+    {
+      "baseline": "D044B1",
+      "candidate": "D044P1"
+    },
+    {
+      "baseline": "D044B2",
+      "candidate": "D044P2"
+    },
+    {
+      "baseline": "D044B3",
+      "candidate": "D044P3"
+    }
+  ],
+  "owned_sources": [
+    "crates/solver/src/game.rs"
+  ],
+  "accepted_owned_sha256": {
+    "crates/solver/src/game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/game.rs": "fef5db1cac90a2797d6bc5ad85870b8ee1247681f69f17c27a7dc0862bec2e35"
+  },
+  "source_entry_count": 162,
+  "source_archive_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D044-constructor-diagnostic\\source-manifest.json",
+  "source_archive_sha256": "8f522e9f4c2c71537495492119b95be8c50f48be117d57206a3a2c602f59b013",
+  "reference_binary_sha256": "c4c2c6295c34915ca780dc2ffa3aff400914119bb578d3fc4eaf30ccff409882",
+  "reference_manifest_sha256": "37bb96c45ecaae02dab11ddfb43d8e46e842dacaed7df8edbad2264b31cb3768",
+  "accepted_kernel_sha256": "075651690d59ede225c17ff9674662e040d40460a5e2b5436fd6fa7d4f5d663b",
+  "evaluator_sha256": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327",
+  "expected_fixtures": [
+    "rainbow",
+    "two-tone",
+    "river"
+  ],
+  "expected_stops": {
+    "rainbow": 200,
+    "two-tone": 200,
+    "river": 60
+  },
+  "expected_convergence_records_per_run": 23,
+  "expected_profile_records_per_run": 3,
+  "profile_order_per_fixture": "Exactly one successful constructor record between fixture_start and build_complete",
+  "marker": "SPOT_CONSTRUCTOR_PROFILE",
+  "compiled_diagnostic_markers": true,
+  "runtime_flag": null,
+  "storage": "compressed",
+  "profile_eager_path": "disabled",
+  "fixture_filter": "explicitly removed",
+  "RAYON_NUM_THREADS": "16",
+  "exactness": "All18 complete results/configuration/state objects and138 convergence checks exact across6 runs. Exactly3 constructor markers per instrumented run, none in ordinary controls; identities match frozen schema and build_complete stages.",
+  "usefulness_guard": {
+    "metric": "absolute percentage change in sum of per-fixture full-cycle medians, instrumented versus ordinary",
+    "maximum_percent": 10.0,
+    "fixture_and_pair_changes": "all reported separately; no exclusions",
+    "failure_status": "inconclusive diagnostic usefulness; retain all evidence and do not infer savings"
+  },
+  "component_aggregation": "For each fixture/stage retain all3 profiled spans and raw ranges, then report median. Sum per-fixture medians only as grouped diagnostic host time, not measured saving.",
+  "exclusions": [],
+  "outcome_triggered_extensions": false,
+  "performance_acceptance": false,
+  "deployment_changed": false,
+  "live_server_mutations": false,
+  "new_cuda_syncs": 0,
+  "extra_device_or_arena_allocations": 0,
+  "build_target_root": "S:\\GTOpen-research\\postflop-gpu-20261016\\build-d044-constructor",
+  "build_target_must_be_previously_absent": true,
+  "build_timeout_seconds": 1800,
+  "primary_child_timeout_seconds": 900,
+  "restore": "Reverse only exact game.rs instrumentation patch after fixed cohort/audit; verify all162 acceptedE020 source hashes. Preserve every log and artifact.",
+  "schema_sha256": "f36d5ced23c7f1a16ebe89c5de87175255307d22f7dde5b25505cf2ab11721e2",
+  "stage_names": [
+    "tree_build",
+    "river_table",
+    "suit_symmetry"
+  ],
+  "expected_identity": [
+    {
+      "fixture_id": "rainbow",
+      "board": "Ks7h2d",
+      "board_mask": 140737492549634,
+      "board_cards": 3,
+      "hands": [
+        257,
+        319
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "two-tone",
+      "board": "Ks7s2d",
+      "board_mask": 140737496743938,
+      "board_cards": 3,
+      "hands": [
+        258,
+        320
+      ],
+      "node_count": 1346813
+    },
+    {
+      "fixture_id": "river",
+      "board": "Ks7h2dQhTc",
+      "board_mask": 145139834028034,
+      "board_cards": 5,
+      "hands": [
+        233,
+        280
+      ],
+      "node_count": 33
+    }
+  ],
+  "component_interpretation": "River-table span includes the unchanged entire table builder, not isolated ranking time. Tree and symmetry spans similarly include their existing work. No projected saving or 2% candidate qualification follows.",
+  "residual_interpretation": "constructor minus3stage spans is unprofiled constructor work/timer overhead. Outer build minus3spans is unprofiled constructor/CPU storage and timing/logging overhead. Outer build minus constructor includes CPU storage, return/logging/timer/evaluator overhead; do not attribute it to ranking or allocation alone.",
+  "additional_solver_work": 0,
+  "extra_host_census": 0
+}

@@ -1,0 +1,28 @@
+{
+  "id": "D208",
+  "at": "2026-10-28T22:33:12.566680+00:00",
+  "status": "pass_complete_host_compile_role_bindings_and_prospective_layout",
+  "protocol_sha256": "aff44a0e03aad8cf3e60a5e8eb086c64d96d62158788c1b0d8f7af7b2947077a",
+  "layout": {
+    "actual_constructor_CUDA_kernel_or_solver_calls": 0,
+    "baseline_wrapper_bytes": 4448,
+    "candidate": {
+      "CUDA_or_constructor_calls": 0,
+      "actual_state_bytes": 24,
+      "actual_wrapper_bytes": 4472,
+      "parameter_alignment": 8,
+      "parameter_bytes": 3008,
+      "reserved_offset": 3004,
+      "span_offset": 444
+    },
+    "wrapper_delta_bytes": 24
+  },
+  "role_review_sha256": "74ac370a1373fa37fd426d383cfc612e880ff83107904a2a9b0e8117f89f35e1",
+  "baseline_host_source_sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+  "candidate_host_source_sha256": "b2d72d74984e3b0fd38a1d4911ed25d392153cf75aac5c3954a502730564749a",
+  "all_owned_compiler_layout_children_terminal": true,
+  "actual_constructor_CUDA_kernel_or_solver_calls": 0,
+  "performance_samples": 0,
+  "candidate_accepted": false,
+  "scope": "FullcandidateRusthosttypechecked/codegeneratedofftreeandactualtypedhost/framecostlayout. Alloriginalkernel/playerargumentrolesandrootcopy staticallymatch. NoGPUconstructor/resource requery/rawCFR/dereference/numeric/lifecycle/fullsolver/speed/adoptionproof. Actualwrapperdelta wasprospectivelybounded<=32,alloriginalnumeric/device/state fieldsstillmustexact."
+}

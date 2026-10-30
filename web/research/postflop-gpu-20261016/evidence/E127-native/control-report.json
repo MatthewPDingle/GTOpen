@@ -1,0 +1,408 @@
+{
+  "id": "E127-native-control",
+  "at": "2026-10-29T22:42:44.221298+00:00",
+  "status": "pass_scoped_two_phase_control_and_captured_parameter_contract",
+  "protocol_sha256": "10ac90e9fd181163ddb868116f9595451bd6efd8fa8e70fab44fcd3516b7efa4",
+  "PTX_complete_control_graphs": {
+    "compute_120": {
+      "instruction_sites": 4377,
+      "branch_sites": 207,
+      "barrier_instruction_index": 2225,
+      "valid_block_start_instruction": 37,
+      "only_terminal_instruction": 4376,
+      "first_uniform_count_guard": "@%p1 bra $L__BB9_359",
+      "barrier_postdominates_valid_block_finite_exits": true,
+      "no_parent_to_child_control_edge": true,
+      "global_store_sites_child_region": 44,
+      "global_store_sites_parent_region": 44
+    },
+    "compute_75": {
+      "instruction_sites": 4123,
+      "branch_sites": 213,
+      "barrier_instruction_index": 2056,
+      "valid_block_start_instruction": 40,
+      "only_terminal_instruction": 4122,
+      "first_uniform_count_guard": "@%p1 bra $L__BB9_323",
+      "barrier_postdominates_valid_block_finite_exits": true,
+      "no_parent_to_child_control_edge": true,
+      "global_store_sites_child_region": 58,
+      "global_store_sites_parent_region": 60
+    }
+  },
+  "actual120_root_child_loop_and_parent_bindings": {
+    "root_from_original_worklist": [
+      "ld.param.u64 \t%rd172, [up_action_star_param_0];",
+      "ld.param.u32 \t%r235, [up_action_star_param_1];",
+      "mov.u32 \t%r1, %ctaid.x;",
+      "cvta.to.global.u64 \t%rd191, %rd172;",
+      "add.s32 \t%r240, %r235, %r1;",
+      "mul.wide.u32 \t%rd192, %r240, 4;",
+      "add.s64 \t%rd193, %rd191, %rd192;",
+      "ld.global.nc.u32 \t%r241, [%rd193];",
+      "cvt.u64.u32 \t%rd17, %r241;"
+    ],
+    "root_children_start_and_arity": [
+      "ld.param.u64 \t%rd173, [up_action_star_param_5];",
+      "ld.param.u64 \t%rd174, [up_action_star_param_7];",
+      "cvta.to.global.u64 \t%rd11, %rd173;",
+      "cvta.to.global.u64 \t%rd12, %rd174;",
+      "mul.wide.u32 \t%rd194, %r241, 4;",
+      "add.s64 \t%rd195, %rd12, %rd194;",
+      "ld.global.nc.u32 \t%r2, [%rd195];",
+      "add.s64 \t%rd196, %rd11, %rd194;",
+      "ld.global.nc.u32 \t%r3, [%rd196];"
+    ],
+    "child_identity_and_arity": [
+      "ld.param.u64 \t%rd179, [up_action_star_param_8];",
+      "cvta.to.global.u64 \t%rd7, %rd179;",
+      "mov.b32 \t%r807, 0;",
+      "$L__BB9_3:",
+      "add.s32 \t%r243, %r807, %r2;",
+      "mul.wide.u32 \t%rd197, %r243, 4;",
+      "add.s64 \t%rd198, %rd7, %rd197;",
+      "ld.global.nc.u32 \t%r244, [%rd198];",
+      "cvt.u64.u32 \t%rd20, %r244;",
+      "mul.wide.u32 \t%rd200, %r244, 4;",
+      "add.s64 \t%rd201, %rd199, %rd200;",
+      "ld.global.nc.u32 \t%r7, [%rd201];"
+    ],
+    "uniform_child_skip_and_loop": [
+      "setp.lt.s32 \t%p3, %r7, 1;",
+      "@%p3 bra \t$L__BB9_178;",
+      "$L__BB9_178:",
+      "add.s32 \t%r807, %r807, 1;",
+      "setp.ne.s32 \t%p122, %r807, %r3;",
+      "@%p122 bra \t$L__BB9_3;"
+    ],
+    "child_234_generic_dispatch": [
+      "setp.eq.s32 \t%p4, %r7, 4;",
+      "setp.eq.s32 \t%p5, %r7, 3;",
+      "setp.ne.s32 \t%p6, %r7, 2;"
+    ],
+    "parent_234_generic_dispatch": [
+      "setp.eq.s32 \t%p123, %r3, 4;",
+      "setp.eq.s32 \t%p124, %r3, 3;",
+      "setp.ne.s32 \t%p125, %r3, 2;",
+      "shl.b64 \t%rd1561, %rd17, 2;",
+      "add.s64 \t%rd1562, %rd10, %rd1561;",
+      "ld.global.nc.u32 \t%r614, [%rd1562];"
+    ]
+  },
+  "captured_native_parameter_layout": {
+    "params": {
+      "19": {
+        "offset": 140,
+        "bytes": 4,
+        "record_absolute_offset": 8124
+      },
+      "18": {
+        "offset": 136,
+        "bytes": 4,
+        "record_absolute_offset": 8140
+      },
+      "17": {
+        "offset": 128,
+        "bytes": 8,
+        "record_absolute_offset": 8156
+      },
+      "16": {
+        "offset": 120,
+        "bytes": 8,
+        "record_absolute_offset": 8172
+      },
+      "15": {
+        "offset": 112,
+        "bytes": 8,
+        "record_absolute_offset": 8188
+      },
+      "14": {
+        "offset": 104,
+        "bytes": 8,
+        "record_absolute_offset": 8204
+      },
+      "13": {
+        "offset": 96,
+        "bytes": 8,
+        "record_absolute_offset": 8220
+      },
+      "12": {
+        "offset": 88,
+        "bytes": 8,
+        "record_absolute_offset": 8236
+      },
+      "11": {
+        "offset": 80,
+        "bytes": 8,
+        "record_absolute_offset": 8252
+      },
+      "10": {
+        "offset": 72,
+        "bytes": 8,
+        "record_absolute_offset": 8268
+      },
+      "9": {
+        "offset": 64,
+        "bytes": 8,
+        "record_absolute_offset": 8284
+      },
+      "8": {
+        "offset": 56,
+        "bytes": 8,
+        "record_absolute_offset": 8300
+      },
+      "7": {
+        "offset": 48,
+        "bytes": 8,
+        "record_absolute_offset": 8316
+      },
+      "6": {
+        "offset": 40,
+        "bytes": 8,
+        "record_absolute_offset": 8332
+      },
+      "5": {
+        "offset": 32,
+        "bytes": 8,
+        "record_absolute_offset": 8348
+      },
+      "4": {
+        "offset": 24,
+        "bytes": 8,
+        "record_absolute_offset": 8364
+      },
+      "3": {
+        "offset": 16,
+        "bytes": 4,
+        "record_absolute_offset": 8380
+      },
+      "2": {
+        "offset": 12,
+        "bytes": 4,
+        "record_absolute_offset": 8396
+      },
+      "1": {
+        "offset": 8,
+        "bytes": 4,
+        "record_absolute_offset": 8412
+      },
+      "0": {
+        "offset": 0,
+        "bytes": 8,
+        "record_absolute_offset": 8428
+      }
+    },
+    "bank": {
+      "symbol": 38,
+      "base": 896,
+      "bytes": 144
+    },
+    "actual_constant_section": ".nv.constant0.up_action_star",
+    "total_parameter_bytes": 144,
+    "attribute_records": [
+      {
+        "format": 4,
+        "attribute": 102,
+        "value": 4
+      },
+      {
+        "format": 4,
+        "attribute": 55,
+        "value": 4
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 4,
+        "attribute": 23,
+        "value": 12
+      },
+      {
+        "format": 3,
+        "attribute": 80,
+        "value": 0
+      },
+      {
+        "format": 3,
+        "attribute": 27,
+        "value": 255
+      },
+      {
+        "format": 2,
+        "attribute": 76,
+        "value": 1
+      },
+      {
+        "format": 3,
+        "attribute": 95,
+        "value": 257
+      },
+      {
+        "format": 2,
+        "attribute": 74,
+        "value": 0
+      },
+      {
+        "format": 4,
+        "attribute": 28,
+        "value": 100
+      },
+      {
+        "format": 4,
+        "attribute": 52,
+        "value": 24
+      },
+      {
+        "format": 4,
+        "attribute": 30,
+        "value": 4
+      },
+      {
+        "format": 3,
+        "attribute": 25,
+        "value": 144
+      },
+      {
+        "format": 4,
+        "attribute": 10,
+        "value": 8
+      },
+      {
+        "format": 4,
+        "attribute": 54,
+        "value": 4
+      },
+      {
+        "format": 3,
+        "attribute": 107,
+        "value": 1
+      }
+    ]
+  },
+  "native_control_witnesses": {
+    "native_instruction_sites": 5168,
+    "barrier_PC": "0x9d30",
+    "barrier": "BAR.SYNC.DEFER_BLOCKING 0x0",
+    "only_pre_barrier_EXIT": [
+      [
+        80,
+        "@P0 EXIT"
+      ]
+    ],
+    "uniform_exit_sources": [
+      "SR_CTAID.X",
+      "actual_param_2_count"
+    ],
+    "captured_actual_count_constant_address": "0x38c",
+    "application_helper_calls": 0,
+    "CUDA_ordinary_division_slowpath_call_sites": 34,
+    "indirect_parent_dispatch_PC": "0x9d80",
+    "global_stores_in_both_regions": true
+  },
+  "negative_corruption_controls_rejected": [
+    "missing_CTA_barrier",
+    "valid_thread_early_return",
+    "wrong_child_ID_table_base",
+    "parent_uses_child_arity",
+    "native_wrong_early_exit_predicate",
+    "native_wrong_barrier_ID",
+    "captured_parameter_offset_corruption"
+  ],
+  "scope": "BothwholePTXentryCFGschecked:validCTAfiniteexitspasssinglebarrier,onlyinvalidblockuniformexitcanbypass,no parent-to-childedge. Exactcompiled120root/childIDs/arity/looplatch/parentconsumersandactualCUBIN20paramoffsets/widthsreplayed. ActualSASScountguarduniformonlyprebarrierEXIT/onebarrier/child+parentstores,forceinlineapplicationhelpers;onlyoriginalCUDAdivisionmathslowpathcalls.",
+  "limits": "NotfullSASSCFG/FPoperandequivalence,norC++pointervalidity/GPUmemoryrace/numerical/capacity/material/speedproof. ParentindirectSASSdispatchoccurspostbarrier; completePTXCFG/sourceinverseprovidesstructuredcontrolproof. FiniteD313memoryownershipplusactualhosteligibilitymustholdbeforeappkernels. Allrawdirect/engine/canonicalandadoptiongatesremain.",
+  "new_compilers_native_GPU_CFR_solver_or_speed_samples": 0,
+  "candidate_adopted": false,
+  "all_new_bulk_X_S_readonly_no_T": true
+}

@@ -1,0 +1,23 @@
+{
+  "id": "E062",
+  "at": "2026-10-17T09:28:01.496898+00:00",
+  "kind": "attributed_source_form_requalification",
+  "original_source_form": "E057",
+  "baseline_full_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "candidate_full_sha256": "b9c1b260895debf954def29b28804d3cd1cc0b431a668c698d72dda55693cec3",
+  "both_complete_CUDA_files_byte_identical_to_original": true,
+  "original_source_review_sha256": "108b6abc101e6b72ae22058237fca1e9d94cd690e8b13c30f5feb5109162f68d",
+  "cpu_model_report": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D093-prefix-layout\\report-r2.json",
+    "sha256": "ac271b190bd4e64be88f3cc38575c548959efb26ebad26eecaabd16cf70c24a8"
+  },
+  "preserved_model_correction": {
+    "path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D093-prefix-layout\\total-read-correction.json",
+    "sha256": "45edf67347b06b72ff325476e88c865d263801062d48ed62d4be645aefb9d586"
+  },
+  "eligibility_audit_sha256": "c44748183c7832ce6715ad6f2f5ca481deae3e5f12cdf27199f6292f63f75b2d",
+  "policy_sha256": "b22522ec32c3fe940ac6c830dc4c79dbff2a31a111ed20d0a7daaf02b7520fd6",
+  "mechanism": "Only physical prefix indices change in complete32word tiles: k XOR((k>>5)&31), final partial tile identity. Enable only for power-of-two per-thread chunk lengths>1. Exact original helper, guard, all5source accesses and all other source bytes retained. No storage/barrier/metadata/ABI/launch/FPoperation-order/precision/quality changes.",
+  "safety": "Each complete tile keeps its ID and XORs a tile-constant into low5bits, hence bijection/involution; partial tail disjoint. Same logical producer/consumer dependency and order. Existing D093CPUcontrols cover all0..1326lengths,both flags,all1..256block widths. Actual GPU numerical controls still required.",
+  "limits": "CPU bank model is not a hardware conflict counter or speed result. Root source review, not external independent review. First source-form numerical and timing outcomes remain unmeasured at this preparation."
+}

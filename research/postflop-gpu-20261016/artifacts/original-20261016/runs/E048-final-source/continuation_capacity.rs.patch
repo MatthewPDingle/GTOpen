@@ -1,0 +1,20 @@
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -31,7 +31,7 @@
+         cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot)+bytes(&s.tree.children);
+     for q in 0..2 {
+         n+=bytes(&p.hand_perm_flat[q])+bytes(&p.reach_slot[q])+bytes(&p.hand_c1[q])+bytes(&p.hand_c2[q])
+-            +bytes(&p.hand_mask[q])+bytes(&p.same_combo[q])+bytes(&p.weights[q])+bytes(&p.riv_off[q])
++            +bytes(&p.same_combo[q])+bytes(&p.weights[q])+bytes(&p.riv_off[q])
+             +bytes(&p.riv_cnt[q])+bytes(&p.riv_sorted_idx[q])+bytes(&p.riv_lower[q])+bytes(&p.riv_upper[q])
+             +bytes(&p.riv_card_off[q])+bytes(&p.riv_card_pos[q]);
+         n+=53*4+(2*p.nh[q]*4) as u64; // fold-card offsets and two entries per hand
+@@ -50,7 +50,7 @@
+     for q in 0..2 {
+         macro_rules! arr {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f[q].len()*size_of::<$t>()) as u64)*};}
+         n+=arr!(d_hand_perm:u32,d_rsrc:u32,d_fold_card_off:u32,d_fold_card_idx:u32,d_hand_c1:u32,d_hand_c2:u32,
+-            d_hand_mask:u64,d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,
++            d_same:u32,d_weights:f32,d_riv_off:u32,d_riv_cnt:u32,d_riv_idx:u32,d_riv_lower:u32,
+             d_riv_upper:u32,d_riv_card_off:u32,d_riv_card_pos:u32);
+     }
+     n

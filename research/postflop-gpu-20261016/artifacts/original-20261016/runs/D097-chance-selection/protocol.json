@@ -1,0 +1,48 @@
+{
+  "id": "D097-chance-selection",
+  "at": "2026-10-17T08:06:02.983503+00:00",
+  "status": "FROZEN_PRE_CPU_ADDRESS_REPLAY",
+  "candidate": "E059",
+  "candidate_sha256": "479d18af23b0666278bb751df4e0169edd001f88404a0ab0ff369c119c9e5c1e",
+  "source_delta": "Retain original64bit hm&cm predicate. Remove continue, compute original child-add unconditionally, select ORIGINAL acc bits when blocked using all-ones u32mask; otherwise select the new sum bits. This is not add-zero, a reciprocal, precision change or a summation reorder. Final acc*inv unchanged.",
+  "semantics": "For every blocked card keep all32old accumulator bits, including signedzero/NaN payload; unblocked adds the identical original operands in the original t order. Extra ignored arithmetic has no supported observable CUDA floating-exception status. New reads must be valid/initialized/race-free even where the old branch skipped them. Invalid/trapping custom raw pointers are outside the supported GpuPlan contract.",
+  "source_address_proof": [
+    "Spot hand_perm tables are admitted only when EVERY root hand maps into the same range; missing entries discard the entire suit permutation. Every retained k table is total and in bounds for both players. Identity is table0.",
+    "GpuPlan records only valid chance cards, maps each to a valid orbit representative child and its retained permutation k. All representative children are reached at parent depth+1.",
+    "CFVslot assignment gives unique scratch rows for all current-level nonterminals and separate adjacent parity scratch; terminal slots are persistent outside scratch. Thus every extra child read is disjoint from all current-level writes.",
+    "GpuSolver d_cfv is allocated with alloc_zeros over cfv_blocks*nh_max. Reverse-level traversal and stream ordering initialize/produce child rows before parent loads. Extra reads use indices<nh_p<=nh_max and cannot enter prefix/suffix memory. Cached evaluation/continuation does not change these owned buffer bounds."
+  ],
+  "concrete_replay": "All12retained CPU metadata cases:3canonical configurations xiso off/on xcompact/full arenas. Stream every required complete metadata field from raw images, verify all hand permutation entries, all reached node levels, all active nonterminal row ownership and all chance card/k/child addresses regardless of blockers. No CUDA execution or timing in this control.",
+  "history_scope": "No matching acc bit-selection found by scoped retained postflop CU/patch/review search; exact byte hash is new among checked files. Different from closed E039/E046 shared/packed metadata and E048 membership predicates. No metadata, predicate, factor or width variant of those candidates is composed.",
+  "checked_cuda_files": 245,
+  "hash_duplicates": [],
+  "reference": {
+    "url": "https://docs.nvidia.com/cuda/cuda-math-api/cuda_math_api/group__CUDA__MATH__INTRINSIC__CAST.html",
+    "use": "NVIDIA documents __float_as_uint and __uint_as_float as bit reinterpretations, not numerical conversions."
+  },
+  "next_gates": "Actual compiler/resource inspection with D094 allocation proof; require blocker-dependent branch removal rather than a source-only claim. Then complete raw GPU outputs/input/guards with signedzero/nonfinite/extreme/permutation/empty/tail cases. Then unchanged complete3fixture1%guard/fresh16/broad/F32/state/save/resume/continuation/material/holdout/cumulative gates. No mask-expression/control/placement/factor variants or extra timing to rescue a failed candidate.",
+  "raw_input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-00.bin": "3f36f5f327ff75dc0094c5b1723321b543a11999bc6fc0e704e2c1a717edb91e",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-01.bin": "58c6656b26e710bbacc539be70d9689150bd4fe686bae1ab30a5e0f56fff62df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-02.bin": "4a9cd844d354cae4c0882d3c0516edf6f1eac551c531d3e99b46ff8bdd6b3612",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-03.bin": "9198d6ae50b943f209d918042b11baccf629d5f7a490eb14d424102e873641b6",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-04.bin": "f09e70b3e73a5bd8b82a00b5474c525934a45030e123d0bf2ec647c9e9561596",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-05.bin": "e14e71188e221642c8d82bc07b91e051547a132532fbdc83e7b93d2e4cf5c152",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-06.bin": "3dbdb5985d4a598f5b878ec6b092181c2e967c5ced06170d638d3797bf05ee24",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-07.bin": "40511142c63f002c39012e7d34259e296a202ea00096fe48d9bee01230da14df",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-08.bin": "126eecf0d8e031771626d244616c97cdde41c05f687f23ba7b9c65baa90f077c",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-09.bin": "890881dda9f6b9d6a5e1915b14e55baa1bb02026e4b0b55e538d4b96e99c0b58",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-10.bin": "112186ed3885def03978d1524bd0c9b52e5a14a01c43fc34d6f20d26fc258cbf",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\execution\\case-11.bin": "0dbf07d2007db5e9c5c0505b7806318cd7c202e9865a4deb18c43c67325fe61e"
+  },
+  "source_sha256": {
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\game.rs": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\mod.rs": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\src\\gpu\\kernels.cu": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647"
+  },
+  "reviewer": "Root source/ownership replay, not an external independent review",
+  "source_activated": false,
+  "kernel_launches": 0,
+  "performance_measured": false
+}

@@ -1,0 +1,69 @@
+{
+  "id": "D188",
+  "at": "2026-10-28T19:48:21.344337+00:00",
+  "status": "declined_closed_family_before_execution",
+  "proposal": "Group showdown nodes by river slot within existing level spans",
+  "closed_family": "D111/D112/E069 showdown ordering; combined D115/E071 remains separately closed",
+  "original_transform": "One in-place tuple (river_slot,node_id) sort within each existing show span after slot assignment. No threshold/key/order/scope variants.",
+  "original_performance": {
+    "aggregation": "Unrounded sum of per-fixture medians, three observations per arm",
+    "baseline_full_cycle_ms": 10809.556500000002,
+    "candidate_full_cycle_ms": 10807.2525,
+    "observed_gain_pct": 0.021314472985102632,
+    "required_gain_pct": 1.0,
+    "fixture_regression_guard": [
+      {
+        "fixture_id": "rainbow",
+        "median_slowdown_pct": -1.2121409891947315,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          2.635184737364552,
+          -1.2285784015962213,
+          -6.8165767096269345
+        ],
+        "failed": false
+      },
+      {
+        "fixture_id": "two-tone",
+        "median_slowdown_pct": 2.3173084986056764,
+        "slower_pairs": 2,
+        "paired_slowdown_pct": [
+          2.3779983544056598,
+          2.907806788047605,
+          -8.23982994305792
+        ],
+        "failed": true
+      },
+      {
+        "fixture_id": "river",
+        "median_slowdown_pct": -15.118985342981988,
+        "slower_pairs": 1,
+        "paired_slowdown_pct": [
+          1.504772510225245,
+          -6.16983686438626,
+          -22.88506862609177
+        ],
+        "failed": false
+      }
+    ],
+    "primary_timing_pass": false,
+    "statistical_significance_established": false
+  },
+  "decision": "Same river-slot permutation is an equivalent closed GPU locality mechanism even if constructed by counting rather than sorting. No alternate key, threshold, scope or sample rescue.",
+  "new_native_or_compiler_processes": 0,
+  "new_gain_accepted": false,
+  "inputs": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-source\\source-review.json": {
+      "sha256": "75794208857762bbbf69e0642ce70ecb37926c78af15a898a37e6055a21a3ac0",
+      "bytes": 2353
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E069-three-pair-comparison\\report.json": {
+      "sha256": "35929280a8724b0b38b8c5de60ccb923335ff7bee4ca23e9a4a1664fd4655c8a",
+      "bytes": 144459
+    },
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\comparisons\\E069-root-crosscheck\\report.json": {
+      "sha256": "151d887ab811526aef2087620bb7805bb381048b8bb43eff59f67f1e60657c7b",
+      "bytes": 5798
+    }
+  }
+}

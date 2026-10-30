@@ -1,0 +1,16 @@
+{
+  "id": "D286",
+  "at": "2026-10-29T16:56:54.120158+00:00",
+  "accepted_PTX_sha256": "4457a101f35369c5d1d9893409e4bc8a9dc027fc4234e325b72c621f73017c12",
+  "D285_report_sha256": "7323a4c4f391d48743d8e3cc2268da3d135830957a5d6495585a82bb6ffd5e80",
+  "locked_cudarc_crate_sha256": "1cea5f10a99e025c1b44ae2354c2d8326b25ddbd0baf76bde8e55cfd4018a2cc",
+  "all3_API_source_members_byte_exact_to_locked_crate": true,
+  "proposal_scope": "Unchanged accepted copy_span moves bits: prefix initializes whole destination, producers write two disjoint ranges of same allocation, dependent consumer copies whole result. Serial reference versus event-forked second producer. Two nonblocking streams, eventtracking disabled BEFORE allocations exactlyasproduction, explicit readiness and completion events before all cross-stream uses/returns/frees. All backing allocations/regions checked disjoint; rawpointerargs allow declared disjoint subregions only. Graphs/events/data/module/streams/context explicitly released after joins.",
+  "capture_contract": "Origin begins/ends thread-local capture; record readiness after prefix, sidewait launches branch, side records completion, originwait before dependent consumer. ActualDAG must show branchindependence forfork and serial dependency forreference, identical actual source/destination/word args. Graphs drop before all buffers and events. Never use default/nullstream or create streams duringcapture. No context/device/globalreset or externalstate change.",
+  "matrix": "7lengths0/1/31/32/257/4097/131073, eachserial/fork eager+4updated graphreplays=70fullsnapshots. Add eagerhostabortafterproducer/join andcapturehostabort/drop plus2successfulrecoveries=4more. Allinput/CFV/consumerwords/guards physicallyreadback andretained.15actualgraphs/59capturedkernelnodes/291actualcopykernels. Rawpatternsincludeall32bitimages,signedzero/subnormal/nonfinite/payload plusfixedintegerpattern.",
+  "failure_limits": "Injected host aborts do not prove arbitraryCUDAfailure cleanup. Primitive graphcorrectness doesnotprove realterminal co-residency, overlap, GPUcost, exactsolver outputs, per-iteration semantic compatibility ormaterialneutrality. No CFO/CFRevaluation, performance sample, NVRTC, production source oroptimizer candidate. Genuinefeaturebit/graph/lifetimefailure closes fixedforkjoin lead; mechanicalreader/binding mistakes retainedadditivelywithoutcompletednumericalcase repeats.",
+  "official_sources": [
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#cross-stream-dependencies-and-events",
+    "https://docs.nvidia.com/cuda/archive/12.9.1/cuda-c-programming-guide/index.html#concurrent-kernel-execution"
+  ]
+}

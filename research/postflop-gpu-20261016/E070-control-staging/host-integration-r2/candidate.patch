@@ -1,0 +1,378 @@
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -104,8 +104,7 @@
+     d_fold_nodes: CudaSlice<u32>,
+     d_show_nodes: CudaSlice<u32>,
+     // device: per-node
+-    d_node_player: CudaSlice<i32>,
+-    d_node_na: CudaSlice<i32>,
++    d_node_attrs: CudaSlice<u16>,
+     d_node_data_off: CudaSlice<u64>,
+     d_node_children_start: CudaSlice<u32>,
+     d_node_twin: CudaSlice<f32>,
+@@ -299,6 +298,13 @@
+             fold_card_off[p].push(fold_card_idx[p].len() as u32);
+         }
+ 
++        // The public CPU plan remains unchanged. Node fields are u8 at source;
++        // pack both bytes losslessly for the private device representation.
++        // Keep the temporary alive for the whole constructor, as for plan uploads.
++        let node_attrs: Vec<u16> = solver.spot.tree.nodes.iter()
++            .map(|node| ((node.player as u16) << 8) | node.num_children as u16)
++            .collect();
++
+         Ok(GpuSolver {
+             f_copy_root: func("copy_root")?,
+             f_down_action: func("down_action")?,
+@@ -325,8 +331,7 @@
+             d_chance_nodes: up32(&plan.chance_nodes)?,
+             d_fold_nodes: up32(&plan.fold_nodes)?,
+             d_show_nodes: up32(&plan.show_nodes)?,
+-            d_node_player: upi32(&plan.node_player)?,
+-            d_node_na: upi32(&plan.node_na)?,
++            d_node_attrs: stream.clone_htod(&node_attrs).map_err(e)?,
+             d_node_data_off: up64(&plan.node_data_off)?,
+             d_node_children_start: up32(&plan.node_children_start)?,
+             d_node_twin: upf(&plan.node_twin)?,
+@@ -571,8 +576,7 @@
+                         .arg(&self.d_action_nodes)
+                         .arg(&start)
+                         .arg(&count)
+-                        .arg(&self.d_node_player)
+-                        .arg(&self.d_node_na)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_data_off)
+                         .arg(&self.d_node_children_start)
+                         .arg(&self.d_children)
+@@ -637,7 +641,7 @@
+                         .arg(&start)
+                         .arg(&count)
+                         .arg(&pi)
+-                        .arg(&self.d_node_player)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_twin)
+                         .arg(&self.d_node_tlose)
+                         .arg(&self.d_rsrc[0])
+@@ -734,8 +738,7 @@
+                         .arg(&count)
+                         .arg(&pi)
+                         .arg(&mode)
+-                        .arg(&self.d_node_player)
+-                        .arg(&self.d_node_na)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_data_off)
+                         .arg(&self.d_node_children_start)
+                         .arg(&self.d_children)
+@@ -802,8 +805,7 @@
+                         .arg(&self.d_action_nodes)
+                         .arg(&start)
+                         .arg(&count)
+-                        .arg(&self.d_node_player)
+-                        .arg(&self.d_node_na)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_data_off)
+                         .arg(&self.d_node_children_start)
+                         .arg(&self.d_children)
+@@ -865,7 +867,7 @@
+                         .arg(&start)
+                         .arg(&count)
+                         .arg(&pi)
+-                        .arg(&self.d_node_player)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_twin)
+                         .arg(&self.d_node_tlose)
+                         .arg(&self.d_rsrc[0])
+@@ -967,8 +969,7 @@
+                         .arg(&start)
+                         .arg(&count)
+                         .arg(&pi)
+-                        .arg(&self.d_node_player)
+-                        .arg(&self.d_node_na)
++                        .arg(&self.d_node_attrs)
+                         .arg(&self.d_node_data_off)
+                         .arg(&self.d_node_children_start)
+                         .arg(&self.d_children)
+@@ -1244,7 +1245,7 @@
+                 unsafe {
+                     gpu.stream.launch_builder(&gpu.f_down_action)
+                         .arg(&gpu.d_action_nodes).arg(&start).arg(&count)
+-                        .arg(&gpu.d_node_player).arg(&gpu.d_node_na).arg(&gpu.d_node_data_off)
++                        .arg(&gpu.d_node_attrs).arg(&gpu.d_node_data_off)
+                         .arg(&gpu.d_node_children_start).arg(&gpu.d_children)
+                         .arg(&gpu.d_rsrc[0]).arg(&gpu.d_rsrc[1])
+                         .arg(&gpu.d_regrets[0]).arg(&gpu.d_regrets[1])
+--- a/crates/solver/src/gpu/continuation.rs
++++ b/crates/solver/src/gpu/continuation.rs
+@@ -143,7 +143,7 @@
+         unsafe {
+             self.gpu.stream.launch_builder(&self.transport)
+                 .arg(&self.gpu.d_action_nodes).arg(&count)
+-                .arg(&self.gpu.d_node_player).arg(&self.gpu.d_node_na).arg(&self.gpu.d_node_data_off)
++                .arg(&self.gpu.d_node_attrs).arg(&self.gpu.d_node_data_off)
+                 .arg(sources).arg(permutations).arg(&self.gpu.d_hand_perm[p])
+                 .arg(&mut self.gpu.d_regrets[p]).arg(&mut self.gpu.d_strat[p])
+                 .arg(&self.gpu.nh[p]).arg(&(p as i32))
+@@ -159,7 +159,7 @@
+             unsafe {
+                 self.gpu.stream.launch_builder(&self.project)
+                     .arg(&self.gpu.d_action_nodes).arg(&count)
+-                    .arg(&self.gpu.d_node_player).arg(&self.gpu.d_node_na).arg(&self.gpu.d_node_data_off)
++                    .arg(&self.gpu.d_node_attrs).arg(&self.gpu.d_node_data_off)
+                     .arg(&self.stabilizers).arg(&self.gpu.d_hand_perm[p])
+                     .arg(&mut self.gpu.d_regrets[p]).arg(&mut self.gpu.d_strat[p])
+                     .arg(&self.gpu.nh[p]).arg(&(p as i32)).arg(&broadcast)
+--- a/crates/solver/src/gpu/continuation_storage.rs
++++ b/crates/solver/src/gpu/continuation_storage.rs
+@@ -290,7 +290,7 @@
+         let (r,s)=if p==0 {(r0,s0)}else{(r1,s1)};
+         unsafe {
+             g.stream.launch_builder(&self.copy_kernel)
+-                .arg(&self.pack_nodes).arg(&count).arg(&g.d_node_player).arg(&g.d_node_na)
++                .arg(&self.pack_nodes).arg(&count).arg(&g.d_node_attrs)
+                 .arg(&g.d_node_data_off).arg(&self.pack_offsets)
+                 .arg(&mut g.d_regrets[p]).arg(&mut g.d_strat[p]).arg(r).arg(s)
+                 .arg(&g.nh[p]).arg(&(p as i32)).arg(&(gather as i32))
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -27,8 +27,9 @@
+ fn metadata(p: &GpuPlan, s: &Spot) -> u64 {
+     macro_rules! sum {($($f:ident),*)=>{0u64 $(+bytes(&p.$f))*};}
+     let mut n=sum!(action_nodes,chance_parents,chance_children,chance_cards,chance_nodes,fold_nodes,show_nodes,
+-        node_player,node_na,node_data_off,node_children_start,node_twin,node_tlose,node_ttie,node_cdiv,node_river_slot,
+-        cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot)+bytes(&s.tree.children);
++        node_data_off,node_children_start,node_twin,node_tlose,node_ttie,node_cdiv,node_river_slot,
++        cc_start,cc_count,cc_card,cc_child,cc_perm,cfv_slot)+bytes(&s.tree.children)
++        +(p.num_nodes as u64)*size_of::<u16>() as u64;
+     for q in 0..2 {
+         n+=bytes(&p.hand_perm_flat[q])+bytes(&p.reach_slot[q])+bytes(&p.hand_c1[q])+bytes(&p.hand_c2[q])
+             +bytes(&p.hand_mask[q])+bytes(&p.same_combo[q])+bytes(&p.weights[q])+bytes(&p.riv_off[q])
+@@ -43,7 +44,7 @@
+ pub(super) fn observed_metadata(g: &GpuSolver) -> u64 {
+     macro_rules! sum {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f.len()*size_of::<$t>()) as u64)*};}
+     let mut n=sum!(d_action_nodes:u32,d_chance_parents:u32,d_chance_children:u32,d_chance_cards:u32,d_chance_nodes:u32,
+-        d_fold_nodes:u32,d_show_nodes:u32,d_node_player:i32,d_node_na:i32,d_node_data_off:u64,d_node_children_start:u32,
++        d_fold_nodes:u32,d_show_nodes:u32,d_node_attrs:u16,d_node_data_off:u64,d_node_children_start:u32,
+         d_node_twin:f32,d_node_tlose:f32,d_node_ttie:f32,d_node_cdiv:f32,d_node_river_slot:i32,d_cc_start:u32,
+         d_cc_count:u32,d_cc_card:u32,d_cc_child:u32,d_cc_perm:u32,d_children:u32,d_lock_off:i64,d_lock_sigma:f32,
+         d_cfv_slot:u32,d_eval_roots:f32,d_disc:f32);
+--- a/crates/solver/src/gpu/continuation_projection.cu
++++ b/crates/solver/src/gpu/continuation_projection.cu
+@@ -2,14 +2,14 @@
+ typedef unsigned int u32;
+ typedef unsigned long long u64;
+ extern "C" __global__ void continuation_project(
+-    const u32* nodes, int count, const int* players, const int* na,
++    const u32* nodes, int count, const unsigned short* node_attrs,
+     const u64* offsets, const u32* stabilizers, const u32* permutations,
+     float* regrets, float* sums, int nh, int player, int broadcast)
+ {
+     int b=blockIdx.x;
+     if(b>=count) return;
+     u32 n=nodes[b], mask=stabilizers[n];
+-    if(players[n]!=player || mask==1) return;
++    if((node_attrs[n] >> 8)!=player || mask==1) return;
+     for(int i=threadIdx.x;i<nh;i+=blockDim.x) {
+         int canonical=i;
+         for(u32 m=mask;m;m&=m-1) {
+@@ -21,7 +21,7 @@
+             // Canonical threads never write in this launch, so their values
+             // are stable while all other orbit members read them.
+             if(canonical==i) continue;
+-            for(int a=0;a<na[n];a++) {
++            for(int a=0;a<(node_attrs[n] & 0xff);a++) {
+                 u64 base=offsets[n]+(u64)a*nh;
+                 regrets[base+i]=regrets[base+canonical];
+                 sums[base+i]=sums[base+canonical];
+@@ -30,7 +30,7 @@
+             // Distinct canonical threads read disjoint orbits. Repeated group
+             // images have constant multiplicity, so averaging group elements
+             // is the same as averaging unique orbit members.
+-            for(int a=0;a<na[n];a++) {
++            for(int a=0;a<(node_attrs[n] & 0xff);a++) {
+                 u64 base=offsets[n]+(u64)a*nh;
+                 double r=0.,s=0.;int size=0;
+                 for(u32 m=mask;m;m&=m-1) {
+@@ -46,7 +46,7 @@
+ }
+ 
+ extern "C" __global__ void continuation_transport(
+-    const u32* nodes, int count, const int* players, const int* na,
++    const u32* nodes, int count, const unsigned short* node_attrs,
+     const u64* offsets, const u32* sources, const u32* source_permutations,
+     const u32* permutations, float* regrets, float* sums, int nh, int player)
+ {
+@@ -54,11 +54,11 @@
+     if(b>=count) return;
+     u32 n=nodes[b], source=sources[n];
+     // Every source is canonical and therefore never written by this launch.
+-    if(players[n]!=player || n==source) return;
++    if((node_attrs[n] >> 8)!=player || n==source) return;
+     u32 k=source_permutations[n];
+     for(int i=threadIdx.x;i<nh;i+=blockDim.x) {
+         int j=permutations[(u64)k*nh+i];
+-        for(int a=0;a<na[n];a++) {
++        for(int a=0;a<(node_attrs[n] & 0xff);a++) {
+             u64 dst=offsets[n]+(u64)a*nh+i,src=offsets[source]+(u64)a*nh+j;
+             regrets[dst]=regrets[src];sums[dst]=sums[src];
+         }
+--- a/crates/solver/src/gpu/continuation_storage_copy.cu
++++ b/crates/solver/src/gpu/continuation_storage_copy.cu
+@@ -3,7 +3,7 @@
+ typedef unsigned int u32;
+ typedef unsigned long long u64;
+ extern "C" __global__ void continuation_storage_copy(
+-    const u32* nodes, int count, const int* players, const int* na,
++    const u32* nodes, int count, const unsigned short* node_attrs,
+     const u64* full_offsets, const u64* packed_offsets,
+     float* full_regrets, float* full_sums, float* packed_regrets, float* packed_sums,
+     int nh, int player, int gather)
+@@ -11,9 +11,9 @@
+     int b=blockIdx.x;
+     if(b>=count) return;
+     u32 node=nodes[b];
+-    if(players[node]!=player) return;
++    if((node_attrs[node] >> 8)!=player) return;
+     u64 full=full_offsets[node], packed=packed_offsets[b];
+-    int count_values=na[node]*nh;
++    int count_values=(node_attrs[node] & 0xff)*nh;
+     for(int i=threadIdx.x;i<count_values;i+=blockDim.x) {
+         if(gather) {
+             packed_regrets[packed+i]=full_regrets[full+i];
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -29,8 +29,7 @@
+ template<int NA>
+ __device__ __forceinline__ void down_action_impl(
+     const u32* __restrict__ nodes, int start, int count,
+-    const int* __restrict__ node_player,
+-    const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -44,8 +43,8 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    int actor = node_player[n];
+-    const int na = NA == 0 ? node_na[n] : NA;
++    int actor = (int)(node_attrs[n] >> 8);
++    const int na = NA == 0 ? (int)(node_attrs[n] & 0xFFu) : NA;
+     u64 doff = node_data_off[n];
+     u32 cs = node_children_start[n];
+     const float* regs = actor == 0 ? regrets0 : regrets1;
+@@ -95,8 +94,7 @@
+ 
+ extern "C" __global__ void down_action(
+     const u32* __restrict__ nodes, int start, int count,
+-    const int* __restrict__ node_player,
+-    const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -108,11 +106,11 @@
+     int nh0, int nh1)
+ {
+     if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
+-    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    const int na = (int)(node_attrs[nodes[start + blockIdx.x]] & 0xFFu);
++    if (na == 2) down_action_impl<2>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    else down_action_impl<0>(nodes, start, count, node_attrs, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+ }
+ 
+ // Down sweep, chance edges at one level: child reach = parent reach with
+@@ -139,7 +137,7 @@
+ // Up sweep, fold terminals: cfv[i] = amount * (compatible opponent reach).
+ extern "C" __global__ void up_fold(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player,
++    const unsigned short* __restrict__ node_attrs,
+     const float* __restrict__ node_twin, const float* __restrict__ node_tlose,
+     const u32* __restrict__ rsrc0, const u32* __restrict__ rsrc1,
+     const float* __restrict__ reach0, const float* __restrict__ reach1,
+@@ -180,7 +178,7 @@
+         __syncthreads();
+     }
+     float T = total_parts[0];
+-    float amount = node_player[n] == p ? node_tlose[n] : node_twin[n];
++    float amount = (int)(node_attrs[n] >> 8) == p ? node_tlose[n] : node_twin[n];
+     for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+         u32 sc = same_p[i];
+         float same_r = sc != SENTINEL ? ro[sc] : 0.f;
+@@ -331,7 +329,7 @@
+ template<int NA>
+ __device__ __forceinline__ void up_action_impl(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -349,9 +347,9 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    const int na = NA == 0 ? node_na[n] : NA;
++    const int na = NA == 0 ? (int)(node_attrs[n] & 0xFFu) : NA;
+     u32 cs = node_children_start[n];
+-    if (node_player[n] == p) {
++    if ((int)(node_attrs[n] >> 8) == p) {
+         long long loff = lock_off[n];
+         if (loff >= 0) {
+             // locked: fixed sigma, no regret/strategy update
+@@ -411,7 +409,7 @@
+ 
+ extern "C" __global__ void up_action(
+     const u32* __restrict__ nodes, int start, int count, int p,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -426,13 +424,13 @@
+     int nh_p, int nh_max)
+ {
+     if (blockIdx.x >= (u32)count) return;
+-    const int na = node_na[nodes[start + blockIdx.x]];
++    const int na = (int)(node_attrs[nodes[start + blockIdx.x]] & 0xFFu);
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+-    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    else up_action_impl<0>(nodes, start, count, p, node_attrs, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+ }
+ 
+ // Copy the first n floats (used to extract the root cfv span).
+@@ -450,7 +448,7 @@
+ // the way down).
+ extern "C" __global__ void up_action_eval(
+     const u32* __restrict__ nodes, int start, int count, int p, int mode,
+-    const int* __restrict__ node_player, const int* __restrict__ node_na,
++    const unsigned short* __restrict__ node_attrs,
+     const u64* __restrict__ node_data_off,
+     const u32* __restrict__ node_children_start,
+     const u32* __restrict__ children,
+@@ -463,9 +461,9 @@
+     int b = blockIdx.x;
+     if (b >= count) return;
+     u32 n = nodes[start + b];
+-    int na = node_na[n];
++    int na = (int)(node_attrs[n] & 0xFFu);
+     u32 cs = node_children_start[n];
+-    if (node_player[n] != p) {
++    if ((int)(node_attrs[n] >> 8) != p) {
+         for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
+             float acc = 0.f;
+             for (int a = 0; a < na; a++)

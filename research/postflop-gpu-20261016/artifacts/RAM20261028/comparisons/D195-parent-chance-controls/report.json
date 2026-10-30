@@ -1,0 +1,59 @@
+{
+  "id": "D195",
+  "at": "2026-10-28T21:06:28.578976+00:00",
+  "status": "pass_scoped_full_raw_parent_fanout_equivalence",
+  "checks": 8175423,
+  "categories": {
+    "original": {
+      "cases": 425,
+      "kernel_launches": 850,
+      "family_cases": {
+        "0": 157,
+        "1": 268
+      },
+      "output_words_both_arms": 18950844,
+      "immutable_words_both_arms": 3978822,
+      "guard_words_both_arms": 13112256,
+      "independent_bitcopy_words_both_arms": 5521260,
+      "old_original_input_seed_baseline_words_preserved": 20926480,
+      "raw_file_sha256": {
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-original-chance\\output\\baseline.bin": "a34b80b1a62ac72d90162ae07248651e612ab7405162765269a7356ab6788bfd",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-original-chance\\output\\candidate.bin": "a34b80b1a62ac72d90162ae07248651e612ab7405162765269a7356ab6788bfd",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-original-chance\\output\\inputs.bin": "f3f9416bcccbdcd4503126938053a24bb207feacf95b1b29a284857a59cfbbab"
+      }
+    },
+    "fanout": {
+      "cases": 7920,
+      "kernel_launches": 15840,
+      "family_cases": {
+        "0": 7920
+      },
+      "output_words_both_arms": 508350480,
+      "immutable_words_both_arms": 41720700,
+      "guard_words_both_arms": 324492600,
+      "independent_bitcopy_words_both_arms": 183857880,
+      "old_original_input_seed_baseline_words_preserved": 0,
+      "raw_file_sha256": {
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-fanout\\output\\baseline.bin": "ab64c87b65b695b9d77947c28f3bc94a16ca65d8bedfd5fe6154ebb23ec5f2e9",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-fanout\\output\\candidate.bin": "ab64c87b65b695b9d77947c28f3bc94a16ca65d8bedfd5fe6154ebb23ec5f2e9",
+        "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D195-parent-fanout\\output\\inputs.bin": "73591594cfbedc8694ad0ada857dc045d63cc939e3371585a818c4c1137afecf"
+      }
+    }
+  },
+  "cases": 8345,
+  "kernel_launches": 16690,
+  "source_float_categories": {
+    "positive_zero": 179568,
+    "signed_zero": 179384,
+    "subnormal": 1412457,
+    "inf": 358937,
+    "qnan": 358929,
+    "snan": 351162
+  },
+  "all_original425_inputs_and_baseline_actual_outputs_preserved": true,
+  "all_actual_immutable_outputs_guards_exact": true,
+  "protocol_sha256": "1a6679f55e07809883da4158e6ad8e0a180fcc04ecd6bfb4d9ca137d2f123ade",
+  "GPU_solve_or_speed_samples": 0,
+  "candidate_accepted": false,
+  "limits": "Finite direct copy/chance corpus and actual word-level outputs. Canonical multi-level engine/lifecycle/physical state and full-solve/material/capacity/holdout/application qualification remain required. Error/invalid consumed metadata and all address domains are not proven."
+}

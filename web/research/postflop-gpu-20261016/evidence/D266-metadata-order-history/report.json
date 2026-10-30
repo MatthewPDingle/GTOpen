@@ -1,0 +1,3903 @@
+{
+  "id": "D266",
+  "at": "2026-10-29T07:19:34.271543+00:00",
+  "status": "source_triage_metadata_order_design_only",
+  "local_ref_revisions": 56,
+  "tracked_path_history": [
+    {
+      "identity": "git:67a189394e58ac6a9abdd98438a9c15e66be8798:crates/solver/src/gpu/mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "git:67a189394e58ac6a9abdd98438a9c15e66be8798:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:67a189394e58ac6a9abdd98438a9c15e66be8798:crates/solver/src/gpu/arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "git:546ab450db65bb766bcc71474f4cc90b8f7db364:crates/solver/src/gpu/mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "git:546ab450db65bb766bcc71474f4cc90b8f7db364:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:546ab450db65bb766bcc71474f4cc90b8f7db364:crates/solver/src/gpu/arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "git:ae823c8bd6d723c75e096da139fd638d7dd397eb:crates/solver/src/gpu/mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "git:ae823c8bd6d723c75e096da139fd638d7dd397eb:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:ae823c8bd6d723c75e096da139fd638d7dd397eb:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:7bac2ac1c2fa8f919dd975e801b2269c25bcd1ff:crates/solver/src/gpu/mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "git:7bac2ac1c2fa8f919dd975e801b2269c25bcd1ff:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:7bac2ac1c2fa8f919dd975e801b2269c25bcd1ff:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:bf0d15c42a587180981d616159af382dfd9dd45d:crates/solver/src/gpu/mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "git:bf0d15c42a587180981d616159af382dfd9dd45d:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:bf0d15c42a587180981d616159af382dfd9dd45d:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:e868cfbb125002216f25046af2d88b22a697b2fd:crates/solver/src/gpu/mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "git:e868cfbb125002216f25046af2d88b22a697b2fd:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:e868cfbb125002216f25046af2d88b22a697b2fd:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:f3741e87dc76f1622164c78bf4df7b9455066d89:crates/solver/src/gpu/mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "git:f3741e87dc76f1622164c78bf4df7b9455066d89:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:f3741e87dc76f1622164c78bf4df7b9455066d89:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:5e021499c67c840f8c88e4378e5889918bbe27c6:crates/solver/src/gpu/mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "git:5e021499c67c840f8c88e4378e5889918bbe27c6:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:5e021499c67c840f8c88e4378e5889918bbe27c6:crates/solver/src/gpu/arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "git:cf1a1a8487ba3fcd3c1f8767596388fbcbaf46ce:crates/solver/src/gpu/mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "git:cf1a1a8487ba3fcd3c1f8767596388fbcbaf46ce:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:cf1a1a8487ba3fcd3c1f8767596388fbcbaf46ce:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:84e3ef1e550d2afff438f595778bbe33bea400c0:crates/solver/src/gpu/mod.rs",
+      "sha256": "e66d2e60bc127dfa279cc6632ee6d07f75c224fa6a9a9211bc0ecc5e8ffa0f8d",
+      "hits": []
+    },
+    {
+      "identity": "git:84e3ef1e550d2afff438f595778bbe33bea400c0:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:84e3ef1e550d2afff438f595778bbe33bea400c0:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:db6e5c3ee57ba72a329f20e4b97213366de2cbbf:crates/solver/src/gpu/mod.rs",
+      "sha256": "4a8b98ac3d591ae636d29306cd189e13fda44680af0c06a6319d0dc200c0acce",
+      "hits": []
+    },
+    {
+      "identity": "git:db6e5c3ee57ba72a329f20e4b97213366de2cbbf:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:db6e5c3ee57ba72a329f20e4b97213366de2cbbf:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:55232d5013b06f180c4679374ddf5c2d298075b8:crates/solver/src/gpu/mod.rs",
+      "sha256": "40890fd29491045983a511750f86e25feed8bf5051f6239704c9a9a0d4d279d4",
+      "hits": []
+    },
+    {
+      "identity": "git:55232d5013b06f180c4679374ddf5c2d298075b8:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:55232d5013b06f180c4679374ddf5c2d298075b8:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:830810c06e05ef8cf80cea7c2ba91b6d47cee5ba:crates/solver/src/gpu/mod.rs",
+      "sha256": "caacd7609b4ffc0dd81772cfea1828a4d6102782fb3166e9058e1f79b0caf9fb",
+      "hits": []
+    },
+    {
+      "identity": "git:830810c06e05ef8cf80cea7c2ba91b6d47cee5ba:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:830810c06e05ef8cf80cea7c2ba91b6d47cee5ba:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:8ff89f422bb719bdfb19d9b9f97ebc3a54a739fd:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:8ff89f422bb719bdfb19d9b9f97ebc3a54a739fd:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:8ff89f422bb719bdfb19d9b9f97ebc3a54a739fd:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:d3ff6d69969e13939e3ff7e1f43f6d9616ce24f3:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:d3ff6d69969e13939e3ff7e1f43f6d9616ce24f3:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:d3ff6d69969e13939e3ff7e1f43f6d9616ce24f3:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:dfc1b3765810e50e0de713691e48e50bb18ea4b8:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:dfc1b3765810e50e0de713691e48e50bb18ea4b8:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:dfc1b3765810e50e0de713691e48e50bb18ea4b8:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:a75c327cfa20ad3338d68aa1a75398458b76ea46:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:a75c327cfa20ad3338d68aa1a75398458b76ea46:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:a75c327cfa20ad3338d68aa1a75398458b76ea46:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:c14e87c3ad7f1c98cf61ca38b2971b37ecb97fef:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:c14e87c3ad7f1c98cf61ca38b2971b37ecb97fef:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:c14e87c3ad7f1c98cf61ca38b2971b37ecb97fef:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:e6a4ada0dd9ae65cb8f533d1152a0334bbd6ab40:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:e6a4ada0dd9ae65cb8f533d1152a0334bbd6ab40:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:e6a4ada0dd9ae65cb8f533d1152a0334bbd6ab40:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:523c8d45ddf1d444e33523484673bf815a33c243:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:523c8d45ddf1d444e33523484673bf815a33c243:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:523c8d45ddf1d444e33523484673bf815a33c243:crates/solver/src/gpu/arena.rs",
+      "sha256": "2bb7a192abcde92d7ab2c9d4f7a65eda948f5f4b80712daaa1593328e464d2c1",
+      "hits": []
+    },
+    {
+      "identity": "git:949febe59d714de88c64e59c91e73a40de241fee:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:949febe59d714de88c64e59c91e73a40de241fee:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:949febe59d714de88c64e59c91e73a40de241fee:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:a0b42f34eabb38c519a91cf66a4e8481a68519f0:crates/solver/src/gpu/mod.rs",
+      "sha256": "ba76eb019e5cea2864d97208d63c93c1c4019fd88eae80e136a26d9ac8db49d1",
+      "hits": []
+    },
+    {
+      "identity": "git:a0b42f34eabb38c519a91cf66a4e8481a68519f0:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:a0b42f34eabb38c519a91cf66a4e8481a68519f0:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:e20667ebb1b3d442564588ad2d79b0c2a98d5f16:crates/solver/src/gpu/mod.rs",
+      "sha256": "ee5e59cb661763c61c7b6027dae6453d33db865fa1bf9af76a297c8ba951a8b0",
+      "hits": []
+    },
+    {
+      "identity": "git:e20667ebb1b3d442564588ad2d79b0c2a98d5f16:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:e20667ebb1b3d442564588ad2d79b0c2a98d5f16:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:8fffe84a34ecd081e4fcde9b54ac5220e00fb1ad:crates/solver/src/gpu/mod.rs",
+      "sha256": "8c8b68035b4395132f81250a247a52eb4a3859bba26e5b2de86ea091c08e7c58",
+      "hits": []
+    },
+    {
+      "identity": "git:8fffe84a34ecd081e4fcde9b54ac5220e00fb1ad:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:8fffe84a34ecd081e4fcde9b54ac5220e00fb1ad:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:09ad3d15a67f827718765c6dc6adc7537ba6603e:crates/solver/src/gpu/mod.rs",
+      "sha256": "ba76eb019e5cea2864d97208d63c93c1c4019fd88eae80e136a26d9ac8db49d1",
+      "hits": []
+    },
+    {
+      "identity": "git:09ad3d15a67f827718765c6dc6adc7537ba6603e:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:09ad3d15a67f827718765c6dc6adc7537ba6603e:crates/solver/src/gpu/arena.rs",
+      "sha256": "5e76b02963f3c938ade5a407cd5d4db73eff399ee7a1e3efbcf23b01f5c189f4",
+      "hits": []
+    },
+    {
+      "identity": "git:bc699c7195b02a8a9e30d8d54ec6ef2fb3e27ac1:crates/solver/src/gpu/mod.rs",
+      "sha256": "18de06e303834112cf9f87c70936ad1d4e3be3ad5a4af4088b503bfc2f0e9bfc",
+      "hits": []
+    },
+    {
+      "identity": "git:bc699c7195b02a8a9e30d8d54ec6ef2fb3e27ac1:crates/solver/src/gpu/plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "git:bc699c7195b02a8a9e30d8d54ec6ef2fb3e27ac1:crates/solver/src/gpu/arena.rs",
+      "sha256": "d52b0d17e4894bf59359266152d9276f566c53331aef055be0c56175444d123c",
+      "hits": []
+    },
+    {
+      "identity": "git:28d36988ce85543eb60f35f4b3b7ca2e7c6ccca3:crates/solver/src/gpu/mod.rs",
+      "sha256": "18de06e303834112cf9f87c70936ad1d4e3be3ad5a4af4088b503bfc2f0e9bfc",
+      "hits": []
+    },
+    {
+      "identity": "git:28d36988ce85543eb60f35f4b3b7ca2e7c6ccca3:crates/solver/src/gpu/plan.rs",
+      "sha256": "2fe2440abdea131ce82fdf14a6adf6f605ee708b83f442e4c7ba94723b4cb9d7",
+      "hits": []
+    },
+    {
+      "identity": "git:28d36988ce85543eb60f35f4b3b7ca2e7c6ccca3:crates/solver/src/gpu/arena.rs",
+      "sha256": "d52b0d17e4894bf59359266152d9276f566c53331aef055be0c56175444d123c",
+      "hits": []
+    },
+    {
+      "identity": "git:2351793787a46a8566ab6cb5050b63860341cd93:crates/solver/src/gpu/mod.rs",
+      "sha256": "cb148cb20d495cb8e4004611836e5f5713bdb948d7de973a6e60c8a6dec14825",
+      "hits": []
+    },
+    {
+      "identity": "git:2351793787a46a8566ab6cb5050b63860341cd93:crates/solver/src/gpu/plan.rs",
+      "sha256": "7df6b875819531085439d95a7465b669ccd18d872cebe06e8686a4bf71c6c7c8",
+      "hits": []
+    },
+    {
+      "identity": "git:2351793787a46a8566ab6cb5050b63860341cd93:crates/solver/src/gpu/arena.rs",
+      "sha256": "d52b0d17e4894bf59359266152d9276f566c53331aef055be0c56175444d123c",
+      "hits": []
+    },
+    {
+      "identity": "git:360ce0dcdba64f6886e4a5b123f49ddf5372ee3e:crates/solver/src/gpu/mod.rs",
+      "sha256": "cb148cb20d495cb8e4004611836e5f5713bdb948d7de973a6e60c8a6dec14825",
+      "hits": []
+    },
+    {
+      "identity": "git:360ce0dcdba64f6886e4a5b123f49ddf5372ee3e:crates/solver/src/gpu/plan.rs",
+      "sha256": "7df6b875819531085439d95a7465b669ccd18d872cebe06e8686a4bf71c6c7c8",
+      "hits": []
+    },
+    {
+      "identity": "git:360ce0dcdba64f6886e4a5b123f49ddf5372ee3e:crates/solver/src/gpu/arena.rs",
+      "sha256": "d8f6c2cb3779e2034f6cfbd1780c07548281dd9ff5983a0de49baa827187ddb0",
+      "hits": []
+    },
+    {
+      "identity": "git:ffe12e97cf9554dd9f22c7e891ba74270b22b3d2:crates/solver/src/gpu/mod.rs",
+      "sha256": "a88312acab50b525f7a75158d2cecd5140dfdd2c9e2b88b7a7bbd13111209663",
+      "hits": []
+    },
+    {
+      "identity": "git:ffe12e97cf9554dd9f22c7e891ba74270b22b3d2:crates/solver/src/gpu/plan.rs",
+      "sha256": "7df6b875819531085439d95a7465b669ccd18d872cebe06e8686a4bf71c6c7c8",
+      "hits": []
+    },
+    {
+      "identity": "git:ffe12e97cf9554dd9f22c7e891ba74270b22b3d2:crates/solver/src/gpu/arena.rs",
+      "sha256": "6c47c731cd0246baa0c339098431b3127bca4a2e54f9ef2ff74c7ef8785ce520",
+      "hits": []
+    },
+    {
+      "identity": "git:1e6124f2ba907afca9e9597f169ccca621251485:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:1e6124f2ba907afca9e9597f169ccca621251485:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:1e6124f2ba907afca9e9597f169ccca621251485:crates/solver/src/gpu/arena.rs",
+      "sha256": "d625acaf0ae8d9ef5f3a7a804c2f1c623f2e54bdebba80881354edfce6ab1442",
+      "hits": []
+    },
+    {
+      "identity": "git:e274391f6fe54ba1a0fcfcf28349c8d7f89a9219:crates/solver/src/gpu/mod.rs",
+      "sha256": "a88312acab50b525f7a75158d2cecd5140dfdd2c9e2b88b7a7bbd13111209663",
+      "hits": []
+    },
+    {
+      "identity": "git:e274391f6fe54ba1a0fcfcf28349c8d7f89a9219:crates/solver/src/gpu/plan.rs",
+      "sha256": "7df6b875819531085439d95a7465b669ccd18d872cebe06e8686a4bf71c6c7c8",
+      "hits": []
+    },
+    {
+      "identity": "git:e274391f6fe54ba1a0fcfcf28349c8d7f89a9219:crates/solver/src/gpu/arena.rs",
+      "sha256": "d625acaf0ae8d9ef5f3a7a804c2f1c623f2e54bdebba80881354edfce6ab1442",
+      "hits": []
+    },
+    {
+      "identity": "git:8564c2ac941068aba87ceaa25f38504b4bfd4d35:crates/solver/src/gpu/mod.rs",
+      "sha256": "a88312acab50b525f7a75158d2cecd5140dfdd2c9e2b88b7a7bbd13111209663",
+      "hits": []
+    },
+    {
+      "identity": "git:8564c2ac941068aba87ceaa25f38504b4bfd4d35:crates/solver/src/gpu/plan.rs",
+      "sha256": "b2374aef3ed7e5bce3a5724e04172dc04519014f1afbcb73463069dfe69ec054",
+      "hits": []
+    },
+    {
+      "identity": "git:8564c2ac941068aba87ceaa25f38504b4bfd4d35:crates/solver/src/gpu/arena.rs",
+      "sha256": "d625acaf0ae8d9ef5f3a7a804c2f1c623f2e54bdebba80881354edfce6ab1442",
+      "hits": []
+    },
+    {
+      "identity": "git:20359dd6aff1aafc96551147cd86c529ad278306:crates/solver/src/gpu/mod.rs",
+      "sha256": "a88312acab50b525f7a75158d2cecd5140dfdd2c9e2b88b7a7bbd13111209663",
+      "hits": []
+    },
+    {
+      "identity": "git:20359dd6aff1aafc96551147cd86c529ad278306:crates/solver/src/gpu/plan.rs",
+      "sha256": "b2374aef3ed7e5bce3a5724e04172dc04519014f1afbcb73463069dfe69ec054",
+      "hits": []
+    },
+    {
+      "identity": "git:20359dd6aff1aafc96551147cd86c529ad278306:crates/solver/src/gpu/arena.rs",
+      "sha256": "4d1d0ee9cc8c528ffa63f77c7e601169a6d2dee9412880a3e81ede7b9ebf9d00",
+      "hits": []
+    },
+    {
+      "identity": "git:cd84600bb84b9ff6e98c00d749128a17e4777b31:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:cd84600bb84b9ff6e98c00d749128a17e4777b31:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:301a3540f11a355e86d586b8fac42fb1d6c6f82d:crates/solver/src/gpu/mod.rs",
+      "sha256": "75ad54f458605f212d036492ce76767b27554bc35e0d33bdde29795ab9630132",
+      "hits": []
+    },
+    {
+      "identity": "git:301a3540f11a355e86d586b8fac42fb1d6c6f82d:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:f28e16f45f570cfd86f201b698dd1a1eb2816c86:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:f28e16f45f570cfd86f201b698dd1a1eb2816c86:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:110e964817aa38b85f1e8a7d838ee7a1040a6d99:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:110e964817aa38b85f1e8a7d838ee7a1040a6d99:crates/solver/src/gpu/plan.rs",
+      "sha256": "411a2e360046a466dc4216e31737039db86309618758c80a00b03a24f7a00945",
+      "hits": []
+    },
+    {
+      "identity": "git:0a1ad64816061ddd0ce75ccdca94d9590979a854:crates/solver/src/gpu/mod.rs",
+      "sha256": "d2ef3b527c3a20273ed318a3149050495026cca384269493d5f26cb842935f1d",
+      "hits": []
+    },
+    {
+      "identity": "git:0a1ad64816061ddd0ce75ccdca94d9590979a854:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:78b96e39f52ac099848c881ea4fe475cf5b3210c:crates/solver/src/gpu/mod.rs",
+      "sha256": "82e10f7083e15acbab1939da15bbf749a1ba0506a5cd085acd6e5c7bc8e127d7",
+      "hits": []
+    },
+    {
+      "identity": "git:78b96e39f52ac099848c881ea4fe475cf5b3210c:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:ecf7e1ebfca23eccbe8188bbc66460aba97328e0:crates/solver/src/gpu/mod.rs",
+      "sha256": "744d0a0bbf5bed4476a10217a620258db8d110fadf989c95e48675acc6a5ee78",
+      "hits": []
+    },
+    {
+      "identity": "git:ecf7e1ebfca23eccbe8188bbc66460aba97328e0:crates/solver/src/gpu/plan.rs",
+      "sha256": "f59a39b23b977dfbcfc1846b230012e8f422814dd600c6a7408ed79053a24e7e",
+      "hits": []
+    },
+    {
+      "identity": "git:1ec2683d9135f38b49d3e0c120dadbb086b50230:crates/solver/src/gpu/mod.rs",
+      "sha256": "a888e0a2435b6be0649edc78bcdc47eece327911e15cea54b0ca73d6b9ab8444",
+      "hits": []
+    },
+    {
+      "identity": "git:1ec2683d9135f38b49d3e0c120dadbb086b50230:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:fa9da02b6cbd429650975bf5ed36df1375c9a1a7:crates/solver/src/gpu/mod.rs",
+      "sha256": "b26339608874889ba0c80ed04db11ce4510e8814127aedf78e828216e49cadac",
+      "hits": []
+    },
+    {
+      "identity": "git:fa9da02b6cbd429650975bf5ed36df1375c9a1a7:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:ff045a34a8225df54a3dc3178f66c8336e195f1d:crates/solver/src/gpu/mod.rs",
+      "sha256": "1d74c084d4a09e37c4b2354b56856bcf229f07bbba569b1ed3e860dbb8078f00",
+      "hits": []
+    },
+    {
+      "identity": "git:ff045a34a8225df54a3dc3178f66c8336e195f1d:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:4763e3ea36f56f1bddb30e7e02a671095542614e:crates/solver/src/gpu/mod.rs",
+      "sha256": "9ff5831bf2969615091e73855d8a771ccdc1d44e5a4926c35bc350ba19a2f23a",
+      "hits": []
+    },
+    {
+      "identity": "git:4763e3ea36f56f1bddb30e7e02a671095542614e:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:b6131a59d8a8561693f8545de49b45fe26723341:crates/solver/src/gpu/mod.rs",
+      "sha256": "482921885dfeb211d603be862b31c786d03728db36627a3855119bfe1760bd77",
+      "hits": []
+    },
+    {
+      "identity": "git:b6131a59d8a8561693f8545de49b45fe26723341:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:4fe013617fc43a951f18977dffe4633bc59070c4:crates/solver/src/gpu/mod.rs",
+      "sha256": "9ff5831bf2969615091e73855d8a771ccdc1d44e5a4926c35bc350ba19a2f23a",
+      "hits": []
+    },
+    {
+      "identity": "git:4fe013617fc43a951f18977dffe4633bc59070c4:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:d34779c5525c522579946565adeb2a3bdcd8971c:crates/solver/src/gpu/mod.rs",
+      "sha256": "c3011dcf0e731692513c9981b0ca2fc675d238bfd0ba8f4458fc37a83cc14daa",
+      "hits": []
+    },
+    {
+      "identity": "git:d34779c5525c522579946565adeb2a3bdcd8971c:crates/solver/src/gpu/plan.rs",
+      "sha256": "a4b0d97b1c813d5c2b0aeacb6498aff9250c52e5ef3ef4e13ad94d4dd8c0cddb",
+      "hits": []
+    },
+    {
+      "identity": "git:c6efc14a78eef81be3975a880cc2bc4daaa29087:crates/solver/src/gpu/mod.rs",
+      "sha256": "482921885dfeb211d603be862b31c786d03728db36627a3855119bfe1760bd77",
+      "hits": []
+    },
+    {
+      "identity": "git:c6efc14a78eef81be3975a880cc2bc4daaa29087:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:1086dd8b8675cc53f01819224f9e970a09e9e1bf:crates/solver/src/gpu/mod.rs",
+      "sha256": "93c00cfe578807ee5cf82b816b0eecf19f3210e64947221df9066bef981164f2",
+      "hits": []
+    },
+    {
+      "identity": "git:1086dd8b8675cc53f01819224f9e970a09e9e1bf:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:d211e665c0baba6a58e8c42920f0b93a89becb84:crates/solver/src/gpu/mod.rs",
+      "sha256": "0352d1fdb59f1c5a878d5fd356204d09a4a57ed6128e4e002775ac76981ec209",
+      "hits": []
+    },
+    {
+      "identity": "git:d211e665c0baba6a58e8c42920f0b93a89becb84:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:6d64a9b664a14be1b4473ee59fc19da83ad79b91:crates/solver/src/gpu/mod.rs",
+      "sha256": "482921885dfeb211d603be862b31c786d03728db36627a3855119bfe1760bd77",
+      "hits": []
+    },
+    {
+      "identity": "git:6d64a9b664a14be1b4473ee59fc19da83ad79b91:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:a43b09a2a70813c4ce65bdf05cd3b62a6690a635:crates/solver/src/gpu/mod.rs",
+      "sha256": "75ad54f458605f212d036492ce76767b27554bc35e0d33bdde29795ab9630132",
+      "hits": []
+    },
+    {
+      "identity": "git:a43b09a2a70813c4ce65bdf05cd3b62a6690a635:crates/solver/src/gpu/plan.rs",
+      "sha256": "49cc1f20205e019200d9bb49888d06598c607e3735b2c2b6173a81785bbf5dad",
+      "hits": []
+    },
+    {
+      "identity": "git:dd765a6eb3a9aa85f4ed929d95539aee8998fa9e:crates/solver/src/gpu/mod.rs",
+      "sha256": "0d2a9bdf4b8c8557e2ed690a50ccda0001cbe134a31a477ce02663c3bbc7b947",
+      "hits": []
+    },
+    {
+      "identity": "git:dd765a6eb3a9aa85f4ed929d95539aee8998fa9e:crates/solver/src/gpu/plan.rs",
+      "sha256": "a6c094011c59aabca9984c1e33ec26fcceacf19986facba693d2eb0d0d77db60",
+      "hits": []
+    },
+    {
+      "identity": "git:6aee1a879857a33a84fd75a43914d9575541d94b:crates/solver/src/gpu/mod.rs",
+      "sha256": "d7ee2f22e5bfb3996b0839fec1bfc3cf26a61ceb3c84289a37a5f3271fd9568e",
+      "hits": []
+    },
+    {
+      "identity": "git:6aee1a879857a33a84fd75a43914d9575541d94b:crates/solver/src/gpu/plan.rs",
+      "sha256": "a6c094011c59aabca9984c1e33ec26fcceacf19986facba693d2eb0d0d77db60",
+      "hits": []
+    },
+    {
+      "identity": "git:b00d905adcd6e92ab8d5f50ad58a417fb18f724e:crates/solver/src/gpu/mod.rs",
+      "sha256": "5db87185e77787a5b7459ebe3ab5164626abe7647d337d9663fd412ad5743891",
+      "hits": []
+    },
+    {
+      "identity": "git:b00d905adcd6e92ab8d5f50ad58a417fb18f724e:crates/solver/src/gpu/plan.rs",
+      "sha256": "a6c094011c59aabca9984c1e33ec26fcceacf19986facba693d2eb0d0d77db60",
+      "hits": []
+    }
+  ],
+  "retained_scoped_Rust_files": 624,
+  "unique_scoped_Rust_hashes": 188,
+  "retained_scoped_sources": [
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D146-readback-source\\diagnostic.rs",
+      "sha256": "b522b82e585cb66d5b952b3424453dcafa2921b854488fa5001e62b3e403e06b",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D146-readback-source\\baseline.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D145-readback-review\\reference\\D065-instrumented.rs",
+      "sha256": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D145-readback-review\\reference\\D065-base.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D154-packet-integration-units\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D154-packet-integration-units\\gpu\\mod.rs",
+      "sha256": "3b4e1e701cfb057ed38eb07718434270009e4579b95146e42b7067f58cd129dd",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D154-packet-integration-units\\gpu\\arena.rs",
+      "sha256": "fe0bc87b77f466b1ffe1c329226233aeac4545b454314a6d0bae28183f8ba5fc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D147-readback-diagnostic\\gpu\\mod.rs",
+      "sha256": "f757d25069eda1c36e8f40498891c0a3c6c04b56673a6d131eeaaf97b4ddbd49",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D147-readback-diagnostic\\gpu\\arena.rs",
+      "sha256": "fad91701117d76d88aabe97e5bd1578d55df58f9fba9dca8727912732c7cc55f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D144-incidence\\gpu\\mod.rs",
+      "sha256": "03b9e71759263fb3b89b61f11534c903590d95ef3a064adfccea57f9ced2c62a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D144-incidence\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-mod.rs",
+      "sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\E010-arena.rs",
+      "sha256": "75e0ca3e5725b22d192d8d1006387369a5f196ae260e11567f74617dbe2bc4cb",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D148-packed-readback-design\\reference\\accepted-arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D146-readback-diagnostic\\gpu\\mod.rs",
+      "sha256": "f757d25069eda1c36e8f40498891c0a3c6c04b56673a6d131eeaaf97b4ddbd49",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D146-readback-diagnostic\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D147-arena-observer-source\\diagnostic.rs",
+      "sha256": "fad91701117d76d88aabe97e5bd1578d55df58f9fba9dca8727912732c7cc55f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D147-arena-observer-source\\baseline.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D149-CFV-liveness\\gpu\\mod.rs",
+      "sha256": "a573fc845d390eb500b59d228621bee877093a78082b5e53cca778b146f32a15",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D149-CFV-liveness\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\candidate\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\candidate\\mod.rs",
+      "sha256": "ea71710f7967e2924ba36c605926400654a4753c0847010d9a651ec37bfa9ee4",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\candidate\\arena.rs",
+      "sha256": "fe0bc87b77f466b1ffe1c329226233aeac4545b454314a6d0bae28183f8ba5fc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\baseline\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\baseline\\mod.rs",
+      "sha256": "3af5dc91630351dd5ff1e1b2da08e28037137890cc70a1f990469d7180bf2ca7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D157-actual-resources\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\gpu\\mod.rs",
+      "sha256": "6d5089b102548a2fbb56b37d95f64d47d48413c22b226685521d82590e94e1c1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\candidate\\mod.rs",
+      "sha256": "f686a82c42e082610f688564d486f0e1e94686d51d8a6418655d05874136f3f5",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\baseline\\mod.rs",
+      "sha256": "adf14c0cf59887e05c17bfb415cc8dde5655ce97e8a6a7bf28f8e0b62c4ed47f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost-r2\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\observed-plan.rs",
+      "sha256": "1c564707af4c9747329383fd19e9452de0b923baecd77b879b9ad379e6d5d52e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\diagnostic.rs",
+      "sha256": "cd0c52fc0fb44a402eec7b012d9c3c17b5ff99199d897c6ff8972e216ec89676",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D173-constructor-diagnostic-r2\\baseline.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\visibility-adapter\\baseline-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\observed-plan.rs",
+      "sha256": "6abe162ce83c192386c1352e74b4e37bff67d4f373a48c719fb525a87bf51829",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost\\candidate\\mod.rs",
+      "sha256": "f686a82c42e082610f688564d486f0e1e94686d51d8a6418655d05874136f3f5",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D183-plan-phase-diagnostic\\baseline-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\candidate\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\candidate\\mod.rs",
+      "sha256": "17e88de8879c4984556ccb5b0e73c4c133dda273b94c5047db9e375e1213fc6a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\candidate\\arena.rs",
+      "sha256": "fe0bc87b77f466b1ffe1c329226233aeac4545b454314a6d0bae28183f8ba5fc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost\\baseline\\mod.rs",
+      "sha256": "adf14c0cf59887e05c17bfb415cc8dde5655ce97e8a6a7bf28f8e0b62c4ed47f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D174-budget-error-cost\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\baseline\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\baseline\\mod.rs",
+      "sha256": "59724d11defa5c37a5d7ee3d8918d4a06e6777ec7156f0ab36b38d32505477a5",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D156-primary-lifecycle-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D166-canonical-compiler-control\\baseline\\mod.rs",
+      "sha256": "24df160490808e87997d1259f3c03b45ff9510bf03383741abe1790fee135bff",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D166-canonical-compiler-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D166-canonical-compiler-control\\candidate\\mod.rs",
+      "sha256": "ab6b079fe8981a9b27e044a4da74092f396cdb48cc46cdfc52f7532ce4dc6004",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D166-canonical-compiler-control\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\gpu\\mod.rs",
+      "sha256": "24df160490808e87997d1259f3c03b45ff9510bf03383741abe1790fee135bff",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D168-worker-raw-control\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D171-offset-raw-control\\candidate\\mod.rs",
+      "sha256": "e31f6eb248e602671ec7a5e0065a6e929e3d407cbfab535e5ce4de4fc30afd59",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D171-offset-raw-control\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\candidate\\mod.rs",
+      "sha256": "af0f27c0ed18d8f31e99106a9eebac53fa622bfcb23c07f4a70b05dd88096b48",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D171-offset-raw-control\\baseline\\mod.rs",
+      "sha256": "91c60da698ba68d0e9c1c4a230c82ec8b577cccbfcc619c7d8c524699703dda4",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D171-offset-raw-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\baseline\\mod.rs",
+      "sha256": "659c7e7cf526699745fd04566e224581c3f7f0dce1a7c7461b27f5b6b4d26a3f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D178-canonical-cache-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\gpu\\mod.rs",
+      "sha256": "0499149bc0a65d6b15b14d926c1ec2cb6c5d0d068a0e389fafec1887e5e51a74",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D176-cache-engine-control\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\candidate\\mod.rs",
+      "sha256": "237b29a25208b66abe099d478fe6c8f20df602a291a7a8f201489a9248aba9e3",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\baseline\\mod.rs",
+      "sha256": "220536a5101d26abba2d2295cf14c22191e865a89bd2bd10c09d61f7174e8880",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D210-resident-canonical-controls\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D222-early-payout-canonical\\candidate\\mod.rs",
+      "sha256": "2553651483c8e22c565e4909d6fa66cf52aa53db26947dadd4919325847637b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D222-early-payout-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-source\\candidate-mod.rs",
+      "sha256": "af98b370b319eb1308c7898e6c8156e51e8dbaafd41586fcf7eba45b7ef2280d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D165-compiler-engine-control\\gpu\\mod.rs",
+      "sha256": "1588b23ddb81686e51b5ba796d1ebe3bcca3f8e49d8f3c4aba8a19669009812f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D165-compiler-engine-control\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D222-early-payout-canonical\\baseline\\mod.rs",
+      "sha256": "23c540fa48a438d8d1bcf4f330bba8c316b5058bb75939f75e80ebec67a55342",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D222-early-payout-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D258-constant-canonical\\candidate\\mod.rs",
+      "sha256": "bb1a9dd48c53bba8576d7785e447e42c4d6c81a46f089725f2d4d5eb1e010994",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D258-constant-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-host-build\\feature\\mod.rs",
+      "sha256": "af98b370b319eb1308c7898e6c8156e51e8dbaafd41586fcf7eba45b7ef2280d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\candidate\\mod.rs",
+      "sha256": "29914442d3ea1d0134b8578b46b6d4a25468185f504163121b471feeb2ccea04",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-final-build\\primary\\mod.rs",
+      "sha256": "af98b370b319eb1308c7898e6c8156e51e8dbaafd41586fcf7eba45b7ef2280d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D258-constant-canonical\\baseline\\mod.rs",
+      "sha256": "3f0bb6ec7e043471ca29ef6fc6ed9dad128b7af52cb5559f157d7b0181d64e1b",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D258-constant-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E112-final-build\\feature\\mod.rs",
+      "sha256": "af98b370b319eb1308c7898e6c8156e51e8dbaafd41586fcf7eba45b7ef2280d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\baseline\\mod.rs",
+      "sha256": "f77a9e72e00e641428f949727cc5e06a6358d723ac13047cd916788489dd62f5",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D197-parent-chance-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\candidate\\mod.rs",
+      "sha256": "5f65c612c4db8a748285425988f25762b546c1f35bb65f574ccacf9c55e2fe9b",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\baseline\\mod.rs",
+      "sha256": "8c6334596a49f545dd8bf94800c412b702af3af3ec9c8eeff99defd1d15c137c",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D219-nullable-lock-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\candidate\\mod.rs",
+      "sha256": "5954ebde1b29ede50238e872576dda757006031d14c027a8410e2ed2f607d072",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\baseline\\mod.rs",
+      "sha256": "1ce2b1abe7d6417341dc21ef352919be9d3aed3a9645d0f70ae12481da3f4e7c",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D218-lock-map-boundaries\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-source\\candidate-mod.rs",
+      "sha256": "aec70bbb133dfc0e886d2a28e2a9777d9138adb879f2935e17e5125bc5b63604",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate\\mod.rs",
+      "sha256": "4f02abd9888732a0b7b54a9a3833c40e3639db70cc3cbb4544ab7613b3f3af20",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-final-build\\primary\\mod.rs",
+      "sha256": "aec70bbb133dfc0e886d2a28e2a9777d9138adb879f2935e17e5125bc5b63604",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E111-final-build\\feature\\mod.rs",
+      "sha256": "aec70bbb133dfc0e886d2a28e2a9777d9138adb879f2935e17e5125bc5b63604",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline\\mod.rs",
+      "sha256": "93eb60d3d2752e043412dc6d91c5fa00b8a96aca6a663c9a2906be13a122d920",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D226-chunk-division-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D231-stride-engine-control\\gpu\\mod.rs",
+      "sha256": "26aa8b5d0563f55ff1c9c1439e945102d928321807a97f3647a0535285a2107d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D231-stride-engine-control\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D244-fold-copy-canonical\\candidate\\mod.rs",
+      "sha256": "98e7326ca3c218c0d78e8f5e9a7a14759f9acb2fe5e96cbe7360b3163ad9a33f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D244-fold-copy-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D244-fold-copy-canonical\\baseline\\mod.rs",
+      "sha256": "133bfb4556df6c145cdcb1521aa436fb07b0e1cb14159e0bf5bc662ac780f07a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D244-fold-copy-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source-r2\\candidate-mod.rs",
+      "sha256": "389d0758b865a7b4e4088f47d06753de090d82b13c1c7485811035d9858e85c7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source-r2\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\candidate-mod.rs",
+      "sha256": "389d0758b865a7b4e4088f47d06753de090d82b13c1c7485811035d9858e85c7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\candidate\\mod.rs",
+      "sha256": "5f846ddf74bea1fee6b5401bb2e800b4289972206a0e3879ea30fc6e132648aa",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\baseline\\mod.rs",
+      "sha256": "9e5917530b4e2ae4d86795b018b01d55716f66af14f0f2ef0fe759a5a73d87db",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-resource-host\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-final-build\\primary\\mod.rs",
+      "sha256": "389d0758b865a7b4e4088f47d06753de090d82b13c1c7485811035d9858e85c7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E106-final-build\\feature\\mod.rs",
+      "sha256": "389d0758b865a7b4e4088f47d06753de090d82b13c1c7485811035d9858e85c7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-source\\candidate-mod.rs",
+      "sha256": "cbe997a25b71bb0a5d81e15c974f7e30447b14dc82ab858e150c38816957f504",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-source\\candidate-mod-r2.rs",
+      "sha256": "b2d72d74984e3b0fd38a1d4911ed25d392153cf75aac5c3954a502730564749a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-source\\baseline-mod.rs",
+      "sha256": "4c17a63af76d4474bb812bc58a88a7cc9fcf21fddaf0ed4108fcc20e840a9c5f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-source\\baseline-mod-r2.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-final-build\\primary\\mod.rs",
+      "sha256": "b2d72d74984e3b0fd38a1d4911ed25d392153cf75aac5c3954a502730564749a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D150-CFV-liveness\\gpu\\mod.rs",
+      "sha256": "c9dab1bdcf25396b6aa9d44a606b86b40ffe211ff6469a030c9ec6738e9a4a42",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D150-CFV-liveness\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E104-final-build\\feature\\mod.rs",
+      "sha256": "b2d72d74984e3b0fd38a1d4911ed25d392153cf75aac5c3954a502730564749a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\candidate\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\candidate\\mod.rs",
+      "sha256": "d1b1827a2fb09090d78a6d6ff46345cb88a779fb07cea8bd9b5b93669085ae57",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\candidate\\arena.rs",
+      "sha256": "fe0bc87b77f466b1ffe1c329226233aeac4545b454314a6d0bae28183f8ba5fc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\baseline\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\baseline\\mod.rs",
+      "sha256": "ae41ec59e6f231d295799f04ceae6811a0df749b97fb21d446f18da33bef9262",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D155-packet-engine-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-source\\candidate-mod.rs",
+      "sha256": "f7d843059ad839a63fa168dec16573a44d61ff3dea7b663cd96b3356c7dbe6b8",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E102-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D252-cluster-canonical\\candidate\\mod.rs",
+      "sha256": "f4758578fd91042d9bd26ce3fa3cfb618784902735068ab92aced3a74362d878",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D252-cluster-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D252-cluster-canonical\\baseline\\mod.rs",
+      "sha256": "49a97ae70aba8047f8c51d61d00b23d6ca29e4ea74b31e17bc076a4a4fbb8c6d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D252-cluster-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\candidate\\mod.rs",
+      "sha256": "1633a701a13f653cbee361ddc736ae2761b96bd2652a9f92f54737d3cfebb0a1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\baseline\\mod.rs",
+      "sha256": "7e3244747de6f1b8497f64e9f315af70a6f113380b3da06fea337fc128a79af0",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D209-resident-engine-controls\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-source\\candidate-mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D208-resident-host-layout\\gpu\\mod.rs",
+      "sha256": "d9ce27bcfa2514c59b8b06132b8392f2324911045a53d9cb0ee1d941f9943404",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D208-resident-host-layout\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D257-constant-engine\\baseline\\mod.rs",
+      "sha256": "04780ae099c1ec16bb05c8628e9711686c4a8fa6082e23755dad406ba13343d3",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D257-constant-engine\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\candidate\\mod.rs",
+      "sha256": "120158c1b6bf6307214d1c871f6ce7663e3c548ea1012b2af104976bbbaf0fb3",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\baseline\\mod.rs",
+      "sha256": "b224bd535d4ab2b3b8b0e38ffec4fa75284afd0704a888592cc235eb29ec3b3f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D216-nullable-lock-engine\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\candidate\\mod.rs",
+      "sha256": "daae6d2b0034ff38b8ea144966baec101552340fbeb9f7ed18759487967e1f83",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\primary\\mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E099-final-build\\feature\\mod.rs",
+      "sha256": "8e85b42020939df5c12fe6f5eef9bd90d74a0b39ddee4fa1c27e8c06f3492fc7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\baseline\\mod.rs",
+      "sha256": "c76fb667ec609400c01c81a8f3a7c19558ed5d4bf0d78539853d77727eaf93e0",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D186-paired-canonical-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D196-parent-chance-engine\\gpu\\mod.rs",
+      "sha256": "4822337af5f6fb5d6c88a84beddda80e9589032c25e149ab1f1ec0ccb12fc67d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D196-parent-chance-engine\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D237-stride-canonical\\candidate\\mod.rs",
+      "sha256": "ea7a07e6bbdbf37ff0fe0db024c9ea7f24e4b7b2a525b86d71241ecc660dcce8",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D237-stride-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\candidate-r2\\mod.rs",
+      "sha256": "2d9a70cb9855d252999602a3294e0f81749ce9ff1fa2a3ee3c51fb289245fba1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\candidate-r2\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\candidate\\mod.rs",
+      "sha256": "251c4546622b293015bd56e78895ff4f18ab5d32707effdcf665daf2be17099e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D237-stride-canonical\\baseline\\mod.rs",
+      "sha256": "0df958202a4d71d0a04b08915679154da2ac44d855aab8b51a930dc5cb0b5190",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D237-stride-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\baseline-r2\\mod.rs",
+      "sha256": "9e5917530b4e2ae4d86795b018b01d55716f66af14f0f2ef0fe759a5a73d87db",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\baseline-r2\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\baseline\\mod.rs",
+      "sha256": "dd6739b237047a2edde52a6fb6e7275f6e61486ebb5ce724d5ab479005e244b7",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D254-constant-host-operand\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D257-constant-engine\\candidate\\mod.rs",
+      "sha256": "6260613148dbed25c773df94e5eb57759fbc2f8f5502952e0655d7af45f38028",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D257-constant-engine\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-final-build\\primary\\mod.rs",
+      "sha256": "19cb934dbc2167b475158ebfa8f1a63764455140dad3220f6c2f5a2e294b6911",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D242-fold-copy-engine\\gpu\\mod.rs",
+      "sha256": "b4ea3f8d4dc81f6367ecb8c25073c7dbd794603ca49607024c53a7cd35357dee",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D242-fold-copy-engine\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-final-build\\feature\\mod.rs",
+      "sha256": "19cb934dbc2167b475158ebfa8f1a63764455140dad3220f6c2f5a2e294b6911",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D250-cluster-engine\\gpu\\mod.rs",
+      "sha256": "8c32b6a0718608a892efeb623b96a6c9519830d6ecc3d752c73e50c617fa551c",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D250-cluster-engine\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\candidate\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\candidate\\mod.rs",
+      "sha256": "75e0740aaa0848c3297e630b11a2b4b842a3241a9f48b5d9e8c8c2d25850ba5d",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\candidate\\arena.rs",
+      "sha256": "fe0bc87b77f466b1ffe1c329226233aeac4545b454314a6d0bae28183f8ba5fc",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\baseline\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\baseline\\mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E092-source\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D249-cluster-host-operand\\candidate\\mod.rs",
+      "sha256": "b8a038458afefbe05d4144e6cd11d2c55e163133dadc5e330c127736fef28382",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D249-cluster-host-operand\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D249-cluster-host-operand\\baseline\\mod.rs",
+      "sha256": "9e5917530b4e2ae4d86795b018b01d55716f66af14f0f2ef0fe759a5a73d87db",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D249-cluster-host-operand\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E094-final-build\\primary\\mod.rs",
+      "sha256": "a0d240eb807c2badf5449569538b65b4b9f35f50c77f6f38824d82ee9ba28ce1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E094-final-build\\feature\\mod.rs",
+      "sha256": "a0d240eb807c2badf5449569538b65b4b9f35f50c77f6f38824d82ee9ba28ce1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-final-build\\primary\\mod.rs",
+      "sha256": "92893002e72295c10ac8a899199a8046620daca37017aa4a75a80e988dd9339a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-final-build\\feature\\mod.rs",
+      "sha256": "92893002e72295c10ac8a899199a8046620daca37017aa4a75a80e988dd9339a",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\candidate\\mod.rs",
+      "sha256": "d50dc7633fb7228c10d1cad68fca8b40d809a94acc9f1ea880e98db129be0e7f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\baseline\\mod.rs",
+      "sha256": "1d04ba92e95e4b96af41370064e7338e06797c50982f0a5c9af3213432284f7f",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D265-paired-chance-canonical\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-source-r2\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "19cb934dbc2167b475158ebfa8f1a63764455140dad3220f6c2f5a2e294b6911",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-engine-control\\reference\\D134-observer-parent.rs",
+      "sha256": "0720e869f841b781570738ee966013c15a1064ddc545f4dba57bf6e1beee8282",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E093-source-r2\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D264-paired-chance-engine\\gpu\\mod.rs",
+      "sha256": "01465ed181ec2b6a1cbce60263f96de6fa91ddc75afe1b2a4edaafe981ce0fce",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-engine-control\\candidate\\mod.rs",
+      "sha256": "6df22309d53620d6a94b4b41b65837a3a8e3a77aec0f7b9a5fb963242a786270",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D264-paired-chance-engine\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-engine-control\\candidate\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-engine-control\\baseline\\mod.rs",
+      "sha256": "b8351839b150e0ebf54c82c2c185f908abcf7441a6a2d5966d2d951e1c59c615",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\E090-engine-control\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\gpu\\mod.rs",
+      "sha256": "eb9b5f2c8e4ebee1efa00e03e84d1b372150560ce08753d9b85abdf4c2c4d232",
+      "hits": []
+    },
+    {
+      "identity": "X:\\Dev\\GTOpen-research\\postflop-gpu-20261028\\runs\\D185-paired-engine-controls\\gpu\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D011-source\\mod.rs",
+      "sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D011-source\\arena.rs",
+      "sha256": "75e0ca3e5725b22d192d8d1006387369a5f196ae260e11567f74617dbe2bc4cb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D007-lifecycle-design-v2\\candidate-mod.rs",
+      "sha256": "0ba56c60fc9fb496c9e6aea73b91cca64b6eb763f30bd70fa7116dc26ebf7954",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D007-lifecycle-design-v2\\base-mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D012-design\\candidate-mod.rs",
+      "sha256": "768cbba4959e741859dccfb7c0755be9193ec8fec209f942435c5bcd5f6029df",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D012-design\\base-mod.rs",
+      "sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D012-source\\mod.rs",
+      "sha256": "768cbba4959e741859dccfb7c0755be9193ec8fec209f942435c5bcd5f6029df",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D012-source\\arena.rs",
+      "sha256": "75e0ca3e5725b22d192d8d1006387369a5f196ae260e11567f74617dbe2bc4cb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D007-lifecycle-design\\candidate-mod.rs",
+      "sha256": "e7a6383a8e940f9a55efeedbf40c7c2307d3777fe8f723d9c2e9aafec308bef6",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D007-lifecycle-design\\base-mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D020-profile-design\\E004-gpu-mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\candidate\\arena.rs",
+      "sha256": "88ea21b2522102fdbcacd867b2460f97d862fc0b9dd840ba381283362fd6fcd2",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-zero-proof-diagnostic\\base\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D025-next-hypothesis\\source\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D025-next-hypothesis\\source\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D027-down-action-work-design\\source\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D027-down-action-work-design\\source\\mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\candidate-mod.rs",
+      "sha256": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation-r2\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-candidate-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-resource\\source-base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D042-build\\candidate-arena.rs",
+      "sha256": "88ea21b2522102fdbcacd867b2460f97d862fc0b9dd840ba381283362fd6fcd2",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D023-reach-reuse-design\\e004-source\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D023-reach-reuse-design\\e004-source\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-build\\candidate-mod.rs",
+      "sha256": "a75e42492e460aca64e4b05bdcd762b28c28d069bfa126d93f90a3a5f25d49ea",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\candidate-mod.rs",
+      "sha256": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-implementation\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D034-scoped-reach-reuse-design\\source\\E016-mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D034-scoped-reach-reuse-design\\source\\E015-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D034-scoped-reach-reuse-design\\source\\E015-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\source\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\source\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\source\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D036-fold-shuffle-design\\source\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D037-showdown-cache-design\\candidate\\base\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\draft-r1\\candidate-mod.rs",
+      "sha256": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build-r2\\source\\mod.rs",
+      "sha256": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\candidate-mod.rs",
+      "sha256": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\candidate-mod.rs",
+      "sha256": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-fold-zero-census\\source\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-sparse-event-diagnostic\\source\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-build\\source\\mod.rs",
+      "sha256": "981304658cfaa4b7feb5f03a102bfd3ab9dfcdf00f9be0de7db03bd14b365a54",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D045-build\\candidate-mod.rs",
+      "sha256": "51686d7c31f61cead0dd4304d6905a38edb4c0cb805822aecbe645da065869d5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\candidate-mod.rs",
+      "sha256": "e05e34464d59d455d42fa5e999c1956f8737f991ac484eb6676f5ccab76ce53c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-planned-show-incidence\\source\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\candidate\\mod.rs",
+      "sha256": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-readback-diagnostic\\source\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-cleanup\\candidate-mod.rs",
+      "sha256": "e05e34464d59d455d42fa5e999c1956f8737f991ac484eb6676f5ccab76ce53c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\source-evidence\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-show-mapping-feasibility\\source-evidence\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D043-opponent-action-resource\\source-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D043-opponent-action-resource\\source-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D030-next-hotspot\\accepted-E015-source\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D067-build\\candidate-mod.rs",
+      "sha256": "e05e34464d59d455d42fa5e999c1956f8737f991ac484eb6676f5ccab76ce53c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-cleanup\\candidate-mod.rs",
+      "sha256": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-source\\mod.rs",
+      "sha256": "a75e42492e460aca64e4b05bdcd762b28c28d069bfa126d93f90a3a5f25d49ea",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D065-build\\candidate-mod.rs",
+      "sha256": "1b23661b567631f5b4db1021da566c096acfbd87638286ae1b5dda2ffba61eca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-build\\candidate-mod.rs",
+      "sha256": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D066-cleanup\\candidate-mod.rs",
+      "sha256": "488310c5cdc0358ba9c8942fb61c8b2b46a8092f53f6ba0e1f5105d15b32863e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-next-hypothesis-scout\\snapshots\\crates__solver__src__gpu__plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D061-next-hypothesis-scout\\snapshots\\crates__solver__src__gpu__mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\source\\crates__solver__src__gpu__plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D062-fold-reuse-scout\\source\\crates__solver__src__gpu__mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\r2\\candidate-mod.rs",
+      "sha256": "a75e42492e460aca64e4b05bdcd762b28c28d069bfa126d93f90a3a5f25d49ea",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\r2\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D057-evaluation-envelope-diagnostic\\source\\candidate-mod.rs",
+      "sha256": "a75e42492e460aca64e4b05bdcd762b28c28d069bfa126d93f90a3a5f25d49ea",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\diagnostic-mod.rs",
+      "sha256": "a65c03bbd0b67630d846d5cefd375dbe748476f3a4f7d554d4c82873c45e2d80",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\diagnostic-arena.rs",
+      "sha256": "622934994ef2b3dc4d6e0743e7e157ee27238eb934777a3b21c78e60465f0c66",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-source\\baseline-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\candidate-plan.rs",
+      "sha256": "8d7b94f352bb0aa2460ffeea85e8b0f1d5a32654f1130d3634d002e12d88b0ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-final-build\\primary\\mod.rs",
+      "sha256": "a65c03bbd0b67630d846d5cefd375dbe748476f3a4f7d554d4c82873c45e2d80",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D088-final-build\\primary\\arena.rs",
+      "sha256": "622934994ef2b3dc4d6e0743e7e157ee27238eb934777a3b21c78e60465f0c66",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D092-action-arity-order\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D115-parallel-plan-control\\candidate-plan.rs",
+      "sha256": "3146a8e863ac6edb94d27306f142ab114ec1a7bd13c9623f8cb44467ad843a3c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D115-parallel-plan-control\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D112-showdown-order-control\\candidate-plan.rs",
+      "sha256": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D112-showdown-order-control\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D110-plan-stage-profile\\profiled-plan.rs",
+      "sha256": "e8c7d0ec86acecd640000b3f3f4e0bbd120646b7bca1b1c529864af14fdc8e3e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D110-plan-stage-profile\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D109-module-lifetime-audit\\source\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D099-plan-posting-scratch\\candidate-plan.rs",
+      "sha256": "c064e119b5977fe50e044e8fce639a6705d3383d221a0bd51dc97acb857582e1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D099-plan-posting-scratch\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\arena-observed.rs",
+      "sha256": "434609e4a5f370201fe959c14e79e459848478da26eb9b89f6e287411c17e6f0",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D131-zero-check-setup-overlap\\accepted-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D123-node-array-initialization\\candidate-plan.rs",
+      "sha256": "83f5b36fa63643a7b7d25643a04d4b7e1ad9b69826e20fec42ed4c754a9c8ad7",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D123-node-array-initialization\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E012-source\\mod.rs",
+      "sha256": "1d50c5aa5f08b8b12cf9af731b4653a7e7b66e08434b828c86c8aa783cfa3a1c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E012-source\\arena.rs",
+      "sha256": "7b607f125059f2ffd7262ccd27eba25872944d2395b049fb33088241fe8145ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010-source\\mod.rs",
+      "sha256": "81f60658d7b9087b7c003499fc32a553c8cf0f9a11239087edcc5e23d7a316cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E010-source\\arena.rs",
+      "sha256": "75e0ca3e5725b22d192d8d1006387369a5f196ae260e11567f74617dbe2bc4cb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-source\\mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\candidate-mod.rs",
+      "sha256": "0ca68663e9eeaf168b6769b36bd266d59ddc0c0d4838641ce0dd350c40d2abed",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E016-design\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015-source\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015-design\\candidate-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E015-design\\base-mod.rs",
+      "sha256": "0df4108ec3ccb81151782a667beb9906ed61f99c876d26d16bcf8957e4b9c82b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E014-source\\plan.rs",
+      "sha256": "039dde407eb440021d1d6afd46cacc77bd7959f60bf146bd30807ae84b4208bb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E014-source\\mod.rs",
+      "sha256": "183bf4ce61d2fe3f2f71703c0890967b977dbf8ae065e3235ab8e9d366bb720b",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013-source\\mod.rs",
+      "sha256": "1d50c5aa5f08b8b12cf9af731b4653a7e7b66e08434b828c86c8aa783cfa3a1c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E013-source\\arena.rs",
+      "sha256": "7b607f125059f2ffd7262ccd27eba25872944d2395b049fb33088241fe8145ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-main-integration\\before-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E036\\candidate\\mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-build\\candidate-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E036\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E032\\candidate\\mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-source\\E032\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-plan.rs",
+      "sha256": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\candidate-mod.rs",
+      "sha256": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design-r2\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-plan.rs",
+      "sha256": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\candidate-mod.rs",
+      "sha256": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-design\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-build\\source\\plan.rs",
+      "sha256": "1f336204c1554f08bf0ea3afc24a5c1a88c2ece7ac8aa27b132e47391a492506",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E018-build\\source\\mod.rs",
+      "sha256": "c64c0b0587de1d55c9a452524a2ed2d21ca82317349616c24bcd7bff7bd21446",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate-plan.rs",
+      "sha256": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\candidate-mod.rs",
+      "sha256": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\base-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-design\\base-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-build\\source\\plan.rs",
+      "sha256": "ae6e9ddf667c5a232e66a83b1fbf6f277b5898f0c257192209674943c080149a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E017-build\\source\\mod.rs",
+      "sha256": "e4ab59bf7371531411c1f6d0f9915afdb64c9d71da4e3ff90bfd206cc182a4f5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-source\\candidate-mod.rs",
+      "sha256": "b4e543c96efab1e82b964042974ed9e2fe069671123b4335af353fe310dab939",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-build\\E036\\candidate-mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\small-gain-confirmation-build\\E032\\candidate-mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-design\\candidate\\mod.rs",
+      "sha256": "b4e543c96efab1e82b964042974ed9e2fe069671123b4335af353fe310dab939",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E021-build\\candidate-mod.rs",
+      "sha256": "b4e543c96efab1e82b964042974ed9e2fe069671123b4335af353fe310dab939",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\source\\crates__solver__src__gpu__plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D063-existing-cache-reservation-design\\source\\crates__solver__src__gpu__mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\candidate\\mod.rs",
+      "sha256": "77a33432996954620a035442ce03175c91eb8f69d36093c7360e5fe29114e9cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\candidate\\arena.rs",
+      "sha256": "76688432e56a176851f4b820e4518058a982cc9ce58224f524722b7e0fd55624",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\baseline\\mod.rs",
+      "sha256": "0720e869f841b781570738ee966013c15a1064ddc545f4dba57bf6e1beee8282",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences-r2\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-design\\candidate\\plan.rs",
+      "sha256": "a4dc7787346e130d691189964a7d43d2348dbcf96c0682f99d79aab9bb460f87",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\E020-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-plan\\E015-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-design\\base\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E025-build\\candidate-plan.rs",
+      "sha256": "a4dc7787346e130d691189964a7d43d2348dbcf96c0682f99d79aab9bb460f87",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences\\candidate\\mod.rs",
+      "sha256": "ee374b4211e1da87eb451c0168cea47b8be9c5f028e0f2f53049da3cbd51adce",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences\\candidate\\arena.rs",
+      "sha256": "76688432e56a176851f4b820e4518058a982cc9ce58224f524722b7e0fd55624",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences\\baseline\\mod.rs",
+      "sha256": "306f8024729a942b38aeb62698ff037f46cb9717feea8f297f366ab0216833f2",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D134-zero-init-fences\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-source\\candidate\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-source\\candidate\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-source\\accepted\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-source\\accepted\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-source\\candidate-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-source\\accepted-mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\candidate\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-build\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-build\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-compile-check\\candidate-plan.rs",
+      "sha256": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-compile-check\\candidate-mod.rs",
+      "sha256": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-design\\candidate\\mod.rs",
+      "sha256": "8ee3d99b999fded8b11dff5507958fa0c8f2bbd8bf054b96cfa32cda78eeffd8",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-build\\candidate-plan.rs",
+      "sha256": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-build\\candidate-mod.rs",
+      "sha256": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E026-build\\candidate-mod.rs",
+      "sha256": "8ee3d99b999fded8b11dff5507958fa0c8f2bbd8bf054b96cfa32cda78eeffd8",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E023\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "39c76c8e2752caa079902e69843520425859af8530dc45e33efdb8cb86f079b5",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E023\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "8ac80e640fd00087f7143c0a13ecdb2f46c0f3f6939571e05ddc98d86a73b51a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E023\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\plan.rs",
+      "sha256": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\candidate\\mod.rs",
+      "sha256": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build-r2\\candidate-plan.rs",
+      "sha256": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build-r2\\candidate-mod.rs",
+      "sha256": "b9e53b36f1763efc5e085be20bb77ce4082064f25d0308991fe1aa5f7e266578",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\base\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design-r2\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-plan.rs",
+      "sha256": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-build\\candidate-mod.rs",
+      "sha256": "97bbb476c6d116a45e0243592b9abdc49e21f0055ed2716b4727a9c2994c6243",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\candidate\\plan.rs",
+      "sha256": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\candidate\\mod.rs",
+      "sha256": "97bbb476c6d116a45e0243592b9abdc49e21f0055ed2716b4727a9c2994c6243",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-build\\candidate-plan.rs",
+      "sha256": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-build\\candidate-mod.rs",
+      "sha256": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\base\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\rejected\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\rejected\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E020\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E020\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E020\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E023-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check\\candidate-plan.rs",
+      "sha256": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-source\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-compile-check\\candidate-mod.rs",
+      "sha256": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "3752f4b90c811eca06ba3be62fe069519d5cac02b43a02e404668d08b22dc681",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "c9790b9b738d423bf57d744be629f2de72c9fc936e05ad4c388f1d5385860116",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-source\\rejected\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-source\\rejected\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-source\\rejected\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "fe56297c1563e651cd56ee512b77867e449001c2bcd88b9bca2b87b7ba303daf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E028-source\\rejected\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "922ca6536f1b555406007a9da500ebab82a6d15f8de9bd83b1bac08f975530de",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-build\\candidate-plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-build\\candidate-mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-compile-check\\candidate-plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-compile-check\\candidate-mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E029-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-build\\candidate-mod.rs",
+      "sha256": "4b7e512bbe2ecdb8168bb4d6d712131c8f71d45c6c97b1099aa51a50da66b612",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-source\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-source\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\base\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "c3ef84864cd8c4ebc08d46defc51e291534bfaaade42b35e1bdea8754c79f22e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E030-design\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "11c9686e15af5daba53371fc43dd0365e6493b9d2c46df61479f5812b8636213",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\draft-r1\\candidate\\mod.rs",
+      "sha256": "2af876f4ba4d1555082200d308ac1549f161709ec16a5a6c4ab00ec7a18ba573",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-cpu-check-build-r2\\mod.rs",
+      "sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-cpu-check-build-r2\\arena.rs",
+      "sha256": "cc98672e44efe52fbabcba9fcfeb1d18ac72508761932f3fec81644c13776023",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-design\\candidate\\mod.rs",
+      "sha256": "ba69d6d321c21bf6ad4f8c47ace7a95bc4280d8ce196a537b19e07c008ba8c30",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\candidate\\mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-cpu-check-build\\mod.rs",
+      "sha256": "3a5598fdd942894b160c5ec35f23a65f45c1f36c093a45054eec42a57ffc80b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-cpu-check-build\\arena.rs",
+      "sha256": "cc98672e44efe52fbabcba9fcfeb1d18ac72508761932f3fec81644c13776023",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-source\\rejected\\mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-compile-check\\candidate-mod.rs",
+      "sha256": "ba69d6d321c21bf6ad4f8c47ace7a95bc4280d8ce196a537b19e07c008ba8c30",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-compile-check\\candidate-mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-source\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E020\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-cleanup\\candidate-mod.rs",
+      "sha256": "ba69d6d321c21bf6ad4f8c47ace7a95bc4280d8ce196a537b19e07c008ba8c30",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E037-build\\candidate-mod.rs",
+      "sha256": "ba69d6d321c21bf6ad4f8c47ace7a95bc4280d8ce196a537b19e07c008ba8c30",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-cleanup\\candidate-mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\draft-r4-line-endings\\mod.rs",
+      "sha256": "ef4347d15f57ce095a14405cb0b57ddd12722bbc4f13ca5a4db38c5d5e072c09",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\candidate\\mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\draft-r3-before-review-fixes\\mod.rs",
+      "sha256": "fc31a0f41eb6c318bbcc65c638837942cbc5380c19d694a689a6489957fa5b36",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E036-build\\candidate-mod.rs",
+      "sha256": "f7df7b33b78a6644f1023ce622d0d06e0c48d19aaff0a2c8858a3becb0bf5877",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-compile-check\\candidate-mod.rs",
+      "sha256": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\draft-r2-encoding\\mod.rs",
+      "sha256": "6064b460e78640c283d5e0d68f1eb59e2552c18a90d33cf2262bf704d388a707",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-design\\candidate\\mod.rs",
+      "sha256": "5a9e216f4be70fbcaae7f3197c061fb49decfb33769d1a193d008d13a0c4a8b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E032-build\\candidate-mod.rs",
+      "sha256": "3d7bdc78d65fb636591c62556c5b23164b3b461a1111336242ce32c9275dfe16",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E015\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E015\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation-r2\\workspaces\\E015\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\draft-r1\\arena.rs",
+      "sha256": "a0065e335d5e9c2d6e18a70abeb5589c5d1e0b3a7f61f2e2cab85b604e182a31",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-build\\candidate-mod.rs",
+      "sha256": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-cleanup\\candidate-mod.rs",
+      "sha256": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\candidate\\mod.rs",
+      "sha256": "dccdbd4c90b58874f5b3397796715d1962f8f7f2f11c462cc5365bb5f67291fc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\candidate\\arena.rs",
+      "sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-compile-check\\candidate-mod.rs",
+      "sha256": "5a9e216f4be70fbcaae7f3197c061fb49decfb33769d1a193d008d13a0c4a8b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-design\\base\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E033-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-cleanup\\candidate-mod.rs",
+      "sha256": "5a9e216f4be70fbcaae7f3197c061fb49decfb33769d1a193d008d13a0c4a8b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E034-build\\candidate-mod.rs",
+      "sha256": "5a9e216f4be70fbcaae7f3197c061fb49decfb33769d1a193d008d13a0c4a8b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\candidate\\mod.rs",
+      "sha256": "4b7e512bbe2ecdb8168bb4d6d712131c8f71d45c6c97b1099aa51a50da66b612",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-control-design\\original-control-arena.rs",
+      "sha256": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-control-design\\candidate-control-arena.rs",
+      "sha256": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-compile-check\\candidate-mod.rs",
+      "sha256": "4b7e512bbe2ecdb8168bb4d6d712131c8f71d45c6c97b1099aa51a50da66b612",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-build\\primary-candidate\\arena.rs",
+      "sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-build\\control-base\\arena.rs",
+      "sha256": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-build\\feature-candidate\\arena.rs",
+      "sha256": "f5918a4e72940b329a658350f2e47ec6fb2562b585ee5c5a20a871cbd5d14230",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E035-cleanup\\candidate-mod.rs",
+      "sha256": "4b7e512bbe2ecdb8168bb4d6d712131c8f71d45c6c97b1099aa51a50da66b612",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-build\\control-candidate\\arena.rs",
+      "sha256": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\candidate-control-arena.rs",
+      "sha256": "a6e2793e5d5e51ea9ca18758cb75297fea6099d7ffc6392d433b709e4bb16866",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E038-execution-plan\\variants\\base-control-arena.rs",
+      "sha256": "54ebae36a96be4e518aaf2dfece43916c116264f690d623418c928dface5ca1d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\mod.rs",
+      "sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-source\\arena.rs",
+      "sha256": "51d89f4561a95b1380f77c56ec573186880a27af96e3921403b86ad0dff0ddb6",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\candidate\\mod.rs",
+      "sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\candidate\\arena.rs",
+      "sha256": "cc98672e44efe52fbabcba9fcfeb1d18ac72508761932f3fec81644c13776023",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design-r2\\base\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\primary\\mod.rs",
+      "sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\primary\\arena.rs",
+      "sha256": "51d89f4561a95b1380f77c56ec573186880a27af96e3921403b86ad0dff0ddb6",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\feature\\mod.rs",
+      "sha256": "a9e7051e45b90dbc9e3d78f892848ccc0e5bf2f9f3d6e8b802e3cd7177667f44",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-final-build\\feature\\arena.rs",
+      "sha256": "51d89f4561a95b1380f77c56ec573186880a27af96e3921403b86ad0dff0ddb6",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-final-build-r2\\primary\\arena.rs",
+      "sha256": "0ec79e29832d80c423f944311713fcc7e155a4be27557d04f90bce386867a98e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design\\candidate\\mod.rs",
+      "sha256": "3a5598fdd942894b160c5ec35f23a65f45c1f36c093a45054eec42a57ffc80b4",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design\\candidate\\arena.rs",
+      "sha256": "cc98672e44efe52fbabcba9fcfeb1d18ac72508761932f3fec81644c13776023",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-final-build-r2\\feature\\arena.rs",
+      "sha256": "0ec79e29832d80c423f944311713fcc7e155a4be27557d04f90bce386867a98e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design\\base\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E040-design\\base\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-build\\primary\\arena.rs",
+      "sha256": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-final-build\\feature\\arena.rs",
+      "sha256": "bae0ed15d9b1bd7d93633145ef019a924c2c4b60acf1ba04da8c514025110fbe",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-build\\feature\\arena.rs",
+      "sha256": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design-r2\\production-arena.rs",
+      "sha256": "fa3cbf368cc4a853865c9723f8908feb2a98d49b0161140ef599806495cc1baf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design-r2\\candidate-arena.rs",
+      "sha256": "0ec79e29832d80c423f944311713fcc7e155a4be27557d04f90bce386867a98e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design-r2\\base-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-build\\cpu\\arena.rs",
+      "sha256": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-final-build\\primary\\mod.rs",
+      "sha256": "39e56fce7214cd6ee033ddc497757c8b86d23c7efd73640c9e286e07f51414bc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design\\production-arena.rs",
+      "sha256": "fa3cbf368cc4a853865c9723f8908feb2a98d49b0161140ef599806495cc1baf",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design\\candidate-arena.rs",
+      "sha256": "bae0ed15d9b1bd7d93633145ef019a924c2c4b60acf1ba04da8c514025110fbe",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E045-design\\base-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-final-build\\feature\\mod.rs",
+      "sha256": "39e56fce7214cd6ee033ddc497757c8b86d23c7efd73640c9e286e07f51414bc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\candidate-production-mod.rs",
+      "sha256": "751eda11577ce29fcb88860a01e0f0e0f30a7e6b589002b7d99ea2b3f2fbc514",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\candidate-mod.rs",
+      "sha256": "39e56fce7214cd6ee033ddc497757c8b86d23c7efd73640c9e286e07f51414bc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E044-design\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-design\\candidate-production-arena.rs",
+      "sha256": "fba6bb2fa96544509ffae3f5274c28b6b83b3ff095ce996ccf7894bebdeff04c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-design\\candidate-arena.rs",
+      "sha256": "68098ad7e6639401ef20599a8c3d97c820f35712699ec3909eadc05378934fbc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-design\\base-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E048-final-build\\primary\\mod.rs",
+      "sha256": "c225efe383a5a8b56250a989feb425abfaee23950738d52a61cfd1764fc516f3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E048-final-build\\feature\\mod.rs",
+      "sha256": "c225efe383a5a8b56250a989feb425abfaee23950738d52a61cfd1764fc516f3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E048-final-source\\base-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-final-source\\candidate-with-hooks.rs",
+      "sha256": "88b28bb9124919047cc175318b255dd45168aee5ac659421db24d96b8bdfe26c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-final-source\\base-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-final-source\\arena.rs",
+      "sha256": "760e40fb16884c4ea5fb14474c9e347a15f2c469c677a1b79050a30d332d2409",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E048-final-source\\candidate-mod.rs",
+      "sha256": "c225efe383a5a8b56250a989feb425abfaee23950738d52a61cfd1764fc516f3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-final-build\\primary\\arena.rs",
+      "sha256": "760e40fb16884c4ea5fb14474c9e347a15f2c469c677a1b79050a30d332d2409",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E041-final-build\\feature\\arena.rs",
+      "sha256": "760e40fb16884c4ea5fb14474c9e347a15f2c469c677a1b79050a30d332d2409",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\candidate-arena.rs",
+      "sha256": "eb1a985615fc912b42808140479dd87f7310cf72a89c6e1d64956eb3e28985b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E049-final-source\\base-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\src\\gpu\\plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "7de2cd46ef93742c603042306cfe2ad08a83ff52a2be1123efd9d201aca15f1a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E020-wide-turn-holdout-implementation\\workspaces\\E015\\crates\\solver\\src\\gpu\\arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E052-final-build\\primary\\mod.rs",
+      "sha256": "545289f62dced21b46921a994d61fbe0ed213c62b8e994dd1dfcfab76a0ac1b3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E052-final-build\\feature\\mod.rs",
+      "sha256": "545289f62dced21b46921a994d61fbe0ed213c62b8e994dd1dfcfab76a0ac1b3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-source\\candidate.rs",
+      "sha256": "8d7b94f352bb0aa2460ffeea85e8b0f1d5a32654f1130d3634d002e12d88b0ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-source\\baseline.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E090-source\\candidate.rs",
+      "sha256": "92893002e72295c10ac8a899199a8046620daca37017aa4a75a80e988dd9339a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E090-source\\baseline.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E052-source\\candidate-mod.rs",
+      "sha256": "545289f62dced21b46921a994d61fbe0ed213c62b8e994dd1dfcfab76a0ac1b3",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E052-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-final-build\\primary\\plan.rs",
+      "sha256": "8d7b94f352bb0aa2460ffeea85e8b0f1d5a32654f1130d3634d002e12d88b0ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E056-final-build\\feature\\plan.rs",
+      "sha256": "8d7b94f352bb0aa2460ffeea85e8b0f1d5a32654f1130d3634d002e12d88b0ca",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-final-build\\primary\\plan.rs",
+      "sha256": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\candidate-mod.rs",
+      "sha256": "5aa6844be908d8edb2b585dd0f3e066d12644f5651efe210ad97d04ffea95932",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-final-build\\feature\\plan.rs",
+      "sha256": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-final-build\\primary\\mod.rs",
+      "sha256": "5aa6844be908d8edb2b585dd0f3e066d12644f5651efe210ad97d04ffea95932",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E063-final-build\\feature\\mod.rs",
+      "sha256": "5aa6844be908d8edb2b585dd0f3e066d12644f5651efe210ad97d04ffea95932",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-source\\candidate.rs",
+      "sha256": "e710142f4cd04261e2736fe53da3da6816b5adefc6f615af0248922ff2af9862",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E069-source\\baseline.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E071-source\\candidate.rs",
+      "sha256": "3146a8e863ac6edb94d27306f142ab114ec1a7bd13c9623f8cb44467ad843a3c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E071-source\\baseline.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-final-build\\primary\\mod.rs",
+      "sha256": "3210fefc89c80ae6b986b088e0018b58524a9eff690528c151ffe8ca03a795cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E071-final-build\\primary\\plan.rs",
+      "sha256": "3146a8e863ac6edb94d27306f142ab114ec1a7bd13c9623f8cb44467ad843a3c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E071-final-build\\feature\\plan.rs",
+      "sha256": "3146a8e863ac6edb94d27306f142ab114ec1a7bd13c9623f8cb44467ad843a3c",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-final-build\\feature\\mod.rs",
+      "sha256": "3210fefc89c80ae6b986b088e0018b58524a9eff690528c151ffe8ca03a795cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-final-build\\primary\\mod.rs",
+      "sha256": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-final-build\\feature\\mod.rs",
+      "sha256": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-final-build\\primary\\plan.rs",
+      "sha256": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\candidate-mod.rs",
+      "sha256": "2fda52098bb5f507bbb406743ae450616e94f4ac571737923f9074e8b54c7f34",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\candidate-mod-r2.rs",
+      "sha256": "c3e960e6bdd6f55a78686a48607ee1d1d9666dbeb9762be47f71df82af0ab283",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-final-build\\feature\\plan.rs",
+      "sha256": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\candidate-plan.rs",
+      "sha256": "c941683287f3683be1d713ad4c1a954d47801439f9a2b51fa56de88d38c4e165",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\candidate-mod.rs",
+      "sha256": "2753a4aa658022d879b5882312a0e2a89e4edb94ecaee603d185debee4686e12",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\baseline-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source-host-r2\\candidate-mod.rs",
+      "sha256": "3210fefc89c80ae6b986b088e0018b58524a9eff690528c151ffe8ca03a795cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source-host-r2\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E079-final-build\\primary\\mod.rs",
+      "sha256": "38a355af3bfe4032270426ea0e9a1be432fa4f019a5ae357359f49d7ac5c19da",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source\\candidate-mod.rs",
+      "sha256": "3210fefc89c80ae6b986b088e0018b58524a9eff690528c151ffe8ca03a795cc",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E073-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E079-final-build\\feature\\mod.rs",
+      "sha256": "38a355af3bfe4032270426ea0e9a1be432fa4f019a5ae357359f49d7ac5c19da",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E079-source\\candidate-mod.rs",
+      "sha256": "38a355af3bfe4032270426ea0e9a1be432fa4f019a5ae357359f49d7ac5c19da",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E079-source\\baseline-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\host-integration\\baseline\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-plan-control\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-source\\candidate-plan.rs",
+      "sha256": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-source\\baseline-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E070-direct-kernel-controls\\host-integration\\candidate\\crates\\solver\\src\\gpu\\mod.rs",
+      "sha256": "c314301a7e0db6d4c67dc75292810d64cb5c97785804a68c7eaccb2fdcca000e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E076-plan-control\\candidate-plan.rs",
+      "sha256": "194a815a7050a68ed555ab2da4cf4ceb8fa080e82a999ef017645edd71713359",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-final-build\\primary\\plan.rs",
+      "sha256": "c941683287f3683be1d713ad4c1a954d47801439f9a2b51fa56de88d38c4e165",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-final-build\\primary\\mod.rs",
+      "sha256": "2753a4aa658022d879b5882312a0e2a89e4edb94ecaee603d185debee4686e12",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-plan-control\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-final-build\\feature\\plan.rs",
+      "sha256": "c941683287f3683be1d713ad4c1a954d47801439f9a2b51fa56de88d38c4e165",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-final-build\\feature\\mod.rs",
+      "sha256": "2753a4aa658022d879b5882312a0e2a89e4edb94ecaee603d185debee4686e12",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-plan-control\\accepted-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E077-plan-control\\candidate-plan.rs",
+      "sha256": "c941683287f3683be1d713ad4c1a954d47801439f9a2b51fa56de88d38c4e165",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-plan-control\\candidate-plan.rs",
+      "sha256": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-final-build\\primary\\mod.rs",
+      "sha256": "c3e960e6bdd6f55a78686a48607ee1d1d9666dbeb9762be47f71df82af0ab283",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E078-final-build\\feature\\mod.rs",
+      "sha256": "c3e960e6bdd6f55a78686a48607ee1d1d9666dbeb9762be47f71df82af0ab283",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-final-build\\primary\\mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-final-build\\primary\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-final-build\\feature\\mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-final-build\\feature\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\candidate-mod.rs",
+      "sha256": "9ac9d9103d1417de5c33025a5897118375d384843f4b2ece6c6e25b7017fa91f",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\candidate-arena.rs",
+      "sha256": "76688432e56a176851f4b820e4518058a982cc9ce58224f524722b7e0fd55624",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E083-source\\baseline-arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\candidate-mod.rs",
+      "sha256": "595667ff58625e24b17ef67c203eaeb76c515c9c30a36560e8ebf550f4da508a",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E081-source\\baseline-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-source\\candidate-mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-source\\candidate-arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-source\\accepted-mod.rs",
+      "sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E080-source\\accepted-arena.rs",
+      "sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-transfer-control\\candidate\\mod.rs",
+      "sha256": "c274214778434d8d36e4b4663c54d3a348e0797e54693bca05fa4ca1edaeaba8",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-transfer-control\\candidate\\arena.rs",
+      "sha256": "c0df09937eed8e694a003bb2fbd187f558534c1de90c5f989871062572cdc96f",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-transfer-control\\baseline\\mod.rs",
+      "sha256": "6fc00ed78625c95e11384021a154d1e8aa6bffab255547a77229a1e5187c73d1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-transfer-control\\baseline\\arena.rs",
+      "sha256": "8192470775a6b4bef612ad34d1af07c3bb9fb8999b5610385d0949844a9a8371",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-final-build\\primary\\mod.rs",
+      "sha256": "4b3264c7811679dacb9624a89a842f52c7dbc146b126da1c51c770fa1ec0fac0",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-final-build\\primary\\arena.rs",
+      "sha256": "440e2dbec7418e191c2a098ceb95eb8626b59ced881fd4e87a49f17bc51d36cb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\candidate\\arena.rs",
+      "sha256": "440e2dbec7418e191c2a098ceb95eb8626b59ced881fd4e87a49f17bc51d36cb",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\candidate\\mod.rs",
+      "sha256": "4b3264c7811679dacb9624a89a842f52c7dbc146b126da1c51c770fa1ec0fac0",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\baseline\\mod.rs",
+      "sha256": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-source\\baseline\\arena.rs",
+      "sha256": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-final-build\\feature\\mod.rs",
+      "sha256": "4b3264c7811679dacb9624a89a842f52c7dbc146b126da1c51c770fa1ec0fac0",
+      "hits": []
+    },
+    {
+      "identity": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E087-final-build\\feature\\arena.rs",
+      "sha256": "440e2dbec7418e191c2a098ceb95eb8626b59ced881fd4e87a49f17bc51d36cb",
+      "hits": []
+    }
+  ],
+  "literal_mapping_hits_for_review": [],
+  "new_source_candidate_created": false,
+  "new_compilers_CUDA_contexts_kernels_solves_or_timing_samples": 0,
+  "current_source_sha256": {
+    "crates/solver/src/gpu/mod.rs": "1621c38893757f07a9a194b84e2d42086c2eec6210c980896b8d61210c8c15b1",
+    "crates/solver/src/gpu/plan.rs": "aca00f163db77af01960cd55cb5484226f25c7c58bae325d4c50ebc44672b680",
+    "crates/solver/src/gpu/arena.rs": "85f57b46477470c9b95432f28536d38ee2f657a2d6a3218686bc647f2dfa7e0e"
+  },
+  "cudarc_source_sha256": "748d08ac0dd0c3211c25b1be341c2ee11e2ff71d2a14646afda90765860d752b",
+  "closed_or_absent_leads": [
+    {
+      "lead": "Showdown first-card total cache",
+      "decision": "Decline: E084 already measured and closed, including placement/storage variants."
+    },
+    {
+      "lead": "Positive regret fmax spelling",
+      "decision": "Decline: D199 already shows the accepted emitted max operations; no absent mechanism."
+    },
+    {
+      "lead": "Enable asynchronous GPU allocation",
+      "decision": "Not admitted: the linked cudarc already selects asynchronous allocation when its context reports support. This source audit does not claim which branch ran in a particular process."
+    },
+    {
+      "lead": "Remove an implicit slice synchronization guard",
+      "decision": "Not admitted: both raw-slice HostSlice methods return Sync(None); Drop synchronizes only Some(stream). Existing explicit waits cannot be removed based on a nonexistent implicit wait."
+    }
+  ],
+  "new_design": "Preserve every existing ordered worklist and launch, but relabel GPU node-indexed metadata rows into level/kind execution order. All N rows remain, including inactive tail, so lengths/payload/capacity and original CUDA stay unchanged. Remap only node-ID values in worklists/edges/children; retain physical reach/CFV/action offsets and every floating value bit. CPU public tree/save IDs remain unchanged. This is not CTA sorting, arity packing or CFV/reach layout tuning.",
+  "prospective_memory_route": "During construction, reuse the two completed CPU plan reach_src vectors as forward/inverse scratch (the constructor uploads reach_slot, not reach_src). Reuse the existing pinned staging window for typed metadata copies, with length/alignment checks and original-layout fallback. For compact ArenaLayout records, investigate storing the device node ID in existing record padding for lock updates. No new retained node-map allocation is admitted by this design. Actual record/host layout, full-path integration and peak/capacity/material proof remain mandatory.",
+  "caller_risks": [
+    "All original node-ID arrays and tree.children values must be transformed by a total bijection; positional children_start offsets and physical row IDs must not be remapped.",
+    "Lock replacement must preserve CPU node IDs, exact sigma order and GPU metadata semantics, including unsupported/manual inputs. Compact record lookup and a supported original-layout fallback need full validation.",
+    "Experimental symmetric/paged/stored projection callers can bind CPU node IDs outside the ordinary kernels. They need explicit correct mapping or a prospective original-layout constructor fallback; no silent exclusion or compatibility claim.",
+    "Repacking adds CPU work and can worsen runtime even when address footprint shrinks. Original D183 phase times remain excluded; only full fresh solve timing can establish gain."
+  ],
+  "next": "Freeze a CPU-only reversible mapping/footprint model and actual private-record layout ability before any source prototype. Any literal history hit must be classified before novelty/admission.",
+  "primary_reference": "https://docs.nvidia.com/cuda/archive/12.9.0/cuda-c-best-practices-guide/index.html#coalesced-access-to-global-memory",
+  "reference_limits": "NVIDIA coalescing rules concern warp accesses. Across-CTA footprint counts below will not be called transactions, misses, scheduling evidence or a speedup.",
+  "accepted_main_live_PTX_unchanged": true,
+  "all_new_bulk_X_S_read_only_no_T_access": true,
+  "goal_active": true
+}

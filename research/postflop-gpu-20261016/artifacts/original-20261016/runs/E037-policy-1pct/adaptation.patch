@@ -1,0 +1,144 @@
+--- tools/postflop_compare.py
++++ E037-policy-1pct/compare_policy.py
+@@ -15,6 +15,10 @@
+ from pathlib import Path
+ import re
+ import statistics
++import sys
++sys.path.insert(0, str(Path(__file__).resolve().parent))
++import policy_guard as policy_gate
++sys.path.insert(0, str(Path(r"X:\Dev\GTOpen-gpu-research-20261016") / "tools"))
+ 
+ import postflop_autoresearch as runner
+ 
+@@ -113,17 +117,17 @@
+         fixture = row["fixture_id"]
+         median_regression = -row["observed_gain_pct"]
+         regressions = [-pair["fixture_gain_pct"][fixture] for pair in pairs]
+-        repeats = sum(value > 3.0 for value in regressions)
+-        failed = median_regression > 3.0 and repeats >= required
++        repeats = sum(value > 0.0 for value in regressions)
++        failed = median_regression > 0.0 and repeats >= required
+         fixtures.append({"fixture_id": fixture, "median_regression_pct": median_regression,
+                          "paired_regression_pct": regressions,
+-                         "repetitions_above_3pct": repeats, "paired_repetitions": len(pairs),
+-                         "required_repetitions": required, "repeatable_material_regression": failed,
++                         "repetitions_above_0pct": repeats, "paired_repetitions": len(pairs),
++                         "required_repetitions": required, "repeatable_measured_regression": failed,
+                          "reason": (f"{fixture}: median regression {median_regression:.4f}%; "
+-                                    f"{repeats}/{len(pairs)} paired repetitions exceed 3% "
+-                                    f"(requires median >3% and at least {required} repetitions).")})
+-    affected = [row["fixture_id"] for row in fixtures if row["repeatable_material_regression"]]
+-    return {"threshold_pct": 3.0,
++                                    f"{repeats}/{len(pairs)} paired repetitions exceed 0% "
++                                    f"(requires median >0% and at least {required} repetitions).")})
++    affected = [row["fixture_id"] for row in fixtures if row["repeatable_measured_regression"]]
++    return {"threshold_pct": 0.0,
+             "median_basis": "Regression of candidate fixture median versus baseline fixture median",
+             "repeat_rule": "Strict majority of paired repetitions, with a minimum of two",
+             "fixtures": fixtures, "affected_fixtures": affected, "failed": bool(affected)}
+@@ -132,11 +136,11 @@
+ def rejection_reasons(performance):
+     reasons = []
+     if not performance["aggregate_gate_met"]:
+-        reasons.append("Below the registered 2% aggregate gate; no reproducible aggregate benefit established.")
++        reasons.append("Below the registered 1% aggregate gate; no reproducible aggregate benefit established.")
+     guard = performance["fixture_regression_guard"]
+     for fixture in guard["fixtures"]:
+-        if fixture["repeatable_material_regression"]:
+-            reasons.append("Repeatable material fixture regression: " + fixture["reason"])
++        if fixture["repeatable_measured_regression"]:
++            reasons.append("Repeatable measured fixture slowdown: " + fixture["reason"])
+     return reasons
+ 
+ 
+@@ -198,9 +202,9 @@
+                            for r in sorted(all_runs, key=lambda r: r["started_at"])],
+             "performance": {"aggregation": "Sum of per-fixture medians of serialized complete fixture cycles",
+                             "baseline_full_cycle_ms": bs, "candidate_full_cycle_ms": cs,
+-                            "observed_gain_pct": gain(bs, cs), "required_gain_pct": 2.0,
+-                            "aggregate_gate_met": gain(bs, cs) >= 2,
+-                            "fixture_median_regression_above_3pct": [r["fixture_id"] for r in rows if r["observed_gain_pct"] < -3],
++                            "observed_gain_pct": gain(bs, cs), "required_gain_pct": 1.0,
++                            "aggregate_gate_met": gain(bs, cs) >= 1,
++                            "fixture_median_regression_above_0pct": [r["fixture_id"] for r in rows if r["observed_gain_pct"] < 0],
+                             "fixture_regression_guard": fixture_regression_guard(rows, pairs),
+                             "statistical_significance_established": False},
+             "preserved_artifacts": [{"path": path, "sha256": digest} for path, digest in verified_files.items()]}
+@@ -240,7 +244,11 @@
+     parser.add_argument("--warm-cache-cohort", action="store_true")
+     parser.add_argument("--reject", action="store_true", help="Reject aggregate or repeated fixture-regression gate failure; no acceptance mode")
+     parser.add_argument("--dry-run", action="store_true", help="Validate and summarize without writing files/status")
++    parser.add_argument("--policy-authorization-sha256", required=True)
+     args = parser.parse_args()
++    effective_policy = policy_gate.receipt(args.policy_authorization_sha256)
++    require(args.id == "E037-three-pair-comparison" and args.candidate_id == "E037R1", "Only the frozen E037 cohort is permitted")
++    require(args.baseline_runs == ["B116","B117","B118"] and args.candidate_runs == ["E037R1","E037R2","E037R3"] and not args.excluded_runs and args.warm_cache_cohort, "Fixed cohort and boundaries required")
+     run_ids = args.baseline_runs + args.candidate_runs + args.excluded_runs
+     for identity in [args.id, args.candidate_id] + run_ids:
+         require(re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9_.-]{0,95}", identity), "IDs must be safe directory names")
+@@ -265,7 +273,7 @@
+                          "reason": "Outside explicitly selected repeated cohort; retained separately, not erased or rescored"})
+     p = comparison["performance"]
+     failures = rejection_reasons(p)
+-    require(not args.reject or failures,
++    require(args.reject == bool(failures),
+             "Rejection mode only supports failure of the registered aggregate or repeated fixture-regression gate")
+     scope = "Repeated warm-cache compressed-storage complete-cycle screen" if args.warm_cache_cohort else "Repeated compressed-storage complete-cycle screen"
+     reason = (f"{'Rejected' if args.reject else 'Qualification pending'}: {len(args.baseline_runs)} measurements per binary; "
+@@ -286,6 +294,8 @@
+                           "warm_cache_cohort": args.warm_cache_cohort,
+                           "cold_start_limit": "Warm-cache cohort does not qualify first-use/cold-start performance; separately retained initial runs disclose potential cache/compiler costs. Cache temperature was not experimentally reset or proved identical." if args.warm_cache_cohort else "Cache temperature was not experimentally controlled; review run order and initialization timings",
+                           "other_exclusions": "Correctness fingerprint hashing, HTTP and disk saving; not part of the fixed complete-cycle score"})
++    comparison["effective_policy"] = effective_policy
++    comparison["reason"] += " Effective user-directed policy was frozen before timing: aggregate >=1% and no repeatable measured fixture slowdown. A preliminary pass requires fresh fixed16-pair confirmation and broader/resource/compatibility qualification before adoption."
+     if not args.dry_run:
+         raw, public = publish(args, comparison)
+         comparison["output_paths"] = [str(raw), str(public)]
+--- E037-primary-plan/assess.py
++++ E037-policy-1pct/assess.py
+@@ -2,7 +2,13 @@
+ import hashlib, json, shutil, subprocess, sys
+ from pathlib import Path
+ repo = Path(r'X:\Dev\GTOpen-gpu-research-20261016')
+-here=Path(__file__).resolve().parent
++policy_here=Path(__file__).resolve().parent
++sys.path.insert(0,str(policy_here))
++import policy_guard as policy_gate
++assert len(sys.argv)==2,'Provide separate policy authorization SHA256'
++policy_authorization_sha256=sys.argv[1]
++effective_policy=policy_gate.receipt(policy_authorization_sha256)
++here=policy_gate.OLD
+ seal=json.loads((here/'scripts-manifest.json').read_text(encoding='utf-8'))
+ authorization=json.loads((here/'authorization.json').read_text(encoding='utf-8'))
+ 
+@@ -13,7 +19,7 @@
+ for path,h in authorization['evidence_sha256'].items():assert pinned_sha(path)==h,path
+ sys.path.insert(0, str(repo / 'tools'))
+ import postflop_autoresearch as ar
+-import postflop_compare as compare
++import compare_policy as compare
+ base = ar.RESEARCH
+ assert not (base / 'gpu-run.lock').exists()
+ protocol = base / 'runs/E037-primary-plan/protocol.json'
+@@ -64,16 +70,17 @@
+     'actual_run_ids':candidate_ids, 'synthesized_measurement':False,
+     'patch_alias':str(target), 'source_patch':str(source), 'patch_sha256':ar.sha256(source),
+     'reason':'Existing comparison helper consumes a physical run ID; logical display row mirrors its outcome only.'})
+-command = [sys.executable,'-B','tools/postflop_compare.py','--id','E037-three-pair-comparison',
+-           '--candidate-id','E037R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort']
++command = [sys.executable,'-B',str(policy_here/'compare_policy.py'),'--id','E037-three-pair-comparison',
++           '--candidate-id','E037R1','--baseline-runs',*baseline_ids,'--candidate-runs',*candidate_ids,'--warm-cache-cohort','--policy-authorization-sha256',policy_authorization_sha256]
+ if failures: command.append('--reject')
+ ar.atomic_json(out / 'invocation.json', {'at':ar.now(),'command':command,'decision_gate_failures':failures,
+-    'script_sha256':ar.sha256(Path(__file__)),'protocol_sha256':ar.sha256(protocol)})
++    'script_sha256':ar.sha256(Path(__file__)),'protocol_sha256':ar.sha256(protocol),'effective_policy':effective_policy})
+ with (out / 'stdout.log').open('xb') as stdout, (out / 'stderr.log').open('xb') as stderr:
+     result = subprocess.run(command,cwd=repo,stdout=stdout,stderr=stderr)
+ ar.atomic_json(out / 'exit.json', {'at':ar.now(),'returncode':result.returncode})
+ assert result.returncode == 0, (out / 'stderr.log').read_text(encoding='utf-8')
+ report = json.loads((base / 'comparisons/E037-three-pair-comparison/report.json').read_text(encoding='utf-8'))
++assert report['effective_policy']==effective_policy
+ assert report['performance'] == assessment['performance']
+ assert report['decision'] == ('rejected' if failures else 'qualifying')
+ print(json.dumps({'decision':report['decision'],'performance':report['performance'],'candidate_accepted':False,'deployment_changed':False},indent=2))

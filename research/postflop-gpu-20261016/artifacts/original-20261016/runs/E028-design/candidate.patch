@@ -1,0 +1,669 @@
+diff --git a/crates/solver/src/gpu/kernels.cu b/crates/solver/src/gpu/kernels.cu
+--- a/crates/solver/src/gpu/kernels.cu
++++ b/crates/solver/src/gpu/kernels.cu
+@@ -39,7 +39,7 @@
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+     float* reach0, float* reach1,
+-    int nh0, int nh1)
++    int nh0, int nh1, float* sigma1, int write_sigma1)
+ {
+     int b = blockIdx.x;
+     if (b >= count) return;
+@@ -89,6 +89,11 @@
+                 v = uni;
+             }
+             reach_a[(u64)(actor == 0 ? rsrc0[child] : rsrc1[child]) * nh_a + i] = v;
++            // Cache normalized actor1 sigma independently of parent reach.
++            // Keep the original uniform child reach pr/na above unchanged.
++            if (actor == 1 && write_sigma1)
++                sigma1[doff + (u64)a * nh_a + i] =
++                    sum > 1e-12f ? (r > 0.f ? r : 0.f) / sum : 1.f / (float)na;
+         }
+     }
+ }
+@@ -105,14 +110,14 @@
+     const long long* __restrict__ lock_off,
+     const float* __restrict__ lock_sigma,
+     float* reach0, float* reach1,
+-    int nh0, int nh1)
++    int nh0, int nh1, float* sigma1, int write_sigma1)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     const int na = node_na[nodes[start + blockIdx.x]];
+-    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
+-    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1);
++    if (na == 2) down_action_impl<2>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1, sigma1, write_sigma1);
++    else if (na == 3) down_action_impl<3>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1, sigma1, write_sigma1);
++    else if (na == 4) down_action_impl<4>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1, sigma1, write_sigma1);
++    else down_action_impl<0>(nodes, start, count, node_player, node_na, node_data_off, node_children_start, children, rsrc0, rsrc1, regrets0, regrets1, lock_off, lock_sigma, reach0, reach1, nh0, nh1, sigma1, write_sigma1);
+ }
+ 
+ // Down sweep, chance edges at one level: child reach = parent reach with
+@@ -343,7 +348,7 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+-    int nh_p, int nh_max)
++    int nh_p, int nh_max, const float* __restrict__ sigma1)
+ {
+     float pos = disc[0], neg = disc[1], ds = disc[2];
+     int b = blockIdx.x;
+@@ -366,6 +371,33 @@
+         }
+         u64 doff = node_data_off[n];
+         const float* rp = reach_p_buf + (u64)rsrc_p[n] * nh_p;
++        if (p == 1) {
++            // The full training down sweep produced sigma1 from these regrets.
++            // E015's second down skips actor1 and preserves the same cache.
++            float sc[8], vc[8];
++            bool small = na <= 8;
++            for (int i = threadIdx.x; i < nh_p; i += blockDim.x) {
++                float out = 0.f;
++                for (int a = 0; a < na; a++) {
++                    float sig = sigma1[doff + (u64)a * nh_p + i];
++                    float v = cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                    if (small) { sc[a] = sig; vc[a] = v; }
++                    out += sig * v;
++                }
++                float reach = rp[i];
++                for (int a = 0; a < na; a++) {
++                    u64 idx = doff + (u64)a * nh_p + i;
++                    float val = small ? vc[a] : cfv[(u64)cfv_slot[children[cs + a]] * nh_max + i];
++                    float r = regrets_p[idx];
++                    float sig = small ? sc[a] : sigma1[idx];
++                    float d = r > 0.f ? pos : neg;
++                    regrets_p[idx] = r * d + (val - out);
++                    strat_p[idx] = strat_p[idx] * ds + reach * sig;
++                }
++                cfv[(u64)cfv_slot[n] * nh_max + i] = out;
++            }
++            return;
++        }
+         // register-cache regrets and child values for the common small-na case
+         float rc[8], vc[8];
+         bool small = na <= 8;
+@@ -421,16 +453,16 @@
+     const u32* __restrict__ cfv_slot, float* cfv,
+     const float* __restrict__ disc, // [pos, neg, strat] — device-resident so
+                                     // captured graphs stay iteration-invariant
+-    int nh_p, int nh_max)
++    int nh_p, int nh_max, const float* __restrict__ sigma1)
+ {
+     if (blockIdx.x >= (u32)count) return;
+     const int na = node_na[nodes[start + blockIdx.x]];
+     // Compile-time common action counts keep working arrays in registers.
+     // The generic implementation retains arbitrary action-menu support.
+-    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
+-    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max);
++    if (na == 2) up_action_impl<2>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max, sigma1);
++    else if (na == 3) up_action_impl<3>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max, sigma1);
++    else if (na == 4) up_action_impl<4>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max, sigma1);
++    else up_action_impl<0>(nodes, start, count, p, node_player, node_na, node_data_off, node_children_start, children, regrets_p, strat_p, rsrc_p, reach_p_buf, lock_off, lock_sigma, cfv_slot, cfv, disc, nh_p, nh_max, sigma1);
+ }
+ 
+ // Copy the first n floats (used to extract the root cfv span).
+diff --git a/crates/solver/src/gpu/mod.rs b/crates/solver/src/gpu/mod.rs
+--- a/crates/solver/src/gpu/mod.rs
++++ b/crates/solver/src/gpu/mod.rs
+@@ -148,6 +148,8 @@
+     d_reach: [CudaSlice<f32>; 2],
+     d_cfv_slot: CudaSlice<u32>,
+     d_cfv: CudaSlice<f32>,
++    /// Transient actor1 normalized sigma, indexed by finalized node_data_off.
++    d_sigma1: CudaSlice<f32>,
+     d_eval_roots: CudaSlice<f32>,
+     eval_graphs: [Option<CudaGraph>; 2],
+     eval_warmed: [bool; 2],
+@@ -210,7 +212,7 @@
+         // fits, avoiding inactive host snapshots on warm full-precision solves.
+         // Compressed stores benefit from packing and parallel readback anyway;
+         // a tight F32 budget can use the same exact compact representation.
+-        let full_needed = plan.staging_bytes()
++        let full_needed = plan.staging_bytes_with_actor1_elements(solver.spot.tree.data_size[1])
+             + (solver.spot.tree.data_size[0] + solver.spot.tree.data_size[1]) * 8
+             + 512 * 1024 * 1024;
+         if solver.storage == crate::store::Storage::F32 && full_needed <= budget_bytes {
+@@ -259,6 +261,7 @@
+         let upf = |v: &Vec<f32>| stream.clone_htod(v).map_err(e);
+ 
+         let data_len = plan.arena_elements;
++        let sigma1_len = plan.sigma1_elements(); // before any plan field moves
+         let mut h_staging = PinnedBuf::new(&ctx, data_len[0].max(data_len[1]))?;
+         let mut arena_layout = [
+             ArenaLayout::new(solver, &plan, 0),
+@@ -368,6 +371,7 @@
+             ],
+             d_cfv_slot: up32(&plan.cfv_slot)?,
+             d_cfv: stream.alloc_zeros::<f32>(plan.cfv_blocks * plan.nh_max).map_err(e)?,
++            d_sigma1: stream.alloc_zeros::<f32>(sigma1_len).map_err(e)?,
+             d_disc: stream.alloc_zeros::<f32>(3).map_err(e)?,
+             d_eval_roots: stream.alloc_zeros::<f32>(4 * plan.nh_max).map_err(e)?,
+             eval_graphs: [None, None],
+@@ -586,6 +590,8 @@
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&nh1)
++                        .arg(&mut self.d_sigma1)
++                        .arg(&0i32)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+                 }
+@@ -817,6 +823,8 @@
+                         .arg(&mut *reach1)
+                         .arg(&nh0)
+                         .arg(&down_nh1)
++                        .arg(&mut self.d_sigma1)
++                        .arg(&1i32)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+                 }
+@@ -983,6 +991,7 @@
+                         .arg(&self.d_disc)
+                         .arg(&nh_p)
+                         .arg(&nh_max)
++                        .arg(&self.d_sigma1)
+                         .launch(Self::cfg(sp.count, 0))
+                         .map_err(e)?;
+                 }
+@@ -1250,6 +1259,7 @@
+                         .arg(&gpu.d_regrets[0]).arg(&gpu.d_regrets[1])
+                         .arg(&gpu.d_lock_off).arg(&gpu.d_lock_sigma)
+                         .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
++                        .arg(&mut gpu.d_sigma1).arg(&1i32)
+                         .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
+                 }
+             }
+@@ -1266,6 +1276,134 @@
+                         .arg(&mut *reach0).arg(&mut *reach1).arg(&nh0).arg(&nh1)
+                         .launch(GpuSolver::cfg(sp.count, 0)).unwrap();
+                 }
++            }
++        }
++    }
++
++    #[test]
++    fn actor1_sigma_cache_production_and_lifetime() {
++        const POISON: u32 = 0x7fc1_2345;
++        fn poison(g: &mut GpuSolver) {
++            let values = vec![f32::from_bits(POISON); g.d_sigma1.len()];
++            g.stream.memcpy_htod(&values, &mut g.d_sigma1).unwrap();
++        }
++        // Independent host normalization of the pre-sweep regrets. This is a
++        // cache producer/lifetime oracle, not an old-kernel end-to-end oracle.
++        fn expected(s: &Solver, plan: &GpuPlan, old: &[f32]) -> Vec<u32> {
++            let nh = plan.nh[1];
++            let mut result = vec![POISON; old.len()];
++            let mut checked = 0;
++            for &n in &plan.action_nodes {
++                let node = &s.spot.tree.nodes[n as usize];
++                if node.player != 1 || s.locks.contains_key(&n) { continue; }
++                let na = node.num_children as usize;
++                let off = plan.node_data_off[n as usize] as usize;
++                for i in 0..nh {
++                    let mut sum = 0.0f32;
++                    for a in 0..na {
++                        let r = old[off + a * nh + i];
++                        sum += if r > 0.0 { r } else { 0.0 };
++                    }
++                    for a in 0..na {
++                        let r = old[off + a * nh + i];
++                        result[off + a * nh + i] = if sum > 1e-12 {
++                            (if r > 0.0 { r } else { 0.0 }) / sum
++                        } else { 1.0 / na as f32 }.to_bits();
++                        checked += 1;
++                    }
++                }
++            }
++            assert!(checked > 0);
++            result
++        }
++        fn check(g: &GpuSolver, want: &[u32], stage: &str) {
++            assert_device_bits(want, &device_bits(g, &g.d_sigma1), stage);
++        }
++        for compact in [false, true] {
++            let mut s = reach_reuse_solver(crate::store::Storage::F32,
++                Algorithm::CfrPlus, compact, "25,50,75,100");
++            let mut plan = GpuPlan::build(&s.spot, compact);
++            if !compact { plan.use_full_action_arenas(&s.spot); }
++            let mut g = reach_reuse_gpu(&s, compact);
++            let d = Discounts::for_iteration(g.algo, 1);
++            g.stream.memcpy_htod(&[d.pos, d.neg, d.strat], &mut g.d_disc).unwrap();
++            assert_eq!(g.d_sigma1.len(), plan.sigma1_elements());
++            assert_eq!(g.d_sigma1.len(), g.d_regrets[1].len());
++            assert_eq!(g.stream.clone_dtoh(&g.d_node_data_off).unwrap(), plan.node_data_off);
++            let nh = plan.nh[1];
++            assert!(nh >= 7);
++            let mut seed = vec![0.0f32; g.d_regrets[1].len()];
++            for &n in &plan.action_nodes {
++                let node = &s.spot.tree.nodes[n as usize];
++                if node.player != 1 { continue; }
++                let off = plan.node_data_off[n as usize] as usize;
++                for a in 0..node.num_children as usize {
++                    for i in 0..nh {
++                        seed[off + a * nh + i] = match i % 7 {
++                            0 => -1.0,
++                            1 => if a % 2 == 0 { -0.0 } else { 0.0 },
++                            2 => if a == 0 { f32::from_bits((127 - 41) << 23) } else { 0.0 },
++                            3 => if a == 0 { 1e-12 } else { 0.0 },
++                            4 => if a == 0 { f32::from_bits(1e-12f32.to_bits() + 1) } else { 0.0 },
++                            5 => if a % 2 == 0 { (a + 1) as f32 * 0.125 } else { -0.25 },
++                            _ => if a == 0 { 0.5 } else { 0.25 },
++                        };
++                    }
++                }
++            }
++            g.stream.memcpy_htod(&seed, &mut g.d_regrets[1]).unwrap();
++            // All actor1 reaches are zero, but regret updates still require sigma.
++            let zeros = vec![0.0f32; nh];
++            g.stream.memcpy_htod(&zeros, &mut g.d_weights[1]).unwrap();
++            let want = expected(&s, &plan, &seed);
++            poison(&mut g);
++            legacy_down(&mut g);
++            check(&g, &want, "full down produces sigma even at zero own reach");
++            assert_device_bits(&seed.iter().map(|v| v.to_bits()).collect::<Vec<_>>(),
++                &device_bits(&g, &g.d_regrets[1]), "producer preserves old regrets");
++            assert!(device_bits(&g, &g.d_reach[1]).iter().all(|&b| b == 0));
++            g.sweep(0, None).unwrap();
++            check(&g, &want, "p0 up preserves actor1 cache");
++            g.paired_sweep(1, None, true).unwrap();
++            check(&g, &want, "skipped actor1 down and up1 preserve produced cache");
++            assert!(g.stream.clone_dtoh(&g.d_regrets[1]).unwrap().iter().zip(&seed)
++                .any(|(a, b)| a.to_bits() != b.to_bits()), "zero own reach still updates regrets");
++
++            poison(&mut g);
++            g.eval_down().unwrap();
++            check(&g, &vec![POISON; seed.len()], "evaluation must not populate cache");
++            let old = g.stream.clone_dtoh(&g.d_regrets[1]).unwrap();
++            let want = expected(&s, &plan, &old);
++            g.sweep(1, None).unwrap();
++            check(&g, &want, "standalone p1 refreshes poisoned cache after evaluation");
++
++            let lock_path = [PathStep::Action { index: 0 }];
++            s.lock_node(&lock_path, LockMode::Freeze, "sigma lifetime".into()).unwrap();
++            assert!(s.locks.keys().any(|&n| s.spot.tree.nodes[n as usize].player == 1
++                && plan.action_nodes.contains(&n)), "must lock an active actor1 node");
++            g.update_locks(&s).unwrap();
++            g.stream.memcpy_htod(&seed, &mut g.d_regrets[1]).unwrap();
++            poison(&mut g);
++            let want = expected(&s, &plan, &seed);
++            g.sweep(1, None).unwrap();
++            check(&g, &want, "locked slots remain poison and are not consumed");
++            let after = g.stream.clone_dtoh(&g.d_regrets[1]).unwrap();
++            for &n in s.locks.keys() {
++                let node = &s.spot.tree.nodes[n as usize];
++                let off = plan.node_data_off[n as usize] as usize;
++                let end = off + node.num_children as usize * nh;
++                assert_eq!(&after[off..end], &seed[off..end], "locked regrets unchanged");
++            }
++            assert!(s.unlock_node(&lock_path).unwrap());
++            g.update_locks(&s).unwrap();
++            g.iteration = 2; // warm first call captures both graphs before execution
++            for replay in 0..2 {
++                let old = g.stream.clone_dtoh(&g.d_regrets[1]).unwrap();
++                let want = expected(&s, &plan, &old);
++                poison(&mut g);
++                g.iterate().unwrap();
++                assert!(g.graphs.is_some());
++                check(&g, &want, &format!("warm capture/replay {replay} refreshes cache"));
+             }
+         }
+     }
+@@ -1460,6 +1598,7 @@
+                         "compact plan should admit trees the conservative estimate rejected");
+                 }
+                 let mut gpu = GpuSolver::new_with_budget(&s, budget).expect("test requires CUDA");
++                assert_eq!(gpu.d_sigma1.len(), gpu.d_regrets[1].len());
+                 for _ in 0..40 { gpu.iterate().unwrap(); }
+                 let mut repeat = GpuSolver::new(&s).unwrap();
+                 for _ in 0..40 { repeat.iterate().unwrap(); }
+diff --git a/crates/solver/src/gpu/plan.rs b/crates/solver/src/gpu/plan.rs
+--- a/crates/solver/src/gpu/plan.rs
++++ b/crates/solver/src/gpu/plan.rs
+@@ -490,11 +490,19 @@
+         }
+     }
+ 
+-    /// Total bytes of GPU staging (reach + cfv) this plan needs.
++    /// Actor1 normalized probabilities use the finalized GPU action layout.
++    pub(crate) fn sigma1_elements(&self) -> usize { self.arena_elements[1] }
++
++    /// Total transient GPU bytes (reach, cfv and actor1 sigma cache).
+     pub fn staging_bytes(&self) -> u64 {
++        self.staging_bytes_with_actor1_elements(self.sigma1_elements() as u64)
++    }
++
++    /// Evaluate full-F32 admission before changing this plan's compact offsets.
++    pub(crate) fn staging_bytes_with_actor1_elements(&self, actor1_elements: u64) -> u64 {
+         (self.reach_blocks[0] as u64 * self.nh[0] as u64
+             + self.reach_blocks[1] as u64 * self.nh[1] as u64
+-            + self.cfv_blocks as u64 * self.nh_max as u64) * 4
++            + self.cfv_blocks as u64 * self.nh_max as u64 + actor1_elements) * 4
+     }
+ }
+ 
+@@ -523,6 +531,20 @@
+             for iso in [false, true] {
+                 let plan = GpuPlan::build(&spot, iso);
+                 assert_eq!(plan.cfv_slot[0], 0);
++                let traversal = (plan.reach_blocks[0] as u64 * plan.nh[0] as u64
++                    + plan.reach_blocks[1] as u64 * plan.nh[1] as u64
++                    + plan.cfv_blocks as u64 * plan.nh_max as u64) * 4;
++                assert_eq!(plan.sigma1_elements(), plan.arena_elements[1]);
++                assert_eq!(plan.staging_bytes(), traversal + plan.arena_elements[1] as u64 * 4);
++                assert_eq!(plan.staging_bytes_with_actor1_elements(spot.tree.data_size[1]),
++                    traversal + spot.tree.data_size[1] * 4);
++                for &n in &plan.action_nodes {
++                    let node = &spot.tree.nodes[n as usize];
++                    if node.player == 1 {
++                        assert!(plan.node_data_off[n as usize] as usize
++                            + node.num_children as usize * plan.nh[1] <= plan.sigma1_elements());
++                    }
++                }
+                 let mut used = vec![false; plan.cfv_blocks];
+                 let mut terminals = std::collections::HashSet::new();
+                 for &node in plan.fold_nodes.iter().chain(&plan.show_nodes) {
+diff --git a/crates/solver/src/gpu/continuation_paging.rs b/crates/solver/src/gpu/continuation_paging.rs
+--- a/crates/solver/src/gpu/continuation_paging.rs
++++ b/crates/solver/src/gpu/continuation_paging.rs
+@@ -8,7 +8,7 @@
+ 
+ #[derive(Default)]
+ pub struct ContinuationWorkspace {
+-    buffers: Option<[CudaSlice<f32>; 7]>,
++    buffers: Option<[CudaSlice<f32>; 8]>,
+ }
+ 
+ impl ContinuationWorkspace {
+@@ -16,7 +16,7 @@
+         self.buffers.as_ref().map_or(0, |v| v.iter().map(|x| x.len() as u64 * 4).sum())
+     }
+ 
+-    fn absorb(&mut self, buffers: [CudaSlice<f32>; 7]) {
++    fn absorb(&mut self, buffers: [CudaSlice<f32>; 8]) {
+         if let Some(current) = &mut self.buffers {
+             for (old, new) in current.iter_mut().zip(buffers) {
+                 if new.len() > old.len() { *old = new; }
+@@ -28,15 +28,15 @@
+ pub struct PagedContinuationGpu {
+     gpu: GpuSolver,
+     spot: Arc<Spot>,
+-    lengths: [usize; 7],
++    lengths: [usize; 8],
+     poisoned: bool,
+     pub transferred_bytes: u64,
+ }
+ 
+ // Move all large mutable device allocations while leaving valid small dummies.
+-fn take(g: &mut GpuSolver) -> Result<[CudaSlice<f32>; 7], String> {
++fn take(g: &mut GpuSolver) -> Result<[CudaSlice<f32>; 8], String> {
+     let mut small = Vec::new();
+-    for _ in 0..7 { small.push(g.stream.alloc_zeros::<f32>(1).map_err(e)?); }
++    for _ in 0..8 { small.push(g.stream.alloc_zeros::<f32>(1).map_err(e)?); }
+     let mut small = small.into_iter();
+     Ok([
+         std::mem::replace(&mut g.d_regrets[0], small.next().unwrap()),
+@@ -46,12 +46,14 @@
+         std::mem::replace(&mut g.d_reach[0], small.next().unwrap()),
+         std::mem::replace(&mut g.d_reach[1], small.next().unwrap()),
+         std::mem::replace(&mut g.d_cfv, small.next().unwrap()),
++        std::mem::replace(&mut g.d_sigma1, small.next().unwrap()),
+     ])
+ }
+ 
+-fn swap(g: &mut GpuSolver, buffers: &mut [CudaSlice<f32>; 7]) {
++fn swap(g: &mut GpuSolver, buffers: &mut [CudaSlice<f32>; 8]) {
+     for (a, b) in g.d_regrets.iter_mut().chain(&mut g.d_strat)
+-        .chain(&mut g.d_reach).chain(std::iter::once(&mut g.d_cfv)).zip(buffers) {
++        .chain(&mut g.d_reach).chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1)).zip(buffers) {
+         std::mem::swap(a, b);
+     }
+ }
+diff --git a/crates/solver/src/gpu/continuation_storage.rs b/crates/solver/src/gpu/continuation_storage.rs
+--- a/crates/solver/src/gpu/continuation_storage.rs
++++ b/crates/solver/src/gpu/continuation_storage.rs
+@@ -90,9 +90,9 @@
+     restored
+ }
+ 
+-fn take(g: &mut GpuSolver) -> Result<[CudaSlice<f32>; 7], String> {
++fn take(g: &mut GpuSolver) -> Result<[CudaSlice<f32>; 8], String> {
+     g.stream.synchronize().map_err(crate::gpu::e)?;
+-    let mut small: Vec<_> = (0..7)
++    let mut small: Vec<_> = (0..8)
+         .map(|_| g.stream.alloc_zeros::<f32>(1).map_err(crate::gpu::e))
+         .collect::<Result<_, _>>()?;
+     let mut result = Vec::new();
+@@ -102,19 +102,21 @@
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+     {
+         result.push(std::mem::replace(old, small.pop().unwrap()));
+     }
+     Ok(result.try_into().unwrap())
+ }
+ 
+-fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 7]) {
++fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 8]) {
+     for (a, b) in g
+         .d_regrets
+         .iter_mut()
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+         .zip(workspace)
+     {
+         std::mem::swap(a, b);
+@@ -123,7 +125,7 @@
+ 
+ #[derive(Default)]
+ pub struct StoredWorkspace {
+-    buffers: Option<[CudaSlice<f32>; 7]>,
++    buffers: Option<[CudaSlice<f32>; 8]>,
+     poisoned: bool,
+     compact: Option<[CudaSlice<f32>;4]>,
+ }
+@@ -134,7 +136,7 @@
+             for (old,new) in current.iter_mut().zip(buffers) {if new.len()>old.len() {*old=new;}}
+         } else {self.compact=Some(buffers);}
+     }
+-    fn absorb(&mut self, buffers: [CudaSlice<f32>; 7]) {
++    fn absorb(&mut self, buffers: [CudaSlice<f32>; 8]) {
+         if let Some(current) = &mut self.buffers {
+             for (old,new) in current.iter_mut().zip(buffers) { if new.len()>old.len() { *old=new; } }
+         } else { self.buffers=Some(buffers); }
+@@ -146,7 +148,7 @@
+     spot: Arc<Spot>,
+     plan: StoragePlan,
+     gpu: SymmetricContinuationGpu,
+-    lengths: [usize;7],
++    lengths: [usize;8],
+     pack_nodes:CudaSlice<u32>,
+     pack_offsets:CudaSlice<u64>,
+     copy_kernel:CudaFunction,
+@@ -219,7 +221,7 @@
+         let plan=crate::gpu::stored_capacity_plan(&self.spot);
+         let base=crate::gpu::continuation_capacity::observed_metadata(&self.gpu.gpu);
+         let maps=self.gpu.public_orbits.as_ref().map_or(0,|(a,b)|(a.len()+b.len()) as u64*4);
+-        let wrapper=self.gpu.stabilizers.len() as u64*4+maps+self.pack_nodes.len() as u64*4+self.pack_offsets.len() as u64*8+28;
++        let wrapper=self.gpu.stabilizers.len() as u64*4+maps+self.pack_nodes.len() as u64*4+self.pack_offsets.len() as u64*8+32;
+         assert_eq!(plan["base_gpu_metadata_bytes"].as_u64().unwrap(),base);
+         assert_eq!(plan["wrapper_gpu_metadata_bytes"].as_u64().unwrap(),wrapper);
+         assert_eq!(plan["canonical_state_bytes"].as_u64().unwrap(),self.storage_bytes);
+diff --git a/crates/solver/src/gpu/continuation_capacity.rs b/crates/solver/src/gpu/continuation_capacity.rs
+--- a/crates/solver/src/gpu/continuation_capacity.rs
++++ b/crates/solver/src/gpu/continuation_capacity.rs
+@@ -39,7 +39,7 @@
+     n+(p.num_nodes*8) as u64+4+12+(4*p.nh_max*4) as u64 // unlocked table, sigma, discounts, eval roots
+ }
+ 
+-/// Actual CUDA slice payloads, excluding the seven borrowed mutable buffers.
++/// Actual CUDA slice payloads, excluding the eight borrowed mutable buffers.
+ pub(super) fn observed_metadata(g: &GpuSolver) -> u64 {
+     macro_rules! sum {($($f:ident:$t:ty),*)=>{0u64 $(+(g.$f.len()*size_of::<$t>()) as u64)*};}
+     let mut n=sum!(d_action_nodes:u32,d_chance_parents:u32,d_chance_children:u32,d_chance_cards:u32,d_chance_nodes:u32,
+@@ -60,14 +60,16 @@
+     let mut full=GpuPlan::build(s,false);full.use_full_action_arenas(s);
+     let compact=GpuPlan::build(s,true);
+     let base=metadata(&full,s);
+-    let wrapper=(s.tree.nodes.len()*12+compact.action_nodes.len()*12+7*4) as u64;
+-    let mut work=[0u64;11];
++    let wrapper=(s.tree.nodes.len()*12+compact.action_nodes.len()*12+8*4) as u64;
++    let mut work=[0u64;12];
+     for q in 0..2 {
+         work[q]=full.arena_elements[q] as u64*4;work[q+2]=work[q];
+         work[q+4]=(full.reach_blocks[q]*full.nh[q]*4) as u64;
+         if compact.iso_active {work[q+7]=compact.arena_elements[q].max(1) as u64*4;work[q+9]=work[q+7];}
+     }
+     work[6]=(full.cfv_blocks*full.nh_max*4) as u64;
++    // Preserve published components0..10; runtime scratch index7 is reported at11.
++    work[11]=full.sigma1_elements() as u64*4;
+     let state=if compact.iso_active {(compact.arena_elements[0]+compact.arena_elements[1]) as u64*8}
+         else {(s.tree.data_size[0]+s.tree.data_size[1])*8};
+     let plan_host=owned(&compact.action_nodes)+owned(&compact.node_data_off);
+diff --git a/crates/solver/src/gpu/continuation_host_paging_tests.rs b/crates/solver/src/gpu/continuation_host_paging_tests.rs
+--- a/crates/solver/src/gpu/continuation_host_paging_tests.rs
++++ b/crates/solver/src/gpu/continuation_host_paging_tests.rs
+@@ -127,9 +127,9 @@
+ 
+ use cudarc::driver::CudaSlice;
+ 
+-fn take(g: &mut GpuSolver) -> [CudaSlice<f32>; 7] {
++fn take(g: &mut GpuSolver) -> [CudaSlice<f32>; 8] {
+     g.stream.synchronize().unwrap();
+-    let mut small: Vec<_> = (0..7)
++    let mut small: Vec<_> = (0..8)
+         .map(|_| g.stream.alloc_zeros::<f32>(1).unwrap())
+         .collect();
+     let mut result = Vec::new();
+@@ -139,19 +139,21 @@
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+     {
+         result.push(std::mem::replace(old, small.pop().unwrap()));
+     }
+     result.try_into().unwrap()
+ }
+ 
+-fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 7]) {
++fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 8]) {
+     for (a, b) in g
+         .d_regrets
+         .iter_mut()
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+         .zip(workspace)
+     {
+         std::mem::swap(a, b);
+@@ -170,7 +172,7 @@
+ #[test]
+ fn parked_host_orbits_and_shared_gpu_workspace_preserve_720_passes() {
+     let mut entries = Vec::new();
+-    let mut workspace: Option<[CudaSlice<f32>; 7]> = None;
++    let mut workspace: Option<[CudaSlice<f32>; 8]> = None;
+     for board in ["KsQs2d", "KsQs2s", "KsQh2d"] {
+         for (pot, stack) in [(39.5, 80.), (93.5, 155.)] {
+             let z = StreetSizing {
+diff --git a/crates/solver/src/gpu/continuation_ssd_paging_tests.rs b/crates/solver/src/gpu/continuation_ssd_paging_tests.rs
+--- a/crates/solver/src/gpu/continuation_ssd_paging_tests.rs
++++ b/crates/solver/src/gpu/continuation_ssd_paging_tests.rs
+@@ -127,9 +127,9 @@
+ 
+ use cudarc::driver::CudaSlice;
+ 
+-fn take(g: &mut GpuSolver) -> [CudaSlice<f32>; 7] {
++fn take(g: &mut GpuSolver) -> [CudaSlice<f32>; 8] {
+     g.stream.synchronize().unwrap();
+-    let mut small: Vec<_> = (0..7)
++    let mut small: Vec<_> = (0..8)
+         .map(|_| g.stream.alloc_zeros::<f32>(1).unwrap())
+         .collect();
+     let mut result = Vec::new();
+@@ -139,19 +139,21 @@
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+     {
+         result.push(std::mem::replace(old, small.pop().unwrap()));
+     }
+     result.try_into().unwrap()
+ }
+ 
+-fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 7]) {
++fn swap(g: &mut GpuSolver, workspace: &mut [CudaSlice<f32>; 8]) {
+     for (a, b) in g
+         .d_regrets
+         .iter_mut()
+         .chain(&mut g.d_strat)
+         .chain(&mut g.d_reach)
+         .chain(std::iter::once(&mut g.d_cfv))
++        .chain(std::iter::once(&mut g.d_sigma1))
+         .zip(workspace)
+     {
+         std::mem::swap(a, b);
+@@ -181,7 +183,7 @@
+     let mut read_bytes = 0u64;
+     let mut write_bytes = 0u64;
+     let mut entries = Vec::new();
+-    let mut workspace: Option<[CudaSlice<f32>; 7]> = None;
++    let mut workspace: Option<[CudaSlice<f32>; 8]> = None;
+     for board in ["KsQs2d", "KsQs2s", "KsQh2d"] {
+         for (pot, stack) in [(39.5, 80.), (93.5, 155.)] {
+             let z = StreetSizing {
+diff --git a/crates/solver/src/game.rs b/crates/solver/src/game.rs
+--- a/crates/solver/src/game.rs
++++ b/crates/solver/src/game.rs
+@@ -418,7 +418,7 @@
+         }
+         let staging = (reach_blocks[0] * nh0 + reach_blocks[1] * nh1 + n * nh_max) * 4;
+         let arenas = (self.tree.data_size[0] + self.tree.data_size[1]) * 2 * 4;
+-        staging + arenas + 512 * 1024 * 1024
++        staging + arenas + self.tree.data_size[1] * 4 + 512 * 1024 * 1024
+     }
+ 
+     pub fn num_action_nodes(&self) -> usize {
+diff --git a/crates/solver/examples/continuation_storage_capacity.rs b/crates/solver/examples/continuation_storage_capacity.rs
+--- a/crates/solver/examples/continuation_storage_capacity.rs
++++ b/crates/solver/examples/continuation_storage_capacity.rs
+@@ -19,7 +19,7 @@
+     let menu=m["bet_menu"].as_str().unwrap();let mut rows=vec![];
+     let sizing=StreetSizing{bet:parse_sizes(menu).unwrap(),raise:parse_sizes("100").unwrap(),donk:parse_sizes(menu).unwrap()};
+     let mut workspace=StoredWorkspace::default();let mut games=vec![];let mut remaining=u64::MAX;
+-    let mut work=[0u64;11];let mut metadata=0;let mut host=0;let mut state=0;
++    let mut work=[0u64;12];let mut metadata=0;let mut host=0;let mut state=0;
+     let mut constructor_gpu_peak=0;let mut max_explicit=0;let mut max_state=0;let mut max_pinned=0;
+     for b in m["boards"].as_array().unwrap() {
+         let board=b["board"].as_str().unwrap();
+@@ -37,6 +37,7 @@
+             metadata+=get("retained_gpu_payload_bytes");host+=get("host_retained_payload_bytes");state+=get("canonical_state_bytes");
+             max_state=max_state.max(get("canonical_state_bytes"));max_explicit=max_explicit.max(get("explicit_state_bytes"));max_pinned=max_pinned.max(get("constructor_pinned_bytes"));
+             let components=row["workspace_components_bytes"].as_array().unwrap();
++            assert_eq!(components.len(),work.len());
+             constructor_gpu_peak=constructor_gpu_peak.max(metadata+work.iter().sum::<u64>()+components.iter().map(|x|x.as_u64().unwrap()).sum::<u64>());
+             for (w,x) in work.iter_mut().zip(components) {*w=(*w).max(x.as_u64().unwrap());}
+             if device {assert_eq!(workspace.bytes(),work.iter().sum::<u64>());}
+diff --git a/crates/solver/examples/hu_context_capacity.rs b/crates/solver/examples/hu_context_capacity.rs
+--- a/crates/solver/examples/hu_context_capacity.rs
++++ b/crates/solver/examples/hu_context_capacity.rs
+@@ -26,7 +26,7 @@
+     let menu = m["bet_menu"].as_str().unwrap();
+     let sizing = StreetSizing { bet:parse_sizes(menu)?, raise:parse_sizes("100")?, donk:parse_sizes(menu)? };
+     let mut rows = vec![];
+-    let mut workspace = [0u64; 11];
++    let mut workspace = [0u64; 12];
+     let mut metadata = 0u64; let mut host = 0u64; let mut state = 0u64;
+     let mut peak = 0u64;
+     for b in m["boards"].as_array().unwrap() {

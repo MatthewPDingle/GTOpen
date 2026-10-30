@@ -1,0 +1,89 @@
+--- frozen-primary
++++ resource-observation-only
+@@ -14,6 +14,37 @@
+ use std::io::{self, Write};
+ use std::sync::Arc;
+ use std::time::Instant;
++
++#[repr(C)] #[derive(Default)] struct ResourceFileTime { low: u32, high: u32 }
++#[repr(C)] #[derive(Default)] struct ResourceMemory {
++    cb: u32, faults: u32, peak_working: usize, working: usize,
++    quota_peak_paged: usize, quota_paged: usize, quota_peak_nonpaged: usize,
++    quota_nonpaged: usize, pagefile: usize, peak_pagefile: usize, private: usize,
++}
++#[link(name = "kernel32")]
++extern "system" {
++    fn GetCurrentProcess() -> *mut std::ffi::c_void;
++    fn GetProcessTimes(h: *mut std::ffi::c_void, c: *mut ResourceFileTime,
++        e: *mut ResourceFileTime, k: *mut ResourceFileTime, u: *mut ResourceFileTime) -> i32;
++    fn K32GetProcessMemoryInfo(h: *mut std::ffi::c_void, p: *mut ResourceMemory, n: u32) -> i32;
++}
++fn resource_os_sample() -> Value {
++    assert_eq!(std::mem::size_of::<ResourceFileTime>(), 8);
++    assert_eq!(std::mem::size_of::<ResourceMemory>(), 80);
++    let mut c=ResourceFileTime::default(); let mut e=ResourceFileTime::default();
++    let mut k=ResourceFileTime::default(); let mut u=ResourceFileTime::default();
++    let mut m=ResourceMemory::default(); m.cb=80;
++    unsafe {
++        let h=GetCurrentProcess();
++        assert_ne!(GetProcessTimes(h,&mut c,&mut e,&mut k,&mut u),0);
++        assert_ne!(K32GetProcessMemoryInfo(h,&mut m,80),0);
++    }
++    let ticks=|x: &ResourceFileTime| ((x.high as u64)<<32)|x.low as u64;
++    json!({"cpu_ticks100ns":ticks(&k)+ticks(&u),"creation_filetime":ticks(&c),
++        "peak_working_bytes":m.peak_working,"working_bytes":m.working,
++        "private_bytes":m.private,"peak_commit_bytes":m.peak_pagefile,
++        "pagefile_bytes":m.pagefile,"page_faults":m.faults,"memory_structure_bytes":m.cb})
++}
+ 
+ const TARGET_PCT_POT: f64 = 0.3;
+ const CHECK_EVERY: u32 = 20;
+@@ -180,7 +211,7 @@
+             continue;
+         }
+         let mut config: SpotConfig =
+-            serde_json::from_str(include_str!("../../../bench_spot.json")).unwrap();
++            serde_json::from_str(include_str!(r"X:\Dev\GTOpen-gpu-research-20261016\bench_spot.json")).unwrap();
+         config.board = board.into();
+         config.tree.rake_pct = rake;
+         config.tree.rake_cap = 3.0;
+@@ -190,6 +221,7 @@
+             "board": board, "storage": storage_name, "config": config_json,
+         }));
+ 
++        let resource_os_begin = resource_os_sample();
+         let total_start = Instant::now();
+         let stage_start = Instant::now();
+         let mut host = Solver::with_storage(Arc::new(Spot::new(config).unwrap()), storage);
+@@ -234,6 +266,7 @@
+         gpu.synchronize().unwrap();
+         let full_readback_ms = elapsed_ms(stage_start);
+         let total_ms = elapsed_ms(total_start);
++        let resource_os_timing_complete = resource_os_sample();
+         assert_eq!(host.iteration, gpu.iteration);
+         let target_met = exploit_pct_pot <= TARGET_PCT_POT;
+         emit_stage(json!({
+@@ -267,6 +300,15 @@
+             "runtime_nvrtc_jit_included": true, "flushed_progress_logging_included": true,
+         }));
+         assert!(target_met, "{name} did not reach the frozen target within {MAX_ITERATIONS} iterations");
++        let resource_os_after_fingerprint = resource_os_sample();
++        let resource_cpu_begin = resource_os_begin["cpu_ticks100ns"].as_u64().unwrap();
++        let resource_cpu_end = resource_os_timing_complete["cpu_ticks100ns"].as_u64().unwrap();
++        assert!(resource_cpu_end >= resource_cpu_begin);
++        emit_stage(json!({"stage":"resource_fixture","fixture_id":name,
++            "cpu_delta_ticks100ns":resource_cpu_end-resource_cpu_begin,
++            "os_begin":resource_os_begin,"os_timing_complete":resource_os_timing_complete,
++            "os_after_fingerprint":resource_os_after_fingerprint,"performance_score":false}));
++
+ 
+         if profile {
+             let diagnostic = gpu.iterate_profiled().unwrap();
+@@ -286,4 +328,6 @@
+         "primary_suite": filter.is_none() && storage == Storage::Compressed,
+         "storage": storage_name,
+     }));
+-}
++    emit_stage(json!({"stage":"resource_suite_complete","OS":resource_os_sample()}));
++
++}

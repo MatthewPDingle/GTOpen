@@ -1,0 +1,64 @@
+{
+  "anchor_path": "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\D033-oracle-anchors\\anchors.json",
+  "anchor_sha256": "7c2da4aa20e34a8693e6eec39c40af5d43324aa502fac5e9941444270fb04d8f",
+  "river_hands": [
+    233,
+    280
+  ],
+  "river_board": "Ks7h2dQhTc",
+  "river_invariant": "game.rs build_river_table filters only extra_mask; root_street2 invokes eval_board(&[]), so every already-board-filtered hand remains in sorted list",
+  "source_game_sha256": "8a7526e773071f244e51ec09769b1555dc398a2e6269d32fce2beb4a14c92913",
+  "rainbow": "closed D033 graph metadata plus unweighted combinatorial census",
+  "two_tone_specific_occupancy_queried": false,
+  "resource_shapes": [
+    {
+      "id": "rainbow_p0",
+      "nh_o": 319,
+      "m_max": 314,
+      "baseline_dynamic_bytes": 3788,
+      "candidate_dynamic_bytes": 6300
+    },
+    {
+      "id": "rainbow_p1",
+      "nh_o": 257,
+      "m_max": 252,
+      "baseline_dynamic_bytes": 3044,
+      "candidate_dynamic_bytes": 5060
+    },
+    {
+      "id": "river_p0",
+      "nh_o": 280,
+      "m_max": 280,
+      "baseline_dynamic_bytes": 3360,
+      "candidate_dynamic_bytes": 5600
+    },
+    {
+      "id": "river_p1",
+      "nh_o": 233,
+      "m_max": 233,
+      "baseline_dynamic_bytes": 2796,
+      "candidate_dynamic_bytes": 4660
+    },
+    {
+      "id": "full_hand_upper_bound",
+      "nh_o": 1326,
+      "m_max": 1326,
+      "baseline_dynamic_bytes": 15912,
+      "candidate_dynamic_bytes": 26520
+    },
+    {
+      "id": "empty_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 0,
+      "baseline_dynamic_bytes": 1276,
+      "candidate_dynamic_bytes": 1276
+    },
+    {
+      "id": "single_sorted_opponent",
+      "nh_o": 319,
+      "m_max": 1,
+      "baseline_dynamic_bytes": 1284,
+      "candidate_dynamic_bytes": 1292
+    }
+  ]
+}

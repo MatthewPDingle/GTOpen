@@ -1,0 +1,27 @@
+{
+  "at": "2026-10-18T06:42:26.209229+00:00",
+  "original_arena_sha256": "7e55bff7face4f5beeddd99119cfda0c4f2acf9a1930c900f198d52d07ec8ed9",
+  "original_mod_sha256": "ce71fa3bfb797baade1efe50beba68e971b88c7da1c9547d306e0b6e9245ee8d",
+  "original_CUDA_sha256": "a926bf0bc818a2ba808c862b59a552dfb7ade453ca18f347b4307784e47d9647",
+  "full_arena_source_byte_verified": true,
+  "arena_bridge_only": "Append read-only field serialization, snapshot guards, and original full-predicate accessibility; original implementation unchanged.",
+  "PinnedBuf_and_write_arena_copied_verbatim": true,
+  "predicate_expression_copied_verbatim": "match store {\n            Store::I16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v as u16) == 0\n            }\n            Store::U16 { q, scale } => {\n                scale.as_slice().iter().all(|v| v.to_bits() == 0)\n                    && q.as_slice().iter().fold(0u16, |bits, &v| bits | v) == 0\n            }\n            Store::F32(_) => false,\n        }",
+  "mechanism": "All four original serial scale/q scans execute once, in original reg0/reg1/strat0/strat1 order, on one scoped CPU-only worker while caller performs original NVRTC/module/pinned/layout setup. Typed epoch-local ZeroCheck borrows Store and accepts only identical store address; all original snapshot/inactive guards execute on caller after join. No persistent metadata/provenance cache or skipped validation, integer grouping/ISA/precision/order unchanged. No CUDA call/context/stream leaves caller.",
+  "eligibility": "Fixed total quantized bytes>=64MiB; smaller/F32 paths serial. No iteration/freshness inference or extra positive-zero scale precheck. Fixed before first native; no threshold/scope/placement/thread rescue after actual failure.",
+  "safety": "ArenaBuf exposes Sync for Sync types but as_slice contract requires no mutating traversal. Solver constructor immutable borrow and actual setup source only touch tree/plan/owned allocations; no CPUstore writes or traversal while proof borrowed. Worker joined before all consumers/errors. Setup error retains priority over worker panic; normal error/panic cleanup tested. OSspawnfailure serial fallback reviewed, not resource-injected.",
+  "novelty_query": [
+    "git",
+    "log",
+    "--all",
+    "--format=%H",
+    "-G",
+    "prechecked|zero_check_worker|zero_validation_task|validate_while_setup|checks_with_setup",
+    "--",
+    "crates/solver/src/gpu",
+    "crates/solver/src/store.rs"
+  ],
+  "all_ref_matches": [],
+  "prior_false_positive_review": "Archived E045 ZERO_PROOF helpers are parallel per-q integer-OR chunk reductions and remain closed. D131 performs original full serial scans once, changes dependency scheduling only. E049 persistent ArenaBuf provenance, D126 hints, D127 sparse firsttouch, E071 planner stages, and E079 context worker are neither reused nor tuned. CUDA context creation/binding remain original caller-only before the test window.",
+  "limits": "Source-matched component includes actual NVRTC/module/pinned allocation/ArenaLayout source and exact predicates, but omits device arenas/uploads/solving and private integrated GpuSolver caller. Default-context, warm/F32/copy/panic/memory/compatibility/fullsolve risks still need qualification. Source reasoning is root audit, not external independence."
+}

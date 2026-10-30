@@ -1,0 +1,81 @@
+{
+  "id": "E027-source-script-review",
+  "at": "2026-10-16T16:12:08.190731+00:00",
+  "verdict": "PASS_SOURCE_AND_PROSPECTIVE_SCRIPTS",
+  "source_review_pass": true,
+  "script_review_pass": true,
+  "independent_source_review_pass": true,
+  "independent_script_review_pass": true,
+  "actionable_findings": [],
+  "scope": "Independent read-only review of frozen off-tree E027 five-file source and build/primary/assess scripts. No candidate activation, compiler, native or GPU execution by reviewer.",
+  "input_sha256": {
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\manifest.json": "68884e160241e8cff078f5709458158a3f05c5376183bedeb1dc57a17c95684a",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-design\\candidate.patch": "054f4b28e008feb48420a70357b2a527279e456fc71158ab741ec8af4a80b208",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan\\scripts-manifest.json": "86f22dfd430422555814daf8b1b204ac77e3bb1babebadbeac24097b443a2a46",
+    "S:\\GTOpen-research\\postflop-gpu-20261016\\runs\\E027-primary-plan\\protocol.json": "f852e0f08252b7d02ba4639d2f97d8ce16d4d7cfb5fbade6abe42f2ae7d6509d",
+    "X:\\Dev\\GTOpen-gpu-research-20261016\\crates\\solver\\tests\\postflop_autoresearch.rs": "f13d79410a22f140c05cb9a822fe9685c2180e5baeda4b625d52ae03feebd327"
+  },
+  "candidate_owned_sha256": {
+    "crates/solver/src/gpu/plan.rs": "0aafed8d9d481c1bcaf3d359828c0eea949e1d504951b1243392e24f9cfc5e88",
+    "crates/solver/src/gpu/mod.rs": "97bbb476c6d116a45e0243592b9abdc49e21f0055ed2716b4727a9c2994c6243",
+    "crates/solver/src/gpu/kernels.cu": "83b9af1d2c224b1dda5d80d698b00d91e6b9fe0c0b4e9aabcbd8f85b79f29db2",
+    "crates/solver/src/game.rs": "45b1e2333205963704ec51255081bafe63d0b054c38d6353e1b5e7a4473a4451",
+    "crates/solver/src/gpu/continuation_capacity.rs": "8ceabdd62eaa823ea2f0be70894fc49d27e32851a58e1cfdbc4c116a093fa208"
+  },
+  "verified": {
+    "source_artifacts": 14,
+    "source_references": 3,
+    "script_and_protocol_pins": 4,
+    "supporting_pins": 7,
+    "script_reference_pins": 13,
+    "accepted_checkout_sources": 162,
+    "exact_candidate_to_base_edit_reversals": 5,
+    "unchanged_cuda_entry_abis": 9,
+    "pitch_integer_equivalence_inputs": 1327,
+    "python_ast_files": 3,
+    "unused_run_ids": [
+      "V027-unit",
+      "B089",
+      "E027R1",
+      "E027R2",
+      "B090",
+      "B091",
+      "E027R3"
+    ],
+    "fresh_output_and_target_paths_absent": true,
+    "executed_candidate_or_execution_scripts": false
+  },
+  "source_assessment": [
+    "Only physical reach row addresses change in down_action parent and locked/unlocked child paths, both down_chance players, up_fold, up_show and training up_action. All logical loop counts, regret/sigma and CFV indexing, floating expressions/order, shared reservations and launches remain unchanged.",
+    "Spot::gpu_reach_pitch is feature-off safe and rounds to eight floats. GpuPlan reach_pitch/reach_elements, staging_bytes, both existing allocations, public estimate and stored_capacity_plan workspace entries use the same geometry. Original row ownership and root slot zero are unchanged.",
+    "E015 second paired sweep keeps down_nh1=0. Derived pitch zero computes pointers but unchanged zero-count hand loops perform no player-1 reach accesses. Upward consumers still receive real logical nh.",
+    "Continuation paging/storage record actual lengths, borrow and drain whole buffers; parked/save state contains only learning arrays. Extra zero-filled payload remains inside constructor and may change tight-budget admission/full-versus-compact choice.",
+    "Five files reverse exactly to accepted bases using the inspected edit map; current checkout equals all162 accepted E020 identities. All9 CUDA entry signatures and frozen evaluator bytes match the intended scope.",
+    "Existing geometry/accounting and GPU admission test functions receive assertions; no new test declaration. Expected84 passed/4 ignored is a prospective runtime obligation, not a reviewer test result."
+  ],
+  "script_assessment": [
+    "Final scripts equal the reviewed draft after protocol-hash binding. Removed D050/D051 prerequisites have no executable remnants. Root authorization pins accepted E020/server evidence, both independent review roles and exactly five candidate files.",
+    "Build requires absent target/output paths, shared GPU lock, read-only live-idle gate, reserve, compiler-override absence, fixed timeout and owned-child cleanup. All source identities are checked before/after; fresh solver/test artifacts must come from the new target and exact source/manifest paths. Both executables must embed full candidate CUDA and exclude full accepted CUDA.",
+    "Primary requires terminal build/provenance, full84/0/4/0/0 unit summary before six serialized solves, immutable binary/manifests before/after each run, fixed V027-unit/B089/E027R1/E027R2/B090/B091/E027R3 order, and no reused IDs.",
+    "Assessment retains all18 full non-timing results and138 convergence checks, exact23-check trajectory per run, original six timing exclusions, original2percent sum-of-medians gate and conjunctive3percent/strict-majority fixture guard. No extensions/exclusions/automatic adoption.",
+    "Primary qualification alone is insufficient: frozen policy requires independent E020/E027 raw logical rows before quantization, padding guards, real workspace/plan/admission and board-swap accounting, existing original/F32/state/menu/resume/GPU/continuation controls, fixed wide-turn holdout and fresh-original cumulative qualification. Those later controls are not implemented or claimed passed."
+  ],
+  "limits": [
+    "Source review does not establish typechecking, CUDA code generation, numerical equality, device capacity or speed.",
+    "Same-layout candidate raw-reach tests are not an independent old/new logical-row oracle. Metadata-only stored capacity checks do not prove actual workspace equality.",
+    "No measured gain, candidate acceptance or deployment approval follows from this source/script PASS. Root owns activation and all execution."
+  ],
+  "preserved_preparation_notes": "Builder retained draft-r1 and the source-check record of a pre-artifact replacement-count guard stop. Reviewer found no required candidate/script correction; sealed inputs were not modified.",
+  "reviewer_check_correction": {
+    "initial_result": "AssertionError at line22 before review directory creation; tool chunk ce2390, exit1",
+    "cause": "Reviewer expected-ID formatting produced B89/B90/B91 rather than the correctly frozen B089/B090/B091.",
+    "correction": "Read actual protocol and used fB{b:03d}; same assertions passed. No candidate or script changed, no native run occurred or was repeated."
+  },
+  "compiler_executions": 0,
+  "native_executions": 0,
+  "gpu_executions": 0,
+  "production_edits": 0,
+  "status_edits": 0,
+  "candidate_accepted": false,
+  "deployment_changed": false
+}

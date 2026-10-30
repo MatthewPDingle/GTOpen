@@ -1,0 +1,8 @@
+{
+  "error": "AssertionError: E077-source/baseline.cu",
+  "cause": "read_text normalized accepted CUDA CRLF to LF in the copied baseline; identity guard stopped preparation.",
+  "compiler_or_native_executions": 0,
+  "resource_protocol_frozen": false,
+  "source_activated": false,
+  "repair": "Copy original baseline bytes and preserve original newline convention for candidate files, with a normalized round-trip assertion."
+}

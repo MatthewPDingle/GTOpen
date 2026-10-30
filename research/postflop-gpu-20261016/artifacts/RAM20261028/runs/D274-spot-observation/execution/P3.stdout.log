@@ -1,0 +1,21 @@
+
+running 1 test
+test game::d274_observer::observe ... 
+D274_SPOT {"CFR_iterations_GPU_calls":0,"CPU_only":true,"baseline_ns":71737900,"fixture":"rainbow","full_data_native_exact":true,"hands":[257,319],"nodes":1346813,"observed_ns":68349500,"order":"BO","profiled_constructor_ns":68346600,"river_ns":2134200,"symmetry_ns":57700,"tree_ns":66023800,"worker_count":16}
+
+D274_SPOT {"CFR_iterations_GPU_calls":0,"CPU_only":true,"baseline_ns":56497300,"fixture":"two-tone","full_data_native_exact":true,"hands":[258,320],"nodes":1346813,"observed_ns":55501900,"order":"BO","profiled_constructor_ns":55500100,"river_ns":2079500,"symmetry_ns":53800,"tree_ns":53240500,"worker_count":16}
+
+D274_SPOT {"CFR_iterations_GPU_calls":0,"CPU_only":true,"baseline_ns":185100,"fixture":"river","full_data_native_exact":true,"hands":[233,280],"nodes":33,"observed_ns":142600,"order":"BO","profiled_constructor_ns":142200,"river_ns":22000,"symmetry_ns":17200,"tree_ns":3900,"worker_count":16}
+D274_ERROR {"case":"budget0","river_not_started":true,"same_error":"tree too large: over the max_nodes budget of 0; reduce bet/raise sizes, max_raises, or effective stack","symmetry_not_started":true}
+D274_ERROR {"case":"budget1","river_not_started":true,"same_error":"tree too large: over the max_nodes budget of 1; reduce bet/raise sizes, max_raises, or effective stack","symmetry_not_started":true}
+D274_ERROR {"case":"budget100","river_not_started":true,"same_error":"tree too large: over the max_nodes budget of 100; reduce bet/raise sizes, max_raises, or effective stack","symmetry_not_started":true}
+D274_ERROR {"case":"bad_stack","river_not_started":true,"same_error":"pot and stacks must be positive finite numbers","symmetry_not_started":true}
+D274_ERROR {"case":"bad_bet","river_not_started":true,"same_error":"flop OOP bet: '2.5x' is a raise-only size — use % of pot or 'a'","symmetry_not_started":true}
+D274_ERROR {"case":"bad_board","river_not_started":true,"same_error":"board must have 3 to 5 cards","symmetry_not_started":true}
+D274_ERROR {"case":"empty_range","river_not_started":true,"same_error":"OOP range has no combos left after board card removal","symmetry_not_started":true}
+D274_ERROR {"case":"impossible_ranges","river_not_started":true,"same_error":"OOP and IP ranges are mutually impossible: every OOP combo shares a card with every IP combo after board removal, so no deal exists (zero compatible pair mass) — every equity and EV would be 0/0","symmetry_not_started":true}
+D274_COMPLETE {"CFR_iterations_GPU_calls":0,"error_cases":8,"fixtures":3,"full_Spot_pairs":3}
+ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 47 filtered out; finished in 0.86s
+
